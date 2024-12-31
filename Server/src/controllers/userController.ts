@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { MongoError } from 'mongodb'; 
 import userModel from "../models/userModel";
 import Lesson from '../models/lessonModel';
