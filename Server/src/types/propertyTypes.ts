@@ -67,7 +67,7 @@ export interface IProperty extends Document {
     desk_help: {
         start: number;
         end: number;
-    }
+    };
     host: IUser["_id"];
 }
 

@@ -45,12 +45,12 @@ const PropertySchema = new Schema<IProperty>({
         children_beds: {
             child_policy: { type: String },
             bed_policy: [{
-            age: {
-                start: { type: Number, required: true },
-                end: { type: Number, required: true },
-            },
-            type: { type: String },
-            price: { type: String },
+                age: {
+                    start: { type: Number, required: true },
+                    end: { type: Number, required: true },
+                },
+                type: { type: String },
+                price: { type: String },
             }],
         },
         age_restriction: { type: Number },
