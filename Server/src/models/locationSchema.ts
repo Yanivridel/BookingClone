@@ -8,7 +8,17 @@ export const LocationSchema = new Schema({
     addressLine: { type: String, required: true },
     zipCode: { type: String },
     coordinates: {
-        latitude: { type: Number, required: true },
-        longitude: { type: Number, required: true },
+        type: {
+            type: String,
+            default: "Point",
+            enum: ["Point"],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
     },
 });
+
+LocationSchema.index({ coordinates: "2dsphere" });

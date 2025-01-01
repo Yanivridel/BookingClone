@@ -13,3 +13,5 @@ export interface IBooking extends Document {
     status: "pending" | "confirmed" | "cancelled";
     createdAt: Date;
 }
+
+

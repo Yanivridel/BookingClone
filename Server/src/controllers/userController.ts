@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { MongoError } from 'mongodb'; 
-import userModel from "../models/userModel";
-import Lesson from '../models/lessonModel';
+import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
 
 // utils imports
 import { hashPassword, comparePassword } from "../utils/auth";
 import { AuthenticatedRequest } from 'src/types/expressTypes';
-import mongoose from 'mongoose';
 import { getCoordinatesByLocation } from './../utils/maps';
 
 const JTW_EXPIRATION = { expiresIn: '1d'};
@@ -23,20 +22,15 @@ interface CreateUserRequestBody {
 }
 export const createUser = async (req: Request<{/*params*/}, {/*res body*/}, CreateUserRequestBody>, res: Response): Promise<void> => {
     try {
-        const { fName, lName, email, password, phone, role } = req.body;
+        const { email } = req.body;
     
-        if(!fName || !lName || !phone || !email || !password || !role) {
+        if(!email) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
         
         const newUser = new userModel({
-            fName,
-            lName,
             email,
-            password: await hashPassword(password),
-            phone,
-            role
         });
     
         await newUser.save();
@@ -50,7 +44,7 @@ export const createUser = async (req: Request<{/*params*/}, {/*res body*/}, Crea
         if (error instanceof MongoError  && error.code === 11000) {
             res.status(409).json({
                 status: "error",
-                message: "email or phone already exists",
+                message: "email already exists",
             });
         }
         else {
@@ -63,6 +57,7 @@ export const createUser = async (req: Request<{/*params*/}, {/*res body*/}, Crea
     }
 }
 
+/*
 // LOGIN USER - Done
 interface LoginUserRequestBody {
     email: string;
@@ -395,3 +390,4 @@ export const handleCoins = async (req: Request, res: Response): Promise<void> =>
         });
     }
 }
+*/
