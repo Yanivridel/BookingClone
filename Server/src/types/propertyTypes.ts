@@ -5,12 +5,7 @@ export interface IProperty extends Document {
     _id: Types.ObjectId;
     title: string;
     description?: string;
-    location: {
-        address: string;
-        city: string;
-        country: string;
-        coordinates: [number, number];
-    };
+    location: ILocation;
     pricePerNight: number;
     photos: string[];
     amenities: string[];
@@ -20,4 +15,16 @@ export interface IProperty extends Document {
     bathrooms: number;
     rating: number;
     reviews: Types.ObjectId[];
+}
+
+export interface ILocation {
+    country: string; // enum ECountry
+    region?: string;
+    city: string;
+    addressLine?: string;
+    zipCode?: string;
+    coordinates: {
+        latitude: number;
+        longitude: number;
+    };
 }

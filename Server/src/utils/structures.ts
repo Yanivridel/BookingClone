@@ -1,5 +1,5 @@
 
-export enum Country {
+export enum ECountry {
     Afghanistan = "Afghanistan",
     Albania = "Albania",
     Algeria = "Algeria",
@@ -197,7 +197,7 @@ export enum Country {
     Zimbabwe = "Zimbabwe",
 }
 
-export enum CoinType {
+export enum ECoinType {
     USD = "USD", // United States Dollar
     EUR = "EUR", // Euro
     GBP = "GBP", // British Pound
@@ -270,7 +270,7 @@ export enum CoinType {
     MVR = "MVR", // Maldivian Rufiyaa
 }
 
-export enum Language {
+export enum ELanguage {
     EN = "English",
     ES = "Spanish",
     FR = "French",
