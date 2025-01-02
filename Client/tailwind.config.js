@@ -3,6 +3,7 @@ module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
+
     extend: {
       borderRadius: {
         lg: "var(--radius)",
@@ -10,6 +11,8 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        deals: "#008234",
+			rating: "#003b95",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -83,6 +86,7 @@ module.exports = {
         search: "900px",
       },
     },
+
   },
   plugins: [require("tailwindcss-animate")],
 };
