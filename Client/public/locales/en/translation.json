@@ -1,4 +1,11 @@
 {
-    "welcome": "Welcome to React",
-    "description": "This is an i18n-enabled React app."
+  "welcome": "Welcome to React",
+  "description": "This is an i18n-enabled React app.",
+  "search": {
+    "placholderInput": "Where are you going?",
+    "dropDouwnHeader": "Popular destinations nearby"
+  },
+  "button": {
+    "search": "Search"
+  }
 }
