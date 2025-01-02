@@ -6,22 +6,27 @@ import { getSelf } from "./utils/userApi";
 // Functions
 import { getCookie } from "./utils/cookies";
 
+
+
+import Search from "./components/search";
+
 import { useTranslation } from 'react-i18next';
 import { Button } from "./components/ui/button";
 import MainCard from "./components/MainCard";
+
 
 // Example how to get current User from Redux :
 // import { useSelector } from "react-redux";
 // import { RootState } from "./store";
 // const currentUser = useSelector((state: RootState) => state.currentUser);
-// 
+//
 
 function App() {
   // const dispatch = useDispatch();
 
   const { t, i18n } = useTranslation();
 
-  console.log('i18n initialized:', i18n);
+  console.log("i18n initialized:", i18n);
 
   const changeLanguage = (lng: string) => {
     if (i18n.changeLanguage) {
@@ -40,13 +45,13 @@ function App() {
   //   }
   // }
 
-  useEffect( () => {
+  useEffect(() => {
     // reloadUser();
   }, []);
 
-
   return (
     <BrowserRouter>
+
   <MainCard />
 <div className="p-4">
       <h1 className="text-2xl font-bold">{t('welcome')}</h1>
@@ -64,17 +69,17 @@ function App() {
         >
           עברית
         </button>
+
       </div>
-    </div>
+      <Search></Search>
+      <Routes>
+        {/* <Route path="/" element={<Home />} /> */}
 
-    <Routes>
-      {/* <Route path="/" element={<Home />} /> */}
-
-      {/* <Route path="/login" element={<Login />} /> */}
-      {/* <Route path="/signup" element={<SignUp />} /> */}
-    </Routes>
-  </BrowserRouter>
+        {/* <Route path="/login" element={<Login />} /> */}
+        {/* <Route path="/signup" element={<SignUp />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;
