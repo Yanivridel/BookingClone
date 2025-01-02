@@ -1,8 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
 import { Badge } from "./ui/badge"
-import Image from '../assets/images/gourmet.jpg'
+import Image from '../assets/images/hotel.jpg'
 import GeniusImage from '../assets/images/Genius.png'
-import  ThumbsUp  from "../assets/images/thumbs_up.svg"
+import  ThumbsUp  from "../assets/images/thumps.png"
 interface mainCardProps {
     is_heart?: boolean;
 }
@@ -15,8 +15,11 @@ const MainCard = ({}: mainCardProps) => {
                 </div>
                 <div className="flex flex-col justify-between flex-grow p-1">
                 <div className=" p-2 grid gap-2">
-                    <img src={GeniusImage} alt="" className="h-4" />
-                    <img src={ThumbsUp} alt="s" className="" />
+                    <div className="flex w-[40%] gap-1">
+                        <img src={GeniusImage} alt="" className="h-4 rounded-md" />
+                        <img src={ThumbsUp} alt="s" className="h-4" />
+                        <CardDescription className="text-xs">Hotel</CardDescription>
+                    </div>
                     <CardTitle>Aparthol Stare Miasto</CardTitle>
                     <CardDescription>West Jerusalem, Israel, Jerusalem</CardDescription>
                     <div className=" flex w-[100%] gap-2 items-center">

@@ -9,6 +9,7 @@ import { getCookie } from "./utils/cookies";
 import { useTranslation } from 'react-i18next';
 import { Button } from "./components/ui/button";
 import MainCard from "./components/MainCard";
+import ImageCard from "./components/ImageCard";
 
 // Example how to get current User from Redux :
 // import { useSelector } from "react-redux";
@@ -47,8 +48,8 @@ function App() {
 
   return (
     <BrowserRouter>
-  <MainCard />
-<div className="p-4">
+    <ImageCard />
+  <div className="p-4">
       <h1 className="text-2xl font-bold">{t('welcome')}</h1>
       <p>{t('description')}</p>
       <div className="mt-4">
