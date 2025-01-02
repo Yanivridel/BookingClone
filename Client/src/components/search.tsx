@@ -3,9 +3,6 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { ChangeEvent, useState } from "react";
 
-//  placholderSearchInput: "Where are you going?"  //! translate
-// dropDouwnHeader: "Popular destinations nearby"
-
 const items = [
   { city: "ramat gan", country: "israel", icon: "location" },
   { city: "tel aviv", country: "israel", icon: "location" },
@@ -13,6 +10,7 @@ const items = [
   { city: "haifa", country: "israel", icon: "location" },
   { city: "beer sheva", country: "israel", icon: "location" },
 ];
+// ! need to get props "isAllApartment" that make the sherch diffrent
 function Search() {
   const [open, setOpen] = useState(false);
   const [res, setRes] = useState<Array<{
@@ -39,22 +37,29 @@ function Search() {
   };
 
   return (
-    <form className="p-2">
-      <Card className=" flex flex-col md rounded-[8px] p-1 bg-search gap-1 search:flex-row swarch:flex-grow font-medium justify-items-stretch">
-        <Card className="rounded-[4px] p-2  flex hover:border-[#f56700] ">
+    <form className="p-2 text-sm">
+      <Card
+        // dir="rtl"
+        className=" flex flex-col md rounded-[8px] p-1 bg-search gap-1 search:flex-row swarch:flex-grow font-medium justify-items-stretch"
+      >
+        <Card className="rounded-[4px] p-2  flex hover:border-[#f56700] search:basis-1/3">
           <div className="relative ">
             <Card
               className={` absolute top-8 left-[-10px]  ${
                 open ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
-              <div className="p-3">
+              <div className="p-3 font-bold">
                 {!res && t("dropDouwnHeader")} only when initialized
               </div>
               <ul className="">
-                {res?.map((element) => {
+                {res?.map((element, i) => {
                   return (
-                    <li className="border-b border-[#e7e7e7] p-2">
+                    <li
+                      className={`${
+                        i !== res.length - 1 && " border-b"
+                      } border-[#e7e7e7] p-2`}
+                    >
                       <div className="flex gap-2">
                         {/*? element.icon */}
                         <svg
@@ -65,8 +70,10 @@ function Search() {
                           <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
                         </svg>
                         <div className="flex flex-col">
-                          <span>{element.city} </span>
-                          <span className="text-sm">{element.country}</span>
+                          <span className="font-bold">{element.city} </span>
+                          <span className="text-xs font-normal">
+                            {element.country}
+                          </span>
                         </div>
                       </div>
                     </li>
@@ -86,8 +93,8 @@ function Search() {
 
           <input
             type="text"
-            placeholder={t("placholderSearchInput")}
-            aria-label={t("placholderSearchInput")} // for screen readers
+            placeholder={t("search.placholderInput")}
+            aria-label={t("search.placholderInput")} // for screen readers
             aria-controls="autocomplete-results" // for screen readers
             className="flex-grow py-1 px-2 focus:outline-none placeholder:text-black placeholder:font-medium flex"
             onChange={handleInputChange}
@@ -95,7 +102,7 @@ function Search() {
             onBlur={handleBlur}
           />
         </Card>
-        <Card className="rounded-[4px] p-2  flex  gap-2  hover:border-[#f56700] cursor-pointer ">
+        <Card className="rounded-[4px] p-2  flex    hover:border-[#f56700] cursor-pointer  search:basis-1/3 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -104,7 +111,7 @@ function Search() {
             <path d="M22.5 13.5v8.25a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75zm1.5 0V5.25A2.25 2.25 0 0 0 21.75 3H2.25A2.25 2.25 0 0 0 0 5.25v16.5A2.25 2.25 0 0 0 2.25 24h19.5A2.25 2.25 0 0 0 24 21.75zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.75a.75.75 0 0 0 0 1.5M7.5 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0M18 6V.75a.75.75 0 0 0-1.5 0V6A.75.75 0 0 0 18 6M5.095 14.03a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28A1.125 1.125 0 1 0 12 15a1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06M12 18a1.125 1.125 0 1 0 0 2.25A1.125 1.125 0 0 0 12 18a.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5"></path>
           </svg>
         </Card>
-        <Card className="rounded-[4px] p-2  flex gap-2  hover:border-[#f56700] cursor-pointer">
+        <Card className="rounded-[4px] p-2  flex  hover:border-[#f56700] cursor-pointer  search:basis-1/3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -118,7 +125,7 @@ function Search() {
           size={null}
           className="p-2 py-3 hover:bg-[#0057b8]"
         >
-          Search
+          {t("button.search")}
         </Button>
       </Card>
     </form>

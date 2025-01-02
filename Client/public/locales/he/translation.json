@@ -1,4 +1,11 @@
 {
-    "welcome": "ברוכים הבאים ל-React",
-    "description": "זוהי אפליקציית React עם תמיכה ב-i18n."
+  "welcome": "ברוכים הבאים ל-React",
+  "description": "זוהי אפליקציית React עם תמיכה ב-i18n.",
+  "search": {
+    "placholderInput": "לאן אתם נוסעים?",
+    "dropDouwnHeader": "יעדים פופולריים באיזור"
+  },
+  "button": {
+    "search": "חיפוש"
+  }
 }
