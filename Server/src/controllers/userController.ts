@@ -5,7 +5,8 @@ import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
 
 // utils imports
-import { hashPassword, comparePassword } from "../utils/auth";
+// import { hashPassword, comparePassword } from "../utils/auth";
+import { generateVerificationCode } from './../utils/auth';
 import { AuthenticatedRequest } from 'src/types/expressTypes';
 import { getCoordinatesByLocation } from './../utils/maps';
 
@@ -28,6 +29,13 @@ export const createUser = async (req: Request<{/*params*/}, {/*res body*/}, Crea
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
+
+        generateVerificationCode(email);
+        res.status(200).send({
+            status: "success",
+            message: "code sent successfully",
+        });
+        return;
         
         const newUser = new userModel({
             email,

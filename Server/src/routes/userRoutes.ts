@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 import {
     createUser,
-    loginUser,
-    getSelf,
-    editProfile,
-    getUserById,
-    likeTeacher,
-    unlikeTeacher,
-    handleCoins,
-    getTeachers
+    // loginUser,
+    // getSelf,
+    // editProfile,
+    // getUserById,
+    // likeTeacher,
+    // unlikeTeacher,
+    // handleCoins,
+    // getTeachers
 } from '../controllers/userController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
