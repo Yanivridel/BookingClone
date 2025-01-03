@@ -41,4 +41,5 @@ export interface IRoom {
         internet: string;
     }]
     overall_count: number;
+    
 }
