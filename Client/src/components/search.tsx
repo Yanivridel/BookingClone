@@ -18,7 +18,7 @@ const items = [
   { id: "5", city: "beer sheva", country: "Israel", icon: "location" },
 ];
 
-interface UnounData {
+interface IUnounData {
   // todo: change the name
   id: string;
   city: string; // region:
@@ -31,7 +31,7 @@ interface UnounData {
 function Search() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [res, setRes] = useState<Array<UnounData> | null>(items); // !need to change the type with the real data
+  const [res, setRes] = useState<Array<IUnounData> | null>(items); // !need to change the type with the real data
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
@@ -59,7 +59,7 @@ function Search() {
     }
   };
 
-  const heandleLocationListClick = (element: UnounData) => {
+  const heandleLocationListClick = (element: IUnounData) => {
     console.log(element);
     setInputValue((prev) => [element.city, element.country].join(", "));
   };
