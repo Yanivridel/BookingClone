@@ -3,7 +3,9 @@
   "description": "This is an i18n-enabled React app.",
   "search": {
     "placholderInput": "Where are you going?",
-    "dropDouwnHeader": "Popular destinations nearby"
+    "dropDouwnHeader": "Popular destinations nearby",
+    "checkIn": "Check-in Date —",
+    "checkOut": " Check-out Date"
   },
   "button": {
     "search": "Search"
