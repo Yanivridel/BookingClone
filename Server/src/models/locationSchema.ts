@@ -3,9 +3,9 @@ import { Schema } from "mongoose";
 export const LocationSchema = new Schema({
     country: { type: String, required: true },
     region: { type: String },
-    city: { type: String, required: true },
+    city: { type: String},
     area: { type: String },
-    addressLine: { type: String, required: true },
+    addressLine: { type: String },
     zipCode: { type: String },
     coordinates: {
         type: {
@@ -17,6 +17,7 @@ export const LocationSchema = new Schema({
         coordinates: {
             type: [Number],
             required: true,
+            default: []
         },
     },
 });

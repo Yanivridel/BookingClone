@@ -72,13 +72,16 @@ export interface IProperty extends Document {
 }
 
 export interface ILocation {
-    country: string; // enum ECountry
+    country: string;
     region?: string;
-    city: string;
-    addressLine?: string;
-    zipCode?: string;
-    coordinates: {
-        latitude: number;
-        longitude: number;
-    };
+    city?: string; 
+    area?: string; 
+    addressLine: string;
+    zipCode?: string; 
+    coordinates: ICoordinates;
+}
+
+export interface ICoordinates {
+    type: "Point";
+    coordinates: number[];
 }

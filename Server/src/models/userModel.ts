@@ -11,7 +11,7 @@ const UserSchema = new Schema<IUser>(
         username: { type: String },
         email: { type: String, required: true, unique: true, match: /^\S+@\S+\.\S+$/ },
         password: { type: String },
-        phoneNumber: { type: String, unique: true },
+        phoneNumber: { type: String, unique: true, sparse: true }, // allow null none unique
         birthday: { type: Date },
         gender: { type: String, enum: ["male", "female", "other"] },
         location: { type: LocationSchema },
@@ -27,8 +27,18 @@ const UserSchema = new Schema<IUser>(
             number: { type: Number },
             expires: { type: Date },
         },
-        coinType: { type: String, enum: Object.values(ECoinType), default: ECoinType.USD },
-        language: { type: String, enum: Object.values(ELanguage), default: ELanguage.EN },
+        coinType: { type: String, enum: Object.values(ECoinType), default: ECoinType.USD,
+            validate: {
+                validator: (v) => Object.values(ECoinType).includes(v),
+                message: props => `${props.value} is not a valid coin type!`
+            }
+        },
+        language: { type: String, enum: Object.values(ELanguage), default: ELanguage.EN,
+            validate: {
+                validator: (v) => Object.values(ELanguage).includes(v),
+                message: props => `${props.value} is not a valid language!`
+            }
+        },
         notifications: {
             dealsAndOffers: {
                 dealDiscovery: { type: Boolean, default: false },

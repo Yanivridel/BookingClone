@@ -1,12 +1,10 @@
-// import bcrypt from 'bcrypt'
-
 import { verificationModel } from '../models/verificationModel';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer'; 
 
 export async function generateVerificationCode(email: string): Promise<void> {
     try {
-        const verificationCode = crypto.randomBytes(3).toString('hex'); // 6-character hex code
+        const verificationCode = crypto.randomBytes(3).toString('hex').replace(/[a-z]/g, (match) => match.toUpperCase()); // 6-character hex code
 
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 5);
@@ -34,7 +32,7 @@ export async function generateVerificationCode(email: string): Promise<void> {
         service: 'gmail',
         auth: {
             user: 'bookingcloner@gmail.com',
-            pass: 'cipf hmwn lxfq akym', // save in .env !!!!!!!!!!!!!!!!!!!!!
+            pass: process.env.EMAIL_PASSWORD, // save in .env !!!!!!!!!!!!!!!!!!!!!
         },
         });
 
@@ -74,7 +72,7 @@ export async function generateVerificationCode(email: string): Promise<void> {
 
         // Send the email
         await transporter.sendMail(mailOptions);
-        console.log(`Verification code sent to ${email}`);
+        // console.log(`Verification code sent to ${email}`);
     } catch (error) {
         console.error('Error generating verification code:', error);
         throw new Error('Failed to generate verification code');
@@ -86,12 +84,12 @@ export async function verifyVerificationCode(email: string, enteredCode: string)
         const verificationRecord = await verificationModel.findOne({ email });
 
         if (!verificationRecord) {
-            console.log("No verification record found.");
+            // console.log("No verification record found.");
             return false;
         }
 
         if (verificationRecord.verificationCode !== enteredCode) {
-            console.log("Incorrect verification code.");
+            // console.log("Incorrect verification code.");
             return false;
         }
 
@@ -102,16 +100,3 @@ export async function verifyVerificationCode(email: string, enteredCode: string)
         return false;
     }
 }
-
-// export async function hashPassword(userPassword: string): Promise<string> {
-//     const combinedPassword = userPassword + process.env.BCRYPT_KEY
-//     const saltRounds = 10;
-    
-//     return await bcrypt.hash(combinedPassword, saltRounds);
-// }
-
-// export async function comparePassword(userPassword: string, hashedDbPassword: string) : Promise<boolean> {
-//     const combinedPassword = userPassword + process.env.BCRYPT_KEY;
-    
-//     return await bcrypt.compare(combinedPassword, hashedDbPassword);
-// }
