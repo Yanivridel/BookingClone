@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 import { ECoinType, ELanguage } from "./../utils/structures";
 import { IUser } from "src/types/userTypes";
