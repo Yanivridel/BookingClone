@@ -77,6 +77,7 @@ const UserSchema = new Schema<IUser>(
                     group_adults: { type: Number },
                     group_children: { type: Number },
                     is_animal: { type: Boolean },
+                    createdAt: { type: Date, default: Date.now}
                 }],
             default: [],
         },
@@ -96,8 +97,19 @@ const UserSchema = new Schema<IUser>(
     { timestamps: true }
 );
 
+// Virtual property fullname
 UserSchema.virtual("fullName").get(function () {
     return `${this.fName || ""} ${this.lName || ""}`.trim();
 });
+// Limit searches to 10 latests
+UserSchema.post('findOneAndUpdate', async function (doc: any) {
+    if (doc.search && doc.search.length > 10) {
+        doc.search.shift();
+        await doc.save(); 
+    }
+});
+// Faster desc sorting searches
+UserSchema.index({ "search.createdAt": -1 });
+
 
 export const userModel = model<IUser>("User", UserSchema);

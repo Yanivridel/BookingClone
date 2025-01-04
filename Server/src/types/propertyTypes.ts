@@ -78,7 +78,7 @@ export interface ILocation {
     area?: string; 
     addressLine: string;
     zipCode?: string; 
-    coordinates: ICoordinates;
+    coordinates?: ICoordinates;
 }
 
 export interface ICoordinates {

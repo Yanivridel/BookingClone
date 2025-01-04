@@ -1,6 +1,21 @@
 import { Schema } from "mongoose";
+import { ICoordinates, ILocation } from "src/types/propertyTypes";
 
-export const LocationSchema = new Schema({
+
+const CoordinatesSchema = new Schema<ICoordinates>({
+    type: {
+        type: String,
+        enum: ['Point'],
+        default: "Point",
+        required: true
+    },
+    coordinates: {
+        type: [Number],
+        required: true
+    }
+});
+
+export const LocationSchema = new Schema<ILocation>({
     country: { type: String, required: true },
     region: { type: String },
     city: { type: String},
@@ -8,18 +23,10 @@ export const LocationSchema = new Schema({
     addressLine: { type: String },
     zipCode: { type: String },
     coordinates: {
-        type: {
-            type: String,
-            default: "Point",
-            enum: ["Point"],
-            required: true,
-        },
-        coordinates: {
-            type: [Number],
-            required: true,
-            default: []
-        },
-    },
+        type: CoordinatesSchema,
+        required: false
+    }
 });
 
-LocationSchema.index({ coordinates: "2dsphere" });
+// For geographical queries
+LocationSchema.index({ coordinates: "2dsphere" }, { sparse: true });

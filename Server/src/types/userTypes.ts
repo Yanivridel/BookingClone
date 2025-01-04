@@ -59,7 +59,7 @@ export interface IUser extends Document {
             offerConfirmOrders: boolean;
         };
     };
-    search?: [
+    search: [
         {
             location: ILocation;
             checkin: Date;
@@ -69,8 +69,8 @@ export interface IUser extends Document {
             is_animal: boolean;
         }
     ];
-    interested?: [Types.ObjectId];
-    savedLists?: [
+    interested: [Types.ObjectId];
+    savedLists: [
         {
             name: string;
             properties: [Types.ObjectId];

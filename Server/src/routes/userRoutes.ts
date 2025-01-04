@@ -27,13 +27,5 @@ router.patch('/edit-profile', authenticateToken, editProfile);
 
 router.patch('/modify-arrays', authenticateToken, modifyUserArrays);
 
-// router.post('/like-teacher/:id', authenticateToken, likeTeacher);
-
-// router.post('/unlike-teacher/:id', authenticateToken, unlikeTeacher);
-
-// router.patch('/coins/:number', authenticateToken, handleCoins);
-
-// router.get('/teachers', getTeachers);
-
 
 export default router;

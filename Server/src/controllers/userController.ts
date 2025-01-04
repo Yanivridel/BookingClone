@@ -25,9 +25,14 @@ export const sendEmailCode = async (req: Request<{}, {}, ISendEmailCodeBody>, re
         res.status(400).send({status: "error", message: "Missing required parameters"});
         return;
     }
+    const user = await userModel.findOne({email});
 
-    if(isLogin && !(await userModel.findOne({email}))) {
+    if(isLogin && !user) {
         res.status(400).send({status: "error", message: "User not found"});
+        return;
+    }
+    if(!isLogin && user) {
+        res.status(400).send({status: "error", message: "Email already registered"});
         return;
     }
 
@@ -273,6 +278,12 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         });
     } catch (error) {
         console.log(error); // Log for debugging
+        if (error instanceof MongoError  && error.code === 11000) {
+            res.status(409).json({
+                status: "error",
+                message: "Phone number already exists",
+            });
+        }
         res.status(500).json({
             status: "error",
             message: "An unexpected error occurred",
@@ -281,11 +292,11 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
     }
 };
 
-// Modify User Arrays -
+// Modify User Arrays - Done
 interface IModifyUserArraysBody {
     action: "add" | "delete";
     search?: {
-        location: Location;
+        location: ILocation;
         checkin: Date;
         checkout: Date;
         group_adults: number;
@@ -314,6 +325,7 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
         }
 
         const updateQuery: any = {};
+        const updateOptions: any = { new: true };
 
         if (search && action === "add") {
             updateQuery["$push"] = { search };
@@ -324,20 +336,40 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
             };
         }
         else if (savedList) {
-            if (action === "add") {
-                updateQuery["$push"] = {
-                    savedLists: { name: savedList.name, 
-                                properties: [new Types.ObjectId(savedList.propertyId)] },
-                };
+            const propertyIdObj = savedList.propertyId ? new Types.ObjectId(savedList.propertyId) : null;
+            const user = await userModel.findById(userId);
+
+            if (!user) {
+                res.status(404).json({ status: "error", message: "User not found" });
+                return;
+            }
+
+            const existingList = user?.savedLists.find((list: any) => list.name === savedList.name);
+
+            if (action === "add" && propertyIdObj) {
+                if (existingList) {
+                    // Update existing list only if property does not exist
+                    updateQuery["$addToSet"] = { "savedLists.$[list].properties": propertyIdObj };
+                    updateOptions["arrayFilters"] = [{ "list.name": savedList.name }];
+                } else {
+                    // Create a new list
+                    updateQuery["$push"] = { savedLists: { name: savedList.name, properties: [propertyIdObj] } };
+                }
             } else if (action === "delete") {
-                updateQuery["$pull"] = {
-                    savedLists: { name: savedList.name,
-                                properties: new Types.ObjectId(savedList.propertyId)},
-                };
+                if (existingList) {
+                    if (savedList.propertyId) {
+                        // Remove a single property from the list
+                        updateQuery["$pull"] = { "savedLists.$[list].properties": propertyIdObj };
+                        updateOptions["arrayFilters"] = [{ "list.name": savedList.name }];
+                    } else {
+                        // Remove entire saved list
+                        updateQuery["$pull"] = { savedLists: { name: savedList.name } };
+                    }
+                }
             }
         }
 
-        const updatedUser = await userModel.findByIdAndUpdate(userId, updateQuery, { new: true });
+        const updatedUser = await userModel.findByIdAndUpdate(userId, updateQuery, updateOptions);
 
         if (!updatedUser) {
             res.status(404).json({ status: "error", message: "User not found" });
