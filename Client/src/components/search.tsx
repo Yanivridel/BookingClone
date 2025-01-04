@@ -9,8 +9,6 @@ import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-// test
-
 // damy data
 const items = [
   { id: "1a", city: "ramat gan", country: "Israel", icon: "location" },
