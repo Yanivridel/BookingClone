@@ -32,7 +32,7 @@ export async function generateVerificationCode(email: string): Promise<void> {
         service: 'gmail',
         auth: {
             user: 'bookingcloner@gmail.com',
-            pass: process.env.EMAIL_PASSWORD, // save in .env !!!!!!!!!!!!!!!!!!!!!
+            pass: process.env.EMAIL_PASSWORD,
         },
         });
 

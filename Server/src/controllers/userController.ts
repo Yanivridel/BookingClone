@@ -16,7 +16,7 @@ const JTW_EXPIRATION = { expiresIn: '1d'};
 // Send Email Code - Done
 interface ISendEmailCodeBody {
     email: string;
-    isLogin: boolean;
+    isLogin: boolean; // true - login, false - register 
 }
 export const sendEmailCode = async (req: Request<{}, {}, ISendEmailCodeBody>, res: Response): Promise<void> => {
     const { email, isLogin } = req.body;
@@ -170,9 +170,9 @@ export const getSelf = async (req: Request, res: Response): Promise<void> => {
         }
     
         const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, jwtSecretKey) as { email: string };
+        const decoded = jwt.verify(token, jwtSecretKey) as { userId: string };
     
-        const user = await userModel.findOne({ email: decoded.email });
+        const user = await userModel.findById(decoded.userId);
     
         res.status(200).json({
             status: "success",
@@ -418,6 +418,73 @@ export const getSearches = async (req: Request, res: Response) : Promise<void> =
             status: "success",
             message: "Successfully found user searches",
             data: user.search,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error occurred",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
+// Get Interested - Done
+export const getInterested = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+
+        const user = await userModel.findById(userId).select('interested').populate('interested');
+
+        if (!user) {
+            res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Successfully found user searches",
+            data: user.interested,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error occurred",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
+// Get SavedLists - Done
+export const getSavedLists = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+
+        const user = await userModel.findById(userId)
+        .select('savedLists')
+        .populate({
+            path: 'savedLists.properties',
+            model: 'Property',
+        });
+
+        if (!user) {
+            res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Successfully found user searches",
+            data: user.savedLists,
         });
     } catch (error) {
         console.error(error);

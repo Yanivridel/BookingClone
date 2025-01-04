@@ -7,6 +7,8 @@ import {
     editProfile,
     modifyUserArrays,
     getSearches,
+    getInterested,
+    getSavedLists,
     deleteUserById,
 } from '../controllers/userController';
 import { authenticateToken } from "../middleware/authMiddleware";
@@ -26,6 +28,10 @@ router.patch('/edit-profile', authenticateToken, editProfile);
 router.patch('/modify-arrays', authenticateToken, modifyUserArrays);
 
 router.get('/search', authenticateToken, getSearches);
+
+router.get('/interested', authenticateToken, getInterested);
+
+router.get('/saved-lists', authenticateToken, getSavedLists);
 
 router.delete('/delete-account', authenticateToken, deleteUserById);
 

@@ -1,0 +1,80 @@
+import mongoose, { Schema, model} from "mongoose";
+
+import { IRoom } from "src/types/roomTypes";
+import { EFacility, EFeatures } from "src/utils/structures";
+
+const RoomSchema = new Schema<IRoom>({
+        //property_id: { type: Schema.Types.ObjectId, ref: "Property", required: true },
+        title: { type: String, required: true },
+        type: { 
+            type: String, 
+            enum: ["room", "studio", "suite", "bed", "villa"], 
+            required: true 
+        },
+        desc: { type: String, required: true },
+        images: { type: [String], default: [] },
+        beds: {
+            sofa: { type: Number, default: 0 },
+            single: { type: Number, default: 0 },
+            double: { type: Number, default: 0 },
+            queen: { type: Number, default: 0 },
+            bunk: { type: Number, default: 0 }
+        },
+        baby: { type: Boolean, default: false },
+        facilities: { type: [String], enum: Object.values(EFacility), default: [],
+            validate: {
+                validator: (v) => Object.values(EFacility).includes(v),
+                message: props => `${props.value} is not a valid Facility!`
+            }
+        },
+        features: [{
+            category: { type: String, enum: Object.values(EFeatures), required: true,
+                validate: {
+                    validator: (v) => Object.values(EFeatures).includes(v),
+                    message: props => `${props.value} is not a valid Feature!`
+                }
+            },
+            sub: { type: [String], default: [] }
+        }],
+        available: [{
+            date: { type: Date, required: true },
+            count: { type: Number, min: 0, required: true }
+        }],
+        offers: [{
+            price_per_night: { type: Number, required: true },
+            discount: {
+                type: { type: String, required: true },
+                percentage: { type: Number, required: true },
+                expires: { type: Date, required: true }
+            },
+            is_genius: { type: Boolean, default: false },
+            group_adults: { type: Number, required: true },
+            group_children: { type: Number, required: true },
+            ages: [{ type: Number, min: 0, required: true }],
+            meals: [{
+                type: { 
+                    type: String, 
+                    enum: ["morning", "noon", "afternoon", "evening"], 
+                    required: true 
+                },
+                rating: { type: Number, min: 0, max: 10, required: true },
+                review_num: { type: Number, min: 0, required: true }
+            }],
+            cancellation: { type: String, required: true },
+            prepayment: {
+                type: { type: [String], required: true },
+                text: { type: String, required: true }
+            },
+            internet: { type: String, required: true }
+        }],
+        overall_count: { type: Number, min: 0, required: true }
+    },
+    { timestamps: true }
+);
+
+// Virtual Property: max_guests
+RoomSchema.virtual("max_guests").get(function (this: IRoom) {
+    return this.beds.sofa + this.beds.single + (this.beds.queen + this.beds.bunk + this.beds.double) * 2;
+});
+
+export const RoomModel = model<IRoom>("Room", RoomSchema);

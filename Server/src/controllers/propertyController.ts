@@ -1,58 +1,37 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import { MongoError } from 'mongodb'; 
-import userModel from "../models/userModel";
-import Lesson from '../models/lessonModel';
+import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
 
 // utils imports
-import { hashPassword, comparePassword } from "../utils/auth";
 import { AuthenticatedRequest } from 'src/types/expressTypes';
-import mongoose from 'mongoose';
-import lessonModel from '../models/lessonModel';
+import { IProperty } from 'src/types/propertyTypes';
+import { PropertyModel } from 'src/models/propertyModel';
 
-const JTW_EXPIRATION = { expiresIn: '1d'};
-
-// CREATE LESSON
-interface createLessonType {
-    subject: string;
-    title: string;
-    startDate: Date;
-    duration: number;
-    description: string;
-    level: string;
-    price: number;
-    membersLimit: number;
-}
-export const createLesson = async (req: Request<{},{},createLessonType> , res: Response): Promise<void> => {
+// Create Property
+type TCreatePropertyBody = Partial<IProperty>;
+export const createProperty = async (req: Request<{},{},TCreatePropertyBody> , res: Response): Promise<void> => {
     try {
-        let { subject, title, startDate, duration, description, level, membersLimit, price } = req.body
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
+        const propertyData: TCreatePropertyBody = req.body;
 
-        if(!subject || !title || !startDate || !duration || !level || !membersLimit || !price || !userId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
+        // Validate required fields
+        if (!propertyData.title || !propertyData.location || !propertyData.images?.length || !propertyData.popularFacilities?.length || !propertyData.host) {
+            res.status(400).json({
+                status: "error",
+                message: "Missing required fields: title, location, images, popularFacilities, and host are required.",
+            });
             return;
         }
-        if(!description) description = '';
 
-        const newLesson = new lessonModel({
-            teacher: new mongoose.Types.ObjectId(userId),
-            subject,
-            title,
-            startDate,
-            duration,
-            description,
-            level,
-            price,
-            membersLimit
-        });
-    
-        await newLesson.save();
-    
-        res.status(201).send({
+        // Create new property with full schema
+        const newProperty = new PropertyModel(propertyData);
+        await newProperty.save();
+
+        res.status(201).json({
             status: "success",
-            message: "lesson created successfully",
-            newLesson
+            message: "Property created successfully",
+            data: newProperty,
         });
 
     } catch (error) {
@@ -65,7 +44,7 @@ export const createLesson = async (req: Request<{},{},createLessonType> , res: R
     }
 }
 
-// GET ALL LESSONS
+/*
 export const getAllLessons = async (req: Request, res: Response): Promise<void> => {
     try {
 
@@ -223,3 +202,5 @@ export const deleteLesson = async (req: Request, res: Response): Promise<void> =
         });
     }
 }
+
+*/

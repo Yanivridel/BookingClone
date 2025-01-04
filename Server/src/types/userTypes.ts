@@ -66,6 +66,8 @@ export interface IUser extends Document {
             checkout: Date;
             group_adults: number;
             group_children: number;
+            ages: number[];
+            rooms_num: number;
             is_animal: boolean;
         }
     ];

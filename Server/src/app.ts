@@ -35,12 +35,12 @@ app.get('/', (req: Request, res: Response): void => {
 
 // Routes
 import userRoutes from './routes/userRoutes'
-// import lessonRoutes from './routes/lessonRoutes'
+// import propertyRoutes from './routes/propertyRoutes'
 // import reviewRoutes from './routes/reviewRoutes'
 
 app.use('/api/users', userRoutes);
 
-// app.use('/api/lessons', lessonRoutes);
+// app.use('/api/property', propertyRoutes);
 
 // app.use('/api/reviews', reviewRoutes);
 

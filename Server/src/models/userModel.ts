@@ -76,6 +76,8 @@ const UserSchema = new Schema<IUser>(
                     checkout: { type: Date },
                     group_adults: { type: Number },
                     group_children: { type: Number },
+                    ages: { type: [Number], default: []},
+                    rooms_num: { type: Number },
                     is_animal: { type: Boolean },
                     createdAt: { type: Date, default: Date.now}
                 }],
@@ -102,10 +104,10 @@ UserSchema.virtual("fullName").get(function () {
     return `${this.fName || ""} ${this.lName || ""}`.trim();
 });
 // Limit searches to 10 latests
-UserSchema.post('findOneAndUpdate', async function (doc: any) {
-    if (doc.search && doc.search.length > 10) {
-        doc.search.shift();
-        await doc.save(); 
+UserSchema.post('findOneAndUpdate', async function (user: any) {
+    if (user.search && user.search.length > 10) {
+        user.search.shift();
+        await user.save(); 
     }
 });
 // Faster desc sorting searches

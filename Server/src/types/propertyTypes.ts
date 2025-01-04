@@ -26,7 +26,7 @@ export interface IProperty extends Document {
         category: string; // enum: EFeatures
         sub: string[];
     }];
-    rooms: IRoom[];
+    rooms: Types.ObjectId;
     qa: [{
         question: string;
         answer: string;
@@ -68,7 +68,7 @@ export interface IProperty extends Document {
         start: number;
         end: number;
     };
-    host: IUser["_id"];
+    host: Types.ObjectId;
 }
 
 export interface ILocation {
