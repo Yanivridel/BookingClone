@@ -6,10 +6,8 @@ import {
     getSelf,
     editProfile,
     modifyUserArrays,
-    // likeTeacher,
-    // unlikeTeacher,
-    // handleCoins,
-    // getTeachers
+    getSearches,
+    deleteUserById,
 } from '../controllers/userController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -26,6 +24,10 @@ router.get('/get-self', getSelf);
 router.patch('/edit-profile', authenticateToken, editProfile);
 
 router.patch('/modify-arrays', authenticateToken, modifyUserArrays);
+
+router.get('/search', authenticateToken, getSearches);
+
+router.delete('/delete-account', authenticateToken, deleteUserById);
 
 
 export default router;

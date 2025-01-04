@@ -18,15 +18,9 @@ export const authenticateToken = async (req: AuthenticatedRequestOptional, res: 
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
 
-        const decoded = jwt.verify(token, jwtSecretKey) as { email: string };
-        const user = await userModel.findOne({ email: decoded.email });
+        const decoded = jwt.verify(token, jwtSecretKey) as { userId: string };
 
-        if(!user) {
-            res.status(404).json({ status: "error", message: 'User not found' });
-            return;
-        }
-
-        req.userId = String(user._id);
+        req.userId = decoded.userId;
         next();
     } catch (error) {
         res.status(401).json({ status: "error", message: 'Invalid token' });

@@ -124,7 +124,7 @@ export const loginUser = async (req: Request<{},{}, IEmailCodeBody>, res: Respon
     
             const token = jwt.sign(
             {
-                email: user.email,
+                userId: user._id,
             },
             jwtSecretKey,
             JTW_EXPIRATION
@@ -174,7 +174,10 @@ export const getSelf = async (req: Request, res: Response): Promise<void> => {
     
         const user = await userModel.findOne({ email: decoded.email });
     
-        res.send(user);
+        res.status(200).json({
+            status: "success",
+            data: user,
+        });
     } catch (error) {
         console.log(error); // dev mode logging
         res.status(500).json({
@@ -189,6 +192,7 @@ interface IEditProfileBody {
     fName?: string;
     lName?: string;
     username?: string;
+    password?: string;
     phoneNumber?: string;
     birthday?: Date;
     gender?: string; // can be "male", "female", or "other"
@@ -215,6 +219,7 @@ interface IEditProfileBody {
         geniusLoyaltyProgram?: { geniusEmails?: boolean, geniusMembershipProgress?: boolean };
         emailNotification?: { soonOrders?: boolean, reviewOrders?: boolean, offerConfirmOrders?: boolean };
     };
+    geniusLevel?: number;
 }
 export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Response): Promise<void> => {
     try {
@@ -222,8 +227,8 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         const { userId } = authenticatedReq;
 
         const { 
-            fName, lName, username, phoneNumber, birthday, gender, location,
-            passport, creditCard, coinType, language, notifications 
+            fName, lName, username, password, phoneNumber, birthday, gender, location,
+            passport, creditCard, coinType, language, notifications, geniusLevel
         } = req.body;
 
         const fieldsToUpdate: IEditProfileBody = {};
@@ -231,6 +236,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         if (fName) fieldsToUpdate.fName = fName;
         if (lName) fieldsToUpdate.lName = lName;
         if (username) fieldsToUpdate.username = username;
+        if (password) fieldsToUpdate.password = password;
         if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
         if (birthday) fieldsToUpdate.birthday = birthday;
         if (gender) fieldsToUpdate.gender = gender;
@@ -238,6 +244,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         if (creditCard) fieldsToUpdate.creditCard = creditCard;
         if (coinType) fieldsToUpdate.coinType = coinType;
         if (language) fieldsToUpdate.language = language;
+        if (geniusLevel) fieldsToUpdate.geniusLevel = geniusLevel;
         if (notifications) fieldsToUpdate.notifications = notifications;
         if (location) {
             fieldsToUpdate.location = location;
@@ -274,7 +281,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         res.status(200).json({
             status: "success",
             message: "User updated successfully",
-            user: updatedUser,
+            data: updatedUser,
         });
     } catch (error) {
         console.log(error); // Log for debugging
@@ -379,7 +386,7 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
         res.status(200).json({
             status: "success",
             message: `Successfully ${action === "add" ? "added to" : "removed from"} user array`,
-            user: updatedUser,
+            data: updatedUser,
         });
     } catch (error) {
         console.error(error);
@@ -391,6 +398,65 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
     }
 };
 
+// Get Searches - Done
+export const getSearches = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+
+        const user = await userModel.findById(userId).select('search');
+
+        if (!user) {
+            res.status(404).json({
+                status: "error",
+                message: "User not found",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Successfully found user searches",
+            data: user.search,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error occurred",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
+// Delete Account - COME BACK LATER FIX RECURSIVE DELETE TO OTHER MODELS
+export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+
+        // Delete the user by ID
+        const deletedUser = await userModel.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            res.status(404).json({ status: "error", message: 'User not found' });
+            return;
+        }
+
+        // Delete associated data - complete later
+        // await bookingModel.deleteMany({ userId });
+        // await reviewModel.deleteMany({ userId });
+
+        res.status(200).json({  status: "success", message: 'User account deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error occurred",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
 
 
 

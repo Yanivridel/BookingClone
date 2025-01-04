@@ -9,6 +9,9 @@ const router = express.Router();
 
 router.post("/create", authenticateToken, createReview);
 
-router.get("/:id", getAllReviewsForTeacher);
+// router.get('/', authenticateToken, getReviewsByUser);
+
+// router.get("/:id", getReivewsByProperty);
+
 
 export default router;

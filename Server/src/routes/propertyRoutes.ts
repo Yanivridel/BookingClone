@@ -6,7 +6,7 @@ import {
     editLesson,
     deleteLesson,
     registerForLesson
-} from '../controllers/lessonController';
+} from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
