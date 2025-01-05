@@ -6,7 +6,6 @@ import { getSelf } from "./utils/userApi";
 // Functions
 import { getCookie } from "./utils/cookies";
 
-
 import { useTranslation } from "react-i18next";
 import { Button } from "./components/ui/button";
 import ImageCard from "./components/ImageCard";
@@ -56,26 +55,23 @@ function App() {
 
   return (
     <BrowserRouter>
-      
-  <div  className="p-4">
-      <h1 className="text-2xl font-bold">{t('welcome')}</h1>
-      <p>{t('description')}</p>
-      <div className="mt-4">
-        <button
-          className="mr-2 px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={() => changeLanguage('en')}
-        >
-          English
-        </button>
-        <button
-          className="px-4 py-2 bg-green-500 text-white rounded"
-          onClick={() => changeLanguage('he')}
-        >
-          עברית
-        </button>
-
-
-      </div>
+      <div className="p-4">
+        <h1 className="text-2xl font-bold">{t("welcome")}</h1>
+        <p>{t("description")}</p>
+        <div className="mt-4">
+          <button
+            className="mr-2 px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => changeLanguage("en")}
+          >
+            English
+          </button>
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded"
+            onClick={() => changeLanguage("he")}
+          >
+            עברית
+          </button>
+        </div>
       </div>
       <Button variant="navBarUnderline" size="navBarUnderline">
         baba
@@ -87,7 +83,7 @@ function App() {
       <CardWithDescription />
       <ImageCard />
       <MainNav />
-      <MainCard discount={{coin:"$",value:"1022"}} type="Hotel"/>
+      <MainCard discount={{ coin: "$", value: "1022" }} type="Hotel" />
       <OffersCard />
       <TopNav />
       <Routes>
