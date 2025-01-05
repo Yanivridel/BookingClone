@@ -8,6 +8,7 @@ import { addDays, format } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Spinner } from "./ui/Icons";
 
 // damy data
 const items = [
@@ -71,8 +72,9 @@ function Search() {
   const formattedEnglish = "EEE, MMM dd";
 
   useEffect(() => {
-    console.log("date");
-    console.log(date);
+    // date?.from === date?.to ? date?.to = undefined
+    // console.log("date");
+    // console.log(date);
   }, [date]);
 
   return (
@@ -81,11 +83,12 @@ function Search() {
         dir={i18n.language === "he" ? "rtl" : "ltr"}
         className="border-search flex flex-col md rounded-[8px] p-1 bg-search gap-1 search:flex-row  font-medium justify-items-stretch"
       >
-        {/* input */}
+        {/* input + modal */}
         <div className="border-search   bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  search:basis-1/3">
           <div className="relative ">
+            {/* open modal */}
             <Card
-              className={`border-0 absolute top-10 start-[-12px]  ${
+              className={`border-0 absolute top-10 start-[-12px] z-50 ${
                 open ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
@@ -137,7 +140,7 @@ function Search() {
           >
             <path d="M2.75 12h18.5c.69 0 1.25.56 1.25 1.25V18l.75-.75H.75l.75.75v-4.75c0-.69.56-1.25 1.25-1.25m0-1.5A2.75 2.75 0 0 0 0 13.25V18c0 .414.336.75.75.75h22.5A.75.75 0 0 0 24 18v-4.75a2.75 2.75 0 0 0-2.75-2.75zM0 18v3a.75.75 0 0 0 1.5 0v-3A.75.75 0 0 0 0 18m22.5 0v3a.75.75 0 0 0 1.5 0v-3a.75.75 0 0 0-1.5 0m-.75-6.75V4.5a2.25 2.25 0 0 0-2.25-2.25h-15A2.25 2.25 0 0 0 2.25 4.5v6.75a.75.75 0 0 0 1.5 0V4.5a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 0 1.5 0m-13.25-3h7a.25.25 0 0 1 .25.25v2.75l.75-.75h-9l.75.75V8.5a.25.25 0 0 1 .25-.25m0-1.5A1.75 1.75 0 0 0 6.75 8.5v2.75c0 .414.336.75.75.75h9a.75.75 0 0 0 .75-.75V8.5a1.75 1.75 0 0 0-1.75-1.75z"></path>
           </svg>
-
+          {/* trigger in focus*/}
           <input
             type="text"
             placeholder={t("search.placholderInput")}
@@ -154,10 +157,11 @@ function Search() {
         <Popover>
           <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
-              className=" w-auto p-0 PopoverContent rounded-none"
-              sideOffset={11}
-              align="start"
-              alignOffset={-11}
+              className=" w-auto p-0 PopoverContent rounded-none "
+              sideOffset={11.5}
+              side="bottom"
+              align={i18n.language === "he" ? "end" : "start"}
+              alignOffset={-11.5}
               avoidCollisions={false}
             >
               <Calendar
@@ -184,7 +188,6 @@ function Search() {
                 >
                   <path d="M22.5 13.5v8.25a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75zm1.5 0V5.25A2.25 2.25 0 0 0 21.75 3H2.25A2.25 2.25 0 0 0 0 5.25v16.5A2.25 2.25 0 0 0 2.25 24h19.5A2.25 2.25 0 0 0 24 21.75zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.75a.75.75 0 0 0 0 1.5M7.5 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0M18 6V.75a.75.75 0 0 0-1.5 0V6A.75.75 0 0 0 18 6M5.095 14.03a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28A1.125 1.125 0 1 0 12 15a1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06M12 18a1.125 1.125 0 1 0 0 2.25A1.125 1.125 0 0 0 12 18a.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5"></path>
                 </svg>
-
                 {date?.from ? (
                   date.to ? (
                     <div className="py-1 px-2">
@@ -194,8 +197,8 @@ function Search() {
                           ? formattedHebrew
                           : formattedEnglish,
                         { locale: currentLocale }
-                      )}{" "}
-                      —{" "}
+                      )}
+                      <span className="px-2">—</span>
                       {format(
                         date.to,
                         currentLocale === he
@@ -205,16 +208,23 @@ function Search() {
                       )}
                     </div>
                   ) : (
-                    format(
-                      date.from,
-                      currentLocale === he ? formattedHebrew : formattedEnglish,
-                      { locale: currentLocale }
-                    )
+                    // date.from only
+                    <div className="py-1 px-2">
+                      {format(
+                        date.from,
+                        currentLocale === he
+                          ? formattedHebrew
+                          : formattedEnglish,
+                        { locale: currentLocale }
+                      )}
+                      <span className="px-2">—</span>
+                      <span>{t("search.checkOut")}</span>
+                    </div>
                   )
                 ) : (
                   <div className="py-1 px-2">
                     <span>{t("search.checkIn")}</span>
-                    {"  "}
+                    <span className="px-2">—</span>
                     <span>{t("search.checkOut")}</span>
                   </div>
                 )}
