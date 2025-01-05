@@ -32,13 +32,13 @@ app.get('/', (req: Request, res: Response): void => {
 // Routes
 import userRoutes from './routes/userRoutes'
 // import lessonRoutes from './routes/lessonRoutes'
-import reviewRoutes from './routes/reviewRoutes'
+// import reviewRoutes from './routes/reviewRoutes'
 
 app.use('/api/users', userRoutes);
 
 // app.use('/api/lessons', lessonRoutes);
 
-app.use('/api/reviews', reviewRoutes);
+// app.use('/api/reviews', reviewRoutes);
 
 
 app.listen(PORT, () => {

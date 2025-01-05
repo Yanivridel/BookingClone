@@ -1,5 +1,5 @@
 
-export enum Country {
+export enum ECountry {
     Afghanistan = "Afghanistan",
     Albania = "Albania",
     Algeria = "Algeria",
@@ -197,7 +197,7 @@ export enum Country {
     Zimbabwe = "Zimbabwe",
 }
 
-export enum CoinType {
+export enum ECoinType {
     USD = "USD", // United States Dollar
     EUR = "EUR", // Euro
     GBP = "GBP", // British Pound
@@ -270,7 +270,7 @@ export enum CoinType {
     MVR = "MVR", // Maldivian Rufiyaa
 }
 
-export enum Language {
+export enum ELanguage {
     EN = "English",
     ES = "Spanish",
     FR = "French",
@@ -356,4 +356,124 @@ export enum Language {
     LTZ = "Luxembourgish",
     WO = "Wolof",
     SH = "Serbo-Croatian",
+}
+
+export enum EFacility {
+    WIFI = "Free WiFi",
+    PARKING = "Parking",
+    AIRPORT_SHUTTLE = "Airport shuttle",
+    FAMILY_ROOMS = "Family rooms",
+    OUTDOOR_POOL = "Outdoor pool",
+    INDOOR_POOL = "Indoor pool",
+    SPA_AND_WELLNESS = "Spa and wellness center",
+    FITNESS_CENTER = "Fitness center",
+    RESTAURANT = "Restaurant",
+    BAR = "Bar",
+    PET_FRIENDLY = "Pet-friendly",
+    NON_SMOKING_ROOMS = "Non-smoking rooms",
+    BEACHFRONT = "Beachfront",
+    ROOM_SERVICE = "Room service",
+    BREAKFAST_INCLUDED = "Breakfast included",
+    PRIVATE_BEACH = "Private beach area",
+    FREE_CANCELLATION = "Free cancellation",
+    AIR_CONDITIONING = "Air conditioning",
+    HEATING = "Heating",
+    TERRACE = "Terrace",
+    GARDEN = "Garden",
+    HOT_TUB = "Hot tub/Jacuzzi",
+    SAUNA = "Sauna",
+    TENNIS_COURT = "Tennis court",
+    GOLF_COURSE = "Golf course",
+    WATER_SPORTS = "Water sports facilities",
+    SKIING = "Skiing",
+    SKI_STORAGE = "Ski storage",
+    SKI_EQUIPMENT_RENTAL = "Ski equipment rental",
+    CHILDRENS_PLAYGROUND = "Children's playground",
+    BUSINESS_CENTER = "Business center",
+    MEETING_ROOMS = "Meeting/banquet facilities",
+    LAUNDRY = "Laundry services",
+    DRY_CLEANING = "Dry cleaning",
+    KITCHEN = "Kitchen facilities",
+    BALCONY = "Balcony",
+    MINI_MARKET = "Mini market on site",
+    ACCESSIBLE = "Facilities for disabled guests",
+    ATM = "ATM on site",
+    CURRENCY_EXCHANGE = "Currency exchange",
+    BBQ = "BBQ facilities",
+    NIGHTCLUB = "Nightclub/DJ",
+    LIBRARY = "Library",
+    CYCLING = "Cycling",
+    HIKING = "Hiking",
+    CAR_RENTAL = "Car rental",
+    SHUTTLE_SERVICE = "Shuttle service",
+    VALET_PARKING = "Valet parking",
+    ELECTRIC_VEHICLE_CHARGING = "Electric vehicle charging station"
+}
+
+export enum EPropertyHighlight {
+    LOCATION = "Location",
+    WELLNESS = "Wellness",
+    VIEW = "View",
+    BREAKFAST = "Breakfast",
+    DINING = "Dining",
+    VALUE = "Value",
+    WIFI = "WiFi",
+    BEACH_ACCESS = "Beach access",
+    FAMILY_FRIENDLY = "Family-friendly",
+    PET_FRIENDLY = "Pet-friendly",
+    LUXURY = "Luxury",
+    SUSTAINABILITY = "Sustainability",
+    UNIQUE_STAY = "Unique stay",
+    TRANSPORT = "Transport options",
+    FITNESS = "Fitness",
+    POOL = "Pool",
+    PARKING = "Parking",
+    SPA = "Spa",
+    BUSINESS = "Business facilities",
+    HISTORICAL = "Historical building",
+    MODERN = "Modern design",
+    ROMANTIC = "Romantic",
+    ADVENTURE = "Adventure activities",
+    ALL_INCLUSIVE = "All-inclusive",
+    SPORTS = "Sports facilities",
+    ACCESSIBILITY = "Accessibility",
+    KIDS_FRIENDLY = "Kids-friendly",
+    QUIET_ENVIRONMENT = "Quiet environment"
+}
+
+export enum EFeatures {
+    ACCESSIBILITY = 'Accessibility',
+    OUTDOOR_SWIMMING_POOL = 'Outdoor swimming pool',
+    SPA = 'Spa',
+    LANGUAGES_SPOKEN = 'Languages Spoken',
+    FRONT_DESK_SERVICES = 'Front Desk Services',
+    ENTERTAINMENT_FAMILY_SERVICES = 'Entertainment & Family Services',
+    CLEANING_SERVICES = 'Cleaning Services',
+    BUSINESS_FACILITIES = 'Business Facilities',
+    SAFETY_SECURITY = 'Safety & security',
+    GENERAL = 'General',
+    BATHROOM = 'Bathroom',
+    BEDROOM = 'Bedroom',
+    OUTDOORS = 'Outdoors',
+    KITCHEN = 'Kitchen',
+    ROOM_AMENITIES = 'Room Amenities',
+    PETS = 'Pets',
+    ACTIVITIES = 'Activities',
+    LIVING_AREA = 'Living Area',
+    MEDIA_TECHNOLOGY = 'Media & Technology',
+    FOOD_DRINK = 'Food & Drink',
+    INTERNET = 'Internet',
+    PARKING = 'Parking'
+}
+
+export enum EPaymentMethods {
+    CREDIT_CARD = 'Credit Card',
+    DEBIT_CARD = 'Debit Card',
+    PAYPAL = 'PayPal',
+    BANK_TRANSFER = 'Bank Transfer',
+    CASH = 'Cash',
+    APPLE_PAY = 'Apple Pay',
+    GOOGLE_PAY = 'Google Pay',
+    CRYPTOCURRENCY = 'Cryptocurrency',
+    OTHER = 'Other'
 }

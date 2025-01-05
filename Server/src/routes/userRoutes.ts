@@ -16,22 +16,21 @@ const router = express.Router();
 
 router.post("/signup", createUser);
 
-router.post('/login', loginUser);
+// router.post('/login', loginUser);
 
-router.get('/get-self', getSelf);
+// router.get('/get-self', getSelf);
 
-router.patch('/edit-profile', authenticateToken, editProfile);
+// router.patch('/edit-profile', authenticateToken, editProfile);
 
-router.get('/:id', getUserById);
+// router.get('/:id', getUserById);
 
-router.post('/like-teacher/:id', authenticateToken, likeTeacher);
+// router.post('/like-teacher/:id', authenticateToken, likeTeacher);
 
-router.post('/unlike-teacher/:id', authenticateToken, unlikeTeacher);
+// router.post('/unlike-teacher/:id', authenticateToken, unlikeTeacher);
 
-router.patch('/coins/:number', authenticateToken, handleCoins);
+// router.patch('/coins/:number', authenticateToken, handleCoins);
 
-router.get('/teachers', getTeachers);
-
+// router.get('/teachers', getTeachers);
 
 
 export default router;
