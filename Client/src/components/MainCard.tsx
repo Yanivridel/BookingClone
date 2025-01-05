@@ -24,7 +24,7 @@ const MainCard = ({deals,is_heart,isThumbsUp,price,genius,type,discount }: mainC
             <Card className="flex flex-col w-[300px] h-[400px] sm:w-[300px] sm:h-[300px] rounded-lg overflow-hidden">
                 <div className="h-[50%] sm:h-[50%] rounded-t-lg relative">
                     <img src={Image} alt="Aparthol Stare Miasto" className="w-full h-full object-cover object-center rounded-t-lg " />
-                    <div className="bg-white absolute top-0 rounded-full p-1"><SaveButton /></div>
+                    <div className="absolute top-2 start-1"><SaveButton /></div>
                 </div>
                 <div className="flex flex-col justify-between flex-grow p-1">
                     <div className=" p-2 grid gap-2">
