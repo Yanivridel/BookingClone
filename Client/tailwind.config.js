@@ -3,10 +3,9 @@ module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
-
     extend: {
       textShadow: {
-        textShadow: '1px 1px 1px black',
+        textShadow: "1px 1px 1px black",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -15,7 +14,7 @@ module.exports = {
       },
       colors: {
         deals: "#008234",
-			rating: "#003b95",
+        rating: "#003b95",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -88,8 +87,10 @@ module.exports = {
       screens: {
         search: "900px",
       },
+      boxShadow: {
+        searchPopupsShadow: "0 2px 16px 0 rgba(26, 26, 26, 0.24)",
+      },
     },
-
   },
   plugins: [require("tailwindcss-animate")],
 };
