@@ -99,6 +99,9 @@ const UserSchema = new Schema<IUser>(
     { timestamps: true }
 );
 
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('toObject', { virtuals: true });
+
 // Virtual property fullname
 UserSchema.virtual("fullName").get(function () {
     return `${this.fName || ""} ${this.lName || ""}`.trim();

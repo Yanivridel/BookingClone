@@ -4,8 +4,8 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx ts-node src/app.ts",
-    "dev": "npx ts-node-dev src/app.ts --respawn --transpileOnly",
+    "start": "npx ts-node -r tsconfig-paths/register src/app.ts",
+    "dev": "npx ts-node-dev -r tsconfig-paths/register src/app.ts --respawn --transpileOnly",
     "build": "tsc"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^22.10.5",
+    "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
@@ -33,6 +34,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.3",
-    "nodemailer": "^6.9.16"
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "tsconfig-paths": "^4.2.0"
   }
 }

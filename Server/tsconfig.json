@@ -9,8 +9,11 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "outDir": "./dist",
-        "baseUrl": ".",
-        "resolveJsonModule": true
+        "baseUrl": "./",  
+        "resolveJsonModule": true,
+        "paths": {
+            "src/*": ["src/*"]
+        }
     },
     "include": [
         "src/**/*.ts"
