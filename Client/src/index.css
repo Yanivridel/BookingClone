@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -71,3 +75,8 @@
   }
 }
 
+/* .nav_button_previous svg, 
+.nav_button_next svg {
+  width: 100px !important;
+  height: 100px !important;
+} */

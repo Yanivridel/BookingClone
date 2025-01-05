@@ -27,7 +27,7 @@ const PropertySchema = new Schema<IProperty>({
         category: { type: String, required: true, enum: EFeatures },
         sub: { type: [String], required: true },
     }],
-    rooms: { type: Types.ObjectId, ref: "Room" },
+    rooms: { type: Schema.Types.ObjectId, ref: "Room" },
     qa: [{
     question: { type: String, required: true },
     answer: { type: String, required: true },
@@ -69,10 +69,8 @@ const PropertySchema = new Schema<IProperty>({
         start: { type: Number, default: 0 },
         end: { type: Number, default: 24 },
     },
-    host: { type: Types.ObjectId, ref: 'User', required: true },
+    host: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 // Mongoose Model for Property
-const PropertyModel = mongoose.model<IProperty>('Property', PropertySchema);
-
-export { PropertyModel };
+export const PropertyModel = mongoose.model<IProperty>('Property', PropertySchema);

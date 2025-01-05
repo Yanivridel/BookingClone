@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 import { ECoinType, ELanguage } from "./../utils/structures";
 import { IUser } from "src/types/userTypes";
@@ -11,7 +11,7 @@ const UserSchema = new Schema<IUser>(
         username: { type: String },
         email: { type: String, required: true, unique: true, match: /^\S+@\S+\.\S+$/ },
         password: { type: String },
-        phoneNumber: { type: String, unique: true },
+        phoneNumber: { type: String, unique: true, sparse: true }, // allow null none unique
         birthday: { type: Date },
         gender: { type: String, enum: ["male", "female", "other"] },
         location: { type: LocationSchema },
@@ -27,8 +27,18 @@ const UserSchema = new Schema<IUser>(
             number: { type: Number },
             expires: { type: Date },
         },
-        coinType: { type: String, enum: Object.values(ECoinType), default: ECoinType.USD },
-        language: { type: String, enum: Object.values(ELanguage), default: ELanguage.EN },
+        coinType: { type: String, enum: Object.values(ECoinType), default: ECoinType.USD,
+            validate: {
+                validator: (v) => Object.values(ECoinType).includes(v),
+                message: props => `${props.value} is not a valid coin type!`
+            }
+        },
+        language: { type: String, enum: Object.values(ELanguage), default: ELanguage.EN,
+            validate: {
+                validator: (v) => Object.values(ELanguage).includes(v),
+                message: props => `${props.value} is not a valid language!`
+            }
+        },
         notifications: {
             dealsAndOffers: {
                 dealDiscovery: { type: Boolean, default: false },
@@ -66,7 +76,10 @@ const UserSchema = new Schema<IUser>(
                     checkout: { type: Date },
                     group_adults: { type: Number },
                     group_children: { type: Number },
+                    ages: { type: [Number], default: []},
+                    rooms_num: { type: Number },
                     is_animal: { type: Boolean },
+                    createdAt: { type: Date, default: Date.now}
                 }],
             default: [],
         },
@@ -86,8 +99,19 @@ const UserSchema = new Schema<IUser>(
     { timestamps: true }
 );
 
+// Virtual property fullname
 UserSchema.virtual("fullName").get(function () {
     return `${this.fName || ""} ${this.lName || ""}`.trim();
 });
+// Limit searches to 10 latests
+UserSchema.post('findOneAndUpdate', async function (user: any) {
+    if (user.search && user.search.length > 10) {
+        user.search.shift();
+        await user.save(); 
+    }
+});
+// Faster desc sorting searches
+UserSchema.index({ "search.createdAt": -1 });
+
 
 export const userModel = model<IUser>("User", UserSchema);

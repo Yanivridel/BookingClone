@@ -6,18 +6,15 @@ import { getSelf } from "./utils/userApi";
 // Functions
 import { getCookie } from "./utils/cookies";
 
+import Search from "./components/Search";
 
-
-import Search from "./components/search";
-
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { Button } from "./components/ui/button";
 import ImageCard from "./components/ImageCard";
 import CardWithDescription from "./components/CardWithDescritpion";
 import MainNav from "./components/MainNav";
 import TopNav from "./components/TopNav";
 import HamburgerNav from "./components/HamburgerNav";
-
 
 // Example how to get current User from Redux :
 // import { useSelector } from "react-redux";
@@ -72,6 +69,7 @@ function App() {
         >
           עברית
         </button>
+
 
       </div>
       </div>

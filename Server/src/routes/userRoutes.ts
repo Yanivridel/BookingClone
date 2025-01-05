@@ -1,36 +1,39 @@
 import express, { Request, Response } from "express";
 import {
+    sendEmailCode,
     createUser,
     loginUser,
     getSelf,
     editProfile,
-    getUserById,
-    likeTeacher,
-    unlikeTeacher,
-    handleCoins,
-    getTeachers
+    modifyUserArrays,
+    getSearches,
+    getInterested,
+    getSavedLists,
+    deleteUserById,
 } from '../controllers/userController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
+router.post('/send-code', sendEmailCode);
+
 router.post("/signup", createUser);
 
-// router.post('/login', loginUser);
+router.post('/login', loginUser);
 
-// router.get('/get-self', getSelf);
+router.get('/get-self', getSelf);
 
-// router.patch('/edit-profile', authenticateToken, editProfile);
+router.patch('/edit-profile', authenticateToken, editProfile);
 
-// router.get('/:id', getUserById);
+router.patch('/modify-arrays', authenticateToken, modifyUserArrays);
 
-// router.post('/like-teacher/:id', authenticateToken, likeTeacher);
+router.get('/search', authenticateToken, getSearches);
 
-// router.post('/unlike-teacher/:id', authenticateToken, unlikeTeacher);
+router.get('/interested', authenticateToken, getInterested);
 
-// router.patch('/coins/:number', authenticateToken, handleCoins);
+router.get('/saved-lists', authenticateToken, getSavedLists);
 
-// router.get('/teachers', getTeachers);
+router.delete('/delete-account', authenticateToken, deleteUserById);
 
 
 export default router;

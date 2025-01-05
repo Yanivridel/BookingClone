@@ -59,18 +59,20 @@ export interface IUser extends Document {
             offerConfirmOrders: boolean;
         };
     };
-    search?: [
+    search: [
         {
             location: ILocation;
             checkin: Date;
             checkout: Date;
             group_adults: number;
             group_children: number;
+            ages: number[];
+            rooms_num: number;
             is_animal: boolean;
         }
     ];
-    interested?: [Types.ObjectId];
-    savedLists?: [
+    interested: [Types.ObjectId];
+    savedLists: [
         {
             name: string;
             properties: [Types.ObjectId];
