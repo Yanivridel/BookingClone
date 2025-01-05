@@ -8,7 +8,6 @@ import { addDays, format } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { CalendarLeftArrow } from "./ui/Icons";
 
 // damy data
 const items = [
