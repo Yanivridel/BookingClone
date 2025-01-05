@@ -87,7 +87,7 @@ function App() {
       <CardWithDescription />
       <ImageCard />
       <MainNav />
-      <MainCard />
+      <MainCard discount={{coin:"$",value:"1022"}} type="Hotel"/>
       <OffersCard />
       <TopNav />
       <Routes>
