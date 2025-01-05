@@ -6,7 +6,6 @@ import { getSelf } from "./utils/userApi";
 // Functions
 import { getCookie } from "./utils/cookies";
 
-import Search from "./components/Search";
 
 import { useTranslation } from "react-i18next";
 import { Button } from "./components/ui/button";
@@ -15,6 +14,11 @@ import CardWithDescription from "./components/CardWithDescritpion";
 import MainNav from "./components/MainNav";
 import TopNav from "./components/TopNav";
 import HamburgerNav from "./components/HamburgerNav";
+import Search from "./components/search";
+import MainCard from "./components/MainCard";
+import OffersCard from "./components/OffersCard";
+import { BookAIcon } from "lucide-react";
+import { BookingLogo } from "./components/ui/Icons";
 
 // Example how to get current User from Redux :
 // import { useSelector } from "react-redux";
@@ -52,8 +56,8 @@ function App() {
 
   return (
     <BrowserRouter>
-        <HamburgerNav />
-  <div className="p-4">
+      
+  <div  className="p-4">
       <h1 className="text-2xl font-bold">{t('welcome')}</h1>
       <p>{t('description')}</p>
       <div className="mt-4">
@@ -80,6 +84,12 @@ function App() {
         baba
       </Button>
       <Search></Search>
+      <CardWithDescription />
+      <ImageCard />
+      <MainNav />
+      <MainCard />
+      <OffersCard />
+      <TopNav />
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
 
