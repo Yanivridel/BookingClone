@@ -5,6 +5,9 @@ module.exports = {
   theme: {
 
     extend: {
+      textShadow: {
+        textShadow: '1px 1px 1px black',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

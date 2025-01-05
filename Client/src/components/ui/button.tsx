@@ -17,12 +17,23 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+
+       
         navBarUnderline:
           "bg-wite hover:bg-[#1a1a1a0f] rounded-none shadow-[inset_0_-1.1px_0_#e7e7e7]",
         navBarUnderlineSelected:
           " bg-wite hover:bg-[#1a1a1a0f] rounded-none  text-primary shadow-[inset_0_-2.1px_0_#2563eb]",
+
+        ghost:
+         "hover:bg-accent hover:text-accent-foreground",
+        ghostNav:
+         "border border-transparent hover:border-sky-600 hover:bg-accent hover:text-accent-foreground hover:text-sky-600",
+        ghostTopNav:
+         "hover:bg-white/30",
+        link:
+         "text-primary underline-offset-4 hover:underline",
+        
+
       },
       size: {
         default: "h-9 px-4 py-2",
