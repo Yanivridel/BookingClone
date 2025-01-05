@@ -27,7 +27,9 @@ function Calendar({
   dir = "ltr", // Default to LTR
   ...props
 }: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = React.useState<Date | undefined>(props.month || fromDate || new Date());
+  const [currentMonth, setCurrentMonth] = React.useState<Date | undefined>(
+    props.month || fromDate || new Date()
+  );
 
   return (
     <DayPicker
@@ -41,8 +43,12 @@ function Calendar({
       formatters={{
         formatWeekdayName: (weekday) => {
           const dayIndex = weekday.getDay(); // Extract the day index (0-6)
-          return locale === he ? hebrewDayNames[dayIndex] : weekday.toLocaleDateString("en", { weekday: "short" }).slice(0, 2);;
-        }
+          return locale === he
+            ? hebrewDayNames[dayIndex]
+            : weekday
+                .toLocaleDateString("en", { weekday: "short" })
+                .slice(0, 2);
+        },
       }}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
@@ -57,15 +63,17 @@ function Calendar({
         nav_button_previous: cn(
           "absolute [&_svg]:h-6 [&_svg]:w-6",
           dir === "rtl" ? "right-1" : "left-1",
-          currentMonth && fromDate && 
-          currentMonth.getMonth() === fromDate.getMonth() &&
-          currentMonth.getFullYear() === fromDate.getFullYear() 
+          currentMonth &&
+            fromDate &&
+            currentMonth.getMonth() === fromDate.getMonth() &&
+            currentMonth.getFullYear() === fromDate.getFullYear()
             ? "hidden" // Hides the button when at the start date
             : ""
         ),
         nav_button_next: cn(
           "absolute [&_svg]:h-6 [&_svg]:w-6",
-          dir === "rtl" ? "left-1" : "right-1"),
+          dir === "rtl" ? "left-1" : "right-1"
+        ),
         table: "w-full border-collapse space-y-1",
         head_row: "flex text-[#595959]",
         head_cell: "w-full rounded-md w-8 font-normal text-[0.8rem]",
@@ -89,7 +97,7 @@ function Calendar({
           "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-gray-100 rounded-none aria-selected:text-accent-foreground",
+          "aria-selected:bg-[#f2f2f2] rounded-none aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         ...classNames,
       }}
