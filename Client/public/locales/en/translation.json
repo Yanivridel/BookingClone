@@ -4,7 +4,7 @@
   "search": {
     "placholderInput": "Where are you going?",
     "dropDouwnHeader": "Popular destinations nearby",
-    "checkIn": "Check-in Date —",
+    "checkIn": "Check-in Date",
     "checkOut": " Check-out Date"
   },
   "button": {
