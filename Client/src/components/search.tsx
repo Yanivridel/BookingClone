@@ -3,11 +3,12 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Calendar } from "./ui/calendar";
-import { DateRange } from "react-day-picker";
+import { DateRange, IconLeft } from "react-day-picker";
 import { addDays, format } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CalendarLeftArrow } from "./ui/Icons";
 
 // damy data
 const items = [
@@ -15,10 +16,11 @@ const items = [
   { id: "2", city: "tel aviv", country: "Israel", icon: "location" },
   { id: "3", city: "jerusalem", country: "Israel", icon: "location" },
   { id: "4", city: "haifa", country: "Israel", icon: "location" },
+  { id: "6", city: "maon", country: "Israel", icon: "location" },
   { id: "5", city: "beer sheva", country: "Israel", icon: "location" },
 ];
 
-interface IUnounData {
+interface IUnknownData {
   // todo: change the name
   id: string;
   city: string; // region:
@@ -31,7 +33,7 @@ interface IUnounData {
 function Search() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [res, setRes] = useState<Array<IUnounData> | null>(items); // !need to change the type with the real data
+  const [res, setRes] = useState<Array<IUnknownData> | null>(items); // !need to change the type with the real data
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
@@ -41,27 +43,27 @@ function Search() {
   const currentLocale = i18n.language === "he" ? he : enUS;
 
   const handleFocus = () => {
-    setOpen((prev) => true);
+    setOpen(true);
   };
 
   const handleBlur = () => {
     setTimeout(() => {
-      setOpen((prev) => false);
+      setOpen(false);
     }, 250);
   };
 
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
-      setInputValue((prev) => e.target.value);
-      //  const res = await someSearchFunction(inputValue)  // * when connect to the data base
+      setInputValue(e.target.value);
+      //  const res = await someSearchFunction(e.target.value)  // * when connect to the data base
     } catch (error) {
       console.log(error);
     }
   };
 
-  const heandleLocationListClick = (element: IUnounData) => {
+  const handleLocationListClick = (element: IUnknownData) => {
     console.log(element);
-    setInputValue((prev) => [element.city, element.country].join(", "));
+    setInputValue(() => [element.city, element.country].join(", "));
   };
 
   // פורמט בעברית
@@ -69,7 +71,10 @@ function Search() {
   // פורמט באנגלית
   const formattedEnglish = "EEE, MMM dd";
 
-  useEffect(() => {});
+  useEffect(() => {
+    console.log("date");
+    console.log(date);
+  }, [date]);
 
   return (
     <form className="p-2 text-[14px]">
@@ -77,10 +82,11 @@ function Search() {
         // dir="rtl"
         className="border-search flex flex-col md rounded-[8px] p-1 bg-search gap-1 search:flex-row  font-medium justify-items-stretch"
       >
-        <div className="border-search bg-white rounded-[4px] p-[11px]  flex hover:border-[#f56700]  search:basis-1/3">
+        {/* input */}
+        <div className="border-search   bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  search:basis-1/3">
           <div className="relative ">
             <Card
-              className={`border-0 absolute top-8 left-[-10px]  ${
+              className={`border-0 absolute top-10 start-[-12px]  ${
                 open ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
@@ -91,30 +97,32 @@ function Search() {
               <ul>
                 {res?.map((element, i) => {
                   return (
-                    <li
-                      onClick={() => heandleLocationListClick(element)}
-                      key={element.id}
-                      className={`${
-                        i !== res.length - 1 && " border-b"
-                      } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
-                    >
-                      <div className="flex gap-2">
-                        {/*? element.icon */}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          className="w-6 h-6"
-                        >
-                          <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
-                        </svg>
-                        <div className="flex flex-col">
-                          <span className="font-bold">{element.city} </span>
-                          <span className="text-xs font-normal">
-                            {element.country}
-                          </span>
+                    i < 5 && (
+                      <li
+                        onClick={() => handleLocationListClick(element)}
+                        key={element.id}
+                        className={`${
+                          i !== res.length - 1 && " border-b"
+                        } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
+                      >
+                        <div className="flex gap-2">
+                          {/*? element.icon */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            className="w-6 h-6"
+                          >
+                            <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
+                          </svg>
+                          <div className="flex flex-col">
+                            <span className="font-bold">{element.city} </span>
+                            <span className="text-xs font-normal">
+                              {element.country}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </li>
+                      </li>
+                    )
                   );
                 })}
               </ul>
@@ -143,8 +151,9 @@ function Search() {
             value={inputValue}
           />
         </div>
+        {/* date */}
         <Popover>
-          <div className=" border-search bg-white rounded-[4px] p-[11px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
+          <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
               className=" w-auto p-0 PopoverContent rounded-none"
               sideOffset={11}
@@ -158,6 +167,7 @@ function Search() {
                 classNames={{
                   months: "flex flex-row gap-4 ",
                 }}
+                fromDate={new Date()}
                 defaultMonth={date?.from}
                 selected={date}
                 onSelect={setDate}
@@ -212,7 +222,7 @@ function Search() {
             </PopoverTrigger>
           </div>
         </Popover>
-
+        {/* pepole number */}
         <div className="border-search bg-white rounded-[4px] p-[11px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
