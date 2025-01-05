@@ -8,14 +8,14 @@ import { getCookie } from "./utils/cookies";
 
 import { useTranslation } from "react-i18next";
 import { Button } from "./components/ui/button";
-// import ImageCard from "./components/ImageCard";
-// import CardWithDescription from "./components/CardWithDescritpion";
-// import MainNav from "./components/MainNav";
-// import TopNav from "./components/TopNav";
-// import HamburgerNav from "./components/HamburgerNav";
+import ImageCard from "./components/ImageCard";
+import CardWithDescription from "./components/CardWithDescritpion";
+import MainNav from "./components/MainNav";
+import TopNav from "./components/TopNav";
+import HamburgerNav from "./components/HamburgerNav";
 import Search from "./components/search";
 import MainCard from "./components/MainCard";
-// import OffersCard from "./components/OffersCard";
+import OffersCard from "./components/OffersCard";
 import { BookAIcon } from "lucide-react";
 import { BookingLogo } from "./components/ui/Icons";
 
@@ -80,12 +80,12 @@ function App() {
         baba
       </Button>
       <Search></Search>
-      {/* <CardWithDescription /> */}
-      {/* <ImageCard /> */}
-      {/* <MainNav /> */}
-      <MainCard />
-      {/* <OffersCard /> */}
-      {/* <TopNav /> */}
+      <CardWithDescription />
+      <ImageCard />
+      <MainNav />
+      <MainCard discount={{ coin: "$", value: "1022" }} type="Hotel" />
+      <OffersCard />
+      <TopNav />
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
 
