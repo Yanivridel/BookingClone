@@ -19,13 +19,17 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        
+        navBarUnderline:
+          "bg-wite hover:bg-[#1a1a1a0f] rounded-none shadow-[inset_0_-1.1px_0_#e7e7e7]",
+        navBarUnderlineSelected:
+          " bg-wite hover:bg-[#1a1a1a0f] rounded-none  text-primary shadow-[inset_0_-2.1px_0_#2563eb]",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
+        navBarUnderline: "p-4",
       },
     },
     defaultVariants: {
