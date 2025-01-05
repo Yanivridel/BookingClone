@@ -79,7 +79,7 @@ function Search() {
   return (
     <form className="p-2 text-[14px]">
       <Card
-        dir={ i18n.language === "he" ? "rtl" : "ltr"}
+        dir={i18n.language === "he" ? "rtl" : "ltr"}
         className="border-search flex flex-col md rounded-[8px] p-1 bg-search gap-1 search:flex-row  font-medium justify-items-stretch"
       >
         {/* input */}
@@ -173,7 +173,7 @@ function Search() {
                 onSelect={setDate}
                 numberOfMonths={2}
                 locale={currentLocale}
-                dir={ i18n.language === "he" ? "rtl" : "ltr"}
+                dir={i18n.language === "he" ? "rtl" : "ltr"}
               />
             </PopoverContent>
             <PopoverTrigger asChild>

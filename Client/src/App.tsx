@@ -73,6 +73,12 @@ function App() {
 
       </div>
       </div>
+      <Button variant="navBarUnderline" size="navBarUnderline">
+        baba
+      </Button>
+      <Button variant="navBarUnderlineSelected" size="navBarUnderline">
+        baba
+      </Button>
       <Search></Search>
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
