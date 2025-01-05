@@ -28,12 +28,15 @@ export const IconHeart = () => {
   );
 };
 
-export const Spinner = () => {
+export const Spinner = ({ className }: BookingLogoProps) => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        className={cn(
+          "w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600",
+          className
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +50,7 @@ export const Spinner = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span className={cn("sr-only", className)}>Loading...</span>
     </div>
   );
 };
