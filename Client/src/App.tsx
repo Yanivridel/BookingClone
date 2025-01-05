@@ -19,6 +19,7 @@ import MainCard from "./components/MainCard";
 import OffersCard from "./components/OffersCard";
 import { BookAIcon } from "lucide-react";
 import { BookingLogo } from "./components/ui/Icons";
+import SaveButton from "./components/SaveButton";
 
 // Example how to get current User from Redux :
 // import { useSelector } from "react-redux";
@@ -83,13 +84,14 @@ function App() {
       <Button variant="navBarUnderlineSelected" size="navBarUnderline">
         baba
       </Button>
-      <Search></Search>
+      
+      {/* <Search></Search>
       <CardWithDescription />
       <ImageCard />
-      <MainNav />
+      <MainNav /> */}
       <MainCard discount={{coin:"$",value:"1022"}} type="Hotel"/>
-      <OffersCard />
-      <TopNav />
+      {/* <OffersCard /> */}
+      {/* <TopNav /> */}
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
 
