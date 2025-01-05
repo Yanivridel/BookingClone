@@ -91,7 +91,7 @@ function Calendar({
         day_range_start: "day-range-start rounded-e-none",
         day_range_end: "day-range-end rounded-s-none",
         day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+          "bg-primary rounded-s-md text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
         day_today: " text-[#006ce4] font-black",
         day_outside:
           "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
