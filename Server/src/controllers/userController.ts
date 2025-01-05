@@ -37,7 +37,7 @@ export const sendEmailCode = async (req: Request<{}, {}, ISendEmailCodeBody>, re
     }
 
     try {
-        await generateVerificationCode(email);
+        await generateVerificationCode(email, isLogin);
         res.status(200).send({
             status: "success",
             message: "code sent successfully",
