@@ -4,34 +4,71 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { he } from "date-fns/locale";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+const hebrewDayNames = [
+  "יום א'",
+  "יום ב'",
+  "יום ג'",
+  "יום ד'",
+  "יום ה'",
+  "יום ו'",
+  "יום ש'",
+];
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  fromDate,
+  locale,
+  dir = "ltr", // Default to LTR
   ...props
 }: CalendarProps) {
+  const [currentMonth, setCurrentMonth] = React.useState<Date | undefined>(props.month || fromDate || new Date());
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
+      dir={dir}
+      locale={locale}
+      month={currentMonth}
+      onMonthChange={setCurrentMonth}
+      fromDate={fromDate}
+      formatters={{
+        formatWeekdayName: (weekday) => {
+          const dayIndex = weekday.getDay(); // Extract the day index (0-6)
+          return locale === he ? hebrewDayNames[dayIndex] : weekday.toLocaleDateString("en", { weekday: "short" }).slice(0, 2);;
+        }
+      }}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-xl font-bold",
+        caption_label: "text-md font-bold",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
           "h-10 w-10 text-xl px-4 py-3 border-none shadow-none bg-transparent font-black  hover:opacity-100"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
+        nav_button_previous: cn(
+          "absolute [&_svg]:h-6 [&_svg]:w-6",
+          dir === "rtl" ? "right-1" : "left-1",
+          currentMonth && fromDate && 
+          currentMonth.getMonth() === fromDate.getMonth() &&
+          currentMonth.getFullYear() === fromDate.getFullYear() 
+            ? "hidden" // Hides the button when at the start date
+            : ""
+        ),
+        nav_button_next: cn(
+          "absolute [&_svg]:h-6 [&_svg]:w-6",
+          dir === "rtl" ? "left-1" : "right-1"),
         table: "w-full border-collapse space-y-1",
-        head_row: "flex",
-        head_cell: " rounded-md w-8 font-normal text-[0.8rem]",
+        head_row: "flex text-[#595959]",
+        head_cell: "w-full rounded-md w-8 font-normal text-[0.8rem]",
         row: "flex w-full mt-1",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
@@ -41,7 +78,7 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 p-5 font-normal aria-selected:opacity-100"
+          "h-8 w-8 p-[1.4rem] font-normal aria-selected:opacity-100"
         ),
         day_range_start: "day-range-start rounded-e-none",
         day_range_end: "day-range-end rounded-s-none",

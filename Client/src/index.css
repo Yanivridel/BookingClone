@@ -74,3 +74,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* .nav_button_previous svg, 
+.nav_button_next svg {
+  width: 100px !important;
+  height: 100px !important;
+} */
