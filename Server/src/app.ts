@@ -2,15 +2,14 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import path from 'path';
 
 dotenv.config();
+
+import { connectRedis } from './utils/redisClient';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware Configuration
 app.use(express.json());
@@ -27,6 +26,8 @@ if (process.env.DB_URI) {
 } else {
     console.error("DB_URI environment variable is not defined");
 }
+
+connectRedis();
 
 // Server Check
 app.get('/', (req: Request, res: Response): void => {
