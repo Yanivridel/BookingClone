@@ -63,21 +63,43 @@ export const createProperty = async (req: Request<{},{},TPartialProperty> , res:
     }
 }
 
-// Get / Filter Properties
-// add page / limit - pagination
+// Get & Filter Properties
 interface IGetPropertiesBody {
+    primary: {
+        location: IFilterPropertiesLocation
+        date: IFilterPropertiesDate
+        options: IFilterPropertiesOptions
+        
+    };
+    secondary: {
+
+    };
+}
+interface IFilterPropertiesLocation {
     country?: string;
     region?: string;
     city?: string;
     addressLine?: string;
-    startDate: string;
-    endDate: string;
+}
+interface IFilterPropertiesDate {
+    startDate?: string;
+    endDate?: string;
+    length?: number;
+    isWeekend?: boolean;
+    fromDay?: number;
+    yearMonths: [{
+        year: number,
+        month: number
+    }];
+}
+interface IFilterPropertiesOptions {
     adults?: number;
     children?: number;
     childrenAges?: number[];
     rooms?: number;
     isAnimalAllowed?: boolean;
     distance?: number; // km
+    isBaby?: boolean;
 }
 interface IGetPropertiesQuery {
     page?: string;
@@ -85,9 +107,10 @@ interface IGetPropertiesQuery {
 }
 export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody, IGetPropertiesQuery> , res: Response): Promise<void> => {
     try {
-        // Missing: child ages / need child bed
-        let { country, region, city, addressLine, startDate, endDate, adults, childrenAges,
-            rooms, distance, isAnimalAllowed } = req.body;
+        const { location, date, options } = req.body.primary;
+        let { country, region, city, addressLine } = location || {};
+        let { startDate, endDate, length, isWeekend, fromDay, yearMonths} = date || {};
+        let {  adults, childrenAges, rooms, distance, isAnimalAllowed} = options || {};
 
         const page = req.query.page ? parseInt(req.query.page) : 1;
         const limit = req.query.limit ? parseInt(req.query.limit) : 15;
@@ -107,8 +130,8 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         const cacheKey = JSON.stringify({
             country, region, city, addressLine,
-            startDate, endDate, adults, children_num: children,
-            rooms, distance, isAnimalAllowed
+            startDate, endDate, length, isWeekend, fromDay, yearMonths,
+            adults, children, rooms, distance, isAnimalAllowed
         }, (key, value) => value === undefined ? null : value);
 
         const cachedProperties = await getCache(cacheKey);
@@ -132,21 +155,25 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         // Get sorted paginated properties by distance
         let properties: IProperty[] = await getPropertiesByRadius(coordinates, distance, limit);
-        
-        // properties = await filterPropertiesMainSearch(properties, adults_num, children_num,
-        //     rooms_num, startDate, endDate, isBaby, isAnimalAllowed)
+
+        const filteredProperties = await filterPropertiesPrimary(properties,
+            { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
+            { adults, children, rooms, isBaby, isAnimalAllowed }, // options
+        );
 
         // Background Task: Fetch all properties & filter & store in Redis
-        setImmediate(async () => {
-            await setCacheMainSearch(cacheKey, coordinates, isBaby, children, adults, 
-                rooms, startDate, endDate, distance, isAnimalAllowed);
-        });
+        // setImmediate(async () => {
+        //     await setCacheMainSearch(cacheKey, coordinates, distance,
+        //         { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
+        //         { adults, children, rooms, isBaby, isAnimalAllowed }, // options
+        //     );
+        // });
 
         // Return the 15 first results
         res.status(200).json({
             status: "success",
             message: "Properties found successfully",
-            data: properties,
+            data: filteredProperties,
         });
         
     } catch (error) {
@@ -158,35 +185,41 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         });
     }
 }
-interface IGetCachedPropertiesBody {
-    userIdIp: string,
-}
-export const getCachedProperties = async (req: Request<{},{},IGetCachedPropertiesBody, IGetPropertiesQuery> , res: Response): Promise<void> => {
+
+//* Done
+export const getPropertyById =  async (req: Request , res: Response): Promise<void> => {
     try {
-        const { userIdIp } = req.body;
-        const page = req.query.page ? parseInt(req.query.page) : 1;
-        const limit = req.query.limit ? parseInt(req.query.limit) : 15;
-        const skip = (page - 1) * limit;
+        const propertyId = req.params.id;
 
-        const properties = await getCache(userIdIp);
+        // Find property by ID
+        const property = await propertyModel.findById(propertyId).populate("rooms");
 
+        // If property doesn't exist, return 404
+        if (!property) {
+            res.status(404).json({
+                status: "error",
+                message: "Property not found",
+            });
+            return
+        }
+
+        // Send success response
         res.status(200).json({
             status: "success",
-            message: "Properties found successfully",
-            data: properties,
+            message: "Property with rooms found successfully",
+            data: property,
         });
-
     } catch (error) {
-        console.log(error); // dev mode
+        console.error("Error fetching property:", error);
         res.status(500).json({
             status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
+            message: "Server error",
         });
     }
-}
+};
 
 // Help Functions
+//* Done
 async function getPropertyCoordinates(country?: string, region?: string, city?: string, addressLine?: string) {
     let locationQuery: any = {};
         if (country) locationQuery["location.country"] = { $regex: new RegExp(country, 'i') };
@@ -196,6 +229,7 @@ async function getPropertyCoordinates(country?: string, region?: string, city?: 
 
         return await getCoordinatesByLocation(`${addressLine}, ${city}, ${region}, ${country}`);
 }
+//* Done
 async function getPropertiesByRadius(coordinates: number[], distance: number, limit?: number,) {
     let query = propertyModel.find({
         "location.coordinates": {
@@ -208,252 +242,437 @@ async function getPropertiesByRadius(coordinates: number[], distance: number, li
     if(limit) query.limit(limit);
     return query.exec();
 }
-async function filterPropertiesMainSearch(properties: IProperty[], adults_num: number, children_num: number,
-    rooms_num: number, startDate: string, endDate: string, isBaby:boolean, isAnimalAllowed?:boolean,): Promise<IProperty[]> {
+// Working
+async function filterPropertiesPrimary(
+    properties: IProperty[], 
+    dateFilter: IFilterPropertiesDate,
+    options: IFilterPropertiesOptions
+    )/*: Promise<IProperty[]> */{
 
-    properties = await Promise.all(properties.map(async (property: IProperty) => {
+    const filteredProperties = await Promise.all(properties.map(async (property: IProperty) => {
         // Check pet policy
-        if (isAnimalAllowed && !property.houseRules.pets) return null;
+        if (options.isAnimalAllowed && !property.houseRules.pets) return null;
 
-        // Step 2: Find all available rooms for this property
-        const rooms = await roomModel.find({ _id: { $in: property.rooms } });
+        // Step 1: Find all rooms for this property
+        const propertyRooms = await roomModel.find({ _id: { $in: property.rooms } });
 
-        // Step 3: Try to find the best fit combination of rooms
-        const selectedRooms: string[] = [];
-        const totalGuests = adults_num + children_num;
-        const roomNumRequired = rooms_num;
+        // Step 2: Get availability for each room
+        const roomsWithAvailability = await Promise.all(propertyRooms.map(async (room) => {
+            const availability = await getAvailability(
+                room, 
+                { startDate : dateFilter.startDate, 
+                endDate: dateFilter.endDate, 
+                length: dateFilter.length, 
+                isWeekend: dateFilter.isWeekend, 
+                fromDay: dateFilter.fromDay, 
+                yearMonths: dateFilter.yearMonths }
+            );
 
-        // Step 4: Sort rooms by closest fit (ascending order by max_guests)
-        const sortedRooms = rooms
-            .map(room => ({
+            return {
                 room,
                 maxGuests: room.max_guests as number,
-                minAvailable: getMinimumAvailability(room, startDate, endDate)
-            }))
-            .filter(({ minAvailable }) => minAvailable > 0) // Ensure at least one room is available
-            .sort((a, b) => a.maxGuests - b.maxGuests); // Prioritize best-fit rooms
+                availability
+            };
+        }));
 
-        let remainingGuests = totalGuests;
-        let remainingRooms = roomNumRequired ?? Infinity; // If no room number is specified, allow any combination
+        // Step 3: Filter rooms that have availability
+        const availableRooms: any = roomsWithAvailability
+            .filter(({ availability }) => 
+                availability.startDate !== null && 
+                availability.availableRooms > 0
+            )
+            // .sort((a, b) => a.maxGuests - b.maxGuests); // Sort by capacity for optimal distribution
 
-        for (const { room, maxGuests } of sortedRooms) {
-            if (remainingGuests <= 0 || remainingRooms <= 0) break;
-
-            let effectiveGuests = maxGuests;
-
-            // Step 5: Check if babies don't need a dedicated space
-            // if (childrenAges && childrenAges.some(age => age <= 3) && room.baby) {
-            //     effectiveGuests += childrenAges.filter(age => age <= 3).length;
-            // }
-
-            if (effectiveGuests >= remainingGuests) {
-                // This room alone is sufficient
-                selectedRooms.push(room._id.toString());
-                remainingGuests = 0;
-                remainingRooms--;
-                break;
-            } else {
-                // Partial fit, take this room and continue searching
-                selectedRooms.push(room._id.toString());
-                remainingGuests -= effectiveGuests;
-                remainingRooms--;
-            }
-        }
-
-        // If not enough rooms found, discard property
-        if (remainingGuests > 0) return null;
-
+        let targetGuests = options.adults! + options.children!;
+        let targetRooms = options.rooms!;
+        let needsBaby = options.isBaby!;
+        console.log("parameters: ", targetGuests, targetRooms , needsBaby);
+        console.log("rooms available: ", availableRooms.length);
+        const selectedRooms = findBestRoomCombinationDP(availableRooms, targetGuests, targetRooms, needsBaby);
+        console.log(selectedRooms)
+        if(!selectedRooms) return null;
         
-
-        return { ...property.toObject(), selectedRooms };
+        return {
+            ...property.toObject(),
+            selectedRooms,
+        };
     }));
 
-    // Filter out null values
-    return properties.filter((property: IProperty) => property !== null);
-} 
-function getMinimumAvailability(room: IRoom, startDate: string, endDate: string): number {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    let minAvailable = room.overall_count;
-
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-        const dateStr = d.toISOString().split('T')[0];
-        const availability = room.available.find(av => av.date.toISOString().split('T')[0] === dateStr);
-        const count = availability ? availability.count : room.overall_count;
-        minAvailable = Math.min(minAvailable, count);
+    // Filter out null values and return valid properties
+    return filteredProperties.filter((property): property is IProperty => property !== null);
+}
+//* Done
+function getAvailability(
+    room: IRoom,
+    { startDate, endDate, length, isWeekend, fromDay, yearMonths }: IFilterPropertiesDate
+) {
+    // If startDate and endDate are provided
+    if (startDate && endDate) {
+        let minAvailable = room.overall_count;
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        // Loop through each date in the range and find minimum availability
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split('T')[0];
+            const availability = room.available.find(av => av.date.toISOString().split('T')[0] === dateStr);
+            const count = availability ? availability.count : room.overall_count;
+            minAvailable = Math.min(minAvailable, count);
+        }
+        return {
+            startDate,
+            availableRooms: minAvailable
+        }
     }
+    // If isWeekend is true, consider only weekends (Friday & Saturday)
+    else if (isWeekend) {
+        yearMonths.forEach(ym => {
+            if (ym.month < 0 || ym.month > 11 || !Number.isInteger(ym.year)) {
+                throw new Error('Invalid year or month. Month should be 0-11, year should be a valid integer');
+            }
+        });
     
-    return minAvailable;
-};
-async function setCacheMainSearch(cacheKey: string, coordinates: number[], isBaby: boolean, children_num: number, 
-    adults_num: number, rooms_num: number, startDate: string, endDate: string, distance: number, isAnimalAllowed?: boolean) {
+        const totalRooms = room.overall_count;
+        
+        // Get tomorrow's date
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);  // Reset time to start of day
+    
+        // Get all weekend dates for specified year-months
+        const weekendDates = yearMonths.reduce((dates: Date[], yearMonth) => {
+            const daysInMonth = new Date(yearMonth.year, yearMonth.month + 1, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(yearMonth.year, yearMonth.month, day);
+                const dayOfWeek = date.getDay();
+                
+                // Check if it's Friday (5) or Saturday (6) and after tomorrow
+                if ((dayOfWeek === 5 || dayOfWeek === 6) && date >= tomorrow) {
+                    dates.push(date);
+                }
+            }
+            return dates;
+        }, []);
+    
+        // Sort dates to ensure we get the earliest valid date
+        weekendDates.sort((a, b) => a.getTime() - b.getTime());
+    
+        // If no availability records exist or no weekend dates found
+        if (!room.available || room.available.length < 1) {
+            return {
+                startDate: weekendDates.length > 0 ? weekendDates[0] : null,
+                availableRooms: totalRooms
+            };
+        }
+    
+        let bestResult: any = {
+            startDate: null,
+            availableRooms: 0
+        };
+    
+        for (const weekendDate of weekendDates) {
+            // Find if there's an availability record for this date
+            const availabilityRecord = room.available.find(a => 
+                a.date.getFullYear() === weekendDate.getFullYear() &&
+                a.date.getMonth() === weekendDate.getMonth() &&
+                a.date.getDate() === weekendDate.getDate()
+            );
+    
+            // If record exists, use its count, otherwise use total rooms
+            const availableRooms = availabilityRecord ? availabilityRecord.count : totalRooms;
+    
+            // Update best result if we found better availability
+            if (availableRooms >= bestResult.availableRooms) {
+                bestResult = {
+                    startDate: weekendDate,
+                    availableRooms: availableRooms
+                };
+    
+                // If we found maximum availability, we can stop searching
+                if (availableRooms === totalRooms) {
+                    break;
+                }
+            }
+        }
+    
+        return bestResult;
+    }
 
-    // Get sorted paginated properties by distance
+    // If fromDay and length are provided, check availability starting from a specific day
+    else if (typeof fromDay === "number" && length) {
+        if (fromDay < 0 || fromDay > 6 || length < 1) {
+            throw new Error('Invalid fromDay (should be 0-6) or length (should be positive)');
+        }
+    
+        yearMonths.forEach(ym => {
+            if (ym.month < 0 || ym.month > 11 || !Number.isInteger(ym.year)) {
+                throw new Error('Invalid year or month. Month should be 0-11, year should be a valid integer');
+            }
+        });
+    
+        const totalRooms = room.overall_count;
+        
+        // Get tomorrow's date
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);  // Reset time to start of day
+    
+        // Get all possible starting dates for the specified year-months
+        const potentialStartDates = yearMonths.reduce((dates: Date[], yearMonth) => {
+            const daysInMonth = new Date(yearMonth.year, yearMonth.month + 1, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(yearMonth.year, yearMonth.month, day);
+                // Only include dates from tomorrow onwards that match the required day of week
+                if (date >= tomorrow && date.getDay() === fromDay) {
+                    dates.push(date);
+                }
+            }
+            return dates;
+        }, []);
+    
+        // Sort dates to ensure we get the earliest valid sequence
+        potentialStartDates.sort((a, b) => a.getTime() - b.getTime());
+    
+        let bestResult: any = {
+            startDate: null,
+            availableRooms: 0
+        };
+    
+        // For each potential start date, check the sequence
+        for (const startDate of potentialStartDates) {
+            let minAvailability = totalRooms;
+            let isValidSequence = true;
+            
+            // Check each day in the sequence
+            for (let i = 0; i < length; i++) {
+                const currentDate = new Date(startDate);
+                currentDate.setDate(startDate.getDate() + i);
+    
+                // Skip if date is outside the specified months
+                const currentYearMonth = {
+                    year: currentDate.getFullYear(),
+                    month: currentDate.getMonth()
+                };
+                
+                if (!yearMonths.some(ym => 
+                    ym.year === currentYearMonth.year && 
+                    ym.month === currentYearMonth.month
+                )) {
+                    isValidSequence = false;
+                    break;
+                }
+    
+                // Check availability for this date
+                const availabilityRecord = room.available?.find(a => 
+                    a.date.getFullYear() === currentDate.getFullYear() &&
+                    a.date.getMonth() === currentDate.getMonth() &&
+                    a.date.getDate() === currentDate.getDate()
+                );
+    
+                // Update minimum availability
+                const currentAvailability = availabilityRecord ? availabilityRecord.count : totalRooms;
+                minAvailability = Math.min(minAvailability, currentAvailability);
+            }
+    
+            // If valid sequence and better than current best, update result
+            if (isValidSequence && minAvailability >= bestResult.availableRooms) {
+                bestResult = {
+                    startDate: startDate,
+                    availableRooms: minAvailability
+                };
+    
+                // If we found maximum availability, we can stop searching
+                if (minAvailability === totalRooms) {
+                    break;
+                }
+            }
+        }
+    
+        return bestResult;
+    }
+}
+
+
+// Working
+async function setCacheMainSearch(
+    cacheKey: string, coordinates: number[], distance: number,
+    dateFilter: IFilterPropertiesDate,
+    options: IFilterPropertiesOptions
+    ) {
+
     let properties: IProperty[] = await getPropertiesByRadius(coordinates, distance);
-    
-    // properties = await filterPropertiesMainSearch(properties, adults_num, children_num,
-    //     rooms_num, startDate, endDate, isBaby, isAnimalAllowed)
 
-    setCache(cacheKey, properties, 60 * 60 * 24);
+    properties = await filterPropertiesPrimary(properties, dateFilter, options);
+
+    setCache(cacheKey, properties);
 }
 
 /*
-export const getAllLessons = async (req: Request, res: Response): Promise<void> => {
-    try {
+// Step 4: Try to find the best combination of rooms
+        const selectedRooms: Array<{
+            roomId: string,
+            startDate: Date,
+            availableCount: number
+        }> = [];
+        
+        let remainingGuests = options.adults! + options.children!;
+        let remainingRoomCount = options.rooms ?? Infinity;
+        let hasBabyRoom = false;  // Track if we've found a room suitable for babies
 
-        const lessons = await lessonModel.find().populate("teacher");
-
-        if (!lessons) {
-            res.status(404).json({ status:"error", message: 'There are no lessons' });
-            return;
+        // If baby is required, first ensure at least one room allows babies
+        if (options.isBaby && !availableRooms.some(({ room }) => room.baby)) {
+            return null;  // No rooms suitable for babies, reject the property
         }
 
-        res.status(200).send({
-            status: "success",
-            message: "Lessons found successfully",
-            lessons
-        })
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
+        for (const { room, maxGuests, availability } of availableRooms) {
 
-// REGISTER FOR LESSON
-export const registerForLesson = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { lessonId } = req.params;
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
+            console.log("!!remainingGuests: ", remainingGuests);
+            if (remainingGuests <= 0 || remainingRoomCount <= 0) break;
 
-        if (!userId || !lessonId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
+            // Skip rooms that don't support babies if we need one and haven't found one yet
+            if (options.isBaby && !hasBabyRoom && !room.baby) {
+                continue;  // Skip to next room to prioritize finding a baby-friendly room first
+            }
+
+            let effectiveCapacity = maxGuests;
+
+            // Check if we can use this room
+            if (availability.availableRooms > 0) {
+                if (effectiveCapacity >= remainingGuests) {
+                    // This room alone can accommodate remaining guests
+                    selectedRooms.push({
+                        roomId: room._id.toString(),
+                        startDate: availability.startDate!,
+                        availableCount: availability.availableRooms
+                    });
+                    if (room.baby) hasBabyRoom = true;
+                    remainingGuests = 0;
+                    remainingRoomCount--;
+                    break;
+                } else {
+                    // Use this room for partial accommodation
+                    selectedRooms.push({
+                        roomId: room._id.toString(),
+                        startDate: availability.startDate!,
+                        availableCount: availability.availableRooms
+                    });
+                    if (room.baby) hasBabyRoom = true;
+                    remainingGuests -= effectiveCapacity;
+                    remainingRoomCount--;
+                }
+            }
         }
 
-        const lesson = await lessonModel.findById(lessonId);
-        if (!lesson) {
-            res.status(404).json({ status: 'error', message: 'Lesson not found' });
-            return;
+        // If we couldn't accommodate all guests or meet room requirements, discard property
+        // Also check if we needed a baby room but didn't get one
+        if (remainingGuests > 0 || 
+            (options.rooms && remainingRoomCount > 0) || 
+            (options.isBaby && !hasBabyRoom)) {
+            return null;
         }
 
-        const userIdObjectId = new mongoose.Types.ObjectId(userId);
-
-        if (lesson.participants.includes(userIdObjectId)) {
-            res.status(400).json({ status: 'error', message: 'User already registered for this lesson' });
-            return;
+        // Ensure all selected rooms have the same start date
+        const startDates = selectedRooms.map(r => new Date(r.startDate).getDate());
+        if (new Set(startDates).size > 1) {
+            return null; // Rooms have different start dates
         }
 
-        lesson.participants.push(userIdObjectId);
-        await lesson.save();
-
-        await userModel.findByIdAndUpdate({ _id: userId }, { $addToSet: { schedule: lessonId } });
-
-        res.status(200).json({ status: 'success', message: 'User registered for the lesson successfully', lesson });
-    
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-};
-
-
-// EDIT LESSON
-interface editLessonRequestBody {
-    lessonId ?: string;
-    description?: string;
-    startDate?: string;
-    duration?: string;
-}
-export const editLesson = async (req: Request<{},{}, editLessonRequestBody>, res: Response): Promise<void> => {
-    try {
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
-        const { description, startDate, duration, lessonId } = req.body;
-
-        if(!lessonId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-
-        const fieldsToUpdate: editLessonRequestBody = {  } ;
-        if(description) fieldsToUpdate["description"] = description;
-        if(startDate) fieldsToUpdate["startDate"] = startDate;
-        if(duration) fieldsToUpdate["duration"] = duration;
-
-        const updatedLesson = await lessonModel.findOneAndUpdate(
-            { _id: lessonId, teacher: userId },
-            fieldsToUpdate,
-            { new: true }
-        );
-
-        if (!updatedLesson) {
-            res.status(404).json({
-                status: "error",
-                message: "Lesson not found",
-            });
-            return;
-        }
-
-        res.status(200).json({
-            status: "success",
-            message: "Lesson updated successfully",
-            user: updatedLesson,
-        });
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-
-//  DELETE LESSON
-export const deleteLesson = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
-        const { id: lessonId } = req.params;
-
-        if(!lessonId || !userId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-
-        const updatedLesson = await lessonModel.findOneAndDelete(
-            { _id: lessonId, teacher: userId }
-        );
-
-        if (!updatedLesson) {
-            res.status(404).json({
-                status: "error",
-                message: "Lesson not found",
-            });
-            return;
-        }
-
-        res.status(200).json({
-            status: "success",
-            message: "Lesson deleted successfully",
-        });
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
+        // Return property with selected rooms information
 
 */
+
+
+type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
+type RoomCounts = Map<number, number>;    // Map of roomId to count used
+type DPMap = Map<string, WasteAndRooms>;
+function findBestRoomCombinationDP(rooms: IRoom[], targetGuests: number, targetRooms: number, needsBaby: boolean) {
+    const n = rooms.length;
+    
+    // State: [roomIndex][currentGuests][roomsUsed][hasBabyRoom][roomCountsUsed]
+    // Value: [minWastedSpace, previousState]
+    const dp: DPMap = new Map();
+    
+    function getKey(index: number, guests: number, usedRooms: number, hasBaby: boolean, roomCountsStr: string) {
+        return `${index},${guests},${usedRooms},${hasBaby},${roomCountsStr}`;
+    }
+    
+    function solve(index: number, currentGuests: number, usedRooms: number, hasBaby: boolean, roomCounts: RoomCounts): any {
+        // Base cases
+        // If used all rooms -> if all good return the spent space , [] else return infinity (bad solution)
+        if (usedRooms === targetRooms) {
+            if (currentGuests >= targetGuests && (!needsBaby || hasBaby)) {
+                return [currentGuests - targetGuests, []];
+            }
+            return [Infinity, []];
+        }
+        // If reached the end or used too many rooms
+        if (index === n || usedRooms > targetRooms) {
+            return [Infinity, []];
+        }
+        
+        // Convert roomCounts to string for the key
+        const roomCountsStr = JSON.stringify([...roomCounts]);
+        const key = getKey(index, currentGuests, usedRooms, hasBaby, roomCountsStr);
+        if (dp.has(key)) {
+            return dp.get(key);
+        }
+        
+        const { room }: any = rooms[index];
+        const currentRoomCount = roomCounts.get(room._id) || 0;
+        
+        // Don't use current room
+        const [skipWaste, skipRooms] = solve(
+            index + 1, 
+            currentGuests, 
+            usedRooms, 
+            hasBaby, 
+            new Map(roomCounts)
+        );
+        
+        let useWaste = Infinity;
+        let useRooms = [];
+        const roomCount = (rooms[index] as any).availability.availableRooms;
+
+        // Use current room if we haven't exceeded its count
+        if (currentRoomCount < roomCount) {
+            const newRoomCounts = new Map(roomCounts);
+            newRoomCounts.set(room._id, currentRoomCount + 1);
+            
+            const newGuests = currentGuests + room.max_guests!;
+            const newBaby = hasBaby || room.baby;
+            
+            [useWaste, useRooms] = solve(
+                index,  // Stay at same index since we might use this room again
+                newGuests,
+                usedRooms + 1,
+                newBaby,
+                newRoomCounts
+            );
+            
+            if (useWaste !== Infinity) {
+                useRooms = [room._id, ...useRooms];
+            }
+        }
+        
+        // Choose better option
+        let result: WasteAndRooms;
+        if (useWaste < skipWaste) {
+            result = [useWaste, useRooms];
+        } else {
+            result = [skipWaste, skipRooms];
+        }
+        
+        dp.set(key, result);
+        return result;
+    }
+    
+    const [waste, selectedRooms] = solve(0, 0, 0, false, new Map());
+    
+    if (waste === Infinity || selectedRooms.length !== targetRooms) {
+        return null;
+    }
+    
+    return selectedRooms;
+}

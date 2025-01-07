@@ -54,3 +54,5 @@ export interface IRoom extends Document {
     }]
     overall_count: number; // min: 0
 }
+
+export type TPartialRoom = Partial<IRoom>;

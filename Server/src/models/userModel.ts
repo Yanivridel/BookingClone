@@ -112,6 +112,10 @@ UserSchema.post('findOneAndUpdate', async function (user: any) {
         user.search.shift();
         await user.save(); 
     }
+    if (user.interested && user.interested.length > 10) {
+        user.interested.shift();
+        await user.save(); 
+    }
 });
 // Faster desc sorting searches
 UserSchema.index({ "search.createdAt": -1 });

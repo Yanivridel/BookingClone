@@ -37,11 +37,14 @@ app.get('/', (req: Request, res: Response): void => {
 // Routes
 import userRoutes from './routes/userRoutes'
 import propertyRoutes from './routes/propertyRoutes'
+import roomRoutes from './routes/roomRoutes'
 // import reviewRoutes from './routes/reviewRoutes'
 
 app.use('/api/users', userRoutes);
 
 app.use('/api/property', propertyRoutes);
+
+app.use('/api/room', roomRoutes);
 
 // app.use('/api/reviews', reviewRoutes);
 
