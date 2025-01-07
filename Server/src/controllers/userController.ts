@@ -398,7 +398,7 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
     }
 };
 
-// Get Searches - Done
+// Get Last Searches - Done
 export const getSearches = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;

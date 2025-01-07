@@ -197,6 +197,33 @@ export enum ECountry {
     Zimbabwe = "Zimbabwe",
 }
 
+export enum EAccommodationType {
+    Hotel = "hotel",
+    Apartment = "apartment",
+    Resort = "resort",
+    Villa = "villa",
+    Cabin = "cabin",
+    Cottage = "cottage",
+    GlampingSite = "glamping site",
+    ServicedApartment = "serviced apartment",
+    VacationHome = "vacation home",
+    GuestHouse = "guest house",
+    Hostels = "hostels",
+    Motel = "motel",
+    BnB = "b&b",
+    Ryokan = "ryokan",
+    Riad = "riad",
+    ResortVillage = "resort village",
+    Homestay = "homestay",
+    Campground = "campground",
+    CountryHouse = "country house",
+    FarmStay = "farm stay",
+    Boat = "boat",
+    LuxuryTent = "luxury tent",
+    SelfCateringAccommodation = "self-catering accommodation",
+    TinyHouse = "tiny house",
+}
+
 export enum ECoinType {
     USD = "USD", // United States Dollar
     EUR = "EUR", // Euro
@@ -359,6 +386,7 @@ export enum ELanguage {
 }
 
 export enum EFacility {
+    FreeParking =  "Free parking",
     WIFI = "Free WiFi",
     PARKING = "Parking",
     AIRPORT_SHUTTLE = "Airport shuttle",
@@ -407,7 +435,9 @@ export enum EFacility {
     CAR_RENTAL = "Car rental",
     SHUTTLE_SERVICE = "Shuttle service",
     VALET_PARKING = "Valet parking",
-    ELECTRIC_VEHICLE_CHARGING = "Electric vehicle charging station"
+    ELECTRIC_VEHICLE_CHARGING = "Electric vehicle charging station",
+    TeaOrCoffeeMakerInAllRooms = "Tea/Coffee Maker in All Rooms",
+    VeryGoodBreakfast = "Very Good Breakfast"
 }
 
 export enum EPropertyHighlight {
@@ -469,11 +499,13 @@ export enum EFeatures {
 export enum EPaymentMethods {
     CREDIT_CARD = 'Credit Card',
     DEBIT_CARD = 'Debit Card',
+    MasterCard = "MasterCard",
     PAYPAL = 'PayPal',
     BANK_TRANSFER = 'Bank Transfer',
     CASH = 'Cash',
     APPLE_PAY = 'Apple Pay',
     GOOGLE_PAY = 'Google Pay',
     CRYPTOCURRENCY = 'Cryptocurrency',
+    Visa = 'Visa',
     OTHER = 'Other'
 }

@@ -2,15 +2,14 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import path from 'path';
 
 dotenv.config();
+
+import { connectRedis } from './utils/redisClient';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware Configuration
 app.use(express.json());
@@ -28,6 +27,8 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
+connectRedis();
+
 // Server Check
 app.get('/', (req: Request, res: Response): void => {
     res.status(200).send({ message: "Server is alive !" });
@@ -35,12 +36,12 @@ app.get('/', (req: Request, res: Response): void => {
 
 // Routes
 import userRoutes from './routes/userRoutes'
-// import propertyRoutes from './routes/propertyRoutes'
+import propertyRoutes from './routes/propertyRoutes'
 // import reviewRoutes from './routes/reviewRoutes'
 
 app.use('/api/users', userRoutes);
 
-// app.use('/api/property', propertyRoutes);
+app.use('/api/property', propertyRoutes);
 
 // app.use('/api/reviews', reviewRoutes);
 
