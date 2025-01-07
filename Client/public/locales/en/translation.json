@@ -1,6 +1,8 @@
 {
-  "welcome": "Welcome to React",
-  "description": "This is an i18n-enabled React app.",
+  "home": {
+    "interestedInHeader": "Still interested in these properties?",
+    "OffersHeader": "Offers"
+  },
   "search": {
     "placholderInput": "Where are you going?",
     "dropDouwnHeader": "Popular destinations nearby",
@@ -12,7 +14,6 @@
     "flexibleSecondaryHeader": "When do you want to go?",
     "flexibleChoiceLimit": "Select up to 3 months",
     "flexibleRadioGroup": ["A weekend", "A week", "A month", "Other"],
-
     "caledarPlusMibusButtons": [
       "Exact dates",
       "1 day",

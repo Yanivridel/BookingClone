@@ -1,45 +1,30 @@
 import { useEffect } from "react";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "./store/slices/userSlices";
-import { getSelf } from "./utils/userApi";
-// Functions
-import { getCookie } from "./utils/cookies";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import { useTranslation } from "react-i18next";
-import { Button } from "./components/ui/button";
-import ImageCard from "./components/ImageCard";
-import CardWithDescription from "./components/CardWithDescritpion";
-import MainNav from "./components/MainNav";
-import TopNav from "./components/TopNav";
-import HamburgerNav from "./components/HamburgerNav";
-import Search from "./components/search";
-import MainCard from "./components/MainCard";
-import OffersCard from "./components/OffersCard";
-import { BookAIcon } from "lucide-react";
-import { BookingLogo } from "./components/ui/Icons";
-import SaveButton from "./components/SaveButton";
+import Home from "./pages/Home.tsx";
+import Layout from "./pages/Layout.tsx";
 
-// Example how to get current User from Redux :
-// import { useSelector } from "react-redux";
-// import { RootState } from "./store";
-// const currentUser = useSelector((state: RootState) => state.currentUser);
-//
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+// * Example how to get current User from Redux :
+// * import { useSelector } from "react-redux";
+// * import { RootState } from "./store";
+// * onst currentUser = useSelector((state: RootState) => state.currentUser);
 
 function App() {
   // const dispatch = useDispatch();
 
-  const { t, i18n } = useTranslation();
-
-  console.log("i18n initialized:", i18n);
-
-  const changeLanguage = (lng: string) => {
-    if (i18n.changeLanguage) {
-      i18n.changeLanguage(lng);
-    } else {
-      console.error("i18n.changeLanguage is not available.");
-    }
-  };
+  const router = createBrowserRouter([
+    {
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+      ],
+    },
+  ]);
 
   // const reloadUser = async () => {
   //   const token = getCookie('token');
@@ -54,49 +39,7 @@ function App() {
     // reloadUser();
   }, []);
 
-  return (
-    <BrowserRouter>
-      <div className="p-4">
-        <h1 className="text-2xl font-bold">{t("welcome")}</h1>
-        <p>{t("description")}</p>
-        <div className="mt-4">
-          <button
-            className="mr-2 px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => changeLanguage("en")}
-          >
-            English
-          </button>
-          <button
-            className="px-4 py-2 bg-green-500 text-white rounded"
-            onClick={() => changeLanguage("he")}
-          >
-            עברית
-          </button>
-        </div>
-      </div>
-      <Button variant="navBarUnderline" size="navBarUnderline">
-        baba
-      </Button>
-      <Button variant="navBarUnderlineSelected" size="navBarUnderline">
-        baba
-      </Button>
-      
-      {/* <Search></Search>
-      <CardWithDescription />
-      <ImageCard />
-      <MainNav /> */}
-      <MainCard discount={{coin:"$",value:"1022"}} type="Hotel"/>
-      {/* <OffersCard /> */}
-      {/* <TopNav /> */}
-      
-      <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-
-        {/* <Route path="/login" element={<Login />} /> */}
-        {/* <Route path="/signup" element={<SignUp />} /> */}
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

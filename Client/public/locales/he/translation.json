@@ -1,6 +1,8 @@
 {
-  "welcome": "ברוכים הבאים ל-React",
-  "description": "זוהי אפליקציית React עם תמיכה ב-i18n.",
+  "home": {
+    "interestedInHeader": "עדיין מתעניינים במקומות האירוח האלה?",
+    "OffersHeader": "הצעות מיוחדות"
+  },
   "search": {
     "placholderInput": "לאן אתם נוסעים?",
     "dropDouwnHeader": "יעדים פופולריים באיזור",
