@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 
+
 interface IconsProps {
+
   className?: string;
 }
 
@@ -21,8 +23,23 @@ export const BookingLogo = ({ className }: IconsProps) => {
 };
 
 
+export const EmptyCalendarImg = ({ className }: IconsProps) => {
+  return (
+    <svg
+      className={cn(className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
+      <path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5M7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0m10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0"></path>
+    </svg>
+  );
+};
+
+
 
 function IconHeartRed({className} : IconsProps) {
+
   return (
     <div>
       <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M23.3 5.076a6.582 6.582 0 0 0-10.446-1.71L12 4.147l-.827-.753a6.52 6.52 0 0 0-5.688-1.806A6.47 6.47 0 0 0 .7 5.075a6.4 6.4 0 0 0 1.21 7.469l9.373 9.656a1 1 0 0 0 1.434 0l9.36-9.638A6.41 6.41 0 0 0 23.3 5.076"></path></svg>
@@ -42,16 +59,22 @@ export const IconHeart = ({className}: IconsProps) => {
 };
 
 
-
-export const IconPlusMinus = () => {
+export const IconPlusMinus = ({ className }: IconsProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <svg
+      className={cn(className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
       <path d="M21.14 22.94a1 1 0 0 1-1 1H3.86a1 1 0 1 1 0-2h16.28a1 1 0 0 1 1 1M4 10h7v7a1 1 0 0 0 2 0v-7h7a1 1 0 0 0 0-2h-7V1a1 1 0 0 0-2 0v7H4a1 1 0 0 0 0 2"></path>
     </svg>
   );
 };
 
+
 export const Spinner = ({ className }: IconsProps) => {
+
 
   return (
     <div role="status">
