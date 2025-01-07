@@ -1,6 +1,7 @@
+import styles from "@/css/search.module.css";
 import { t } from "i18next";
 import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Calendar } from "./ui/calendar";
 import { DateRange } from "react-day-picker";
@@ -8,7 +9,13 @@ import { addDays, format } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Separator } from "./ui/separator";
+
+import { searchCalendarButtonsData, monthsAndYears } from "@/utils/staticData";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Label } from "./ui/label";
+import { EmptyCalendarImg } from "./ui/Icons";
+import { cn } from "@/lib/utils";
+
 
 // damy data
 const items = [
@@ -28,19 +35,31 @@ interface IUnknownData {
   icon: string;
 }
 
+interface MonthYear {
+  month: string;
+  year: number;
+}
+
 // ! need to get props "isAllHome" that make the search diffrent
 // todo: icons and "powred by google"
 function Search() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [res, setRes] = useState<Array<IUnknownData> | null>(items); // !need to change the type with the real data
+  const [isOther, setIsOther] = useState<boolean>(true); // !need to change the type with the real data
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
-  const [activeButton, setActiveButton] = useState<string>("");
 
-  //   const [locale, setLocale] = useState("he");
+  const [activePlusMinusButton, setActivePlusMinusButton] =
+    useState<string>("");
+  const [activeNavButton, setActiveNavButton] = useState<string>(
+    t("search.calendar")
+  );
+  const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
+  const [clickedMonthsCards, setClickedMonthsCards] = useState<number[]>([]);
+
   const { i18n } = useTranslation();
   const currentLocale = i18n.language === "he" ? he : enUS;
 
@@ -68,19 +87,25 @@ function Search() {
     setInputValue(() => [element.city, element.country].join(", "));
   };
 
-  const handleButtonClick = (buttonName: string) => {
-    setActiveButton(buttonName);
+
+  const handlePlusMinusButtonClick = (buttonName: string) => {
+    setActivePlusMinusButton(buttonName);
+  };
+
+  const handleNavButtonClick = (buttonName: string) => {
+    setActiveNavButton(buttonName);
+
   };
 
   const handleDateSelect = (selectedDate: DateRange | undefined) => {
     if (!selectedDate || !selectedDate.from) {
-      setDate(selectedDate); // אם לא בחרת תאריך (כמו ביציאה מה-calendar), מאפס את ה-state
+
+      setDate(selectedDate);
       return;
     }
 
-    // אם לא בחרת תאריך אחר לשדה ה-to
     if (!selectedDate.to) {
-      // אם בחרת את אותו תאריך שנבחר כבר ב-from, אל תשנה כלום
+
       if (selectedDate.from.getTime() === date?.from?.getTime()) {
         return;
       }
@@ -88,17 +113,33 @@ function Search() {
       return;
     }
 
-    // אם בחרת שני תאריכים שונים
+
     if (selectedDate.from.getTime() === selectedDate.to.getTime()) {
-      setDate({ from: selectedDate.from, to: undefined }); // מאפס את ה-to אם הם אותו תאריך
+      setDate({ from: selectedDate.from, to: undefined });
     } else {
-      setDate(selectedDate); // אם לא, עדכן את ה-state עם שני התאריכים
+      setDate(selectedDate);
     }
   };
 
-  // פורמט בעברית
+  // monthes and years
+  const handleclickMonthCard = (index: number) => {
+    let newClickedButtons = [];
+
+    if (clickedMonthsCards.includes(index)) {
+      // אם הכפתור כבר נלחץ, הורד אותו מהרשימה
+      newClickedButtons = clickedMonthsCards.filter((i) => i !== index);
+    } else {
+      // אם הכפתור לא נלחץ, הוסף אותו לרשימה
+      newClickedButtons = [...clickedMonthsCards, index];
+    }
+
+    setClickedMonthsCards(newClickedButtons);
+  };
+
+  //hebrew formt
+
   const formattedHebrew = "EEE, dd MMMM";
-  // פורמט באנגלית
+  // english format
   const formattedEnglish = "EEE, MMM dd";
 
   useEffect(() => {
@@ -109,6 +150,10 @@ function Search() {
     // console.log("date");
     // console.log(date);
   }, [date]);
+
+  useEffect(() => {
+    setYearsMonths(monthsAndYears());
+  }, []);
 
   return (
     <form className="p-2 text-[14px]">
@@ -194,50 +239,215 @@ function Search() {
               align={i18n.language === "he" ? "end" : "start"}
               alignOffset={-11.5}
               avoidCollisions={false}
+              dir={i18n.language === "he" ? "rtl" : "ltr"}
             >
               <div className="px-3 flex ">
                 <Button
                   className="flex-grow"
-                  variant="navBarUnderline"
+
+                  variant={
+                    activeNavButton === t("search.calendar")
+                      ? "navBarUnderlineSelected"
+                      : "navBarUnderline"
+                  }
                   size="navBarUnderline"
+                  onClick={() => handleNavButtonClick(t("search.calendar"))}
                 >
-                  baba
+                  {t("search.caledar")}
                 </Button>
                 <Button
                   className="flex-grow"
-                  variant="navBarUnderlineSelected"
+                  variant={
+                    activeNavButton === t("search.flexible")
+                      ? "navBarUnderlineSelected"
+                      : "navBarUnderline"
+                  }
                   size="navBarUnderline"
+                  onClick={() => handleNavButtonClick(t("search.flexible"))}
                 >
-                  baba
+                  {t("search.flexible")}
                 </Button>
               </div>
-              <Calendar
-                initialFocus
-                mode="range"
-                classNames={{
-                  months: "flex flex-row gap-4",
-                }}
-                fromDate={new Date()}
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={handleDateSelect}
-                numberOfMonths={2}
-                locale={currentLocale}
-                dir={i18n.language === "he" ? "rtl" : "ltr"}
-              />
-              <div className="flex justify-center">
-                <Button
-                  variant={"navBarRounded"}
-                  // className={` ${
-                  //   activeButton === "domestic"
-                  //     ? " border-gray-100"
-                  //     : "border-black"
-                  // }`}
-                  onClick={() => handleButtonClick("domestic")}
-                >
-                  Stays
-                </Button>
-              </div>
+
+              {activeNavButton === t("search.calendar") && (
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  classNames={{
+                    months: "flex flex-row gap-4",
+                  }}
+                  fromDate={new Date()}
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={handleDateSelect}
+                  numberOfMonths={2}
+                  locale={currentLocale}
+                  dir={i18n.language === "he" ? "rtl" : "ltr"}
+                />
+              )}
+              {activeNavButton === t("search.calendar") && (
+                <div className="flex justify-end gap-2 py-4 mx-6  border-t-[1px] border-[#e7e7e7]">
+                  {searchCalendarButtonsData.map((element) => (
+                    <Button
+                      key={element.text}
+                      variant={"navBarRounded"}
+                      className={` ${
+                        activePlusMinusButton === element.text &&
+                        "border-[#006ce4] text-[#006ce4] bg-[#f2f6fe]"
+                      }`}
+                      onClick={() => handlePlusMinusButtonClick(element.text)}
+                    >
+                      <span className="text-xs ">{t(element.text)}</span>
+                      {element.icon && (
+                        <element.icon
+                          className={` ${
+                            activePlusMinusButton === element.text &&
+                            " fill-[#006ce4]"
+                          } `}
+                        />
+                      )}
+                    </Button>
+                  ))}
+                </div>
+              )}
+              {activeNavButton === t("search.flexible") && (
+                <div className="px-4  w-[642px]">
+                  <h3 className="font-bold text-base pt-8">
+                    {t("search.flexibleHeader")}
+                  </h3>
+                  <RadioGroup
+                    defaultValue="comfortable"
+                    loop={true}
+                    className="py-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value={t("search.flexibleRadioGroup.0")}
+                        id="r0"
+                      />
+                      <Label htmlFor="r0" className="font-normal">
+                        {t("search.flexibleRadioGroup.0")}
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value={t("search.flexibleRadioGroup.1")}
+                        id="r1"
+                      />
+                      <Label htmlFor="r1" className="font-normal">
+                        {t("search.flexibleRadioGroup.1")}
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value={t("search.flexibleRadioGroup.2")}
+                        id="r2"
+                      />
+                      <Label htmlFor="r2" className="font-normal">
+                        {t("search.flexibleRadioGroup.2")}
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem
+                        value={t("search.flexibleRadioGroup.3")}
+                        id="r3"
+                      />
+                      <Label htmlFor="r3" className="font-normal">
+                        {t("search.flexibleRadioGroup.3")}
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                  {isOther && (
+                    <div className="flex gap-2 py-1">
+                      <div className="rounded-md border-[1px] p-1 border-[#868686] flex ">
+                        <input
+                          className="px-1 text-md text-searchGrayText focus:outline-none "
+                          type="number"
+                          id="nights"
+                          min="1"
+                          max="90"
+                        ></input>
+                        <label
+                          htmlFor="nights" // TODO:1- night / 1 < nights
+                          className="text-sm text-searchGrayText  border-s-[1px] px-2 cursor-text mt-[1px] py-0"
+                        >
+                          nights
+                        </label>
+                      </div>
+                      <select
+                        name="baba"
+                        id="baba"
+                        className="focus:outline-none text-sm pe-3 rounded-md border-[1px] cursor-pointer text-searchGrayText border-[#868686]"
+                      >
+                        <option value="Monday">From Monday</option>
+                        <option value="Tuesday">From Tuesday</option>
+                        <option value="Wednesday">From Wednesday</option>
+                        <option value="Thursday">From Thursday</option>
+                        <option value="Friday">From Friday</option>
+                        <option value="Saturday">From Saturday</option>
+                        <option value="Sunday">From Sunday</option>
+                      </select>
+                    </div>
+                  )}
+                  <h3 className="font-bold text-base pt-6">
+                    {t("search.flexibleSecondaryHeader")}
+                  </h3>
+                  <p className="pt-2 text-sm text-searchGrayText">
+                    {t("search.flexibleChoiceLimit")}
+                  </p>
+                  {/* ! */}
+                  <div
+                    className={cn(
+                      "w-full flex gap-2 overflow-scroll py-4",
+                      styles.scrollContainer
+                    )}
+                  >
+                    {yearsMonths.length !== 0 &&
+                      yearsMonths.map((month, index) => {
+                        const isClicked = clickedMonthsCards.includes(index);
+                        const isDisabled =
+                          clickedMonthsCards.length >= 3 && !isClicked;
+
+                        return (
+                          <Card
+                            onClick={() =>
+                              !isDisabled && handleclickMonthCard(index)
+                            }
+                            key={index}
+                            className={cn(
+                              "shadow-none cursor-pointer hover:bg-[#f5f5f5]",
+                              isClicked
+                                ? "border-primary text-[#006ce4] bg-[#f2f6fe] hover:bg-[#f2f6fe] "
+                                : isDisabled
+                                ? "bg-[#f5f5f5] text-[#a2a2a2] cursor-not-allowed fill-[#a2a2a2]"
+                                : ""
+                            )}
+                          >
+                            <CardContent
+                              className={cn(
+                                "py-[15px] flex gap-1 flex-col items-center justify-center h-full rounded-md"
+                              )}
+                            >
+                              <EmptyCalendarImg className={cn("h-4 w-4")} />
+                              <div>
+                                <h4>{month.month}</h4>
+                                <p className="text-[14px] text-searchGrayText">
+                                  {month.year}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                  </div>
+                  <hr />
+                  <div className="flex justify-end py-3">
+                    <p>Select preferred days</p>
+                    <Button variant={"default"}>select dates</Button>
+                  </div>
+                </div>
+              )}
+
             </PopoverContent>
             <PopoverTrigger asChild>
               <div className="flex">
@@ -266,6 +476,21 @@ function Search() {
                           : formattedEnglish,
                         { locale: currentLocale }
                       )}
+                      <span className="px-1">
+                        {activePlusMinusButton ===
+                        "search.caledarPlusMibusButtons.1"
+                          ? "(±1)"
+                          : activePlusMinusButton ===
+                            "search.caledarPlusMibusButtons.2"
+                          ? "(±2)"
+                          : activePlusMinusButton ===
+                            "search.caledarPlusMibusButtons.3"
+                          ? "(±3)"
+                          : activePlusMinusButton ===
+                            "search.caledarPlusMibusButtons.4"
+                          ? "(±7)"
+                          : ""}
+                      </span>
                     </div>
                   ) : (
                     // date.from only
