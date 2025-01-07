@@ -1,4 +1,5 @@
 import mongoose, { Schema, model} from "mongoose";
+import cron from 'node-cron'; // Import the node-cron library
 
 import { IRoom } from "src/types/roomTypes";
 import { EFacility, EFeatures } from "src/utils/structures";
@@ -9,17 +10,21 @@ const RoomSchema = new Schema<IRoom>({
         type: { 
             type: String, 
             enum: ["room", "studio", "suite", "bed", "villa"], 
-            required: true 
+            required: true
         },
         desc: { type: String, required: true },
         images: { type: [String], default: [] },
-        beds: {
-            sofa: { type: Number, default: 0 },
-            single: { type: Number, default: 0 },
-            double: { type: Number, default: 0 },
-            queen: { type: Number, default: 0 },
-            bunk: { type: Number, default: 0 }
-        },
+        rooms: [{
+            type: { type: String, enum: ["sleep", "shower", "living"], required: true, default: "sleep"},
+            room_num: { type: Number, min: 1 },
+            beds: {
+                sofa: { type: Number, default: 0 },
+                single: { type: Number, default: 0 },
+                double: { type: Number, default: 0 },
+                queen: { type: Number, default: 0 },
+                bunk: { type: Number, default: 0 }
+            }
+        }],
         baby: { type: Boolean, default: false },
         facilities: { type: [String], enum: Object.values(EFacility), default: [],
             validate: {
@@ -72,9 +77,32 @@ const RoomSchema = new Schema<IRoom>({
     { timestamps: true }
 );
 
+RoomSchema.set('toJSON', { virtuals: true });
+RoomSchema.set('toObject', { virtuals: true });
+
 // Virtual Property: max_guests
 RoomSchema.virtual("max_guests").get(function (this: IRoom) {
-    return this.beds.sofa + this.beds.single + (this.beds.queen + this.beds.bunk + this.beds.double) * 2;
+    return this.rooms.reduce((total, room) => {
+        return total + 
+            room.beds.sofa + 
+            room.beds.single + 
+            (room.beds.queen + room.beds.bunk + room.beds.double) * 2; 
+    }, 0);
 });
 
-export const RoomModel = model<IRoom>("Room", RoomSchema);
+// Once a day (midnight), cleanup the old booked rooms data
+cron.schedule('0 0 * * *', async () => { 
+    try {
+        const rooms = await roomModel.find({}); 
+        for (const room of rooms) {
+            room.set({ available: room.available.filter(availability => availability.date >= new Date())});
+            await room.save();
+        }
+        console.log('Daily cleanup of past available dates completed.');
+    } catch (error) {
+        console.error('Error cleaning up past available dates:', error);
+    }
+});
+
+
+export const roomModel = model<IRoom>("Room", RoomSchema);

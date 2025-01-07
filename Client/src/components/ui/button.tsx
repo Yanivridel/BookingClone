@@ -28,7 +28,9 @@ const buttonVariants = cva(
           "border border-transparent hover:border-sky-600 hover:bg-accent hover:text-accent-foreground hover:text-sky-600",
         ghostTopNav: "hover:bg-white/30",
         link: "text-primary underline-offset-4 hover:underline",
+
         navBarRounded: "rounded-full border-[1px] border-navBarRoundedButton",
+
       },
       size: {
         default: "h-9 px-4 py-2",

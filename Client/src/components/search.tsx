@@ -9,11 +9,13 @@ import { addDays, format } from "date-fns";
 import { he, enUS } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+
 import { searchCalendarButtonsData, monthsAndYears } from "@/utils/staticData";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { EmptyCalendarImg } from "./ui/Icons";
 import { cn } from "@/lib/utils";
+
 
 // damy data
 const items = [
@@ -49,6 +51,7 @@ function Search() {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
+
   const [activePlusMinusButton, setActivePlusMinusButton] =
     useState<string>("");
   const [activeNavButton, setActiveNavButton] = useState<string>(
@@ -84,27 +87,32 @@ function Search() {
     setInputValue(() => [element.city, element.country].join(", "));
   };
 
+
   const handlePlusMinusButtonClick = (buttonName: string) => {
     setActivePlusMinusButton(buttonName);
   };
 
   const handleNavButtonClick = (buttonName: string) => {
     setActiveNavButton(buttonName);
+
   };
 
   const handleDateSelect = (selectedDate: DateRange | undefined) => {
     if (!selectedDate || !selectedDate.from) {
+
       setDate(selectedDate);
       return;
     }
 
     if (!selectedDate.to) {
+
       if (selectedDate.from.getTime() === date?.from?.getTime()) {
         return;
       }
       setDate({ from: selectedDate.from, to: undefined });
       return;
     }
+
 
     if (selectedDate.from.getTime() === selectedDate.to.getTime()) {
       setDate({ from: selectedDate.from, to: undefined });
@@ -129,6 +137,7 @@ function Search() {
   };
 
   //hebrew formt
+
   const formattedHebrew = "EEE, dd MMMM";
   // english format
   const formattedEnglish = "EEE, MMM dd";
@@ -235,6 +244,7 @@ function Search() {
               <div className="px-3 flex ">
                 <Button
                   className="flex-grow"
+
                   variant={
                     activeNavButton === t("search.calendar")
                       ? "navBarUnderlineSelected"
@@ -437,6 +447,7 @@ function Search() {
                   </div>
                 </div>
               )}
+
             </PopoverContent>
             <PopoverTrigger asChild>
               <div className="flex">
