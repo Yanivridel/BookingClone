@@ -7,13 +7,17 @@ export interface IRoom extends Document {
     type: "room" | "studio" | "suite" | "bed" | "villa";
     desc: string;
     images: string[];
-    beds: {
-        sofa: number; // default: 0
-        single: number; // default: 0
-        double: number; // default: 0
-        queen: number; // default: 0
-        bunk: number; // default: 0
-    }
+    rooms : [{
+        type: string,
+        room_num: number,
+        beds: {
+            sofa: number; // default: 0
+            single: number; // default: 0
+            double: number; // default: 0
+            queen: number; // default: 0
+            bunk: number; // default: 0
+        }
+    }];
     baby: boolean; // default: false
     max_guests?: number; // virtual property: sofa + single + (queen + bunk + double)*2
     facilities?: string[]; // enum: EFacility

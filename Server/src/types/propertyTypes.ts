@@ -5,10 +5,11 @@ import { IRoom } from './roomTypes';
 export interface IProperty extends Document {
     _id: Types.ObjectId;
     title: string;
+    type: string;
     location: ILocation;
     images: string[];
     rating: {
-        team: number; // default: 0
+        staff: number; // default: 0
         facilities: number; // default: 0
         cleanliness: number; // default: 0
         conform: number; // default: 0
@@ -49,7 +50,8 @@ export interface IProperty extends Document {
                     end: number;
                 };
                 type?: string;
-                price?: string;
+                price_num?: number;
+                price_msg?: string;
             }];
         };
         age_restriction?: number;
@@ -85,3 +87,5 @@ export interface ICoordinates {
     type: "Point";
     coordinates: number[];
 }
+
+export type TPartialProperty = Partial<IProperty>;
