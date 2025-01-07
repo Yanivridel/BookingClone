@@ -5,7 +5,6 @@ import { IRoom } from "src/types/roomTypes";
 import { EFacility, EFeatures } from "src/utils/structures";
 
 const RoomSchema = new Schema<IRoom>({
-        //property_id: { type: Schema.Types.ObjectId, ref: "Property", required: true },
         title: { type: String, required: true },
         type: { 
             type: String, 
@@ -26,12 +25,12 @@ const RoomSchema = new Schema<IRoom>({
             }
         }],
         baby: { type: Boolean, default: false },
-        facilities: { type: [String], enum: Object.values(EFacility), default: [],
+        facilities: [{ type: String, enum: Object.values(EFacility),
             validate: {
                 validator: (v) => Object.values(EFacility).includes(v),
                 message: props => `${props.value} is not a valid Facility!`
             }
-        },
+        }],
         features: [{
             category: { type: String, enum: Object.values(EFeatures), required: true,
                 validate: {
@@ -41,10 +40,13 @@ const RoomSchema = new Schema<IRoom>({
             },
             sub: { type: [String], default: [] }
         }],
-        available: [{
-            date: { type: Date, required: true },
-            count: { type: Number, min: 0, required: true }
-        }],
+        available: {
+            type: [{
+                date: { type: Date, required: true },
+                count: { type: Number, min: 0, required: true }
+            }],
+            default: []
+        },
         offers: [{
             price_per_night: { type: Number, required: true },
             discount: {

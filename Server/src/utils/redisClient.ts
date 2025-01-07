@@ -22,11 +22,8 @@ async function connectRedis() {
 
 async function setCache(key: string, value: any, expiration?: number) {
     try {
-        if (expiration) {
-            await client.set(key, JSON.stringify(value), { EX: expiration });
-        } else {
-            await client.set(key, JSON.stringify(value));
-        }
+        const REDIS_EXPIRATION = parseInt(process.env.REDIS_EXPIRATION as string);
+        await client.set(key, JSON.stringify(value), { EX: REDIS_EXPIRATION});
     } catch (error) {
         console.error('❌ Redis Set Error:', error);
     }

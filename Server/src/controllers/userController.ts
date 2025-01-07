@@ -11,7 +11,7 @@ import { AuthenticatedRequest } from 'src/types/expressTypes';
 import { getCoordinatesByLocation } from './../utils/maps';
 import { ILocation, ICoordinates } from 'src/types/propertyTypes';
 
-const JTW_EXPIRATION = { expiresIn: '1d'};
+const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 
 // Send Email Code - Done
 interface ISendEmailCodeBody {
