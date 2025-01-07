@@ -15,10 +15,11 @@ function SaveButton() {
 
   
   function clickButton() {
-    console.log(value);
     if (value) {
       setParagraphs([...paragraphs, value]);
       setValue('')
+      console.log(value);
+      
     }
     
   }
