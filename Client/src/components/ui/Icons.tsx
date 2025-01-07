@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 
-interface BookingLogoProps {
-  className: string;
+interface IconsProps {
+  className?: string;
 }
 
-export const BookingLogo = ({ className }: BookingLogoProps) => {
+export const BookingLogo = ({ className }: IconsProps) => {
   return (
     <svg
       className={cn(className)}
@@ -20,13 +20,28 @@ export const BookingLogo = ({ className }: BookingLogoProps) => {
   );
 };
 
-export const IconHeart = () => {
+
+
+function IconHeartRed({className} : IconsProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <div>
+      <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M23.3 5.076a6.582 6.582 0 0 0-10.446-1.71L12 4.147l-.827-.753a6.52 6.52 0 0 0-5.688-1.806A6.47 6.47 0 0 0 .7 5.075a6.4 6.4 0 0 0 1.21 7.469l9.373 9.656a1 1 0 0 0 1.434 0l9.36-9.638A6.41 6.41 0 0 0 23.3 5.076"></path></svg>
+    </div>
+  )
+}
+
+export default IconHeartRed
+
+
+export const IconHeart = ({className}: IconsProps) => {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
       <path d="m12.541 21.325-9.588-10a4.923 4.923 0 1 1 6.95-6.976l1.567 1.566a.75.75 0 0 0 1.06 0l1.566-1.566a4.923 4.923 0 0 1 6.963 6.962l-9.6 10.014zm-1.082 1.038a.75.75 0 0 0 1.082 0l9.59-10.003a6.42 6.42 0 0 0-.012-9.07 6.423 6.423 0 0 0-9.083-.001L11.47 4.854h1.06l-1.566-1.566a6.423 6.423 0 1 0-9.082 9.086l9.577 9.99z"></path>
     </svg>
   );
 };
+
+
 
 export const IconPlusMinus = () => {
   return (
@@ -36,13 +51,14 @@ export const IconPlusMinus = () => {
   );
 };
 
-export const Spinner = ({ className }: BookingLogoProps) => {
+export const Spinner = ({ className }: IconsProps) => {
+
   return (
     <div role="status">
       <svg
         aria-hidden="true"
         className={cn(
-          "w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600",
+          "w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600",
           className
         )}
         viewBox="0 0 100 101"
