@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Home from "./pages/Home.tsx";
-import Layout from "./pages/Layout.tsx";
-
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import Home from "./pages/Home.tsx";
+import Layout from "./pages/Layout.tsx";
+import SearchResults from "./pages/SearchResults.tsx";
+
 // * Example how to get current User from Redux :
 // * import { useSelector } from "react-redux";
 // * import { RootState } from "./store";
@@ -21,6 +23,10 @@ function App() {
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/searchresults",
+          element: <SearchResults />,
         },
       ],
     },
