@@ -20,7 +20,6 @@ interface mainCardProps {
 
 const MainCard = ({deals,is_heart,isThumbsUp,price,genius,type,discount }: mainCardProps) => {
     return (
-        <Link to="/:id">
             <Card className="flex flex-col w-[300px] h-[400px] sm:w-[300px] sm:h-[300px] rounded-lg overflow-hidden">
                 <div className="h-[50%] sm:h-[50%] rounded-t-lg relative">
                     <img src={Image} alt="Aparthol Stare Miasto" className="w-full h-full object-cover object-center rounded-t-lg " />
@@ -49,7 +48,6 @@ const MainCard = ({deals,is_heart,isThumbsUp,price,genius,type,discount }: mainC
                     </div>
                 </div>
             </Card>
-        </Link>
     )
 }
 export default MainCard
