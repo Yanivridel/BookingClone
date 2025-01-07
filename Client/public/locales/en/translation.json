@@ -19,8 +19,8 @@
     "inspirationButton": "More",
     "lovedHomesDealsHeader": "Homes guests love",
     "lovedHomesButton": "Discover homes",
-    "Header": "Stay at our top unique properties",
-    "SecondaryHeader": "From castles and villas to boats and igloos, we have it all"
+    "uniqueHeader": "Stay at our top unique properties",
+    "uniqueSecondaryHeader": "From castles and villas to boats and igloos, we have it all"
   },
   "search": {
     "placholderInput": "Where are you going?",

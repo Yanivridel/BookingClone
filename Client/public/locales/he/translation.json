@@ -15,13 +15,13 @@
     "PerfectPlacesHeader": "מחפשים את מקום האירוח המושלם?",
     "PerfectPlacesSecondaryHeader": "אנשים שערכו חיפושים דומים הזמינו שהייה במקומות האירוח האלה",
     "weekendDealsHeader": "מבצעים לסופ\"ש",
-    "weekendDealsSecondaryHeader": "",
+    "weekendDealsSecondaryHeader": "חיסכון על שהיות בתאריכים",
     "inspirationDealsHeader": "",
     "inspirationButton": "",
-    "lovedHomesDealsHeader": "",
-    "lovedHomesButton": "",
-    "Header": "",
-    "SecondaryHeader": ""
+    "lovedHomesDealsHeader": "בתים ודירות שאורחים אוהבים",
+    "lovedHomesButton": "גלו בתים ודירות",
+    "uniqueHeader": "מקומות אירוח ייחודיים ומובילים שכדאי לכם להכיר",
+    "uniqueSecondaryHeader": "מווילות וטירות עד סירות ואיגלואים – אפשר למצוא אצלנו הכל"
   },
   "search": {
     "placholderInput": "לאן אתם נוסעים?",

@@ -19,8 +19,7 @@ import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/utils";
 import CardWithDescription from "@/components/CardWithDescritpion";
-import { useEffect, useState } from "react";
-import { toDate } from "date-fns";
+import { useEffect } from "react";
 
 interface HomeProps {
   country: string;
@@ -62,7 +61,9 @@ function Home({ country }: HomeProps) {
   return (
     <div className="p-20">
       <Search></Search>
-      <h2>{t("home.interestedInHeader")}</h2>
+      <h2 className="text-2xl font-bold py-4">
+        {t("home.interestedInHeader")}
+      </h2>
       <Carousel>
         <CarouselPrevious />
         <CarouselContent>
@@ -87,8 +88,12 @@ function Home({ country }: HomeProps) {
         </CarouselContent>
         <CarouselNext />
       </Carousel>
-      <h2>{t("home.OffersHeader")}</h2>
-      <h3>{t("home.OffersSecondaryHeader")}</h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold ">{t("home.OffersHeader")}</h2>
+        <h3 className="text-searchGrayText ">
+          {t("home.OffersSecondaryHeader")}
+        </h3>
+      </div>
       <Carousel>
         <CarouselPrevious />
         <CarouselContent>
@@ -110,8 +115,12 @@ function Home({ country }: HomeProps) {
         </CarouselContent>
         <CarouselNext />
       </Carousel>
-      <h2>{t("home.trandingDestinationsHeader")}</h2>
-      <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold">
+          {t("home.trandingDestinationsHeader")}
+        </h2>
+        <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
+      </div>
       <div className="grid grid-cols-6 gap-4">
         <ImageCard className="col-span-3" />
         <ImageCard className="col-span-3" />
@@ -119,10 +128,14 @@ function Home({ country }: HomeProps) {
         <ImageCard className="col-span-2" />
         <ImageCard className="col-span-2" />
       </div>
-      <h2>
-        {t("home.recentCountryHeader")} {country}
-      </h2>
-      <h3>{t("home.recentCountrySecondaryHeader")}</h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold ">
+          {t("home.recentCountryHeader")} {country}
+        </h2>
+        <h3 className="text-searchGrayText ">
+          {t("home.recentCountrySecondaryHeader")}
+        </h3>
+      </div>
       <Carousel>
         <CarouselPrevious />
         <CarouselContent>
@@ -154,10 +167,12 @@ function Home({ country }: HomeProps) {
         </CarouselContent>
         <CarouselNext />
       </Carousel>
-      <h2>
+      <h2 className="text-2xl font-bold ">
         {t("home.ClosePlacesHeader")} {country}
       </h2>
-      <h3>{t("home.ClosePlacesSecondaryHeader")}</h3>
+      <h3 className="text-searchGrayText ">
+        {t("home.ClosePlacesSecondaryHeader")}
+      </h3>
       <MainNav className={"border-0"} />
       <Carousel>
         <CarouselPrevious />
@@ -191,8 +206,12 @@ function Home({ country }: HomeProps) {
         <CarouselNext />
       </Carousel>
       <div className="flex justify-between">
-        <h1>{t("home.gunisesDealsHeader")}</h1>
-        <Button>{t("home.gunisesMoreInfo")}</Button>
+        <div className="py-4">
+          <h2 className="text-2xl font-bold ">
+            {t("home.gunisesDealsHeader")}
+          </h2>
+          <Button variant={"simpleLink"}>{t("home.gunisesMoreInfo")}</Button>
+        </div>
       </div>
       <div
         className={cn(
@@ -241,9 +260,12 @@ function Home({ country }: HomeProps) {
           <p>babababa</p>
         </Card>
       </div>
-
-      <h2>{t("home.PerfectPlacesHeader")}</h2>
-      <h3>{t("home.PerfectPlacesSecondaryHeader")}</h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold ">{t("home.PerfectPlacesHeader")}</h2>
+        <h3 className="text-searchGrayText ">
+          {t("home.PerfectPlacesSecondaryHeader")}
+        </h3>
+      </div>
       <div
         className={cn(
           "w-full flex gap-2 overflow-scroll py-4",
@@ -259,18 +281,19 @@ function Home({ country }: HomeProps) {
         <MainCard />
         <MainCard />
       </div>
-
-      <h2>{t("home.weekendDealsHeader")}</h2>
-      <h3>
-        {t("home.weekendDealsSecondaryHeader")}
-        {weedend.fromDate.month +
-          " " +
-          weedend.fromDate.day +
-          " - " +
-          weedend.toDate.month +
-          " " +
-          weedend.toDate.day}
-      </h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold ">{t("home.weekendDealsHeader")}</h2>
+        <h3 className="text-searchGrayText ">
+          {t("home.weekendDealsSecondaryHeader") + " "}
+          {weedend.fromDate.month +
+            " " +
+            weedend.fromDate.day +
+            " - " +
+            weedend.toDate.month +
+            " " +
+            weedend.toDate.day}
+        </h3>
+      </div>
       <div
         className={cn(
           "w-full flex gap-2 overflow-scroll py-4",
@@ -286,55 +309,68 @@ function Home({ country }: HomeProps) {
         <MainCard />
         <MainCard />
       </div>
-      <h2>{t("home.inspirationDealsHeader")}</h2>
-      <Button>{t("home.inspirationButton")}</Button>
+      {i18n.language === "en" && (
+        <div>
+          <div className="py-4">
+            <h2 className="text-2xl font-bold ">
+              {t("home.inspirationDealsHeader")}
+            </h2>
+            <Button variant={"simpleLink"}>
+              {t("home.inspirationButton")}
+            </Button>
+          </div>
+          <div
+            className={cn(
+              "w-full flex gap-2 overflow-scroll py-4",
+              styles.scrollContainer
+            )}
+          >
+            <CardWithDescription />
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+            <Card className="h-40 w-40">
+              <img src={DubaiImage} alt="" />
+            </Card>
+          </div>
+        </div>
+      )}
+      <div>
+        <h2 className="text-2xl font-bold ">
+          {t("home.lovedHomesDealsHeader")}
+        </h2>
+        <Button variant={"simpleLink"}>{t("home.lovedHomesButton")}</Button>
+      </div>
       <div
         className={cn(
           "w-full flex gap-2 overflow-scroll py-4",
           styles.scrollContainer
         )}
       >
-        <CardWithDescription />
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-        <Card className="h-40 w-40">
-          <img src={DubaiImage} alt="" />
-        </Card>
-      </div>
-
-      <h2>{t("home.lovedHomesDealsHeader")}</h2>
-      <Button>{t("home.lovedHomesButton")}</Button>
-      <div
-        className={cn(
-          "w-full flex gap-2 overflow-scroll py-4",
-          styles.scrollContainer
-        )}
-      >
         <MainCard />
         <MainCard />
         <MainCard />
@@ -344,9 +380,12 @@ function Home({ country }: HomeProps) {
         <MainCard />
         <MainCard />
       </div>
-
-      <h2>{t("home.Header")}</h2>
-      <h3>{t("home.SecondaryHeader")}</h3>
+      <div className="py-4">
+        <h2 className="text-2xl font-bold ">{t("home.uniqueHeader")}</h2>
+        <h3 className="text-searchGrayText ">
+          {t("home.uniqueSecondaryHeader")}
+        </h3>
+      </div>
       <div
         className={cn(
           "w-full flex gap-2 overflow-scroll py-4",

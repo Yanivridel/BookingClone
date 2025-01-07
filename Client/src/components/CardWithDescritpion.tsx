@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardTitle, CardDescription } from "./ui/card";
 import RandomImage from "../assets/images/image_bottom_aboutus.jpg";
 
