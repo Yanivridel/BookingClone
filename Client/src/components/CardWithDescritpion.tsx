@@ -1,9 +1,15 @@
 import { Card, CardTitle, CardDescription } from "./ui/card";
 import RandomImage from "../assets/images/image_bottom_aboutus.jpg";
+import { cn } from "@/lib/utils";
 
-function CardWithDescription() {
+function CardWithDescription({ className }: { className: string }) {
   return (
-    <Card className="w-full max-w-[360px] sm:max-w-[450px]  mx-auto relative group rounded-xl ">
+    <Card
+      className={cn(
+        "w-full max-w-[360px] sm:max-w-[450px]  mx-auto relative group rounded-xl",
+        className
+      )}
+    >
       <div className="relative w-full h-full">
         <img
           src={RandomImage}
