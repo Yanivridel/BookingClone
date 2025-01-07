@@ -1,3 +1,4 @@
+import styles from "@/css/search.module.css";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { IoBedOutline } from "react-icons/io5";
@@ -6,12 +7,11 @@ import { PiCarLight } from "react-icons/pi";
 import { MdOutlineAttractions } from "react-icons/md";
 import { MdOutlineLocalTaxi } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 function TopNav() {
   const [activeButton, setActiveButton] = useState<string>("");
   const { i18n } = useTranslation();
-
-  console.log("i18n initialized:", i18n);
 
   const changeLanguage = (lng: string) => {
     if (i18n.changeLanguage) {
@@ -22,7 +22,7 @@ function TopNav() {
   };
 
   const handleButtonClick = (buttonName: string) => {
-    setActiveButton(buttonName); // עדכון הכפתור הפעיל
+    setActiveButton(buttonName);
   };
 
   useEffect(() => {
@@ -34,7 +34,12 @@ function TopNav() {
     }
   }, [i18n.language]);
   return (
-    <div className="border flex p-2 bg-blue-800">
+    <div
+      className={cn(
+        " flex  overflow-scroll border p-2 bg-blue-800",
+        styles.scrollContainer
+      )}
+    >
       <button
         className="mr-2 px-4 py-2 bg-blue-500 text-white rounded"
         onClick={() => changeLanguage("en")}

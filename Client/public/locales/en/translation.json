@@ -1,7 +1,26 @@
 {
   "home": {
     "interestedInHeader": "Still interested in these properties?",
-    "OffersHeader": "Offers"
+    "OffersHeader": "Offers",
+    "OffersSecondaryHeader": "Promotions, deals, and special offers for you",
+    "trandingDestinationsHeader": "Trending destinations",
+    "trandingDestinationsSecondaryHeader": "Travelers searching for Austria also booked these",
+    "recentCountryHeader": "Explore ",
+    "recentCountrySecondaryHeader": "These popular destinations have a lot to offer",
+    "ClosePlacesHeader": "Quick and easy trip planner",
+    "ClosePlacesSecondaryHeader": "Pick a vibe and explore the top destinations in Austria",
+    "gunisesDealsHeader": "Travel more, spend less",
+    "gunisesMoreInfo": "Learn more about your rewards",
+    "PerfectPlacesHeader": "Looking for the perfect stay?",
+    "PerfectPlacesSecondaryHeader": "Travelers with similar searches booked these properties",
+    "weekendDealsHeader": "Deals for the weekend",
+    "weekendDealsSecondaryHeader": "Save on stays for ",
+    "inspirationDealsHeader": " Get inspiration for your next trip",
+    "inspirationButton": "More",
+    "lovedHomesDealsHeader": "Homes guests love",
+    "lovedHomesButton": "Discover homes",
+    "Header": "Stay at our top unique properties",
+    "SecondaryHeader": "From castles and villas to boats and igloos, we have it all"
   },
   "search": {
     "placholderInput": "Where are you going?",
