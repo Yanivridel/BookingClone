@@ -5,7 +5,18 @@
     "placholderInput": "לאן אתם נוסעים?",
     "dropDouwnHeader": "יעדים פופולריים באיזור",
     "checkIn": " תאריך צ'ק-אין",
-    "checkOut": "תאריך צ'ק-אאוט"
+    "checkOut": "תאריך צ'ק-אאוט",
+    "caledar": "לוח שנה",
+    "flexible": "תאריכים גמישים",
+    "flexibleHeader": "מה אורך השהייה שאתם מתכננים?",
+    "flexibleSecondaryHeader": "מתי תרצו לנסוע?",
+    "caledarPlusMibusButtons": [
+      "תאריכים מדויקים",
+      "יום אחד",
+      "יומיים",
+      "3 ימים",
+      "7 ימים"
+    ]
   },
   "button": {
     "search": "חיפוש"

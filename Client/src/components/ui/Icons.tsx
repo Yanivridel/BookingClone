@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 interface BookingLogoProps {
-  className: string;
+  className?: string;
 }
 
 export const BookingLogo = ({ className }: BookingLogoProps) => {
@@ -20,6 +20,19 @@ export const BookingLogo = ({ className }: BookingLogoProps) => {
   );
 };
 
+export const EmptyCalendarImg = ({ className }: BookingLogoProps) => {
+  return (
+    <svg
+      className={cn(className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
+      <path d="M22.502 13.5v8.25a.75.75 0 0 1-.75.75h-19.5a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75zm1.5 0V5.25A2.25 2.25 0 0 0 21.752 3h-19.5a2.25 2.25 0 0 0-2.25 2.25v16.5A2.25 2.25 0 0 0 2.252 24h19.5a2.25 2.25 0 0 0 2.25-2.25zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.752a.75.75 0 0 0 0 1.5M7.502 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0m10.5 0V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0"></path>
+    </svg>
+  );
+};
+
 export const IconHeart = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
@@ -28,9 +41,14 @@ export const IconHeart = () => {
   );
 };
 
-export const IconPlusMinus = () => {
+export const IconPlusMinus = ({ className }: BookingLogoProps) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <svg
+      className={cn(className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
       <path d="M21.14 22.94a1 1 0 0 1-1 1H3.86a1 1 0 1 1 0-2h16.28a1 1 0 0 1 1 1M4 10h7v7a1 1 0 0 0 2 0v-7h7a1 1 0 0 0 0-2h-7V1a1 1 0 0 0-2 0v7H4a1 1 0 0 0 0 2"></path>
     </svg>
   );

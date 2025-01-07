@@ -5,8 +5,23 @@
     "placholderInput": "Where are you going?",
     "dropDouwnHeader": "Popular destinations nearby",
     "checkIn": "Check-in Date",
-    "checkOut": " Check-out Date"
+    "checkOut": " Check-out Date",
+    "caledar": "Calendar",
+    "flexible": "I'm flexible",
+    "flexibleHeader": "How long do you want to stay?",
+    "flexibleSecondaryHeader": "When do you want to go?",
+    "flexibleChoiceLimit": "Select up to 3 months",
+    "flexibleRadioGroup": ["A weekend", "A week", "A month", "Other"],
+
+    "caledarPlusMibusButtons": [
+      "Exact dates",
+      "1 day",
+      "2 days",
+      "3 days",
+      "7 days"
+    ]
   },
+
   "button": {
     "search": "Search"
   }

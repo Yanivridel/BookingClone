@@ -56,6 +56,8 @@ module.exports = {
           5: "hsl(var(--chart-5))",
         },
         search: "#ffb700",
+        searchGrayText: "#595959",
+        navBarRoundedButton: "#868686",
       },
       keyframes: {
         "accordion-down": {
