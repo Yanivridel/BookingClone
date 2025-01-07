@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import {
     createProperty,
-    // getCachedProperties,
     getSearchProperties,
     getPropertyById,
+    getPossibleFiltersAndCount
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 

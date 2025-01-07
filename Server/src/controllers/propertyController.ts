@@ -186,6 +186,26 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
     }
 }
 
+// Working
+export const getPossibleFiltersAndCount = async (req: Request , res: Response): Promise<void> => {
+    try {
+        
+
+
+        res.status(200).json({
+            status: "success",
+            message: "Filters found successfully",
+            data: [],
+        });
+    } catch (error) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Server error",
+        });
+    }
+};
+
 //* Done
 export const getPropertyById =  async (req: Request , res: Response): Promise<void> => {
     try {
@@ -242,7 +262,7 @@ async function getPropertiesByRadius(coordinates: number[], distance: number, li
     if(limit) query.limit(limit);
     return query.exec();
 }
-// Working
+//* Done
 async function filterPropertiesPrimary(
     properties: IProperty[], 
     dateFilter: IFilterPropertiesDate,
@@ -286,10 +306,9 @@ async function filterPropertiesPrimary(
         let targetGuests = options.adults! + options.children!;
         let targetRooms = options.rooms!;
         let needsBaby = options.isBaby!;
-        console.log("parameters: ", targetGuests, targetRooms , needsBaby);
-        console.log("rooms available: ", availableRooms.length);
+
         const selectedRooms = findBestRoomCombinationDP(availableRooms, targetGuests, targetRooms, needsBaby);
-        console.log(selectedRooms)
+
         if(!selectedRooms) return null;
         
         return {
@@ -493,9 +512,7 @@ function getAvailability(
         return bestResult;
     }
 }
-
-
-// Working
+//* Done
 async function setCacheMainSearch(
     cacheKey: string, coordinates: number[], distance: number,
     dateFilter: IFilterPropertiesDate,
@@ -508,82 +525,7 @@ async function setCacheMainSearch(
 
     setCache(cacheKey, properties);
 }
-
-/*
-// Step 4: Try to find the best combination of rooms
-        const selectedRooms: Array<{
-            roomId: string,
-            startDate: Date,
-            availableCount: number
-        }> = [];
-        
-        let remainingGuests = options.adults! + options.children!;
-        let remainingRoomCount = options.rooms ?? Infinity;
-        let hasBabyRoom = false;  // Track if we've found a room suitable for babies
-
-        // If baby is required, first ensure at least one room allows babies
-        if (options.isBaby && !availableRooms.some(({ room }) => room.baby)) {
-            return null;  // No rooms suitable for babies, reject the property
-        }
-
-        for (const { room, maxGuests, availability } of availableRooms) {
-
-            console.log("!!remainingGuests: ", remainingGuests);
-            if (remainingGuests <= 0 || remainingRoomCount <= 0) break;
-
-            // Skip rooms that don't support babies if we need one and haven't found one yet
-            if (options.isBaby && !hasBabyRoom && !room.baby) {
-                continue;  // Skip to next room to prioritize finding a baby-friendly room first
-            }
-
-            let effectiveCapacity = maxGuests;
-
-            // Check if we can use this room
-            if (availability.availableRooms > 0) {
-                if (effectiveCapacity >= remainingGuests) {
-                    // This room alone can accommodate remaining guests
-                    selectedRooms.push({
-                        roomId: room._id.toString(),
-                        startDate: availability.startDate!,
-                        availableCount: availability.availableRooms
-                    });
-                    if (room.baby) hasBabyRoom = true;
-                    remainingGuests = 0;
-                    remainingRoomCount--;
-                    break;
-                } else {
-                    // Use this room for partial accommodation
-                    selectedRooms.push({
-                        roomId: room._id.toString(),
-                        startDate: availability.startDate!,
-                        availableCount: availability.availableRooms
-                    });
-                    if (room.baby) hasBabyRoom = true;
-                    remainingGuests -= effectiveCapacity;
-                    remainingRoomCount--;
-                }
-            }
-        }
-
-        // If we couldn't accommodate all guests or meet room requirements, discard property
-        // Also check if we needed a baby room but didn't get one
-        if (remainingGuests > 0 || 
-            (options.rooms && remainingRoomCount > 0) || 
-            (options.isBaby && !hasBabyRoom)) {
-            return null;
-        }
-
-        // Ensure all selected rooms have the same start date
-        const startDates = selectedRooms.map(r => new Date(r.startDate).getDate());
-        if (new Set(startDates).size > 1) {
-            return null; // Rooms have different start dates
-        }
-
-        // Return property with selected rooms information
-
-*/
-
-
+//* Done
 type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
 type RoomCounts = Map<number, number>;    // Map of roomId to count used
 type DPMap = Map<string, WasteAndRooms>;
