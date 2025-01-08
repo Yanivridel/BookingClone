@@ -30,6 +30,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         simpleLink: "text-primary hover:bg-softBlue",
         navBarRounded: "rounded-full border-[1px] border-navBarRoundedButton",
+        disabled: "cursor-not-allowed bg-softGray text-[#a2a2a2]",
       },
       size: {
         default: "h-9 px-4 py-2",
