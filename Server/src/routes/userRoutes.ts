@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import {
     sendEmailCode,
-    createUser,
-    loginUser,
+    signinUser,
     getSelf,
     editProfile,
     modifyUserArrays,
@@ -17,9 +16,7 @@ const router = express.Router();
 
 router.post('/send-code', sendEmailCode);
 
-router.post("/signup", createUser);
-
-router.post('/login', loginUser);
+router.post("/signin", signinUser);
 
 router.get('/get-self', getSelf);
 

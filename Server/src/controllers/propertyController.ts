@@ -105,6 +105,7 @@ interface IGetPropertiesQuery {
     page?: string;
     limit?: string;
 }
+//! On Working
 export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody, IGetPropertiesQuery> , res: Response): Promise<void> => {
     try {
         const { location, date, options } = req.body.primary;
@@ -135,16 +136,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         }, (key, value) => value === undefined ? null : value);
 
         // * GET CACHE
-        // const cachedProperties = await getCache(cacheKey);
-        // if (cachedProperties) {
-        //     // If found in cache, LOGIC HERE LATER
-        //     res.status(200).json({
-        //         status: "success",
-        //         message: "Properties found from cache!!!!!",
-        //         data: cachedProperties,
-        //     });
-        //     return
-        // }
+        const cachedProperties = await getCache(cacheKey);
+        if (cachedProperties) {
+            // If found in cache, LOGIC HERE LATER
+            res.status(200).json({
+                status: "success",
+                message: "Properties found from cache!!!!!",
+                data: cachedProperties,
+            });
+            return
+        }
 
         const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
 
@@ -174,18 +175,12 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
-            setTimeout(() => {
-                res.write(JSON.stringify({ secondResults: allProperties}) + "\n"); 
-                res.end();
-            }, 10000);
-        });
 
-        // Return the 15 first results
-        // res.status(200).json({
-        //     status: "success",
-        //     message: "Properties found successfully",
-        //     data: filteredProperties,
-        // });
+            const filtersWithCount = await getFiltersFromProperties(allProperties);
+
+            res.write(JSON.stringify({ secondResults: filtersWithCount}) + "\n"); 
+            res.end();
+        });
         
     } catch (error) {
         console.log(error); // dev mode
@@ -300,11 +295,8 @@ async function filterPropertiesPrimary(
 
         const selectedRooms = findBestRoomCombinationDP(availableRooms, targetGuests, targetRooms, needsBaby);
 
-        console.log(selectedRooms);
         if(!selectedRooms) return null;
         
-        console.log("count:", countOccurrences(selectedRooms));
-
         return {
             ...property.toObject(),
             selectedRooms: countOccurrences(selectedRooms),
@@ -517,8 +509,15 @@ async function setCacheMainSearch(
 
     properties = await filterPropertiesPrimary(properties, dateFilter, options);
 
-    setCache(cacheKey, properties);
+    // setCache(cacheKey, properties);
     return properties;
+}
+async function  getFiltersFromProperties(properties: IProperty[]) {
+    try {
+
+    } catch(err) {
+
+    }
 }
 //* Done
 type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
@@ -620,4 +619,184 @@ function countOccurrences(arr: string[]): { id: string; count: number }[] {
     }, {});
 
     return Object.entries(countMap).map(([id, count]) => ({ id, count }));
+}
+
+
+
+export async function test(req: Request, res: Response): Promise<void> {
+    
+    const aggregationPipeline = [
+        {
+            $lookup: {
+                from: "rooms",
+                localField: "rooms",
+                foreignField: "_id",
+                as: "rooms"
+            }
+        },
+        {
+            $facet: {
+                // Count of properties by rating range (0-2, 2-4, ..., 8-10)
+                ratingCount: [
+                    {
+                        $project: {
+                            total_rating: {
+                                $avg: [
+                                    "$rating.staff",
+                                    "$rating.facilities",
+                                    "$rating.cleanliness",
+                                    "$rating.conform",
+                                    "$rating.value_for_money",
+                                    "$rating.location",
+                                    "$rating.free_wifi"
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        $bucket: {
+                            groupBy: "$total_rating",
+                            boundaries: [0, 2, 4, 6, 8, 10],
+                            default: "10+",
+                            output: { count: { $sum: 1 } }
+                        }
+                    }
+                ],
+    
+                // Count properties by type
+                propertyTypeCount: [
+                    {
+                        $group: {
+                            _id: "$type",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count of properties by facilities
+                propertyFacilitiesCount: [
+                    {
+                        $unwind: "$popularFacilities"
+                    },
+                    {
+                        $group: {
+                            _id: "$popularFacilities",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count meals types in rooms
+                mealsCount: [
+                    {
+                        $unwind: "$rooms"
+                    },
+                    {
+                        $unwind: "$rooms.offers"
+                    },
+                    {
+                        $unwind: "$rooms.offers.meals"
+                    },
+                    {
+                        $group: {
+                            _id: "$rooms.offers.meals.type",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count room facilities
+                roomFacilitiesCount: [
+                    {
+                        $unwind: "$rooms"
+                    },
+                    {
+                        $unwind: "$rooms.facilities"
+                    },
+                    {
+                        $group: {
+                            _id: "$rooms.facilities",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count free cancellation offers
+                freeCancellationCount: [
+                    {
+                        $unwind: "$rooms"
+                    },
+                    {
+                        $unwind: "$rooms.offers"
+                    },
+                    {
+                        $group: {
+                            _id: "$rooms.offers.cancellation",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count bed types
+                bedTypeCount: [
+                    {
+                        $unwind: "$rooms"
+                    },
+                    {
+                        $unwind: "$rooms.rooms"
+                    },
+                    {
+                        $group: {
+                            _id: "$rooms.rooms.beds",
+                            totalSofa: { $sum: "$rooms.rooms.beds.sofa" },
+                            totalSingle: { $sum: "$rooms.rooms.beds.single" },
+                            totalDouble: { $sum: "$rooms.rooms.beds.double" },
+                            totalQueen: { $sum: "$rooms.rooms.beds.queen" },
+                            totalBunk: { $sum: "$rooms.rooms.beds.bunk" }
+                        }
+                    }
+                ],
+    
+                // Count online payment methods
+                onlinePaymentCount: [
+                    {
+                        $unwind: "$houseRules.accepted_payments"
+                    },
+                    {
+                        $group: {
+                            _id: "$houseRules.accepted_payments",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ],
+    
+                // Count number of sleep rooms and shower rooms
+                roomTypeCount: [
+                    {
+                        $unwind: "$rooms"
+                    },
+                    {
+                        $unwind: "$rooms.rooms"
+                    },
+                    {
+                        $group: {
+                            _id: "$rooms.rooms.type",
+                            count: { $sum: 1 }
+                        }
+                    }
+                ]
+            }
+        }
+    ];
+    
+    // Execute the aggregation
+    const result = await propertyModel.aggregate(aggregationPipeline);
+    console.log(result);
+    
+
+
+    res.json({
+        result
+    })
+
 }

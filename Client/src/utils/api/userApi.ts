@@ -34,9 +34,9 @@ export const sendEmailCode = async (email: string, isLogin: boolean) => {
     }
 };
 // * Done
-export const signupUser = async (email: string, code: string) => {
+export const signinUser = async (email: string, code: string) => {
     try {
-        const { data } = await axios.post(`${API_URL}/api/users/signup`, {
+        const { data } = await axios.post(`${API_URL}/api/users/signin`, {
             email,
             code
         });
@@ -44,20 +44,6 @@ export const signupUser = async (email: string, code: string) => {
     } 
     catch (error) {
         console.error('Signup error:', error);
-        throw error;
-    }
-};
-// * Done
-export const loginUser = async (email: string, code: string) => {
-    try {
-        const { data } = await axios.post(`${API_URL}/api/users/login`, {
-            email,
-            code
-        });
-        return data.data;
-    } 
-    catch (error) {
-        console.error('Login error:', error);
         throw error;
     }
 };
