@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import CardWithDescription from "@/components/CardWithDescritpion";
 import { useEffect, useState } from "react";
-import { de } from "date-fns/locale";
+import MainCarousel from "@/components/MainCarousel.tsx";
 
 interface HomeProps {
   country: string;
@@ -184,22 +184,16 @@ function Home({ country }: HomeProps) {
         <h2 className="text-2xl font-bold py-4">
           {t("home.interestedInHeader")}
         </h2>
-        <div
-          className={cn(
-            "w-full flex gap-2 overflow-scroll py-4",
-            styles.scrollContainer
-          )}
-        >
-          <MainCard />
-          <MainCard />
-          <MainCard />
-          <MainCard />
-          <MainCard />
-          <MainCard />
-          <MainCard />
-          <MainCard />
-        </div>
 
+        <MainCarousel>
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+          <MainCard is_heart={true} />
+        </MainCarousel>
         <div className="py-4">
           <h2 className="text-2xl font-bold ">{t("home.OffersHeader")}</h2>
           <h3 className="text-searchGrayText ">

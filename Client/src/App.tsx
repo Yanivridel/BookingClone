@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Layout from "./pages/Layout.tsx";
 import SearchResults from "./pages/SearchResults.tsx";
 import Home from "./pages/Home.tsx";
+import UserSetting from "./pages/UserSetting.tsx";
 
 // * Example how to get current User from Redux :
 // * import { useSelector } from "react-redux";
@@ -27,6 +28,10 @@ function App() {
         {
           path: "/searchresults",
           element: <SearchResults />,
+        },
+        {
+          path: "/usersetting",
+          element: <UserSetting />,
         },
       ],
     },

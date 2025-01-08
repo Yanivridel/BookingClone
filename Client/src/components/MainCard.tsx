@@ -40,9 +40,11 @@ const MainCard = ({
           alt="Aparthol Stare Miasto"
           className="w-full h-full object-cover object-center rounded-t-lg "
         />
-        <div className="absolute top-2 start-1">
-          <SaveButton />
-        </div>
+        {is_heart && (
+          <div className="absolute top-2 end-1">
+            <SaveButton />
+          </div>
+        )}
       </div>
       <div className="flex flex-col justify-between flex-grow p-1">
         <div className=" p-2 grid gap-2">
