@@ -134,16 +134,17 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             adults, children, rooms, distance, isAnimalAllowed
         }, (key, value) => value === undefined ? null : value);
 
-        const cachedProperties = await getCache(cacheKey);
-        if (cachedProperties) {
-            // If found in cache, LOGIC HERE LATER
-            res.status(200).json({
-                status: "success",
-                message: "Properties found from cache!!!!!",
-                data: cachedProperties,
-            });
-            return
-        }
+        // * GET CACHE
+        // const cachedProperties = await getCache(cacheKey);
+        // if (cachedProperties) {
+        //     // If found in cache, LOGIC HERE LATER
+        //     res.status(200).json({
+        //         status: "success",
+        //         message: "Properties found from cache!!!!!",
+        //         data: cachedProperties,
+        //     });
+        //     return
+        // }
 
         const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
 
@@ -173,8 +174,10 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
-            res.write(JSON.stringify(allProperties) + "\n"); 
-            res.end();
+            setTimeout(() => {
+                res.write(JSON.stringify({ secondResults: allProperties}) + "\n"); 
+                res.end();
+            }, 10000);
         });
 
         // Return the 15 first results
@@ -610,13 +613,11 @@ function findBestRoomCombinationDP(rooms: IRoom[], targetGuests: number, targetR
     
     return selectedRooms;
 }
-function countOccurrences(arr: string[]): { id: string; count: number } | { id: string; count: number }[] {
+function countOccurrences(arr: string[]): { id: string; count: number }[] {
     const countMap = arr.reduce<Record<string, number>>((acc, id) => {
         acc[id] = (acc[id] || 0) + 1;
         return acc;
     }, {});
 
-    const result = Object.entries(countMap).map(([id, count]) => ({ id, count }));
-
-    return result.length === 1 ? result[0] : result;
+    return Object.entries(countMap).map(([id, count]) => ({ id, count }));
 }

@@ -17,7 +17,7 @@ export const authenticateToken = async (req: AuthenticatedRequestOptional, res: 
 
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
-
+        
         const decoded = jwt.verify(token, jwtSecretKey) as { userId: string };
 
         req.userId = decoded.userId;

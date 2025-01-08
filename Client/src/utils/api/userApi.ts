@@ -1,0 +1,158 @@
+import axios from 'axios';
+import { TPartialUser } from '@/types/userTypes';
+import { getCookie } from './../cookies';
+
+const LOCAL_HOST = 'http://localhost:3000';
+const API_URL = LOCAL_HOST;
+
+// * Done
+export const getSelf = async () => {
+    try {
+        const token = getCookie("token");
+        const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+// * Done
+export const sendEmailCode = async (email: string, isLogin: boolean) => {
+    try {
+        const { data } = await axios.post(`${API_URL}/api/users/send-code`, {
+            email,
+            isLogin
+        });
+        return data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+// * Done
+export const signupUser = async (email: string, code: string) => {
+    try {
+        const { data } = await axios.post(`${API_URL}/api/users/signup`, {
+            email,
+            code
+        });
+        return data.data;
+    } 
+    catch (error) {
+        console.error('Signup error:', error);
+        throw error;
+    }
+};
+// * Done
+export const loginUser = async (email: string, code: string) => {
+    try {
+        const { data } = await axios.post(`${API_URL}/api/users/login`, {
+            email,
+            code
+        });
+        return data.data;
+    } 
+    catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
+};
+// * Done
+export const editProfile = async (userProperties : TPartialUser ) => {
+    try {
+
+        const { data } = await axios.patch(`${API_URL}/api/users/edit-profile`, 
+            userProperties, 
+            {
+                headers: {
+                    Authorization: `Bearer ${getCookie("token")}`
+                }
+            });
+        return data.data;
+    } 
+    catch (error) {
+        console.error('Add recipe error:', error);
+        throw error;
+    }
+}
+// * Done
+export const modifyUserArrays = async (userArrays : TPartialUser ) => {
+    try {
+        const { data } = await axios.patch(`${API_URL}/api/users/modify-arrays`, 
+            userArrays, 
+            {
+                headers: {
+                    Authorization: `Bearer ${getCookie("token")}`
+                }
+            });
+        return data.data;
+    } 
+    catch (error) {
+        console.error('Add recipe error:', error);
+        throw error;
+    }
+}
+// * Done
+export const getSearch = async () => {
+    try {
+        const token = getCookie("token");
+        const { data } = await axios.get(`${API_URL}/api/users/search`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+// * Done
+export const getInterested = async () => {
+    try {
+        const token = getCookie("token");
+        const { data } = await axios.get(`${API_URL}/api/users/interested`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+// * Done
+export const getSavedLists = async () => {
+    try {
+        const token = getCookie("token");
+        const { data } = await axios.get(`${API_URL}/api/users/saved-lists`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+//! NOT YET FINISHED - COME BACK LATER
+export const deleteUser = async () => {
+    try {
+        const token = getCookie("token");
+        const { data } = await axios.delete(`${API_URL}/api/users/delete-account`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};

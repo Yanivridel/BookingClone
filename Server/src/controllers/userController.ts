@@ -263,7 +263,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
                 coordinates
             }
         }
-
+        
         const updatedUser = await userModel.findOneAndUpdate(
             { _id: userId },
             fieldsToUpdate,
@@ -429,13 +429,14 @@ export const getSearches = async (req: Request, res: Response) : Promise<void> =
     }
 };
 
-// Get Interested - Done
+//! Get Interested - Done + (GET HOW MANY REVIEWS)
 export const getInterested = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
         const { userId } = authenticatedReq;
 
-        const user = await userModel.findById(userId).select('interested').populate('interested');
+        const user = await userModel.findById(userId).select('interested').
+        populate('interested', "title location rating");
 
         if (!user) {
             res.status(404).json({
@@ -460,7 +461,7 @@ export const getInterested = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-// Get SavedLists - Done
+//! Get SavedLists - Done +  (GET HOW MANY REVIEWS)
 export const getSavedLists = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
@@ -471,6 +472,7 @@ export const getSavedLists = async (req: Request, res: Response) : Promise<void>
         .populate({
             path: 'savedLists.properties',
             model: 'Property',
+            select: "title location rating"
         });
 
         if (!user) {

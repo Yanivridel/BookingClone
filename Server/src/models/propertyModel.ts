@@ -4,6 +4,8 @@ import { IProperty } from 'src/types/propertyTypes';
 import { EAccommodationType, EFacility, EFeatures, EPaymentMethods, EPropertyHighlight } from './../utils/structures';
 import { LocationSchema } from './locationSchema';
 
+//  ADD VIRTUAL HOW MANY REVIEWS
+
 const PropertySchema = new Schema<IProperty>({
     title: { type: String, required: true },
     type: { type:String, required: true, enum: Object.values(EAccommodationType),

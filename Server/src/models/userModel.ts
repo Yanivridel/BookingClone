@@ -110,7 +110,7 @@ UserSchema.virtual("fullName").get(function () {
 UserSchema.post('findOneAndUpdate', async function (user: any) {
     if (user.search && user.search.length > 10) {
         user.search.shift();
-        await user.save(); 
+        await user.save();
     }
     if (user.interested && user.interested.length > 10) {
         user.interested.shift();
