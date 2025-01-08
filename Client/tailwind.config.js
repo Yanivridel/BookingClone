@@ -58,6 +58,7 @@ module.exports = {
         search: "#ffb700",
         searchGrayText: "#595959",
         navBarRoundedButton: "#868686",
+        softBlue: "#f2f6fe",
       },
       keyframes: {
         "accordion-down": {
