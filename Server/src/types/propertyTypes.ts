@@ -23,6 +23,13 @@ export interface IProperty extends Document {
         title: string; // enum: EPropertyHighlight
         content: string; 
     }];
+    hotel_area_info: [{
+        category: string; // enum: EHotelAreaInfo
+        sub: [{
+            content: string;
+            distance: number; // meters
+        }] 
+    }];
     features : [{
         category: string; // enum: EFeatures
         sub: string[];
@@ -71,6 +78,7 @@ export interface IProperty extends Document {
         end: number;
     };
     host: Types.ObjectId;
+    total_rating?: number;
 }
 
 export type TPartialProperty = Partial<IProperty>;

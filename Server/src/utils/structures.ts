@@ -397,7 +397,6 @@ export enum EFacility {
     FITNESS_CENTER = "Fitness center",
     RESTAURANT = "Restaurant",
     BAR = "Bar",
-    PET_FRIENDLY = "Pet-friendly",
     NON_SMOKING_ROOMS = "Non-smoking rooms",
     BEACHFRONT = "Beachfront",
     ROOM_SERVICE = "Room service",
@@ -469,6 +468,15 @@ export enum EPropertyHighlight {
     ACCESSIBILITY = "Accessibility",
     KIDS_FRIENDLY = "Kids-friendly",
     QUIET_ENVIRONMENT = "Quiet environment"
+}
+
+export enum EHotelAreaInfo {
+    PUBLIC_TRANSIT = 'Public transit',
+    CLOSEST_AIRPORTS = 'Closest Airports',
+    RESTAURANTS_CAFES = 'Restaurants & cafes',
+    NATURAL_BEAUTY = 'Natural Beauty',
+    WHAT_IS_NEARBY = "What's nearby",
+    TOP_ATTRACTIONS = 'Top attractions',
 }
 
 export enum EFeatures {

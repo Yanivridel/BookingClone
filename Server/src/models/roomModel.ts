@@ -25,19 +25,9 @@ const RoomSchema = new Schema<IRoom>({
             }
         }],
         baby: { type: Boolean, default: false },
-        facilities: [{ type: String, enum: Object.values(EFacility),
-            validate: {
-                validator: (v) => Object.values(EFacility).includes(v),
-                message: props => `${props.value} is not a valid Facility!`
-            }
-        }],
+        facilities: [{ type: String, enum: EFacility }],
         features: [{
-            category: { type: String, enum: Object.values(EFeatures), required: true,
-                validate: {
-                    validator: (v) => Object.values(EFeatures).includes(v),
-                    message: props => `${props.value} is not a valid Feature!`
-                }
-            },
+            category: { type: String, enum: EFeatures, required: true },
             sub: { type: [String], default: [] }
         }],
         available: {
@@ -61,7 +51,7 @@ const RoomSchema = new Schema<IRoom>({
             meals: [{
                 type: { 
                     type: String, 
-                    enum: ["morning", "noon", "afternoon", "evening"], 
+                    enum: ["morning", "noon", "afternoon", "evening", "self-service", "all-inclusive", "morning and evening"], 
                     required: true 
                 },
                 rating: { type: Number, min: 0, max: 10, required: true },

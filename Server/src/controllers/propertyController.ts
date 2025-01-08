@@ -13,7 +13,7 @@ import { roomModel } from 'src/models/roomModel';
 import { IRoom } from 'src/types/roomTypes';
 import { getCache, setCache } from 'src/utils/redisClient';
 
-// Create Property
+//* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {
         let propertyData = req.body;
@@ -62,6 +62,37 @@ export const createProperty = async (req: Request<{},{},TPartialProperty> , res:
         });
     }
 }
+//* Done - Get By Id
+export const getPropertyById =  async (req: Request , res: Response): Promise<void> => {
+    try {
+        const propertyId = req.params.id;
+
+        // Find property by ID
+        const property = await propertyModel.findById(propertyId).populate("rooms");
+
+        // If property doesn't exist, return 404
+        if (!property) {
+            res.status(404).json({
+                status: "error",
+                message: "Property not found",
+            });
+            return
+        }
+
+        // Send success response
+        res.status(200).json({
+            status: "success",
+            message: "Property with rooms found successfully",
+            data: property,
+        });
+    } catch (error) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Server error",
+        });
+    }
+};
 
 // Get & Filter Properties
 interface IGetPropertiesBody {
@@ -136,16 +167,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         }, (key, value) => value === undefined ? null : value);
 
         // * GET CACHE
-        const cachedProperties = await getCache(cacheKey);
-        if (cachedProperties) {
-            // If found in cache, LOGIC HERE LATER
-            res.status(200).json({
-                status: "success",
-                message: "Properties found from cache!!!!!",
-                data: cachedProperties,
-            });
-            return
-        }
+        // const cachedProperties = await getCache(cacheKey);
+        // if (cachedProperties) {
+        //     // If found in cache, LOGIC HERE LATER
+        //     res.status(200).json({
+        //         status: "success",
+        //         message: "Properties found from cache!!!!!",
+        //         data: cachedProperties,
+        //     });
+        //     return
+        // }
 
         const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
 
@@ -167,7 +198,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         res.setHeader('Transfer-Encoding', 'chunked');
         res.flushHeaders();
 
-        res.write(JSON.stringify({ firstResults: filteredProperties }) + "\n"); 
+        res.write(JSON.stringify({ filteredProperties: filteredProperties }) + "\n"); 
 
         // Background Task: Fetch all properties & filter & store in Redis
         setImmediate(async () => {
@@ -178,7 +209,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
             const filtersWithCount = await getFiltersFromProperties(allProperties);
 
-            res.write(JSON.stringify({ secondResults: filtersWithCount}) + "\n"); 
+            res.write(JSON.stringify({ Filters: filtersWithCount}) + "\n"); 
             res.end();
         });
         
@@ -191,38 +222,6 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         });
     }
 }
-
-//* Done
-export const getPropertyById =  async (req: Request , res: Response): Promise<void> => {
-    try {
-        const propertyId = req.params.id;
-
-        // Find property by ID
-        const property = await propertyModel.findById(propertyId).populate("rooms");
-
-        // If property doesn't exist, return 404
-        if (!property) {
-            res.status(404).json({
-                status: "error",
-                message: "Property not found",
-            });
-            return
-        }
-
-        // Send success response
-        res.status(200).json({
-            status: "success",
-            message: "Property with rooms found successfully",
-            data: property,
-        });
-    } catch (error) {
-        console.error("Error fetching property:", error);
-        res.status(500).json({
-            status: "error",
-            message: "Server error",
-        });
-    }
-};
 
 // Help Functions
 //* Done
@@ -244,7 +243,7 @@ async function getPropertiesByRadius(coordinates: number[], distance: number, li
                 $maxDistance: distance * 1000 // 15km radius default
             },
         },
-    })
+    }).populate("rooms");
     if(limit) query.limit(limit);
     return query.exec();
 }
@@ -512,9 +511,116 @@ async function setCacheMainSearch(
     // setCache(cacheKey, properties);
     return properties;
 }
-function  getFiltersFromProperties(properties: IProperty[]) {
-    
-    return properties;
+function getFiltersFromProperties(properties: IProperty[]) {
+    const filters: any = {
+        overall_count: properties.length,
+        type: {},
+        rating: {},
+        popularFacilities: {},
+        roomType: {},
+        roomFacilities: {},
+        meals: {},
+        freeCancellation: 0,
+        onlinePayment: 0,
+        region: {},
+        price: {
+            min: Infinity,
+            max: 0
+        },
+        doubleBeds: 0,
+        singleBeds: 0,
+    };
+
+    const result = properties.reduce((filters, property: IProperty) => {
+        // Type
+        filters.type[property.type] = (filters.type[property.type] || 0) + 1;
+        // Region
+        if(property.location.region)
+            filters.region[property.location.region] = (filters.region[property.location.region] || 0) + 1;
+        // Rating
+        const rating = Math.ceil((property.total_rating as number) / 2);
+        filters.rating[rating] = (filters.rating[rating] || 0) + 1;
+        // Pets
+        if(property.houseRules.pets)
+            filters.popularFacilities["animals allowed"] = (filters.popularFacilities["animals allowed"] || 0) + 1;
+        // Help Desk 24/7
+        if(property.desk_help.start === 0 && property.desk_help.end === 24 )
+            filters.popularFacilities["24-hour reception desk"] = (filters.popularFacilities["24-hour reception desk"] || 0) + 1;
+        // Online Payment
+        if(property.houseRules.accepted_payments.length > 0)
+            filters.onlinePayment += 1;
+        // Popular Facilities
+        property.popularFacilities.forEach((facility: string) => {
+            filters.popularFacilities[facility] = (filters.popularFacilities[facility] || 0) + 1;
+        });
+
+        // Unique Map for Rooms
+        const countedCategories = {
+            types: new Set<string>(),
+            freeCancellation: false,
+            meals: new Set<string>(),
+            roomFacilities: new Set<string>(),
+            isDoubleBed: false,
+            isSingleBed: false
+        };
+
+        // * For Each Room: * //
+        (property.rooms as unknown as IRoom[]).forEach((room: IRoom) => {
+            // Room Type
+            countedCategories.types.add(room.type)
+            // Room Facilities
+            room.facilities?.forEach((facility) => {
+                countedCategories.roomFacilities.add(facility);
+            });
+            //  Room Beds
+            room.rooms.forEach((insideRoom) => {
+                if(insideRoom.beds.double > 0 || insideRoom.beds.queen > 0)
+                    countedCategories.isDoubleBed = true;
+                if(insideRoom.beds.double === 0 && insideRoom.beds.queen === 0 &&
+                    (insideRoom.beds.bunk > 0 || insideRoom.beds.single > 0 || insideRoom.beds.sofa > 0)
+                )   
+                    countedCategories.isSingleBed = true;
+            });
+
+            // * For Each Offer: * //
+            room.offers.forEach((offer) => {
+                // Min Max Prices
+                filters.price.min = Math.min(filters.price.min, offer.price_per_night);
+                filters.price.max = Math.max(filters.price.max, offer.price_per_night);
+                // Free Cancellation
+                if (offer.cancellation.toLowerCase().includes("free")) {
+                    countedCategories.freeCancellation = true;
+                }
+                // Meals
+                offer.meals.forEach((meal) => {
+                    countedCategories.meals.add(meal.type);
+                });
+            });
+        });
+        // * Update Unique Categories:
+        countedCategories.types.forEach((type) => {
+            filters.roomType[type] = (filters.roomType[type] || 0) + 1;
+        });
+        if (countedCategories.freeCancellation) {
+            filters.freeCancellation += 1;
+        }
+        if (countedCategories.isDoubleBed) {
+            filters.doubleBeds += 1;
+        }
+        if (countedCategories.isSingleBed) {
+            filters.singleBeds += 1;
+        }
+        countedCategories.meals.forEach((meal) => {
+            filters.meals[meal] = (filters.meals[meal] || 0) + 1;
+        });
+        countedCategories.roomFacilities.forEach((facility) => {
+            filters.roomFacilities[facility] = (filters.roomFacilities[facility] || 0) + 1;
+        });
+
+        return filters;
+    }, filters);
+
+    return result;
 }
 //* Done
 type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
@@ -619,182 +725,9 @@ function countOccurrences(arr: string[]): { id: string; count: number }[] {
 }
 
 
-
 export async function test(req: Request, res: Response): Promise<void> {
     
-    // const aggregationPipeline = [
-    //     {
-    //         $lookup: {
-    //             from: "rooms",
-    //             localField: "rooms",
-    //             foreignField: "_id",
-    //             as: "rooms"
-    //         }
-    //     },
-    //     {
-    //         $facet: {
-    //             desk_help: [
-    //                 { $unwind: "$property" },  // Breaks array into separate documents
-    //                 { $match: { "property.desk_help.start": 0, "property.desk_help.end": 24 } }, // Filters matching properties
-    //                 { $count: "totalMatchingProperties" } // Counts results
-    //             ],
-    //             // Count of properties by rating range (0-2, 2-4, ..., 8-10)
-    //             ratingCount: [
-    //                 {
-    //                     $project: {
-    //                         total_rating: {
-    //                             $avg: [
-    //                                 "$rating.staff",
-    //                                 "$rating.facilities",
-    //                                 "$rating.cleanliness",
-    //                                 "$rating.conform",
-    //                                 "$rating.value_for_money",
-    //                                 "$rating.location",
-    //                                 "$rating.free_wifi"
-    //                             ]
-    //                         }
-    //                     }
-    //                 },
-    //                 {
-    //                     $bucket: {
-    //                         groupBy: "$total_rating",
-    //                         boundaries: [0, 2, 4, 6, 8, 10],
-    //                         default: "10+",
-    //                         output: { count: { $sum: 1 } }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count properties by type
-    //             propertyTypeCount: [
-    //                 {
-    //                     $group: {
-    //                         _id: "$type",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count of properties by facilities
-    //             propertyFacilitiesCount: [
-    //                 {
-    //                     $unwind: "$popularFacilities"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$popularFacilities",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count meals types in rooms
-    //             mealsCount: [
-    //                 {
-    //                     $unwind: "$rooms"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.offers"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.offers.meals"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$rooms.offers.meals.type",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count room facilities
-    //             roomFacilitiesCount: [
-    //                 {
-    //                     $unwind: "$rooms"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.facilities"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$rooms.facilities",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count free cancellation offers
-    //             freeCancellationCount: [
-    //                 {
-    //                     $unwind: "$rooms"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.offers"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$rooms.offers.cancellation",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count bed types
-    //             bedTypeCount: [
-    //                 {
-    //                     $unwind: "$rooms"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.rooms"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$rooms.rooms.beds",
-    //                         totalSofa: { $sum: "$rooms.rooms.beds.sofa" },
-    //                         totalSingle: { $sum: "$rooms.rooms.beds.single" },
-    //                         totalDouble: { $sum: "$rooms.rooms.beds.double" },
-    //                         totalQueen: { $sum: "$rooms.rooms.beds.queen" },
-    //                         totalBunk: { $sum: "$rooms.rooms.beds.bunk" }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count online payment methods
-    //             onlinePaymentCount: [
-    //                 {
-    //                     $unwind: "$houseRules.accepted_payments"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$houseRules.accepted_payments",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ],
-    
-    //             // Count number of sleep rooms and shower rooms
-    //             roomTypeCount: [
-    //                 {
-    //                     $unwind: "$rooms"
-    //                 },
-    //                 {
-    //                     $unwind: "$rooms.rooms"
-    //                 },
-    //                 {
-    //                     $group: {
-    //                         _id: "$rooms.rooms.type",
-    //                         count: { $sum: 1 }
-    //                     }
-    //                 }
-    //             ]
-    //         }
-    //     }
-    // ];
-    
-    // // Execute the aggregation
-    // const result = await propertyModel.aggregate(aggregationPipeline);
-
-    const properties = await propertyModel.find({});
+    const properties = await propertyModel.find({}).populate("rooms");
 
     const result = getFiltersFromProperties(properties);
 

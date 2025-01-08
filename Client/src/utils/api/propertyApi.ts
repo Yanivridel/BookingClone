@@ -32,18 +32,18 @@ export const searchPropertiesChunks = async (searchBody: TPartialProperty) => {
     const reader = response.body!.getReader();
     
     // Create first chunk promise
-    const firstChunkPromise = createChunkReader(reader, 'firstResults');
+    const firstChunkPromise = createChunkReader(reader, 'filteredProperties');
     
     // Create second chunk promise that starts after first chunk is received
     const secondChunkPromise = firstChunkPromise.then(() => 
-        createChunkReader(reader, 'secondResults')
+        createChunkReader(reader, 'Filters')
     );
 
     return { firstChunkPromise, secondChunkPromise };
 };
 
 // Help functions
-const createChunkReader = (reader: ReadableStreamDefaultReader<Uint8Array>, resultKey: 'firstResults' | 'secondResults') => {
+const createChunkReader = (reader: ReadableStreamDefaultReader<Uint8Array>, resultKey: 'filteredProperties' | 'Filters') => {
     let buffer = '';
     const decoder = new TextDecoder();
 
