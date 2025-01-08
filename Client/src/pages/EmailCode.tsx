@@ -6,12 +6,13 @@ import { FormEvent, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import InputOtp from "@/components/InputOtp";
 import { Button } from "@/components/ui/button";
+import { signinUser } from "@/utils/api/userApi";
 
 function EmailCode({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  //   const [error, setError] = useState("");
+  const [error, setError] = useState("");
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
   const [input3, setInput3] = useState("");
@@ -25,19 +26,22 @@ function EmailCode({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // const formData = new FormData(e.currentTarget);
 
-    // const email = String(formData.get("email"));
+    const code = input1 + input2 + input3 + input4 + input5 + input6;
+    console.log(code + "code");
 
-    // if (!email) {
-    //   return;
-    // }
-    // sendEmailCode(email, false)
-    //   .then((data) => {})
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setError("something");
-    //   });
+    if (!email) {
+      return;
+    }
+
+    signinUser(email, code)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError("error");
+      });
   }
 
   const handleChange = (
