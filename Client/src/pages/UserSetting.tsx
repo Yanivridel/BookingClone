@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TPartialUser } from "@/types/userTypes";
 import { getPropertyById, searchPropertiesChunks } from "@/utils/api/propertyApi";
-import { editProfile, getInterested, getSavedLists, getSearch, getSelf, loginUser, modifyUserArrays, sendEmailCode, signupUser } from "@/utils/api/userApi";
+import { editProfile, getInterested, getSavedLists, getSearch, getSelf, modifyUserArrays, sendEmailCode, signinUser } from "@/utils/api/userApi";
 import { useEffect } from "react";
 
 
@@ -13,13 +13,10 @@ function UserSetting() {
     // getSelf()
     // .then(data => console.log(data))
 
-    // sendEmailCode("yanivridel@gmail.com", true)
+    // sendEmailCode("yanivridel@gmail.com")
     // .then(data => console.log(data));
 
-    // signupUser("yanivridel@gmail.com", "516EFC")
-    // .then(data => console.log(data));
-
-    // loginUser("yanivridel@gmail.com", "570E77")
+    // signinUser("yanivridel@gmail.com", "516EFC")
     // .then(data => console.log(data));
 
   //   editProfile({

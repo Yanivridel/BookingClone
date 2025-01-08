@@ -34,7 +34,7 @@ export const sendEmailCode = async (email: string, isLogin: boolean) => {
     }
 };
 // * Done
-export const signin = async (email: string, code: string) => {
+export const signinUser = async (email: string, code: string) => {
     try {
         const { data } = await axios.post(`${API_URL}/api/users/signin`, {
             email,
