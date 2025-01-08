@@ -3,7 +3,6 @@ import {
     createProperty,
     getSearchProperties,
     getPropertyById,
-    getPossibleFiltersAndCount
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -14,9 +13,6 @@ router.post("/create", createProperty)
 router.post("/", getSearchProperties);
 
 router.get("/:id", getPropertyById);
-
-
-// router.post("/cache", getCachedProperties);
 
 
 

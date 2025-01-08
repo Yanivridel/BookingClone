@@ -160,21 +160,29 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
             { adults, children, rooms, isBaby, isAnimalAllowed }, // options
         );
+        
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Transfer-Encoding', 'chunked');
+        res.flushHeaders();
+
+        res.write(JSON.stringify({ firstResults: filteredProperties }) + "\n"); 
 
         // Background Task: Fetch all properties & filter & store in Redis
-        // setImmediate(async () => {
-        //     await setCacheMainSearch(cacheKey, coordinates, distance,
-        //         { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
-        //         { adults, children, rooms, isBaby, isAnimalAllowed }, // options
-        //     );
-        // });
+        setImmediate(async () => {
+            const allProperties = await setCacheMainSearch(cacheKey, coordinates, distance,
+                { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
+                { adults, children, rooms, isBaby, isAnimalAllowed }, // options
+            );
+            res.write(JSON.stringify(allProperties) + "\n"); 
+            res.end();
+        });
 
         // Return the 15 first results
-        res.status(200).json({
-            status: "success",
-            message: "Properties found successfully",
-            data: filteredProperties,
-        });
+        // res.status(200).json({
+        //     status: "success",
+        //     message: "Properties found successfully",
+        //     data: filteredProperties,
+        // });
         
     } catch (error) {
         console.log(error); // dev mode
@@ -185,26 +193,6 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         });
     }
 }
-
-// Working
-export const getPossibleFiltersAndCount = async (req: Request , res: Response): Promise<void> => {
-    try {
-        
-
-
-        res.status(200).json({
-            status: "success",
-            message: "Filters found successfully",
-            data: [],
-        });
-    } catch (error) {
-        console.error("Error fetching property:", error);
-        res.status(500).json({
-            status: "error",
-            message: "Server error",
-        });
-    }
-};
 
 //* Done
 export const getPropertyById =  async (req: Request , res: Response): Promise<void> => {
@@ -309,11 +297,14 @@ async function filterPropertiesPrimary(
 
         const selectedRooms = findBestRoomCombinationDP(availableRooms, targetGuests, targetRooms, needsBaby);
 
+        console.log(selectedRooms);
         if(!selectedRooms) return null;
         
+        console.log("count:", countOccurrences(selectedRooms));
+
         return {
             ...property.toObject(),
-            selectedRooms,
+            selectedRooms: countOccurrences(selectedRooms),
         };
     }));
 
@@ -524,6 +515,7 @@ async function setCacheMainSearch(
     properties = await filterPropertiesPrimary(properties, dateFilter, options);
 
     setCache(cacheKey, properties);
+    return properties;
 }
 //* Done
 type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
@@ -617,4 +609,14 @@ function findBestRoomCombinationDP(rooms: IRoom[], targetGuests: number, targetR
     }
     
     return selectedRooms;
+}
+function countOccurrences(arr: string[]): { id: string; count: number } | { id: string; count: number }[] {
+    const countMap = arr.reduce<Record<string, number>>((acc, id) => {
+        acc[id] = (acc[id] || 0) + 1;
+        return acc;
+    }, {});
+
+    const result = Object.entries(countMap).map(([id, count]) => ({ id, count }));
+
+    return result.length === 1 ? result[0] : result;
 }
