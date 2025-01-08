@@ -1,16 +1,8 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import Image from "../assets/images/hotel.jpg";
 import GeniusImage from "../assets/images/Genius.png";
 import ThumbsUp from "../assets/images/thumps.png";
-import { Link } from "react-router-dom";
-import { IconHeart } from "./ui/Icons";
 import SaveButton from "./SaveButton";
 
 interface mainCardProps {
@@ -33,7 +25,7 @@ const MainCard = ({
   discount,
 }: mainCardProps) => {
   return (
-    <Card className="flex flex-col w-[300px] h-[400px] sm:w-[300px] sm:h-[300px] rounded-lg ">
+    <Card className="flex flex-col w-[196px] h-[400px] sm:w-[300px] sm:h-[300px] rounded-lg ">
       <div className="h-[50%] sm:h-[50%] rounded-t-lg relative">
         <img
           src={Image}
