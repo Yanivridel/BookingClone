@@ -3,6 +3,7 @@ import {
     createProperty,
     getSearchProperties,
     getPropertyById,
+    test,
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -11,6 +12,8 @@ const router = express.Router();
 router.post("/create", createProperty)
 
 router.post("/", getSearchProperties);
+
+router.get("/test", test);
 
 router.get("/:id", getPropertyById);
 

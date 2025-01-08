@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TPartialUser } from "@/types/userTypes";
-import { getPropertyById, searchProperties } from "@/utils/api/propertyApi";
+import { getPropertyById, searchPropertiesChunks } from "@/utils/api/propertyApi";
 import { editProfile, getInterested, getSavedLists, getSearch, getSelf, loginUser, modifyUserArrays, sendEmailCode, signupUser } from "@/utils/api/userApi";
 import { useEffect } from "react";
 
@@ -111,8 +111,71 @@ function UserSetting() {
     // .then(data => console.log(data));
 
   }
+
+  const searchBody = {
+    primary: {
+      location: {
+        country: "Israel",
+        region: "Center District Israel",
+        city: "Ness Ziona",
+        // addressLine: "24 Rothschild Street"
+      },
+      date: {
+        startDate: "2025-01-10",
+        endDate: "2025-01-12",
+        // length: 3,
+        // fromDay: 0,
+        // yearMonths: [
+        //   {
+        //     year: 2025,
+        //     month: 0
+        //   },
+        //   {
+        //     year: 2025,
+        //     month: 1
+        //   }
+        // ],
+        // isWeekend: true
+      },
+      options: {
+        adults: 6,
+        rooms: 2,
+        childrenAges: [
+          4
+        ]
+      }
+    },
+    secondary: {}
+  } as any;
+
+  async function fetchingSearch() {
+    try {
+      const { firstChunkPromise, secondChunkPromise } = await searchPropertiesChunks(searchBody);
+
+      // Handle first chunk
+      firstChunkPromise
+        .then(results => {
+          if (results) {
+            console.log(results);
+          }
+        })
+
+      // Handle second chunk
+      secondChunkPromise
+        .then(results => {
+          if (results) {
+            console.log(results);
+          }
+        })
+        // .finally(() => setIsLoadingSecond(false));
+
+    } catch (err) {
+      console.log("ERROR:", err instanceof Error ? err.message : 'An error occurred while searching');
+      
+    }
+  }
   return (
-    <Button onClick={handleClick}>Click</Button>
+    <Button onClick={fetchingSearch}>Click</Button>
   );
 }
 
