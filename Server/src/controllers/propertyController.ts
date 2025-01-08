@@ -512,12 +512,9 @@ async function setCacheMainSearch(
     // setCache(cacheKey, properties);
     return properties;
 }
-async function  getFiltersFromProperties(properties: IProperty[]) {
-    try {
-
-    } catch(err) {
-
-    }
+function  getFiltersFromProperties(properties: IProperty[]) {
+    
+    return properties;
 }
 //* Done
 type WasteAndRooms = [number, number[]];  // [wastedSpace, roomIds]
@@ -625,178 +622,184 @@ function countOccurrences(arr: string[]): { id: string; count: number }[] {
 
 export async function test(req: Request, res: Response): Promise<void> {
     
-    const aggregationPipeline = [
-        {
-            $lookup: {
-                from: "rooms",
-                localField: "rooms",
-                foreignField: "_id",
-                as: "rooms"
-            }
-        },
-        {
-            $facet: {
-                // Count of properties by rating range (0-2, 2-4, ..., 8-10)
-                ratingCount: [
-                    {
-                        $project: {
-                            total_rating: {
-                                $avg: [
-                                    "$rating.staff",
-                                    "$rating.facilities",
-                                    "$rating.cleanliness",
-                                    "$rating.conform",
-                                    "$rating.value_for_money",
-                                    "$rating.location",
-                                    "$rating.free_wifi"
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        $bucket: {
-                            groupBy: "$total_rating",
-                            boundaries: [0, 2, 4, 6, 8, 10],
-                            default: "10+",
-                            output: { count: { $sum: 1 } }
-                        }
-                    }
-                ],
+    // const aggregationPipeline = [
+    //     {
+    //         $lookup: {
+    //             from: "rooms",
+    //             localField: "rooms",
+    //             foreignField: "_id",
+    //             as: "rooms"
+    //         }
+    //     },
+    //     {
+    //         $facet: {
+    //             desk_help: [
+    //                 { $unwind: "$property" },  // Breaks array into separate documents
+    //                 { $match: { "property.desk_help.start": 0, "property.desk_help.end": 24 } }, // Filters matching properties
+    //                 { $count: "totalMatchingProperties" } // Counts results
+    //             ],
+    //             // Count of properties by rating range (0-2, 2-4, ..., 8-10)
+    //             ratingCount: [
+    //                 {
+    //                     $project: {
+    //                         total_rating: {
+    //                             $avg: [
+    //                                 "$rating.staff",
+    //                                 "$rating.facilities",
+    //                                 "$rating.cleanliness",
+    //                                 "$rating.conform",
+    //                                 "$rating.value_for_money",
+    //                                 "$rating.location",
+    //                                 "$rating.free_wifi"
+    //                             ]
+    //                         }
+    //                     }
+    //                 },
+    //                 {
+    //                     $bucket: {
+    //                         groupBy: "$total_rating",
+    //                         boundaries: [0, 2, 4, 6, 8, 10],
+    //                         default: "10+",
+    //                         output: { count: { $sum: 1 } }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count properties by type
-                propertyTypeCount: [
-                    {
-                        $group: {
-                            _id: "$type",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count properties by type
+    //             propertyTypeCount: [
+    //                 {
+    //                     $group: {
+    //                         _id: "$type",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count of properties by facilities
-                propertyFacilitiesCount: [
-                    {
-                        $unwind: "$popularFacilities"
-                    },
-                    {
-                        $group: {
-                            _id: "$popularFacilities",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count of properties by facilities
+    //             propertyFacilitiesCount: [
+    //                 {
+    //                     $unwind: "$popularFacilities"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$popularFacilities",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count meals types in rooms
-                mealsCount: [
-                    {
-                        $unwind: "$rooms"
-                    },
-                    {
-                        $unwind: "$rooms.offers"
-                    },
-                    {
-                        $unwind: "$rooms.offers.meals"
-                    },
-                    {
-                        $group: {
-                            _id: "$rooms.offers.meals.type",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count meals types in rooms
+    //             mealsCount: [
+    //                 {
+    //                     $unwind: "$rooms"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.offers"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.offers.meals"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$rooms.offers.meals.type",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count room facilities
-                roomFacilitiesCount: [
-                    {
-                        $unwind: "$rooms"
-                    },
-                    {
-                        $unwind: "$rooms.facilities"
-                    },
-                    {
-                        $group: {
-                            _id: "$rooms.facilities",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count room facilities
+    //             roomFacilitiesCount: [
+    //                 {
+    //                     $unwind: "$rooms"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.facilities"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$rooms.facilities",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count free cancellation offers
-                freeCancellationCount: [
-                    {
-                        $unwind: "$rooms"
-                    },
-                    {
-                        $unwind: "$rooms.offers"
-                    },
-                    {
-                        $group: {
-                            _id: "$rooms.offers.cancellation",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count free cancellation offers
+    //             freeCancellationCount: [
+    //                 {
+    //                     $unwind: "$rooms"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.offers"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$rooms.offers.cancellation",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count bed types
-                bedTypeCount: [
-                    {
-                        $unwind: "$rooms"
-                    },
-                    {
-                        $unwind: "$rooms.rooms"
-                    },
-                    {
-                        $group: {
-                            _id: "$rooms.rooms.beds",
-                            totalSofa: { $sum: "$rooms.rooms.beds.sofa" },
-                            totalSingle: { $sum: "$rooms.rooms.beds.single" },
-                            totalDouble: { $sum: "$rooms.rooms.beds.double" },
-                            totalQueen: { $sum: "$rooms.rooms.beds.queen" },
-                            totalBunk: { $sum: "$rooms.rooms.beds.bunk" }
-                        }
-                    }
-                ],
+    //             // Count bed types
+    //             bedTypeCount: [
+    //                 {
+    //                     $unwind: "$rooms"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.rooms"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$rooms.rooms.beds",
+    //                         totalSofa: { $sum: "$rooms.rooms.beds.sofa" },
+    //                         totalSingle: { $sum: "$rooms.rooms.beds.single" },
+    //                         totalDouble: { $sum: "$rooms.rooms.beds.double" },
+    //                         totalQueen: { $sum: "$rooms.rooms.beds.queen" },
+    //                         totalBunk: { $sum: "$rooms.rooms.beds.bunk" }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count online payment methods
-                onlinePaymentCount: [
-                    {
-                        $unwind: "$houseRules.accepted_payments"
-                    },
-                    {
-                        $group: {
-                            _id: "$houseRules.accepted_payments",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ],
+    //             // Count online payment methods
+    //             onlinePaymentCount: [
+    //                 {
+    //                     $unwind: "$houseRules.accepted_payments"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$houseRules.accepted_payments",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ],
     
-                // Count number of sleep rooms and shower rooms
-                roomTypeCount: [
-                    {
-                        $unwind: "$rooms"
-                    },
-                    {
-                        $unwind: "$rooms.rooms"
-                    },
-                    {
-                        $group: {
-                            _id: "$rooms.rooms.type",
-                            count: { $sum: 1 }
-                        }
-                    }
-                ]
-            }
-        }
-    ];
+    //             // Count number of sleep rooms and shower rooms
+    //             roomTypeCount: [
+    //                 {
+    //                     $unwind: "$rooms"
+    //                 },
+    //                 {
+    //                     $unwind: "$rooms.rooms"
+    //                 },
+    //                 {
+    //                     $group: {
+    //                         _id: "$rooms.rooms.type",
+    //                         count: { $sum: 1 }
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     }
+    // ];
     
-    // Execute the aggregation
-    const result = await propertyModel.aggregate(aggregationPipeline);
-    console.log(result);
-    
+    // // Execute the aggregation
+    // const result = await propertyModel.aggregate(aggregationPipeline);
 
+    const properties = await propertyModel.find({});
 
-    res.json({
+    const result = getFiltersFromProperties(properties);
+
+    res.json(
         result
-    })
+    )
 
 }

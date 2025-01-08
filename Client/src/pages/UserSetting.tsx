@@ -156,6 +156,7 @@ function UserSetting() {
             console.log(results);
           }
         })
+        // .finally(() => setIsLoadingFirst(false));
 
       // Handle second chunk
       secondChunkPromise
