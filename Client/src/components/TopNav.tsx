@@ -71,7 +71,7 @@ function TopNav() {
             <IconHamburger className="fill-white" />
           </button>
         </div>
-        {/* <Languages ></Languages> */}
+        <Languages></Languages>
       </div>
 
       <div className={cn(" flex  overflow-scroll  ", styles.scrollContainer)}>
