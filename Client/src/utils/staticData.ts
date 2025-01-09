@@ -2,23 +2,23 @@ import { IconPlusMinus } from "@/components/ui/Icons";
 export const searchCalendarButtonsData = [
   {
     icon: IconPlusMinus,
-    text: "search.caledarPlusMibusButtons.4",
+    text: "search.caledarPlusMinusButtons.4",
   },
   {
     icon: IconPlusMinus,
-    text: "search.caledarPlusMibusButtons.3",
+    text: "search.caledarPlusMinusButtons.3",
   },
 
   {
     icon: IconPlusMinus,
-    text: "search.caledarPlusMibusButtons.2",
+    text: "search.caledarPlusMinusButtons.2",
   },
   {
     icon: IconPlusMinus,
-    text: "search.caledarPlusMibusButtons.1",
+    text: "search.caledarPlusMinusButtons.1",
   },
   {
-    text: "search.caledarPlusMibusButtons.0",
+    text: "search.caledarPlusMinusButtons.0",
   },
 ];
 export const monthsAndYears = () => {

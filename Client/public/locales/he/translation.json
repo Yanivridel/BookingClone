@@ -30,16 +30,20 @@
     "checkIn": " תאריך צ'ק-אין",
     "checkOut": "תאריך צ'ק-אאוט",
     "caledar": "לוח שנה",
-    "flexible": "תאריכים גמישים",
-    "flexibleHeader": "מה אורך השהייה שאתם מתכננים?",
-    "flexibleSecondaryHeader": "מתי תרצו לנסוע?",
-    "caledarPlusMibusButtons": [
+    "caledarPlusMinusButtons": [
       "תאריכים מדויקים",
       "יום אחד",
       "יומיים",
       "3 ימים",
       "7 ימים"
-    ]
+    ],
+
+    "flexible": "תאריכים גמישים",
+    "flexibleHeader": "מה אורך השהייה שאתם מתכננים?",
+    "flexibleSecondaryHeader": "מתי תרצו לנסוע?",
+    "flexibleRadioGroup": ["סוף שבוע", "שבוע", "חודש", "אפשרות אחרת"],
+    "from": "מיום",
+    "flexibleDays": ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"]
   },
   "button": {
     "search": "חיפוש"

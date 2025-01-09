@@ -15,7 +15,9 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { EmptyCalendarImg } from "./ui/Icons";
 import { cn } from "@/lib/utils";
-
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
+import { searchPropertiesChunks } from "@/utils/api/propertyApi";
+import { log } from "node:console";
 
 // damy data
 const items = [
@@ -46,10 +48,80 @@ function Search() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [res, setRes] = useState<Array<IUnknownData> | null>(items); // !need to change the type with the real data
-  const [isOther, setIsOther] = useState<boolean>(true); // !need to change the type with the real data
+  const [isOther, setIsOther] = useState<boolean>(false);
+  const [variant, setVariant] = useState<"default" | "disabled">("disabled");
+  const currentDate = new Date();
+
+  const formattedDate = currentDate.toISOString().split("T")[0];
+
+  const [finalData, setFinalData] = useState<ISearchPropertiesReq>({
+    primary: {
+      location: {
+        country: "Israel",
+        region: "Center District Israel",
+        city: "Ness Ziona",
+        addressLine: "24 Rothschild Street",
+      },
+      date: {
+        startDate: formattedDate,
+        endDate: "2025-01-12",
+        length: 3,
+        fromDay: 0,
+        yearMonths: [
+          {
+            year: 2025,
+            month: 0,
+          },
+          {
+            year: 2025,
+            month: 1,
+          },
+        ],
+        isWeekend: true,
+      },
+      options: {
+        adults: 3,
+        rooms: 1,
+        childrenAges: [4],
+      },
+    },
+  });
+
+  async function fetchingSearch() {
+    try {
+      const { firstChunkPromise, secondChunkPromise } =
+        await searchPropertiesChunks(finalData);
+      console.log(firstChunkPromise, secondChunkPromise);
+
+      // Handle first chunk
+      firstChunkPromise.then((results) => {
+        if (results) {
+          console.log(results);
+        }
+      });
+      // .finally(() => setIsLoadingFirst(false));
+
+      // Handle second chunk
+      secondChunkPromise.then((results) => {
+        if (results) {
+          console.log(results);
+        }
+      });
+      // .finally(() => setIsLoadingSecond(false));
+    } catch (err) {
+      console.log(
+        "ERROR:",
+        err instanceof Error ? err.message : "An error occurred while searching"
+      );
+    }
+  }
+  useEffect(() => {
+    // console.log(finalData);
+    fetchingSearch();
+  }, []);
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
+    from: new Date(),
+    to: addDays(new Date(), 6),
   });
 
   const [activePlusMinusButton, setActivePlusMinusButton] =
@@ -57,8 +129,15 @@ function Search() {
   const [activeNavButton, setActiveNavButton] = useState<string>(
     t("search.calendar")
   );
+
+  const [preferredDays, setPreferredDays] = useState("");
   const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const [clickedMonthsCards, setClickedMonthsCards] = useState<number[]>([]);
+
+  //  ! preferredDays = {length: number , name: name}
+  // ! yearsMonths = [ { month: string, year: number}] 12 month
+  // ! clickedMonthsCards = [] | [index ] max length 3
+  //  !finel data to be yearsMonths[clickedindex[0]...] (clickedMonthsCards.forEach...)
 
   const { i18n } = useTranslation();
   const currentLocale = i18n.language === "he" ? he : enUS;
@@ -87,32 +166,27 @@ function Search() {
     setInputValue(() => [element.city, element.country].join(", "));
   };
 
-
   const handlePlusMinusButtonClick = (buttonName: string) => {
     setActivePlusMinusButton(buttonName);
   };
 
   const handleNavButtonClick = (buttonName: string) => {
     setActiveNavButton(buttonName);
-
   };
 
   const handleDateSelect = (selectedDate: DateRange | undefined) => {
     if (!selectedDate || !selectedDate.from) {
-
       setDate(selectedDate);
       return;
     }
 
     if (!selectedDate.to) {
-
       if (selectedDate.from.getTime() === date?.from?.getTime()) {
         return;
       }
       setDate({ from: selectedDate.from, to: undefined });
       return;
     }
-
 
     if (selectedDate.from.getTime() === selectedDate.to.getTime()) {
       setDate({ from: selectedDate.from, to: undefined });
@@ -122,25 +196,41 @@ function Search() {
   };
 
   // monthes and years
-  const handleclickMonthCard = (index: number) => {
+  const handleclickMonthCard = (month: MonthYear, index: number) => {
     let newClickedButtons = [];
 
     if (clickedMonthsCards.includes(index)) {
-      // אם הכפתור כבר נלחץ, הורד אותו מהרשימה
+      //button clicked:
       newClickedButtons = clickedMonthsCards.filter((i) => i !== index);
     } else {
-      // אם הכפתור לא נלחץ, הוסף אותו לרשימה
+      // button not clicked:
       newClickedButtons = [...clickedMonthsCards, index];
     }
 
     setClickedMonthsCards(newClickedButtons);
   };
 
-  //hebrew formt
+  //  preferred days - monthes and day number
+  const handleRadioGroup = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const target = e.target as HTMLInputElement;
+    if (target.value !== undefined) {
+      setPreferredDays(target.value);
+      console.log(preferredDays);
+    }
+  };
 
+  //hebrew formt
   const formattedHebrew = "EEE, dd MMMM";
   // english format
   const formattedEnglish = "EEE, MMM dd";
+
+  useEffect(() => {
+    if (preferredDays === t("search.flexibleRadioGroup.3")) {
+      setIsOther(true);
+    } else setIsOther(false);
+  }, [preferredDays]);
 
   useEffect(() => {
     // // date?.from === date?.to ? date?.to = undefined :
@@ -236,15 +326,13 @@ function Search() {
               className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
               sideOffset={11.5}
               side="bottom"
-              align={i18n.language === "he" ? "end" : "start"}
+              align={"start"}
               alignOffset={-11.5}
               avoidCollisions={false}
-              dir={i18n.language === "he" ? "rtl" : "ltr"}
             >
               <div className="px-3 flex ">
                 <Button
                   className="flex-grow"
-
                   variant={
                     activeNavButton === t("search.calendar")
                       ? "navBarUnderlineSelected"
@@ -268,7 +356,7 @@ function Search() {
                   {t("search.flexible")}
                 </Button>
               </div>
-
+              {/* calender */}
               {activeNavButton === t("search.calendar") && (
                 <Calendar
                   initialFocus
@@ -310,15 +398,17 @@ function Search() {
                   ))}
                 </div>
               )}
+              {/* flexible*/}
               {activeNavButton === t("search.flexible") && (
                 <div className="px-4  w-[642px]">
                   <h3 className="font-bold text-base pt-8">
                     {t("search.flexibleHeader")}
                   </h3>
                   <RadioGroup
-                    defaultValue="comfortable"
+                    dir={i18n.language === "he" ? "rtl" : "ltr"}
                     loop={true}
                     className="py-2"
+                    onClick={handleRadioGroup}
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem
@@ -366,6 +456,7 @@ function Search() {
                           id="nights"
                           min="1"
                           max="90"
+                          defaultValue={1}
                         ></input>
                         <label
                           htmlFor="nights" // TODO:1- night / 1 < nights
@@ -379,13 +470,32 @@ function Search() {
                         id="baba"
                         className="focus:outline-none text-sm pe-3 rounded-md border-[1px] cursor-pointer text-searchGrayText border-[#868686]"
                       >
-                        <option value="Monday">From Monday</option>
-                        <option value="Tuesday">From Tuesday</option>
-                        <option value="Wednesday">From Wednesday</option>
-                        <option value="Thursday">From Thursday</option>
-                        <option value="Friday">From Friday</option>
-                        <option value="Saturday">From Saturday</option>
-                        <option value="Sunday">From Sunday</option>
+                        <option value="Monday">
+                          {t("search.from") + " " + t("search.flexibleDays.0")}
+                        </option>
+                        <option value="Tuesday">
+                          {t("search.from") + " " + t("search.flexibleDays.1")}
+                        </option>
+                        <option value="Wednesday">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.2")}
+                        </option>
+                        <option value="Thursday">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.3")}
+                        </option>
+                        <option value="Friday">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.4")}
+                        </option>
+                        <option value="Saturday">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.5")}
+                        </option>
+                        <option value="Sunday">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.6")}
+                        </option>
                       </select>
                     </div>
                   )}
@@ -395,7 +505,7 @@ function Search() {
                   <p className="pt-2 text-sm text-searchGrayText">
                     {t("search.flexibleChoiceLimit")}
                   </p>
-                  {/* ! */}
+
                   <div
                     className={cn(
                       "w-full flex gap-2 overflow-scroll py-4",
@@ -411,7 +521,7 @@ function Search() {
                         return (
                           <Card
                             onClick={() =>
-                              !isDisabled && handleclickMonthCard(index)
+                              !isDisabled && handleclickMonthCard(month, index)
                             }
                             key={index}
                             className={cn(
@@ -441,13 +551,14 @@ function Search() {
                       })}
                   </div>
                   <hr />
-                  <div className="flex justify-end py-3">
-                    <p>Select preferred days</p>
-                    <Button variant={"default"}>select dates</Button>
+                  <div className="flex justify-end items-center gap-3 py-3">
+                    <p className="text-sm">Select preferred days</p>
+                    <Button className="px-2 " variant={variant}>
+                      select dates
+                    </Button>
                   </div>
                 </div>
               )}
-
             </PopoverContent>
             <PopoverTrigger asChild>
               <div className="flex">
@@ -478,16 +589,16 @@ function Search() {
                       )}
                       <span className="px-1">
                         {activePlusMinusButton ===
-                        "search.caledarPlusMibusButtons.1"
+                        "search.caledarPlusMinusButtons.1"
                           ? "(±1)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.2"
+                            "search.caledarPlusMinusButtons.2"
                           ? "(±2)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.3"
+                            "search.caledarPlusMinusButtons.3"
                           ? "(±3)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.4"
+                            "search.caledarPlusMinusButtons.4"
                           ? "(±7)"
                           : ""}
                       </span>
