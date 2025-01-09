@@ -1,41 +1,30 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
+import { IReview } from 'src/types/reviewTypes';
+import { ELanguage } from 'src/utils/structures';
 
-
-interface IReview extends Document {
-    user: Types.ObjectId;
-    reviewer: Types.ObjectId;
-    rating: number;
-    reviewText?: string;
-    createdAt: Date;
-}
-
-const reviewSchema = new Schema<IReview>({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+const ReviewSchema = new Schema<IReview>(
+    {
+        propertyId: { type: Schema.Types.ObjectId, ref: "Property", required: true },
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+        passenger_type: {
+            type: String,
+            enum: ["family", "couple", "friends", "single", "business"],
+            required: true,
+        },
+        language: { type: String, enum: ELanguage, required: true },
+        rating: { type: Number, min: 0, max: 10, required: true },
+        room_type: {
+            type: String,
+            enum: ["room", "studio", "suite", "bed", "villa"],
+            required: true,
+        },
+        nights_num: { type: Number, min: 1, required: true },
+        reviewText: { type: String },
+        responseFromProperty: { type: String },
+        helpfulVotes: { type: Number, default: 0, min: 0 },
+        createdAt: { type: Date, default: Date.now, immutable: true },
     },
-    reviewer: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    rating: {
-        type: Number,
-        min: 0,
-        max: 5,
-        required: true
-    },
-    reviewText: {
-        type: String,
-        trim: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+    { timestamps: true }
+);
 
-const Review = mongoose.model<IReview>('Review', reviewSchema);
-
-export default Review;
+export const reviewModel = model<IReview>("Review", ReviewSchema);

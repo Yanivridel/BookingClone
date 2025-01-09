@@ -1,28 +1,22 @@
 import { Types } from "mongoose";
 
 
-export interface IReview {
-    _id: Types.ObjectId;
-    propertyId: Types.ObjectId;
-    userId: Types.ObjectId;
+export interface IReview extends Document {
+    _id?: Types.ObjectId;
+    propertyId : Types.ObjectId; // ref: Property
+    userId: Types.ObjectId; // ref: User
+    passenger_type: string; // enum: [family, couple, friends, single, business]
+    language: string; // enum : ELanguage
     rating: number; // min:0, max:10
-    
-    reviewText: string; // Text content of the review
+    room_type: string; // enum: "room" | "studio" | "suite" | "bed" | "villa"
+    nights_num: number; // min 1
+    reviewText?: string;
+    responseFromProperty?: string;
     helpfulVotes: number; // Number of users who found the review helpful
-    responseFromProperty: string | null; // Optional response from the property owner or manager
-    cleanlinessRating: number; // Rating for cleanliness (e.g., 1-5)
-    locationRating: number; // Rating for location (e.g., 1-5)
-    serviceRating: number; // Rating for service (e.g., 1-5)
-    valueRating: number; // Rating for value (e.g., 1-5)
-    facilitiesRating: number; // Rating for facilities (e.g., 1-5)
-    comfortRating: number; // Rating for comfort (e.g., 1-5)
-    verifiedStay: boolean; // Flag to indicate if the review is from a verified stay
-
     createdAt: Date;
 }
 
 /*
 when adding a review you should search the order number and code to know
-you really were in this hotel and in which room; 
-
+you really were in this hotel and in which room;
 */

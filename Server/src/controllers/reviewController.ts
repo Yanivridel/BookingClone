@@ -40,7 +40,7 @@ export const createReview = async (req: Request<{},{}, createReviewBody>, res: R
 };
 
 // Get all reviews
-export const getAllReviewsForTeacher = async (req: Request, res: Response): Promise<void> => {
+export const getAllReviewsForProperty = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id: teacherId } = req.params;
 

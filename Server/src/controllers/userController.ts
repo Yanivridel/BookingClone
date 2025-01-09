@@ -90,7 +90,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         httpOnly: false, // process.env.NodeEnv === 'production'
         secure: true, // process.env.NodeEnv === 'production'
         sameSite: "lax",
-        maxAge: 3600000, // Cookie lifespan of 1 hour
+        maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
         });
 
         res.status(201).send({
