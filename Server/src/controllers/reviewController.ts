@@ -1,29 +1,20 @@
 import { Request, Response } from "express";
-import reviewModel from "../models/reviewModel";
+import { reviewModel } from "../models/reviewModel";
 import mongoose from "mongoose";
+import { IReview } from "src/types/reviewTypes";
 
 // Create a new review
-interface createReviewBody {
-    teacherId: string;
-    reviewer: string;
-    rating: number;
-    reviewText ?: string; 
-}
-export const createReview = async (req: Request<{},{}, createReviewBody>, res: Response): Promise<void> => {
+export const createReview = async (req: Request<{},{}, Partial<IReview>>, res: Response): Promise<void> => {
     try {
-        const { teacherId, reviewer, rating, reviewText } = req.body;
+        const { propertyId, userId, rating } = req.body;
 
-        if(!teacherId || !reviewer || !rating) {
+        if(!propertyId || !userId || rating === undefined) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
 
         const newReview = new reviewModel({
-            user: new mongoose.Types.ObjectId(teacherId),
-            reviewer,
-            rating,
-            reviewText: reviewText ? reviewText : "",
-            createdAt: new Date()
+            ...req.body
         });
 
         await newReview.save();
@@ -42,14 +33,14 @@ export const createReview = async (req: Request<{},{}, createReviewBody>, res: R
 // Get all reviews
 export const getAllReviewsForProperty = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id: teacherId } = req.params;
+        const { id: propertyId } = req.params;
 
-        if(!teacherId) {
+        if(!propertyId) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
 
-        const reviews = await reviewModel.find({ user: teacherId}).populate("user reviewer", "fName lName");
+        const reviews = await reviewModel.find({ user: propertyId});
 
         res.status(200).json({ 
             status: "success", 

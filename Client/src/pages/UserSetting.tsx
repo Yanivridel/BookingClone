@@ -148,7 +148,7 @@ function UserSetting() {
   async function fetchingSearch() {
     try {
       const { firstChunkPromise, secondChunkPromise } = await searchPropertiesChunks(searchBody);
-
+      console.log(firstChunkPromise, secondChunkPromise);
       // Handle first chunk
       firstChunkPromise
         .then(results => {
