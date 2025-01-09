@@ -40,6 +40,7 @@ export const searchPropertiesChunks = async (searchBody: TPartialProperty) => {
     );
 
     return { firstChunkPromise, secondChunkPromise };
+    //test
 };
 
 // Help functions
