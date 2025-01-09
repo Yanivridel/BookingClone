@@ -60,6 +60,7 @@ module.exports = {
         navBarRoundedButton: "#868686",
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
+        redError: "#d3111e",
       },
       keyframes: {
         "accordion-down": {
