@@ -11,7 +11,7 @@ import { AuthenticatedRequest } from 'src/types/expressTypes';
 import { getCoordinatesByLocation } from './../utils/maps';
 import { ILocation, ICoordinates } from 'src/types/propertyTypes';
 
-const JTW_EXPIRATION = { expiresIn: '1d'};
+const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 
 // Send Email Code - Done
 interface ISendEmailCodeBody {
@@ -19,22 +19,16 @@ interface ISendEmailCodeBody {
     isLogin: boolean; // true - login, false - register 
 }
 export const sendEmailCode = async (req: Request<{}, {}, ISendEmailCodeBody>, res: Response): Promise<void> => {
-    const { email, isLogin } = req.body;
+    const { email } = req.body;
+    let isLogin = false;
 
     if (!email) {
         res.status(400).send({status: "error", message: "Missing required parameters"});
         return;
     }
     const user = await userModel.findOne({email});
-
-    if(isLogin && !user) {
-        res.status(400).send({status: "error", message: "User not found"});
-        return;
-    }
-    if(!isLogin && user) {
-        res.status(400).send({status: "error", message: "Email already registered"});
-        return;
-    }
+    
+    if(user) isLogin = true;
 
     try {
         await generateVerificationCode(email, isLogin);
@@ -56,7 +50,7 @@ interface IEmailCodeBody {
     email: string;
     code: string;
 }
-export const createUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Response): Promise<void> => {
+export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Response): Promise<void> => {
     try {
         const { email, code } = req.body;
     
@@ -71,16 +65,39 @@ export const createUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
             return;
         }
 
-        const newUser = new userModel({
-            email,
+        let user = await userModel.findOne({email});
+    
+        if(!user) {
+            user = new userModel({
+                email,
+            });
+        
+            await user.save();
+        }
+
+        let jwtSecretKey = process.env.JWT_SECRET_KEY as string;
+    
+        const token = jwt.sign(
+            {
+                userId: user._id,
+            },
+            jwtSecretKey,
+            JTW_EXPIRATION
+            );
+
+        // Set the JWT as a cookie in the response.
+        res.cookie("token", token, {
+        httpOnly: process.env.NodeEnv === 'production',
+        secure: process.env.NodeEnv === 'production',
+        sameSite: "strict",
+        maxAge: 3600000, // Cookie lifespan of 1 hour
         });
-    
-        await newUser.save();
-    
+
         res.status(201).send({
             status: "success",
-            message: "user created successfully",
-            data: newUser
+            message: "user signed in successfully",
+            token,
+            data: user
         });
     } catch (error: unknown) {
         console.log(error); // dev mode
@@ -99,6 +116,7 @@ export const createUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         }
     }
 }
+
 
 // Login User - Done
 export const loginUser = async (req: Request<{},{}, IEmailCodeBody>, res: Response): Promise<void> => {
@@ -263,7 +281,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
                 coordinates
             }
         }
-
+        
         const updatedUser = await userModel.findOneAndUpdate(
             { _id: userId },
             fieldsToUpdate,
@@ -429,13 +447,14 @@ export const getSearches = async (req: Request, res: Response) : Promise<void> =
     }
 };
 
-// Get Interested - Done
+//! Get Interested - Done + (GET HOW MANY REVIEWS)
 export const getInterested = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
         const { userId } = authenticatedReq;
 
-        const user = await userModel.findById(userId).select('interested').populate('interested');
+        const user = await userModel.findById(userId).select('interested').
+        populate('interested', "title location rating");
 
         if (!user) {
             res.status(404).json({
@@ -460,7 +479,7 @@ export const getInterested = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-// Get SavedLists - Done
+//! Get SavedLists - Done +  (GET HOW MANY REVIEWS)
 export const getSavedLists = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
@@ -471,6 +490,7 @@ export const getSavedLists = async (req: Request, res: Response) : Promise<void>
         .populate({
             path: 'savedLists.properties',
             model: 'Property',
+            select: "title location rating"
         });
 
         if (!user) {

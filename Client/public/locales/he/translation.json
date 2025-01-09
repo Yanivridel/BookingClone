@@ -1,7 +1,28 @@
 {
   "home": {
+    "recentSearchHeader": "החיפושים האחרונים שלכם",
     "interestedInHeader": "עדיין מתעניינים במקומות האירוח האלה?",
-    "OffersHeader": "הצעות מיוחדות"
+    "OffersHeader": "הצעות מיוחדות",
+    "OffersSecondaryHeader": "מבצעים, דילים והצעות במיוחד בשבילכם",
+    "trandingDestinationsHeader": "יעדים מבוקשים",
+    "trandingDestinationsSecondaryHeader": "אנשים שחיפשו שהיות באוסטריה הזמינו גם ביעדים האלה",
+    "recentCountryHeader": "בואו לגלות את ",
+    "recentCountrySecondaryHeader": "ליעדים הפופולריים האלה יש המון מה להציע",
+    "ClosePlacesHeader": "תכנון חופשה במהירות ובקלות",
+    "ClosePlacesSecondaryHeader": "בחרו את אופי החופשה כדי לדעת אילו יעדים מובילים באוסטריה יתאימו לכם",
+
+    "gunisesDealsHeader": "נוסעים יותר, מוציאים פחות",
+    "gunisesMoreInfo": "למידע נוסף על ההטבות שלכם",
+    "PerfectPlacesHeader": "מחפשים את מקום האירוח המושלם?",
+    "PerfectPlacesSecondaryHeader": "אנשים שערכו חיפושים דומים הזמינו שהייה במקומות האירוח האלה",
+    "weekendDealsHeader": "מבצעים לסופ\"ש",
+    "weekendDealsSecondaryHeader": "חיסכון על שהיות בתאריכים",
+    "inspirationDealsHeader": "",
+    "inspirationButton": "",
+    "lovedHomesDealsHeader": "בתים ודירות שאורחים אוהבים",
+    "lovedHomesButton": "גלו בתים ודירות",
+    "uniqueHeader": "מקומות אירוח ייחודיים ומובילים שכדאי לכם להכיר",
+    "uniqueSecondaryHeader": "מווילות וטירות עד סירות ואיגלואים – אפשר למצוא אצלנו הכל"
   },
   "search": {
     "placholderInput": "לאן אתם נוסעים?",

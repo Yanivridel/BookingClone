@@ -4,9 +4,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import Home from "./pages/Home.tsx";
 import Layout from "./pages/Layout.tsx";
 import SearchResults from "./pages/SearchResults.tsx";
+import Home from "./pages/Home.tsx";
+import UserSetting from "./pages/UserSetting.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import EmailCode from "./pages/EmailCode.tsx";
+import Account from "./pages/Account.tsx";
 
 // * Example how to get current User from Redux :
 // * import { useSelector } from "react-redux";
@@ -22,11 +26,30 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: <Home country="bongarta" />,
         },
         {
           path: "/searchresults",
           element: <SearchResults />,
+        },
+        {
+          path: "/usersetting",
+          element: <UserSetting />,
+        },
+      ],
+    },
+
+    {
+      element: <Account />,
+      path: "/account",
+      children: [
+        {
+          element: <SignIn />,
+          path: "sign-in",
+        },
+        {
+          element: <EmailCode />,
+          path: "email-code/:email",
         },
       ],
     },

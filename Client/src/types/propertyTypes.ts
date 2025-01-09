@@ -1,9 +1,7 @@
-import { Document, Types } from 'mongoose'
-import { IUser } from './userTypes';
-import { IRoom } from './roomTypes';
+import { ILocation } from "./locationTypes";
 
-export interface IProperty extends Document {
-    _id: Types.ObjectId;
+export interface IProperty {
+    _id: string;
     title: string;
     type: string;
     location: ILocation;
@@ -23,18 +21,11 @@ export interface IProperty extends Document {
         title: string; // enum: EPropertyHighlight
         content: string; 
     }];
-    hotel_area_info: [{
-        category: string; // enum: EHotelAreaInfo
-        sub: [{
-            content: string;
-            distance: number; // meters
-        }] 
-    }];
     features : [{
         category: string; // enum: EFeatures
         sub: string[];
     }];
-    rooms: Types.ObjectId;
+    rooms: string;
     qa: [{
         question: string;
         answer: string;
@@ -77,24 +68,7 @@ export interface IProperty extends Document {
         start: number;
         end: number;
     };
-    host: Types.ObjectId;
-    total_rating?: number;
+    host: string;
 }
 
 export type TPartialProperty = Partial<IProperty>;
-
-export interface ILocation {
-    country: string;
-    region?: string;
-    city?: string; 
-    area?: string; 
-    addressLine: string;
-    zipCode?: string; 
-    coordinates?: ICoordinates;
-}
-
-export interface ICoordinates {
-    type: "Point";
-    coordinates: number[];
-}
-

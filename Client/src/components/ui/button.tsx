@@ -26,11 +26,11 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         ghostNav:
           "border border-transparent hover:border-sky-600 hover:bg-accent hover:text-accent-foreground hover:text-sky-600",
-        ghostTopNav: "hover:bg-white/30",
+        ghostTopNav: " hover:bg-hoverBgSoftBlue",
         link: "text-primary underline-offset-4 hover:underline",
-
+        simpleLink: "text-primary hover:bg-softBlue",
         navBarRounded: "rounded-full border-[1px] border-navBarRoundedButton",
-
+        disabled: "cursor-not-allowed bg-softGray text-[#a2a2a2]",
       },
       size: {
         default: "h-9 px-4 py-2",

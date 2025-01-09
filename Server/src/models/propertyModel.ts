@@ -1,17 +1,13 @@
 import mongoose, { Schema, Types } from 'mongoose'
 
 import { IProperty } from 'src/types/propertyTypes';
-import { EAccommodationType, EFacility, EFeatures, EPaymentMethods, EPropertyHighlight } from './../utils/structures';
+import { EAccommodationType, EFacility, EFeatures, EHotelAreaInfo,
+    EPaymentMethods, EPropertyHighlight } from './../utils/structures';
 import { LocationSchema } from './locationSchema';
 
 const PropertySchema = new Schema<IProperty>({
     title: { type: String, required: true },
-    type: { type:String, required: true, enum: Object.values(EAccommodationType),
-        validate: {
-            validator: (v) => Object.values(EAccommodationType).includes(v),
-            message: props => `${props.value} is not a valid Accommodation!`
-        }
-    },
+    type: { type:String, required: true, enum: EAccommodationType },
     location: LocationSchema,
     images: { type: [String], required: true },
     rating: {
@@ -29,14 +25,21 @@ const PropertySchema = new Schema<IProperty>({
         title: { type: String, required: true, enum: EPropertyHighlight },
         content: { type: String, required: true },
     }],
+    hotel_area_info: [{
+        category: { type: String, required: true, enum: EHotelAreaInfo },
+        sub: [{ 
+            content: { type: String, required: true},
+            distance: { type: Number, required: true}
+        }],
+    }],
     features: [{
         category: { type: String, required: true, enum: EFeatures },
         sub: { type: [String], required: true },
     }],
     rooms: [{ type: Schema.Types.ObjectId, ref: "Room" }],
     qa: [{
-    question: { type: String, required: true },
-    answer: { type: String, required: true },
+        question: { type: String, required: true },
+        answer: { type: String, required: true },
     }],
     houseRules: {
         checkin: {
@@ -47,7 +50,7 @@ const PropertySchema = new Schema<IProperty>({
             start: { type: String, required: true },
             end: { type: String, required: false },
         },
-        cancellation_prepayment: { type: String, required: true },
+        // cancellation_prepayment: { type: String, required: true },
         children_beds: {
             child_policy: { type: String },
             bed_policy: [{
@@ -63,7 +66,7 @@ const PropertySchema = new Schema<IProperty>({
         age_restriction: { type: Number },
         pets: { type: Boolean },
         groups: { type: String },
-        accepted_payments: { type: [String], required: true, enum: EPaymentMethods },
+        accepted_payments: { type: [String], required: true, enum: EPaymentMethods, default: [] },
         parties: { type: Boolean },
     },
     fine_print: { type: String },

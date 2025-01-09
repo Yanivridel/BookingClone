@@ -5,7 +5,6 @@ import { IRoom } from "src/types/roomTypes";
 import { EFacility, EFeatures } from "src/utils/structures";
 
 const RoomSchema = new Schema<IRoom>({
-        //property_id: { type: Schema.Types.ObjectId, ref: "Property", required: true },
         title: { type: String, required: true },
         type: { 
             type: String, 
@@ -26,25 +25,18 @@ const RoomSchema = new Schema<IRoom>({
             }
         }],
         baby: { type: Boolean, default: false },
-        facilities: { type: [String], enum: Object.values(EFacility), default: [],
-            validate: {
-                validator: (v) => Object.values(EFacility).includes(v),
-                message: props => `${props.value} is not a valid Facility!`
-            }
-        },
+        facilities: [{ type: String, enum: EFacility }],
         features: [{
-            category: { type: String, enum: Object.values(EFeatures), required: true,
-                validate: {
-                    validator: (v) => Object.values(EFeatures).includes(v),
-                    message: props => `${props.value} is not a valid Feature!`
-                }
-            },
+            category: { type: String, enum: EFeatures, required: true },
             sub: { type: [String], default: [] }
         }],
-        available: [{
-            date: { type: Date, required: true },
-            count: { type: Number, min: 0, required: true }
-        }],
+        available: {
+            type: [{
+                date: { type: Date, required: true },
+                count: { type: Number, min: 0, required: true }
+            }],
+            default: []
+        },
         offers: [{
             price_per_night: { type: Number, required: true },
             discount: {
@@ -59,7 +51,7 @@ const RoomSchema = new Schema<IRoom>({
             meals: [{
                 type: { 
                     type: String, 
-                    enum: ["morning", "noon", "afternoon", "evening"], 
+                    enum: ["morning", "noon", "afternoon", "evening", "self-service", "all-inclusive", "morning and evening"], 
                     required: true 
                 },
                 rating: { type: Number, min: 0, max: 10, required: true },

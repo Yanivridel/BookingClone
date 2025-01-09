@@ -58,6 +58,10 @@ module.exports = {
         search: "#ffb700",
         searchGrayText: "#595959",
         navBarRoundedButton: "#868686",
+        softBlue: "#f2f6fe",
+        softGray: "#d9d9d9",
+        redError: "#d3111e",
+        hoverBgSoftBlue: "#234e9e",
       },
       keyframes: {
         "accordion-down": {
@@ -88,6 +92,7 @@ module.exports = {
       },
       screens: {
         search: "900px",
+        signInLayoutTop: "575px",
       },
       boxShadow: {
         searchPopupsShadow: "0 2px 16px 0 rgba(26, 26, 26, 0.24)",

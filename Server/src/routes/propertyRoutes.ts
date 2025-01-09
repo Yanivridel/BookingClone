@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
 import {
     createProperty,
-    getCachedProperties,
     getSearchProperties,
+    getPropertyById,
+    test,
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -12,7 +13,9 @@ router.post("/create", createProperty)
 
 router.post("/", getSearchProperties);
 
-router.post("/cache", getCachedProperties);
+router.get("/test", test);
+
+router.get("/:id", getPropertyById);
 
 
 
