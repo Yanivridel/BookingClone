@@ -84,12 +84,6 @@ function SignIn({
         <form onSubmit={(e) => handleSubmit(e)}>
           <div className={cn("flex flex-col gap-6")}>
             <div className="flex flex-col items-center gap-2">
-              {/* <a
-                href="#"
-                className="flex flex-col items-center gap-2 font-medium"
-              >
-                <span className="sr-only">Acme Inc.</span>
-              </a> */}
               <h1 className={cn("text-[20px] font-bold ", fetchingColor)}>
                 Sign in or create an account
               </h1>
