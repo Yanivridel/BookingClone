@@ -21,10 +21,11 @@ function SaveButton() {
   const [paragraphs, setParagraphs] = useState<string[]>([]);
 
   function clickButton() {
-    console.log(value);
     if (value) {
       setParagraphs([...paragraphs, value]);
+
       setValue("");
+
     }
   }
 
