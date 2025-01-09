@@ -2,11 +2,14 @@ import { Request, Response } from "express";
 import { reviewModel } from "../models/reviewModel";
 import mongoose from "mongoose";
 import { IReview } from "src/types/reviewTypes";
+import { AuthenticatedRequest } from "src/types/expressTypes";
 
 // Create a new review
 export const createReview = async (req: Request<{},{}, Partial<IReview>>, res: Response): Promise<void> => {
     try {
-        const { propertyId, userId, rating } = req.body;
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+        const { propertyId, rating } = req.body;
 
         if(!propertyId || !userId || rating === undefined) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
@@ -14,11 +17,12 @@ export const createReview = async (req: Request<{},{}, Partial<IReview>>, res: R
         }
 
         const newReview = new reviewModel({
+            userId: new mongoose.Types.ObjectId(userId),
             ...req.body
         });
 
         await newReview.save();
-        res.status(201).json({ status: "success", message: "Review created successfully", review: newReview });
+        res.status(201).json({ status: "success", message: "Review created successfully", data: newReview });
 
     } catch (error) {
         console.log(error); // dev mode
@@ -40,11 +44,11 @@ export const getAllReviewsForProperty = async (req: Request, res: Response): Pro
             return;
         }
 
-        const reviews = await reviewModel.find({ user: propertyId});
+        const reviews = await reviewModel.find({ propertyId });
 
         res.status(200).json({ 
             status: "success", 
-            reviews 
+            data: reviews 
         });
     } catch (error) {
         console.log(error); // dev mode

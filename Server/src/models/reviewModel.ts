@@ -22,7 +22,6 @@ const ReviewSchema = new Schema<IReview>(
         reviewText: { type: String },
         responseFromProperty: { type: String },
         helpfulVotes: { type: Number, default: 0, min: 0 },
-        createdAt: { type: Date, default: Date.now, immutable: true },
     },
     { timestamps: true }
 );
