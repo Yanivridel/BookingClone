@@ -1,8 +1,8 @@
 import { TPartialProperty } from '@/types/propertyTypes';
 import axios from 'axios';
 
-const LOCAL_HOST = 'http://localhost:3000';
-const API_URL = LOCAL_HOST;
+const isProduction = import.meta.env.VITE_NODE_ENV === "production";
+const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.env.VITE_API_URL_LOCAL;
 
 // * Done
 export const getPropertyById = async (id : string) => {

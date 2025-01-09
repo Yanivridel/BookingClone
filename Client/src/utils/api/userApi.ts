@@ -2,13 +2,15 @@ import axios from 'axios';
 import { TPartialUser } from '@/types/userTypes';
 import { getCookie } from './../cookies';
 
-const LOCAL_HOST = 'http://localhost:3000';
-const API_URL = LOCAL_HOST;
+const isProduction = import.meta.env.VITE_NODE_ENV === "production";
+const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.env.VITE_API_URL_LOCAL;
 
 // * Done
 export const getSelf = async () => {
     try {
         const token = getCookie("token");
+        if(!token) return null;
+
         const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -39,7 +41,7 @@ export const signinUser = async (email: string, code: string) => {
         const { data } = await axios.post(`${API_URL}/api/users/signin`, {
             email,
             code
-        });
+        }, { withCredentials: true });
         return data.data;
     } 
     catch (error) {

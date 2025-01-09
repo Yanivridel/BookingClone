@@ -12,8 +12,8 @@ export interface IUser extends Document {
     password?: string;
     phoneNumber?: string;
     birthday?: Date;
-    country?: string;
     gender?: "male" | "female" | "other";
+    user_image: string;
     location?: ILocation;
     passport?: {
         fName: string;
