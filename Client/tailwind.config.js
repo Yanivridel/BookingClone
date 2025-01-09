@@ -61,6 +61,7 @@ module.exports = {
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
         redError: "#d3111e",
+        hoverBgSoftBlue: "#234e9e",
       },
       keyframes: {
         "accordion-down": {

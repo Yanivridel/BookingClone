@@ -16,9 +16,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import Languages from "./Languages";
 
 function TopNav() {
-  const [activeButton, setActiveButton] = useState<string>("");
+  const [activeButton, setActiveButton] = useState<string>("domestic");
   const { i18n } = useTranslation();
 
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function TopNav() {
     }
   }, [i18n.language]);
   return (
-    <div className="flex-col  bg-[#013b94] px-4">
+    <div className="flex-col  bg-[#013b94] px-4 py-2">
       <div className="flex justify-between items-center p-2 ">
         <div className="cursor-pointer" onClick={() => navigate("/")}>
           <BookingLogo className=" h-5 w-[98px]" />
@@ -70,6 +71,7 @@ function TopNav() {
             <IconHamburger className="fill-white" />
           </button>
         </div>
+        {/* <Languages ></Languages> */}
       </div>
 
       <div className={cn(" flex  overflow-scroll  ", styles.scrollContainer)}>
@@ -88,8 +90,10 @@ function TopNav() {
 
         <Button
           variant="ghostTopNav"
-          className={`font-normal rounded-full p-3 text-white ${
-            activeButton === "domestic" ? "border-2 border-white" : ""
+          className={`font-normal rounded-full py-5 text-white ${
+            activeButton === "domestic"
+              ? "border border-white bg-hoverBgSoftBlue"
+              : ""
           }`}
           onClick={() => handleButtonClick("domestic")}
         >
@@ -99,8 +103,10 @@ function TopNav() {
 
         <Button
           variant="ghostTopNav"
-          className={`font-normal rounded-full p-3 text-white ${
-            activeButton === "international" ? "border-2 border-white" : ""
+          className={`font-normal rounded-full py-5 text-white ${
+            activeButton === "international"
+              ? "border border-white bg-hoverBgSoftBlue"
+              : ""
           }`}
           onClick={() => handleButtonClick("international")}
         >
@@ -110,9 +116,9 @@ function TopNav() {
 
         <Button
           variant="ghostTopNav"
-          className={`font-normal rounded-full p-4 text-white ${
+          className={`font-normal rounded-full py-5 text-white ${
             activeButton === "regions"
-              ? "border-2 border-white bg-white/30"
+              ? "border border-white bg-hoverBgSoftBlue bg-white/30"
               : ""
           }`}
           onClick={() => handleButtonClick("regions")}
@@ -123,9 +129,9 @@ function TopNav() {
 
         <Button
           variant="ghostTopNav"
-          className={`font-normal rounded-full p-3 text-white ${
+          className={`font-normal rounded-full py-5 text-white ${
             activeButton === "countries"
-              ? "border-2 border-white bg-white/30"
+              ? "border border-white bg-hoverBgSoftBlue bg-white/30"
               : ""
           }`}
           onClick={() => handleButtonClick("countries")}
@@ -136,12 +142,12 @@ function TopNav() {
 
         <Button
           variant="ghostTopNav"
-          className={`font-normal rounded-full p-3 text-white ${
-            activeButton === "countries"
-              ? "border-2 border-white bg-white/30"
+          className={`font-normal rounded-full py-5 text-white ${
+            activeButton === "airportTaxis"
+              ? "border border-white bg-hoverBgSoftBlue bg-white/30"
               : ""
           }`}
-          onClick={() => handleButtonClick("countries")}
+          onClick={() => handleButtonClick("airportTaxis")}
         >
           <MdOutlineLocalTaxi />
           Airport Taxis
