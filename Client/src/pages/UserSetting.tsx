@@ -66,7 +66,6 @@ function UserSetting() {
     // .then(data => console.log(data));
 
     //? Properties Api
-
     // getPropertyById("677a97babbf50001ec44cc8c")
     // .then(data => console.log(data));
 
@@ -148,7 +147,7 @@ function UserSetting() {
   async function fetchingSearch() {
     try {
       const { firstChunkPromise, secondChunkPromise } = await searchPropertiesChunks(searchBody);
-
+      console.log(firstChunkPromise, secondChunkPromise);
       // Handle first chunk
       firstChunkPromise
         .then(results => {

@@ -1,33 +1,28 @@
 import { Request, Response } from "express";
-import reviewModel from "../models/reviewModel";
+import { reviewModel } from "../models/reviewModel";
 import mongoose from "mongoose";
+import { IReview } from "src/types/reviewTypes";
+import { AuthenticatedRequest } from "src/types/expressTypes";
 
 // Create a new review
-interface createReviewBody {
-    teacherId: string;
-    reviewer: string;
-    rating: number;
-    reviewText ?: string; 
-}
-export const createReview = async (req: Request<{},{}, createReviewBody>, res: Response): Promise<void> => {
+export const createReview = async (req: Request<{},{}, Partial<IReview>>, res: Response): Promise<void> => {
     try {
-        const { teacherId, reviewer, rating, reviewText } = req.body;
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+        const { propertyId, rating } = req.body;
 
-        if(!teacherId || !reviewer || !rating) {
+        if(!propertyId || !userId || rating === undefined) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
 
         const newReview = new reviewModel({
-            user: new mongoose.Types.ObjectId(teacherId),
-            reviewer,
-            rating,
-            reviewText: reviewText ? reviewText : "",
-            createdAt: new Date()
+            userId: new mongoose.Types.ObjectId(userId),
+            ...req.body
         });
 
         await newReview.save();
-        res.status(201).json({ status: "success", message: "Review created successfully", review: newReview });
+        res.status(201).json({ status: "success", message: "Review created successfully", data: newReview });
 
     } catch (error) {
         console.log(error); // dev mode
@@ -40,20 +35,20 @@ export const createReview = async (req: Request<{},{}, createReviewBody>, res: R
 };
 
 // Get all reviews
-export const getAllReviewsForTeacher = async (req: Request, res: Response): Promise<void> => {
+export const getAllReviewsForProperty = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id: teacherId } = req.params;
+        const { id: propertyId } = req.params;
 
-        if(!teacherId) {
+        if(!propertyId) {
             res.status(400).send({status: "error", message: "Missing required parameters"});
             return;
         }
 
-        const reviews = await reviewModel.find({ user: teacherId}).populate("user reviewer", "fName lName");
+        const reviews = await reviewModel.find({ propertyId });
 
         res.status(200).json({ 
             status: "success", 
-            reviews 
+            data: reviews 
         });
     } catch (error) {
         console.log(error); // dev mode

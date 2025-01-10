@@ -23,12 +23,15 @@ import { cn } from "@/lib/utils";
 import CardWithDescription from "@/components/CardWithDescritpion";
 import { useEffect, useState } from "react";
 import MainCarousel from "@/components/MainCarousel.tsx";
+import { useSelector } from "react-redux";
+import { RootState } from "./../store/index.ts";
 
 interface HomeProps {
   country: string;
 }
 
 function Home({ country }: HomeProps) {
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const [userData, setUserdata] = useState({
     search: [
       {
@@ -84,21 +87,23 @@ function Home({ country }: HomeProps) {
       },
     ],
   });
+  
+  console.log(currentUser);
 
   const { t, i18n } = useTranslation();
 
   const dateLanguage = i18n.language === "he" ? "he-IL" : "en-US";
 
-  const currentdate = new Date();
+  const currentDate = new Date();
 
-  const dayOfWeek = currentdate.getDay();
+  const dayOfWeek = currentDate.getDay();
   const daysToFriday = (5 - dayOfWeek + 7) % 7;
 
-  const friday = new Date(currentdate);
-  friday.setDate(currentdate.getDate() + daysToFriday);
+  const friday = new Date(currentDate);
+  friday.setDate(currentDate.getDate() + daysToFriday);
 
-  const sunday = new Date(currentdate);
-  sunday.setDate(currentdate.getDate() + daysToFriday + 2);
+  const sunday = new Date(currentDate);
+  sunday.setDate(currentDate.getDate() + daysToFriday + 2);
   const monthOptions: Intl.DateTimeFormatOptions = {
     month: "long",
   };

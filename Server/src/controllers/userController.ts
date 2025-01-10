@@ -87,10 +87,10 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
 
         // Set the JWT as a cookie in the response.
         res.cookie("token", token, {
-        httpOnly: process.env.NodeEnv === 'production',
-        secure: process.env.NodeEnv === 'production',
-        sameSite: "strict",
-        maxAge: 3600000, // Cookie lifespan of 1 hour
+        httpOnly: false, // process.env.NodeEnv === 'production'
+        secure: true, // process.env.NodeEnv === 'production'
+        sameSite: "lax",
+        maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
         });
 
         res.status(201).send({
@@ -117,67 +117,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
     }
 }
 
-
-// Login User - Done
-export const loginUser = async (req: Request<{},{}, IEmailCodeBody>, res: Response): Promise<void> => {
-    try {
-        const { email, code } = req.body;
-
-        if (!email || !code) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-    
-        const user = await userModel.findOne({ email });
-
-        if (!user) {
-            res.status(404).send({status: "error", message: "User not found"});
-            return;
-        }
-    
-        const isCorrectCode = await verifyVerificationCode(email, code);
-
-        if (isCorrectCode) {
-            let jwtSecretKey = process.env.JWT_SECRET_KEY as string;
-    
-            const token = jwt.sign(
-            {
-                userId: user._id,
-            },
-            jwtSecretKey,
-            JTW_EXPIRATION
-            );
-    
-            // Set the JWT as a cookie in the response.
-            res.cookie("token", token, {
-            httpOnly: process.env.NodeEnv === 'production',
-            secure: process.env.NodeEnv === 'production',
-            sameSite: "strict",
-            maxAge: 3600000, // Cookie lifespan of 1 hour
-            });
-            res.json({ 
-                status: "success",
-                message: "Logged in successfully", 
-                token: token,
-                data: user
-            });
-        } 
-        else {
-            res.status(401).json({
-                status: "error",
-                message: "Invalid or expired code",
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message: "Unknown",
-        });
-    }
-}
-
-// Gel Self Token - Done
+// Get Self Token - Done
 export const getSelf = async (req: Request, res: Response): Promise<void> => {
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
@@ -214,6 +154,7 @@ interface IEditProfileBody {
     phoneNumber?: string;
     birthday?: Date;
     gender?: string; // can be "male", "female", or "other"
+    user_image?: string;
     location?: ILocation;
     passport?: {
         fName?: string;
@@ -245,7 +186,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         const { userId } = authenticatedReq;
 
         const { 
-            fName, lName, username, password, phoneNumber, birthday, gender, location,
+            fName, lName, username, password, phoneNumber, birthday, gender, user_image, location,
             passport, creditCard, coinType, language, notifications, geniusLevel
         } = req.body;
 
@@ -258,6 +199,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
         if (birthday) fieldsToUpdate.birthday = birthday;
         if (gender) fieldsToUpdate.gender = gender;
+        if (user_image) fieldsToUpdate.user_image = user_image;
         if (passport) fieldsToUpdate.passport = passport;
         if (creditCard) fieldsToUpdate.creditCard = creditCard;
         if (coinType) fieldsToUpdate.coinType = coinType;

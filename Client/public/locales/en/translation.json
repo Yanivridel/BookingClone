@@ -29,20 +29,29 @@
     "checkIn": "Check-in Date",
     "checkOut": " Check-out Date",
     "caledar": "Calendar",
-    "flexible": "I'm flexible",
-    "flexibleHeader": "How long do you want to stay?",
-    "flexibleSecondaryHeader": "When do you want to go?",
-    "flexibleChoiceLimit": "Select up to 3 months",
-    "flexibleRadioGroup": ["A weekend", "A week", "A month", "Other"],
-    "caledarPlusMibusButtons": [
+    "caledarPlusMinusButtons": [
       "Exact dates",
       "1 day",
       "2 days",
       "3 days",
       "7 days"
+    ],
+    "flexible": "I'm flexible",
+    "flexibleHeader": "How long do you want to stay?",
+    "flexibleSecondaryHeader": "When do you want to go?",
+    "flexibleChoiceLimit": "Select up to 3 months",
+    "flexibleRadioGroup": ["A weekend", "A week", "A month", "Other"],
+    "from": "From",
+    "flexibleDays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
     ]
   },
-
   "button": {
     "search": "Search"
   }

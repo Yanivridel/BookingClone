@@ -14,6 +14,7 @@ const UserSchema = new Schema<IUser>(
         phoneNumber: { type: String, unique: true, sparse: true }, // allow null none unique
         birthday: { type: Date },
         gender: { type: String, enum: ["male", "female", "other"] },
+        user_image: { type: String }, 
         location: { type: LocationSchema },
         passport: {
             fName: { type: String },

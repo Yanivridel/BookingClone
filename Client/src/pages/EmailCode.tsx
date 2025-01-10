@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { sendEmailCode, signinUser } from "@/utils/api/userApi";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/slices/userSlices";
 
 function EmailCode({
   className,
@@ -20,7 +22,8 @@ function EmailCode({
   const [timer, setTimer] = useState(60);
 
   //   to show green before navigate to home
-  const [isSeccess, setIsSeccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -28,7 +31,7 @@ function EmailCode({
   const email = params.email;
 
   //  submit button varient
-  const varient =
+  const variant =
     input1 && input2 && input3 && input4 && input5 && input6
       ? "default"
       : "disabled";
@@ -100,11 +103,9 @@ function EmailCode({
     signinUser(email, code)
       .then((data) => {
         console.log("submit data" + data);
-        setIsSeccess(true);
-
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+        dispatch(setUser(data));
+        setIsSuccess(true);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
@@ -146,7 +147,7 @@ function EmailCode({
                 ref={inputRefs[0]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input1}
@@ -156,7 +157,7 @@ function EmailCode({
                 ref={inputRefs[1]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input2}
@@ -166,7 +167,7 @@ function EmailCode({
                 ref={inputRefs[2]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input3}
@@ -176,7 +177,7 @@ function EmailCode({
                 ref={inputRefs[3]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input4}
@@ -186,7 +187,7 @@ function EmailCode({
                 ref={inputRefs[4]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input5}
@@ -196,14 +197,14 @@ function EmailCode({
                 ref={inputRefs[5]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSeccess && "border-green-600"
+                  isSuccess && "border-green-600"
                 )}
                 type="text"
                 value={input6}
                 onChange={(e) => handleChange(e, setInput6, 5)}
               />
             </div>
-            <Button variant={varient} className="h-12">
+            <Button variant={variant} className="h-12">
               Verify email
             </Button>
             {timer > 0 ? (

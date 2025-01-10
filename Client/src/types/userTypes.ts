@@ -85,3 +85,31 @@ export interface IUser {
 
     fullName?: string; // Virtual property
 }
+
+export interface UserState {
+    _id: string;
+    username: string;
+    email: string;
+    password: string;
+    user_image: string;
+    coinType: string; 
+    language: string;
+    search: ISearchEntry[];
+    interested: string[];
+    savedLists: ISavedList[];
+    geniusLevel: 1 | 2 | 3;
+}
+export interface ISearchEntry {
+    location: ILocation;
+    checkin: Date;
+    checkout: Date;
+    group_adults: number;
+    group_children: number;
+    ages: number[];
+    rooms_num: number;
+    is_animal: boolean;
+}
+export interface ISavedList {
+    name: string;
+    properties: string[];
+}

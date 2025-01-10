@@ -15,7 +15,8 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { EmptyCalendarImg } from "./ui/Icons";
 import { cn } from "@/lib/utils";
-
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
+import { searchPropertiesChunks } from "@/utils/api/propertyApi";
 
 // damy data
 const items = [
@@ -27,8 +28,8 @@ const items = [
   { id: "5", city: "beer sheva", country: "Israel", icon: "location" },
 ];
 
+// todo: change the name
 interface IUnknownData {
-  // todo: change the name
   id: string;
   city: string; // region:
   country: string;
@@ -36,20 +37,29 @@ interface IUnknownData {
 }
 
 interface MonthYear {
-  month: string;
+  month?: number;
+  monthName: string;
   year: number;
 }
 
 // ! need to get props "isAllHome" that make the search diffrent
+
 // todo: icons and "powred by google"
+
 function Search() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [res, setRes] = useState<Array<IUnknownData> | null>(items); // !need to change the type with the real data
-  const [isOther, setIsOther] = useState<boolean>(true); // !need to change the type with the real data
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
+  const [popularSearches, setpopularSearches] =
+    useState<Array<IUnknownData> | null>(items); // for drop down initialization
+  // !need to change the type with the real data
+  const [isOther, setIsOther] = useState<boolean>(false);
+  const [variant, setVariant] = useState<"default" | "disabled">("disabled");
+
+  // * dates
+  const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
+  const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 6),
   });
 
   const [activePlusMinusButton, setActivePlusMinusButton] =
@@ -57,12 +67,54 @@ function Search() {
   const [activeNavButton, setActiveNavButton] = useState<string>(
     t("search.calendar")
   );
-  const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
-  const [clickedMonthsCards, setClickedMonthsCards] = useState<number[]>([]);
+
+  const [isWeedend, setIsWeedend] = useState(false);
+  const [preferredDays, setPreferredDays] = useState("");
+  const [fromDay, setfromDay] = useState("1");
+  const [nights, setNights] = useState("1");
+
+  // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
+  const finalData = {
+    primary: {
+      location: {
+        country: "Israel",
+        region: "Center District Israel",
+        city: "Ness Ziona",
+        addressLine: "24 Rothschild Street",
+      },
+      date: {
+        startDate:
+          activeNavButton === t("search.calendar") ||
+          clickedMonthsCards.length === 0
+            ? rangeDates?.from
+            : null,
+        endDate:
+          activeNavButton === t("search.calendar") ||
+          clickedMonthsCards.length === 0
+            ? rangeDates?.to
+            : null,
+        length: Number(preferredDays) || Number(nights),
+        fromDay: fromDay,
+        yearMonths: clickedMonthsCards,
+        isWeekend: isWeedend,
+      },
+      options: {
+        adults: 3,
+        rooms: 1,
+        childrenAges: [4],
+      },
+    },
+  };
+
+  //   preferredDays = {length: number , name: name}
+  //  clickedMonthsCards = [] | [index ] max length 3
+  //  finel data to be yearsMonths[clickedindex[0]...] (clickedMonthsCards.forEach...)
 
   const { i18n } = useTranslation();
   const currentLocale = i18n.language === "he" ? he : enUS;
 
+  // * place input (includ drop down)
+  // trigger
   const handleFocus = () => {
     setOpen(true);
   };
@@ -82,11 +134,13 @@ function Search() {
     }
   };
 
+  // drop down
   const handleLocationListClick = (element: IUnknownData) => {
     console.log(element);
     setInputValue(() => [element.city, element.country].join(", "));
   };
 
+  // * dates
 
   const handlePlusMinusButtonClick = (buttonName: string) => {
     setActivePlusMinusButton(buttonName);
@@ -94,53 +148,84 @@ function Search() {
 
   const handleNavButtonClick = (buttonName: string) => {
     setActiveNavButton(buttonName);
-
   };
 
   const handleDateSelect = (selectedDate: DateRange | undefined) => {
     if (!selectedDate || !selectedDate.from) {
-
-      setDate(selectedDate);
+      setRangeDates(selectedDate);
       return;
     }
 
     if (!selectedDate.to) {
-
-      if (selectedDate.from.getTime() === date?.from?.getTime()) {
+      if (selectedDate.from.getTime() === rangeDates?.from?.getTime()) {
         return;
       }
-      setDate({ from: selectedDate.from, to: undefined });
+      setRangeDates({ from: selectedDate.from, to: undefined });
       return;
     }
 
-
     if (selectedDate.from.getTime() === selectedDate.to.getTime()) {
-      setDate({ from: selectedDate.from, to: undefined });
+      setRangeDates({ from: selectedDate.from, to: undefined });
     } else {
-      setDate(selectedDate);
+      setRangeDates(selectedDate);
     }
   };
 
   // monthes and years
-  const handleclickMonthCard = (index: number) => {
+  const handleClickMonthCard = (monthYear: MonthYear, index: number) => {
     let newClickedButtons = [];
-
-    if (clickedMonthsCards.includes(index)) {
-      // אם הכפתור כבר נלחץ, הורד אותו מהרשימה
-      newClickedButtons = clickedMonthsCards.filter((i) => i !== index);
+    if (
+      clickedMonthsCards.some(
+        (clickedMonth) =>
+          clickedMonth.monthName === monthYear.monthName &&
+          clickedMonth.year === monthYear.year
+      )
+    ) {
+      //button clicked allrady - remove:
+      newClickedButtons = clickedMonthsCards.filter((element) => {
+        return element.monthName !== monthYear.monthName;
+      });
     } else {
-      // אם הכפתור לא נלחץ, הוסף אותו לרשימה
-      newClickedButtons = [...clickedMonthsCards, index];
+      // button not clicked:
+      newClickedButtons = [
+        ...clickedMonthsCards,
+        { ...monthYear, month: index },
+      ];
     }
 
     setClickedMonthsCards(newClickedButtons);
   };
 
-  //hebrew formt
+  //  preferred days - monthes and day number
+  const handleRadioGroup = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const target = e.target as HTMLInputElement;
+    if (target.value !== undefined) {
+      setPreferredDays(target.value);
+      if (target.value === "weekend") {
+        setIsWeedend(true);
+      } else {
+        setIsWeedend(false);
+      }
+      // console.log(preferredDays);
+    }
+  };
 
+  const handleFromDayClick = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setfromDay(e.target.value);
+  };
+
+  //hebrew formt
   const formattedHebrew = "EEE, dd MMMM";
   // english format
   const formattedEnglish = "EEE, MMM dd";
+
+  useEffect(() => {
+    if (preferredDays === "other") {
+      setIsOther(true);
+    } else setIsOther(false);
+  }, [preferredDays]);
 
   useEffect(() => {
     // // date?.from === date?.to ? date?.to = undefined :
@@ -149,11 +234,26 @@ function Search() {
     // }
     // console.log("date");
     // console.log(date);
-  }, [date]);
+  }, [rangeDates]);
 
   useEffect(() => {
-    setYearsMonths(monthsAndYears());
-  }, []);
+    // console.log(preferredDays);
+
+    clickedMonthsCards.length > 0
+      ? setVariant("default")
+      : setVariant("disabled");
+  }, [clickedMonthsCards]);
+
+  useEffect(() => {
+    console.log(finalData.primary.date);
+
+    // console.log(finalData.primary.date.startDate);
+    // console.log(finalData.primary.date.endDate);
+    // console.log(finalData.primary.date.isWeekend);
+    // if(clickedMonthsCards.length> 0) console.log([clickedMonthsCards[]]);
+    // monthsAndYears()
+    // setYearsMonths(monthsAndYears());
+  }, [finalData]);
 
   return (
     <form className="p-2 text-[14px]">
@@ -171,18 +271,18 @@ function Search() {
               } min-w-[430px] rounded-[8px] `}
             >
               <div className="p-3 font-bold">
-                {res && t("search.dropDouwnHeader")}
+                {popularSearches && t("search.dropDouwnHeader")}
                 {/* only when initialized */}
               </div>
               <ul>
-                {res?.map((element, i) => {
+                {popularSearches?.map((element, i) => {
                   return (
                     i < 5 && (
                       <li
                         onClick={() => handleLocationListClick(element)}
                         key={element.id}
                         className={`${
-                          i !== res.length - 1 && " border-b"
+                          i !== popularSearches.length - 1 && " border-b"
                         } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
                       >
                         <div className="flex gap-2 items-center">
@@ -236,15 +336,13 @@ function Search() {
               className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
               sideOffset={11.5}
               side="bottom"
-              align={i18n.language === "he" ? "end" : "start"}
+              align={"start"}
               alignOffset={-11.5}
               avoidCollisions={false}
-              dir={i18n.language === "he" ? "rtl" : "ltr"}
             >
               <div className="px-3 flex ">
                 <Button
                   className="flex-grow"
-
                   variant={
                     activeNavButton === t("search.calendar")
                       ? "navBarUnderlineSelected"
@@ -268,7 +366,7 @@ function Search() {
                   {t("search.flexible")}
                 </Button>
               </div>
-
+              {/* calender */}
               {activeNavButton === t("search.calendar") && (
                 <Calendar
                   initialFocus
@@ -277,8 +375,8 @@ function Search() {
                     months: "flex flex-row gap-4",
                   }}
                   fromDate={new Date()}
-                  defaultMonth={date?.from}
-                  selected={date}
+                  defaultMonth={rangeDates?.from}
+                  selected={rangeDates}
                   onSelect={handleDateSelect}
                   numberOfMonths={2}
                   locale={currentLocale}
@@ -310,49 +408,41 @@ function Search() {
                   ))}
                 </div>
               )}
+              {/* flexible*/}
               {activeNavButton === t("search.flexible") && (
                 <div className="px-4  w-[642px]">
                   <h3 className="font-bold text-base pt-8">
                     {t("search.flexibleHeader")}
                   </h3>
                   <RadioGroup
-                    defaultValue="comfortable"
+                    dir={i18n.language === "he" ? "rtl" : "ltr"}
                     loop={true}
                     className="py-2"
+                    value={preferredDays}
+                    // onChange={handleRadioGroup}
+                    onClick={handleRadioGroup}
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value={t("search.flexibleRadioGroup.0")}
-                        id="r0"
-                      />
-                      <Label htmlFor="r0" className="font-normal">
+                      <RadioGroupItem value={"weekend"} id="weekend" />
+                      <Label htmlFor="weekend" className="font-normal">
                         {t("search.flexibleRadioGroup.0")}
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value={t("search.flexibleRadioGroup.1")}
-                        id="r1"
-                      />
-                      <Label htmlFor="r1" className="font-normal">
+                      <RadioGroupItem value={"5"} id="A week" />
+                      <Label htmlFor="A week" className="font-normal">
                         {t("search.flexibleRadioGroup.1")}
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value={t("search.flexibleRadioGroup.2")}
-                        id="r2"
-                      />
-                      <Label htmlFor="r2" className="font-normal">
+                      <RadioGroupItem value={"28"} id="A month" />
+                      <Label htmlFor="A month" className="font-normal">
                         {t("search.flexibleRadioGroup.2")}
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value={t("search.flexibleRadioGroup.3")}
-                        id="r3"
-                      />
-                      <Label htmlFor="r3" className="font-normal">
+                      <RadioGroupItem value={"other"} id="Other" />
+                      <Label htmlFor="Other" className="font-normal">
                         {t("search.flexibleRadioGroup.3")}
                       </Label>
                     </div>
@@ -366,6 +456,9 @@ function Search() {
                           id="nights"
                           min="1"
                           max="90"
+                          onChange={(e) => setNights(e.target.value)}
+                          // defaultValue={1}
+                          value={nights}
                         ></input>
                         <label
                           htmlFor="nights" // TODO:1- night / 1 < nights
@@ -377,77 +470,104 @@ function Search() {
                       <select
                         name="baba"
                         id="baba"
+                        value={fromDay}
+                        onChange={handleFromDayClick}
                         className="focus:outline-none text-sm pe-3 rounded-md border-[1px] cursor-pointer text-searchGrayText border-[#868686]"
                       >
-                        <option value="Monday">From Monday</option>
-                        <option value="Tuesday">From Tuesday</option>
-                        <option value="Wednesday">From Wednesday</option>
-                        <option value="Thursday">From Thursday</option>
-                        <option value="Friday">From Friday</option>
-                        <option value="Saturday">From Saturday</option>
-                        <option value="Sunday">From Sunday</option>
+                        <option value="1">
+                          {t("search.from") + " " + t("search.flexibleDays.0")}
+                        </option>
+                        <option value="2">
+                          {t("search.from") + " " + t("search.flexibleDays.1")}
+                        </option>
+                        <option value="3">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.2")}
+                        </option>
+                        <option value="4">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.3")}
+                        </option>
+                        <option value="5">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.4")}
+                        </option>
+                        <option value="6">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.5")}
+                        </option>
+                        <option value="0">
+                          {" "}
+                          {t("search.from") + " " + t("search.flexibleDays.6")}
+                        </option>
                       </select>
                     </div>
                   )}
+
                   <h3 className="font-bold text-base pt-6">
                     {t("search.flexibleSecondaryHeader")}
                   </h3>
                   <p className="pt-2 text-sm text-searchGrayText">
                     {t("search.flexibleChoiceLimit")}
                   </p>
-                  {/* ! */}
+
                   <div
                     className={cn(
                       "w-full flex gap-2 overflow-scroll py-4",
                       styles.scrollContainer
                     )}
                   >
-                    {yearsMonths.length !== 0 &&
-                      yearsMonths.map((month, index) => {
-                        const isClicked = clickedMonthsCards.includes(index);
-                        const isDisabled =
-                          clickedMonthsCards.length >= 3 && !isClicked;
+                    {monthsAndYears().map((monthYear, index) => {
+                      const isClicked = clickedMonthsCards.some(
+                        (clickedMonth) =>
+                          clickedMonth.monthName === monthYear.monthName &&
+                          clickedMonth.year === monthYear.year
+                      );
+                      const isDisabled =
+                        clickedMonthsCards.length >= 3 && !isClicked;
 
-                        return (
-                          <Card
-                            onClick={() =>
-                              !isDisabled && handleclickMonthCard(index)
-                            }
-                            key={index}
+                      return (
+                        <Card
+                          onClick={() =>
+                            !isDisabled &&
+                            handleClickMonthCard(monthYear, index)
+                          }
+                          key={monthYear.monthName}
+                          className={cn(
+                            "shadow-none cursor-pointer hover:bg-[#f5f5f5]",
+                            isClicked
+                              ? "border-primary text-[#006ce4] bg-[#f2f6fe] hover:bg-[#f2f6fe] "
+                              : isDisabled
+                              ? "bg-[#f5f5f5] text-[#a2a2a2] cursor-not-allowed fill-[#a2a2a2]"
+                              : ""
+                          )}
+                        >
+                          <CardContent
                             className={cn(
-                              "shadow-none cursor-pointer hover:bg-[#f5f5f5]",
-                              isClicked
-                                ? "border-primary text-[#006ce4] bg-[#f2f6fe] hover:bg-[#f2f6fe] "
-                                : isDisabled
-                                ? "bg-[#f5f5f5] text-[#a2a2a2] cursor-not-allowed fill-[#a2a2a2]"
-                                : ""
+                              "py-[15px] flex gap-1 flex-col items-center justify-center h-full rounded-md"
                             )}
                           >
-                            <CardContent
-                              className={cn(
-                                "py-[15px] flex gap-1 flex-col items-center justify-center h-full rounded-md"
-                              )}
-                            >
-                              <EmptyCalendarImg className={cn("h-4 w-4")} />
-                              <div>
-                                <h4>{month.month}</h4>
-                                <p className="text-[14px] text-searchGrayText">
-                                  {month.year}
-                                </p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
+                            <EmptyCalendarImg className={cn("h-4 w-4")} />
+                            <div>
+                              <h4>{monthYear.monthName}</h4>
+                              <p className="text-[14px] text-searchGrayText">
+                                {monthYear.year}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                   <hr />
-                  <div className="flex justify-end py-3">
-                    <p>Select preferred days</p>
-                    <Button variant={"default"}>select dates</Button>
+                  <div className="flex justify-end items-center gap-3 py-3">
+                    <p className="text-sm">Select preferred days</p>
+                    <Button className="px-2" variant={variant}>
+                      select dates
+                    </Button>
                   </div>
                 </div>
               )}
-
             </PopoverContent>
             <PopoverTrigger asChild>
               <div className="flex">
@@ -458,11 +578,11 @@ function Search() {
                 >
                   <path d="M22.5 13.5v8.25a.75.75 0 0 1-.75.75H2.25a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75h19.5a.75.75 0 0 1 .75.75zm1.5 0V5.25A2.25 2.25 0 0 0 21.75 3H2.25A2.25 2.25 0 0 0 0 5.25v16.5A2.25 2.25 0 0 0 2.25 24h19.5A2.25 2.25 0 0 0 24 21.75zm-23.25-3h22.5a.75.75 0 0 0 0-1.5H.75a.75.75 0 0 0 0 1.5M7.5 6V.75a.75.75 0 0 0-1.5 0V6a.75.75 0 0 0 1.5 0M18 6V.75a.75.75 0 0 0-1.5 0V6A.75.75 0 0 0 18 6M5.095 14.03a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28A1.125 1.125 0 1 0 12 15a1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06M12 18a1.125 1.125 0 1 0 0 2.25A1.125 1.125 0 0 0 12 18a.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m5.845-3.97a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5m-.53 6.53a.75.75 0 1 0 1.06-1.06.75.75 0 0 0-1.06 1.06m.53-1.28a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25.75.75 0 0 0 0 1.5.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5"></path>
                 </svg>
-                {date?.from ? (
-                  date.to ? (
+                {rangeDates?.from ? (
+                  rangeDates.to ? (
                     <div className="py-1 px-2">
                       {format(
-                        date.from,
+                        rangeDates.from,
                         currentLocale === he
                           ? formattedHebrew
                           : formattedEnglish,
@@ -470,7 +590,7 @@ function Search() {
                       )}
                       <span className="px-2">—</span>
                       {format(
-                        date.to,
+                        rangeDates.to,
                         currentLocale === he
                           ? formattedHebrew
                           : formattedEnglish,
@@ -478,16 +598,16 @@ function Search() {
                       )}
                       <span className="px-1">
                         {activePlusMinusButton ===
-                        "search.caledarPlusMibusButtons.1"
+                        "search.caledarPlusMinusButtons.1"
                           ? "(±1)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.2"
+                            "search.caledarPlusMinusButtons.2"
                           ? "(±2)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.3"
+                            "search.caledarPlusMinusButtons.3"
                           ? "(±3)"
                           : activePlusMinusButton ===
-                            "search.caledarPlusMibusButtons.4"
+                            "search.caledarPlusMinusButtons.4"
                           ? "(±7)"
                           : ""}
                       </span>
@@ -496,7 +616,7 @@ function Search() {
                     // date.from only
                     <div className="py-1 px-2">
                       {format(
-                        date.from,
+                        rangeDates.from,
                         currentLocale === he
                           ? formattedHebrew
                           : formattedEnglish,

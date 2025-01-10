@@ -11,14 +11,13 @@ import UserSetting from "./pages/UserSetting.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import EmailCode from "./pages/EmailCode.tsx";
 import Account from "./pages/Account.tsx";
-
-// * Example how to get current User from Redux :
-// * import { useSelector } from "react-redux";
-// * import { RootState } from "./store";
-// * onst currentUser = useSelector((state: RootState) => state.currentUser);
+import { useDispatch } from "react-redux";
+import { setUser } from "./store/slices/userSlices.ts";
+import { getSelf } from "./utils/api/userApi.ts";
+import Property from "./pages/Property.tsx";
 
 function App() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const router = createBrowserRouter([
     {
@@ -36,6 +35,10 @@ function App() {
           path: "/usersetting",
           element: <UserSetting />,
         },
+        {
+          path: '/property/:id',
+          element: <Property/>
+        }
       ],
     },
 
@@ -55,17 +58,14 @@ function App() {
     },
   ]);
 
-  // const reloadUser = async () => {
-  //   const token = getCookie('token');
-  //   if (token) {
-  //       const user = await getSelf(token);
-  //       if(user)
-  //         dispatch(setUser(user));
-  //   }
-  // }
+  const reloadUser = async () => {
+    const user = await getSelf();
+    if(user)
+      dispatch(setUser(user));
+  }
 
   useEffect(() => {
-    // reloadUser();
+    reloadUser();
   }, []);
 
   return <RouterProvider router={router} />;

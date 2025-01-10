@@ -102,8 +102,22 @@ interface IGetPropertiesBody {
         options: IFilterPropertiesOptions
         
     };
-    secondary: {
-
+    secondary?: {
+        type: string[]; // hotel etc..
+        rating: number[]; // 1-5
+        popularFacilities: string[];
+        roomType: string[],
+        roomFacilities: string[];
+        meals: string[];
+        freeCancellation: boolean;
+        onlinePayment: boolean;
+        region: string;
+        price: {
+            min: number;
+            max: number;
+        }
+        doubleBeds: boolean;
+        singleBeds: boolean;
     };
 }
 interface IFilterPropertiesLocation {
@@ -166,52 +180,50 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             adults, children, rooms, distance, isAnimalAllowed
         }, (key, value) => value === undefined ? null : value);
 
-        // * GET CACHE
-        // const cachedProperties = await getCache(cacheKey);
-        // if (cachedProperties) {
-        //     // If found in cache, LOGIC HERE LATER
-        //     res.status(200).json({
-        //         status: "success",
-        //         message: "Properties found from cache!!!!!",
-        //         data: cachedProperties,
-        //     });
-        //     return
-        // }
-
-        const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
-
-        // check coordinates (in client -> if fail take default)
-        if (!coordinates) {
-            res.status(400).json({ status: "error", message: "Invalid address or coordinates not found" });
-            return;
-        }
-
-        // Get sorted paginated properties by distance
-        let properties: IProperty[] = await getPropertiesByRadius(coordinates, distance, limit);
-
-        const filteredProperties = await filterPropertiesPrimary(properties,
-            { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
-            { adults, children, rooms, isBaby, isAnimalAllowed }, // options
-        );
-        
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Transfer-Encoding', 'chunked');
         res.flushHeaders();
 
-        res.write(JSON.stringify({ filteredProperties: filteredProperties }) + "\n"); 
+        // * Get Cache / Fetch New
+        let filteredProperties: IProperty[] = await getCache(cacheKey);
+        let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
+        if (!filteredProperties) {
+            const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
 
-        // Background Task: Fetch all properties & filter & store in Redis
-        setImmediate(async () => {
-            const allProperties = await setCacheMainSearch(cacheKey, coordinates, distance,
+            // check coordinates (in client -> if fail take default)
+            if (!coordinates) {
+                res.status(400).json({ status: "error", message: "Invalid address or coordinates not found" });
+                return;
+            }
+
+            // Get sorted paginated properties sorted by distance (closest first)
+            const properties = await getPropertiesByRadius(coordinates, distance);
+
+            filteredProperties = await filterPropertiesPrimary(properties,
                 { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
 
-            const filtersWithCount = await getFiltersFromProperties(allProperties);
+            setTimeout(() => {
+                setCache(cacheKey, filteredProperties);
+            }, 1000) // in 1 sec
+        }
 
-            res.write(JSON.stringify({ Filters: filtersWithCount}) + "\n"); 
+        console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
+
+        if(req.body?.secondary)
+            filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
+
+        const paginatedProperties = filteredProperties.slice(skip, skip + limit);
+            
+        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+
+        setImmediate(async () => {
+            const filterCount = await getFiltersFromProperties(filteredProperties);
+    
+            res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
             res.end();
-        });
+        })
         
     } catch (error) {
         console.log(error); // dev mode
@@ -235,8 +247,8 @@ async function getPropertyCoordinates(country?: string, region?: string, city?: 
         return await getCoordinatesByLocation(`${addressLine}, ${city}, ${region}, ${country}`);
 }
 //* Done
-async function getPropertiesByRadius(coordinates: number[], distance: number, limit?: number,) {
-    let query = propertyModel.find({
+async function getPropertiesByRadius(coordinates: number[], distance: number) {
+    return await propertyModel.find({
         "location.coordinates": {
             $near: {
                 $geometry: { type: "Point", coordinates },
@@ -244,8 +256,6 @@ async function getPropertiesByRadius(coordinates: number[], distance: number, li
             },
         },
     }).populate("rooms");
-    if(limit) query.limit(limit);
-    return query.exec();
 }
 //* Done
 async function filterPropertiesPrimary(
@@ -298,12 +308,87 @@ async function filterPropertiesPrimary(
         
         return {
             ...property.toObject(),
-            selectedRooms: countOccurrences(selectedRooms),
+            selectedRooms: countOccurrences(selectedRooms, availableRooms),
         };
     }));
 
     // Filter out null values and return valid properties
     return filteredProperties.filter((property): property is IProperty => property !== null);
+}
+function filterPropertiesSecondary(properties: IProperty[], body: IGetPropertiesBody): IProperty[] { 
+    const { type, rating, popularFacilities, roomType, roomFacilities, meals,
+        freeCancellation, onlinePayment, region, price, doubleBeds, singleBeds} = body.secondary || {};
+
+    return properties.filter(property => {
+        return (
+            (!type || type.includes(property.type)) &&
+            (!rating || rating.includes(Math.ceil((property.total_rating as number)/2))) &&
+            (!popularFacilities ||  
+                popularFacilities.every((facility: string) => 
+                    property.popularFacilities.includes(facility))
+            ) &&
+            (!roomType || 
+                roomType.every((type: string) => 
+                    (property.rooms as unknown as IRoom[]).some((room) => room.type === type)
+                )
+            ) &&
+            (!roomFacilities || 
+                roomFacilities.every((facility: string) => 
+                    (property.rooms as unknown as IRoom[]).some((room) => 
+                        room.facilities?.includes(facility))
+                )
+            ) &&
+            (!meals || 
+                meals.every((meal: string) => 
+                    (property.rooms as unknown as IRoom[]).some((room) => 
+                        room.offers.some((offer) => offer.meals?.includes(meal as any))
+                ))
+            ) &&
+            (!freeCancellation || 
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.offers.some((offer) => 
+                        offer.cancellation.toLocaleLowerCase().includes("free")
+                ))
+            ) &&
+            (!onlinePayment || 
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.offers.some((offer) => 
+                        offer.prepayment.type.length > 0
+                ))
+            ) &&
+            (!region || 
+                property.location.region === region
+            ) &&
+            (!price || 
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.offers.some((offer) => 
+                        offer.price_per_night >= price.min &&
+                        offer.price_per_night <= price.max 
+                ))
+            ) &&
+            (!doubleBeds || 
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.rooms.some(insideRoom => 
+                        insideRoom.beds.double > 0 ||
+                        insideRoom.beds.queen > 0
+                    )
+                )
+            ) &&
+            (!singleBeds || 
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.rooms.some(insideRoom => 
+                        insideRoom.beds.double === 0 ||
+                        insideRoom.beds.queen === 0 && 
+                        (
+                            insideRoom.beds.single > 0 ||
+                            insideRoom.beds.sofa > 0 ||
+                            insideRoom.beds.bunk > 0 
+                        )
+                    )
+                )
+            )
+        ); 
+    });
 }
 //* Done
 function getAvailability(
@@ -404,9 +489,9 @@ function getAvailability(
     }
 
     // If fromDay and length are provided, check availability starting from a specific day
-    else if (typeof fromDay === "number" && length) {
-        if (fromDay < 0 || fromDay > 6 || length < 1) {
-            throw new Error('Invalid fromDay (should be 0-6) or length (should be positive)');
+    else if (length) {
+        if (length < 1) {
+            throw new Error('Invalid length (should be positive)');
         }
     
         yearMonths.forEach(ym => {
@@ -428,8 +513,8 @@ function getAvailability(
             
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(yearMonth.year, yearMonth.month, day);
-                // Only include dates from tomorrow onwards that match the required day of week
-                if (date >= tomorrow && date.getDay() === fromDay) {
+                // Only include dates from tomorrow onwards that match the required day of week if provided
+                if (!(typeof fromDay === "number") || date >= tomorrow && date.getDay() === fromDay) {
                     dates.push(date);
                 }
             }
@@ -496,20 +581,6 @@ function getAvailability(
     
         return bestResult;
     }
-}
-//* Done
-async function setCacheMainSearch(
-    cacheKey: string, coordinates: number[], distance: number,
-    dateFilter: IFilterPropertiesDate,
-    options: IFilterPropertiesOptions
-    ) {
-
-    let properties: IProperty[] = await getPropertiesByRadius(coordinates, distance);
-
-    properties = await filterPropertiesPrimary(properties, dateFilter, options);
-
-    // setCache(cacheKey, properties);
-    return properties;
 }
 function getFiltersFromProperties(properties: IProperty[]) {
     const filters: any = {
@@ -715,13 +786,15 @@ function findBestRoomCombinationDP(rooms: IRoom[], targetGuests: number, targetR
     
     return selectedRooms;
 }
-function countOccurrences(arr: string[]): { id: string; count: number }[] {
+function countOccurrences(arr: string[], availableRooms: any): { id: string; count: number }[] {
     const countMap = arr.reduce<Record<string, number>>((acc, id) => {
         acc[id] = (acc[id] || 0) + 1;
         return acc;
     }, {});
 
-    return Object.entries(countMap).map(([id, count]) => ({ id, count }));
+    return Object.entries(countMap).map(([id, count]) => ({ id, count,
+        available: availableRooms.find((el: any) => String(el.room._id) === id).availability
+    }));
 }
 
 
