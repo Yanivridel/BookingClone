@@ -25,70 +25,101 @@ import { useEffect, useState } from "react";
 import MainCarousel from "@/components/MainCarousel.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "./../store/index.ts";
+import { IUser } from "@/types/userTypes.ts";
+import { getCityImage } from "@/utils/functions.ts";
+import Slider from "react-slick";
 
 interface HomeProps {
   country: string;
 }
 
+function SampleNextArrow({onClick, currentSlide, slideCount }: any) {
+  const isDisabled = currentSlide === slideCount - 1; 
+
+  return (
+    <div
+    onClick={onClick}
+    >
+      <svg
+      className={`absolute top-7 -right-6 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+      w-[36px] hover:bg-gray-200 transition-all p-2 ${isDisabled ? 'hidden' : ''}`}
+      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px" data-rtl-flip="true"><path d="M8.913 19.236a.9.9 0 0 0 .642-.266l6.057-6.057a1.3 1.3 0 0 0 .388-.945c.008-.35-.123-.69-.364-.945L9.58 4.966a.91.91 0 0 0-1.284 0 .896.896 0 0 0 0 1.284l5.694 5.718-5.718 5.718a.896.896 0 0 0 0 1.284.88.88 0 0 0 .642.266"></path></svg>
+    </div>
+  );
+}
+function SamplePrevArrow({onClick, currentSlide }: any) {
+  console.log("currentSlide ", currentSlide )
+  const isDisabled = currentSlide === 1;
+  return (
+    <div
+    onClick={onClick}
+    >
+      <svg
+      className={`absolute top-7 -left-5 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+      w-[36px] hover:bg-gray-200 transition-all p-2 
+      ${isDisabled ? 'hidden' : ''}`}
+    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px" data-rtl-flip="true"><path d="M15.087 19.236a.9.9 0 0 1-.642-.266l-6.057-6.057A1.3 1.3 0 0 1 8 11.968c-.008-.35.123-.69.364-.945l6.057-6.057a.91.91 0 0 1 1.284 0 .895.895 0 0 1 0 1.284l-5.694 5.718 5.718 5.718a.896.896 0 0 1 0 1.284.88.88 0 0 1-.642.266"></path></svg>
+    </div>
+  );
+}
+
 function Home({ country }: HomeProps) {
-  const currentUser = useSelector((state: RootState) => state.currentUser);
-  const [userData, setUserdata] = useState({
-    search: [
-      {
-        id: "dslf",
-        location: "telAviv",
-        image: TelAvivImage,
-        checkin: new Date("2024-12-25T00:00:00.000+00:00"),
-        checkOut: new Date("2024-12-26T00:00:00.000+00:00"),
-        group_adults: 3,
-        group_children: 2,
-      },
-      {
-        id: "23984",
-        location: "dubai",
-        image: DubaiImage,
-        checkin: new Date("2024-09-13T00:00:00.000+00:00"),
-        checkOut: new Date("2024-10-13T00:00:00.000+00:00"),
-      },
-      {
-        id: "doooooøslf",
-        location: "telAviv",
-        image: TelAvivImage,
-        checkin: new Date("2024-12-25T00:00:00.000+00:00"),
-        checkOut: new Date("2024-09-20T00:00:00.000+00:00"),
-      },
-      {
-        id: "234984",
-        location: "dubai",
-        image: DubaiImage,
-        checkin: new Date("2024-08-13T00:00:00.000+00:00"),
-        checkOut: new Date("2024-03-03T00:00:00.000+00:00"),
-      },
-      {
-        id: "dssdljujjf",
-        location: "telAviv",
-        image: TelAvivImage,
-        checkin: new Date("2024-12-25T00:00:00.000+00:00"),
-        checkOut: new Date("2024-12-18T00:00:00.000+00:00"),
-      },
-      {
-        id: "23sdf984",
-        location: "dubai",
-        image: DubaiImage,
-        checkin: new Date("2024-10-13T00:00:00.000+00:00"),
-        checkOut: new Date("2024-11-13T00:00:00.000+00:00"),
-      },
-      {
-        id: "23sdf9jj84",
-        location: "dubai",
-        image: DubaiImage,
-        // checkin: new Date("2024-10-13T00:00:00.000+00:00"),
-        // checkOut: new Date("2024-11-13T00:00:00.000+00:00"),
-      },
-    ],
-  });
+  const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
+  const [searchSlidesToShow, setSlidesToShow] = useState(3.5);
+
+  
+  const settingsSearch = {
+    infinite:false,
+    slidesToScroll: 1, 
+    slidesToShow: searchSlidesToShow,
+    // centerMode: true,
+    // variableWidth: true,
+    prevArrow: <SamplePrevArrow />,
+    nextArrow: <SampleNextArrow />,
+    // responsive: [
+    //   {
+    //     breakpoint: 1024,
+    //     settings: {
+    //       slidesToShow: 3,
+    //       slidesToScroll: 3,
+    //       infinite: true,
+    //       dots: true
+    //     }
+    //   },
+    //   {
+    //     breakpoint: 600,
+    //     settings: {
+    //       slidesToShow: 2,
+    //       slidesToScroll: 2,
+    //       initialSlide: 2
+    //     }
+    //   },
+    //   {
+    //     breakpoint: 480,
+    //     settings: {
+    //       slidesToShow: 1,
+    //       slidesToScroll: 1
+    //     }
+    //   }
+    // ]
+  };
   
   console.log(currentUser);
+
+  useEffect(() => {
+    const updateSlidesToShow = () => {
+      console.log("window.innerWidth",window.innerWidth)
+      const carouselWidth = window.innerWidth * 0.9;
+      const cardWidth = 294;
+      const margin = 8;
+      if(carouselWidth < 1100)
+        setSlidesToShow(carouselWidth / (cardWidth + 2 * margin));
+    };
+
+    updateSlidesToShow();
+    window.addEventListener("resize", updateSlidesToShow);
+    return () => window.removeEventListener("resize", updateSlidesToShow);
+  }, []);
 
   const { t, i18n } = useTranslation();
 
@@ -128,41 +159,44 @@ function Home({ country }: HomeProps) {
       <HomeHeader />
       <div className="p-1 pt-[346px]">
         <Search></Search>
-        {userData.search.length > 0 && (
+        {currentUser.search.length > 0 && (
           <div>
             <h2 className="text-2xl font-bold py-4 ">
               {t("home.recentSearchHeader")}
             </h2>
-            <div
+            {/* <div
               className={cn(
                 "w-full flex gap-2 overflow-scroll py-4",
                 styles.scrollContainer
               )}
-            >
-              {userData.search.map((details) => (
+            > */}
+            <div className="slider-container">
+            <Slider {...settingsSearch}>
+              {currentUser.search.map((details) => (
                 <div
-                  key={details.id}
-                  className="flex-shrink-0 flex gap-2 items-center shadow-searchPopupsShadow p-2 rounded-xl h-[100px] w-[294px]"
+                  key={details._id}
+                  className="flex-shrink-0 !flex gap-2 items-center 
+                  shadow-searchPopupsShadow p-2 rounded-xl h-[100px] w-[294px] mx-2 my-2"
                 >
                   <img
                     className=" rounded-lg h-16 w-16"
-                    src={details.image}
-                    alt={details.location}
+                    src="https://placehold.it/300x200"
+                    alt={details.location.city}
                   />
                   <div>
-                    <b>{details.location} </b>
+                    <b>{details.location.city} </b>
                     <p className="">
                       <span>
                         {details.checkin &&
-                          details.checkin.toLocaleString("en-US", {
+                          new Date(details.checkin).toLocaleString("en-US", {
                             month: "short",
                             day: "numeric",
                           })}
                       </span>
                       <span>
-                        {details.checkOut && <span>-</span>}
-                        {details.checkOut &&
-                          details.checkOut.toLocaleString("en-US", {
+                        {details.checkout && <span>-</span>}
+                        {details.checkout &&
+                          new Date(details.checkout).toLocaleString("en-US", {
                             month: "short",
                             day: "numeric",
                           })}
@@ -183,6 +217,7 @@ function Home({ country }: HomeProps) {
                   </div>
                 </div>
               ))}
+            </Slider>
             </div>
           </div>
         )}
