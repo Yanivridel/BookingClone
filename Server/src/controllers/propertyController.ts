@@ -489,9 +489,9 @@ function getAvailability(
     }
 
     // If fromDay and length are provided, check availability starting from a specific day
-    else if (typeof fromDay === "number" && length) {
-        if (fromDay < 0 || fromDay > 6 || length < 1) {
-            throw new Error('Invalid fromDay (should be 0-6) or length (should be positive)');
+    else if (length) {
+        if (length < 1) {
+            throw new Error('Invalid length (should be positive)');
         }
     
         yearMonths.forEach(ym => {
@@ -513,8 +513,8 @@ function getAvailability(
             
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(yearMonth.year, yearMonth.month, day);
-                // Only include dates from tomorrow onwards that match the required day of week
-                if (date >= tomorrow && date.getDay() === fromDay) {
+                // Only include dates from tomorrow onwards that match the required day of week if provided
+                if (!(typeof fromDay === "number") || date >= tomorrow && date.getDay() === fromDay) {
                     dates.push(date);
                 }
             }

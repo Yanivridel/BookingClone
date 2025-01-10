@@ -14,6 +14,7 @@ import Account from "./pages/Account.tsx";
 import { useDispatch } from "react-redux";
 import { setUser } from "./store/slices/userSlices.ts";
 import { getSelf } from "./utils/api/userApi.ts";
+import Property from "./pages/Property.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,10 @@ function App() {
           path: "/usersetting",
           element: <UserSetting />,
         },
+        {
+          path: '/property/:id',
+          element: <Property/>
+        }
       ],
     },
 

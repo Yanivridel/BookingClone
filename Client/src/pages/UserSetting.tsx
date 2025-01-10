@@ -66,7 +66,6 @@ function UserSetting() {
     // .then(data => console.log(data));
 
     //? Properties Api
-
     // getPropertyById("677a97babbf50001ec44cc8c")
     // .then(data => console.log(data));
 
