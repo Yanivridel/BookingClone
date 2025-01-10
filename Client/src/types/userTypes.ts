@@ -61,6 +61,7 @@ export interface IUser {
     };
     search: [
         {
+            _id?: string,
             location: ILocation;
             checkin: Date;
             checkout: Date;
@@ -69,6 +70,7 @@ export interface IUser {
             ages: number[];
             rooms_num: number;
             is_animal: boolean;
+            img?: string;
         }
     ];
     interested: [string];

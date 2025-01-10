@@ -512,7 +512,7 @@ function getAvailability(
             const daysInMonth = new Date(yearMonth.year, yearMonth.month + 1, 0).getDate();
             
             for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(yearMonth.year, yearMonth.month, day);
+                const date = new Date(Date.UTC(yearMonth.year, yearMonth.month, day, 0));
                 // Only include dates from tomorrow onwards that match the required day of week if provided
                 if (!(typeof fromDay === "number") || date >= tomorrow && date.getDay() === fromDay) {
                     dates.push(date);
