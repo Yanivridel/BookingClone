@@ -36,7 +36,6 @@
       "3 days",
       "7 days"
     ],
-
     "flexible": "I'm flexible",
     "flexibleHeader": "How long do you want to stay?",
     "flexibleSecondaryHeader": "When do you want to go?",
@@ -53,7 +52,6 @@
       "Sunday"
     ]
   },
-
   "button": {
     "search": "Search"
   }

@@ -49,7 +49,7 @@ export const monthsAndYears = () => {
       year++;
     }
 
-    monthsFromCurrentMonth.push({ month: currentMonth, year });
+    monthsFromCurrentMonth.push({ monthName: currentMonth, year });
   }
 
   return monthsFromCurrentMonth;
