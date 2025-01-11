@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
 import { TPartialUser } from "@/types/userTypes";
 import { getPropertyById, searchPropertiesChunks } from "@/utils/api/propertyApi";
 import { editProfile, getInterested, getSavedLists, getSearch, getSelf, modifyUserArrays, sendEmailCode, signinUser } from "@/utils/api/userApi";
@@ -142,7 +143,7 @@ function UserSetting() {
       }
     },
     secondary: {}
-  } as any;
+  } as ISearchPropertiesReq;
 
   async function fetchingSearch() {
     try {

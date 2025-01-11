@@ -15,11 +15,7 @@ interface PropertyCardProp {
 }
 
 function PropertyCard({isGrid}:PropertyCardProp) {
-
-
     
-
-   
     const arr = ["a", "b", "c"]
     const rating = 5;
     return (

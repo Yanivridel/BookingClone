@@ -42,7 +42,6 @@ const MainCard = ({
     });
   }, [propertyId])
   
-  console.log("propertyData", propertyData);
 
   return (<>
     {propertyData && 
