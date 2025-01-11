@@ -28,9 +28,8 @@ function SignIn({
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!isSubmitAllrady) return;
-
     setIsValid(() => validateEmail(e.target.value));
+    if (!isSubmitAllrady) return;
 
     isValid
       ? setError("")
