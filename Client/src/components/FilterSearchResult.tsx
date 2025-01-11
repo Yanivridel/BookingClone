@@ -104,7 +104,7 @@ function FilterSearchResult() {
                 <div className='border-b-2 p-2 flex flex-col gap-3 '>
                     <CardTitle>Bedrooms and bathrooms</CardTitle>
                     <div className=' flex justify-between'>
-                        <p>Bedrooms</p>
+                        <p className='flex items-center'>Bedrooms</p>
                         <div className='border p-2 flex justify-around items-center w-[50%]'>
                             <button onClick={minusClick} className='text-2xl'>-</button>
                             <p>{count}</p>

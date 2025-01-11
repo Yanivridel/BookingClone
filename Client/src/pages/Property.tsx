@@ -3,12 +3,14 @@ import { getPropertyById } from "@/utils/api/propertyApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-//! Route for testing : http://localhost:5173/property/67810bb5824440db4b93a785
+// ! Route for testing : http://localhost:5173/property/67810bb5824440db4b93a785
 
 function Property() {
     const { id } = useParams();
     const [propertyData, setPropertyData] = useState<IProperty | null>(null);
 
+    console.log(id);
+    
     useEffect(() => {
         if(id) {
             getPropertyById(id)

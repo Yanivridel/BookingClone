@@ -10,6 +10,8 @@ const API_URL = isProduction
 export const getPropertyById = async (id: string) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/property/${id}`);
+    console.log(data);
+    
     return data.data;
   } catch (error) {
     console.error("Auth check error:", error);
