@@ -3,6 +3,7 @@ import {
     createProperty,
     getSearchProperties,
     getPropertyById,
+    getPropertyByIdForCard,
     test,
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
@@ -15,7 +16,10 @@ router.post("/", getSearchProperties);
 
 router.get("/test", test);
 
+router.get("/card/:id", getPropertyByIdForCard);
+
 router.get("/:id", getPropertyById);
+
 
 
 

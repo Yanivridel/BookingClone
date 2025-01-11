@@ -4,8 +4,14 @@ import Image from "../assets/images/hotel.jpg";
 import GeniusImage from "../assets/images/Genius.png";
 import ThumbsUp from "../assets/images/thumps.png";
 import SaveButton from "./SaveButton";
+import { useEffect, useState } from "react";
+import { IProperty } from "@/types/propertyTypes";
+import { getPropertyByIdForCard } from "@/utils/api/propertyApi";
+import { getDescByRating, getRandomInt } from "@/utils/functions";
+import { useTranslation } from "react-i18next";
 
 interface mainCardProps {
+  propertyId: string,
   is_heart?: boolean;
   deals?: string;
   price?: { coin: string; value: string };
@@ -16,6 +22,7 @@ interface mainCardProps {
 }
 
 const MainCard = ({
+  propertyId,
   deals,
   is_heart,
   isThumbsUp,
@@ -24,12 +31,26 @@ const MainCard = ({
   type,
   discount,
 }: mainCardProps) => {
-  return (
-    <Card className="flex flex-col w-[196px] h-[400px] sm:w-[300px] sm:h-[300px] rounded-lg ">
-      <div className="h-[50%] sm:h-[50%] rounded-t-lg relative">
+  const [propertyData, setPropertyData] = useState<IProperty | null>(null);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if(propertyId)
+      getPropertyByIdForCard(propertyId)
+    .then(data => {
+      setPropertyData(data)
+    });
+  }, [propertyId])
+  
+  console.log("propertyData", propertyData);
+
+  return (<>
+    {propertyData && 
+      <Card className="flex flex-col w-[255px] h-[347px] sm:w-[274px] sm:h-[333px] rounded-lg">
+      <div className="h-[65%] sm:max-h-none rounded-t-lg relative">
         <img
-          src={Image}
-          alt="Aparthol Stare Miasto"
+          src={propertyData.images[0]}
+          alt={propertyData.title}
           className="w-full h-full object-cover object-center rounded-t-lg "
         />
         {is_heart && (
@@ -49,14 +70,19 @@ const MainCard = ({
               <CardDescription className="text-xs">{type}</CardDescription>
             )}
           </div>
-          <CardTitle>Aparthol Stare Miasto</CardTitle>
-          <CardDescription>West Jerusalem, Israel, Jerusalem</CardDescription>
+          <CardTitle>{propertyData.title}</CardTitle>
+          <CardDescription>
+            {propertyData.location.city + ", "}
+            {propertyData.location.country}
+          </CardDescription>
           <div className=" flex w-[100%] gap-2 items-center">
-            <Badge variant="rating">8.9</Badge>
-            <CardDescription className="text-slate-800">
-              Fabulous
-            </CardDescription>
-            <CardDescription className="text-xs	">3,061 reviews</CardDescription>
+            {propertyData.total_rating && <>
+              <Badge variant="rating">{propertyData.total_rating.toFixed(1)}</Badge>
+              <CardDescription className="text-slate-800">
+              {getDescByRating(propertyData.total_rating)}
+              </CardDescription>·</>
+            }
+            <CardDescription className="text-xs	">{propertyData.reviews_num + " " + t("mainCard.reviews")}</CardDescription>
           </div>
           {deals && (
             <Badge variant="deals" className=" w-[120px] ">
@@ -77,10 +103,11 @@ const MainCard = ({
               </del>
             </CardTitle>
           )}
-          <CardDescription>2 nights</CardDescription>
+          {/* <CardDescription>{getRandomInt(1,4) + " " + t("mainCard.nights")}</CardDescription> */}
         </div>
       </div>
     </Card>
+    }</>
   );
 };
 export default MainCard;

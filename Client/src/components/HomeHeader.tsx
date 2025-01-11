@@ -3,19 +3,19 @@ import { Button } from "./ui/button";
 function HomeHeader() {
   return (
     <div className="relative -z-10">
-      <div className="absolute top-0 left-0 w-full bg-inherit z-10 px-1 pt-[66px] ">
-        <h1 className="text-[32px] search:text-5xl text-white font-black tracking-wider pb-3">
-          Travel has never
-        </h1>
-        <h1 className="text-[32px] text-5xl text-white font-black tracking-wider pb-3">
-          felt this cozy
-        </h1>
-        <h2 className="text-xl search:text-2xl text-white font-light tracking-widest pb-8">
-          Book an entire place all to yourself
-        </h2>
-        <Button className="h-12 py-4 px-4 text-base">
-          Discover vacation rentals
-        </Button>
+        <div className="absolute left-1/2 -translate-x-1/2 w-full z-10 px-1 pt-[66px] max-w-[1100px]">
+          <h1 className="text-[32px] search:text-5xl text-white font-black tracking-wider pb-3">
+            Travel has never
+          </h1>
+          <h1 className="text-[32px] text-5xl text-white font-black tracking-wider pb-3">
+            felt this cozy
+          </h1>
+          <h2 className="text-xl search:text-2xl text-white font-light tracking-widest pb-8">
+            Book an entire place all to yourself
+          </h2>
+          <Button className="h-12 py-4 px-4 text-base">
+            Discover vacation rentals
+          </Button>
       </div>
       <img
         className="absolute top-0 left-0 w-full search:h-[375px] h-[535px] object-cover "

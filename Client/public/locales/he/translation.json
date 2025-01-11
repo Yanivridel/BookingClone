@@ -22,7 +22,13 @@
     "lovedHomesDealsHeader": "בתים ודירות שאורחים אוהבים",
     "lovedHomesButton": "גלו בתים ודירות",
     "uniqueHeader": "מקומות אירוח ייחודיים ומובילים שכדאי לכם להכיר",
-    "uniqueSecondaryHeader": "מווילות וטירות עד סירות ואיגלואים – אפשר למצוא אצלנו הכל"
+    "uniqueSecondaryHeader": "מווילות וטירות עד סירות ואיגלואים – אפשר למצוא אצלנו הכל",
+    "1 person": "אדם אחד",
+    "people": "אנשים"
+  },
+  "mainCard": {
+    "reviews": "חוות דעת",
+    "nights": "לילות"
   },
   "search": {
     "placholderInput": "לאן אתם נוסעים?",

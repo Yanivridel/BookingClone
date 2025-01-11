@@ -21,7 +21,9 @@
     "lovedHomesDealsHeader": "Homes guests love",
     "lovedHomesButton": "Discover homes",
     "uniqueHeader": "Stay at our top unique properties",
-    "uniqueSecondaryHeader": "From castles and villas to boats and igloos, we have it all"
+    "uniqueSecondaryHeader": "From castles and villas to boats and igloos, we have it all",
+    "1 person": "1 person",
+    "people": "people"
   },
   "search": {
     "placholderInput": "Where are you going?",
@@ -51,6 +53,10 @@
       "Saturday",
       "Sunday"
     ]
+  },
+  "mainCard": {
+    "reviews": "reviews",
+    "nights": "nights"
   },
   "button": {
     "search": "Search"

@@ -79,6 +79,8 @@ export interface IProperty {
     end: number;
   };
   host: string;
+  total_rating?: number;
+  reviews_num?: number;
 }
 
 export interface ISearchPropertiesReq {

@@ -17,6 +17,17 @@ export const getPropertyById = async (id: string) => {
   }
 };
 
+// * Done
+export const getPropertyByIdForCard = async (id: string) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/property/card/${id}`);
+    return data.data;
+  } catch (error) {
+    console.error("Auth check error:", error);
+    throw error;
+  }
+};
+
 // * Working
 export const searchPropertiesChunks = async (
   searchBody: ISearchPropertiesReq

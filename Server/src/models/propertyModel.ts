@@ -4,6 +4,7 @@ import { IProperty } from 'src/types/propertyTypes';
 import { EAccommodationType, EFacility, EFeatures, EHotelAreaInfo,
     EPaymentMethods, EPropertyHighlight } from './../utils/structures';
 import { LocationSchema } from './locationSchema';
+import { reviewModel } from './reviewModel';
 
 const PropertySchema = new Schema<IProperty>({
     title: { type: String, required: true },
@@ -89,6 +90,12 @@ PropertySchema.set('toObject', { virtuals: true });
 PropertySchema.virtual("total_rating").get(function () {
     return (this.rating.staff + this.rating.facilities + this.rating.cleanliness + this.rating.conform
     + this.rating.value_for_money+ this.rating.location + this.rating.free_wifi) / 7;
+});
+PropertySchema.virtual("reviews_num", {
+    ref: 'Review',
+    localField: '_id',
+    foreignField: 'propertyId',
+    count: true
 });
 
 // Mongoose Model for Property

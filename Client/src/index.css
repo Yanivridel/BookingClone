@@ -75,20 +75,7 @@
   }
 }
 
-/* .nav_button_previous svg, 
-.nav_button_next svg {
-  width: 100px !important;
-  height: 100px !important;
-} */
-
-/* Custom Slick */
-/* .slick-track {
-  padding-inline: 10px;
-  padding-block: 10px;
-} */
-/* #search-slide {
-  display: flex !important;
+.slick-dots .slick-active button::before {
+  color: #006ce4 !important;
+  font-size: 10px;
 }
-.slick-slide {
-  margin-inline: 10px ;
-} */

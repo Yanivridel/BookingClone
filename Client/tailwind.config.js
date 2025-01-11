@@ -95,7 +95,7 @@ module.exports = {
         signInLayoutTop: "575px",
       },
       boxShadow: {
-        searchPopupsShadow: "0 2px 16px 0 rgba(26, 26, 26, 0.24)",
+        searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",
       },
     },
   },
