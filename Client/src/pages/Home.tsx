@@ -149,7 +149,7 @@ function Home({ country }: HomeProps) {
       <HomeHeader />
       <div className="p-1 pt-[346px] max-w-[1100px] mx-auto">
         {/* Search Nav */}
-        <Search></Search>
+        {/* <Search></Search> */}
 
         {/* Last 10 Searches */}
         {currentUser.search.length > 0 && (
