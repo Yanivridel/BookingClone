@@ -9,7 +9,7 @@ import { Information } from './ui/Icons'
 import { Button } from './ui/button'
 import { IProperty } from '@/types/propertyTypes'
 import { IRoom, TSelectedRoom } from '@/types/roomTypes'
-import { getDescByRating } from '@/utils/functions'
+import { cf, cw, getDescByRating } from '@/utils/functions'
 
 
 interface PropertyCardProp {
@@ -111,7 +111,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                 </div>
                 <div className='flex flex-col gap-2 '>
                     <CardTitle>
-                    <span className='text-blue-600 text-xl hover:text-black cursor-pointer'>{propertyData.title}</span>
+                    <span className='text-blue-600 text-xl hover:text-black cursor-pointer'>{cf(propertyData.title)}</span>
                     <div className='flex gap-1'>
                         <div className='flex'>
                             {Array(Math.round((propertyData.total_rating || 0)/2)).fill(0).map((_, index) => <Stars key={index} className='w-4 fill-yellow-300' />)}
@@ -143,7 +143,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                                 <p className='absolute -left-5 rounded-lg text-black text-xs px-[3px] py-[2px] bg-[#f2f2f2]'>
                                     {room.count + " x"}
                                 </p>
-                                <p className='font-bold	text-black text-xs'>{room.type}</p>
+                                <p className='font-bold	text-black text-xs'>{cf(room.type)}</p>
                                 <div className='text-xs flex gap-2'>{room.rooms.map(r => {
                                     let str = ''
                                     if(r.beds.bunk) str+= r.beds.bunk + " bunk bed "
@@ -151,7 +151,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                                     if(r.beds.double) str+= r.beds.double + " double bed "
                                     if(r.beds.single) str+= r.beds.single + " single bed "
                                     if(r.beds.sofa) str+= r.beds.sofa + " sofa bed"
-                                    return str;
+                                    return cw(str);
                                     }
                                     ).join("•" + " ")}</div>
                                 {   new Date(room.offers[0].discount.expires).getTime() <= new Date().setDate(new Date().getDate() + DAYS_FOR_LIMITED) && 

@@ -81,6 +81,7 @@ function SamplePrevArrow({ onClick, currentSlide }: any) {
 
 // Tailwind - render
 ("col-span-2");
+("col-span-3");
 
 function Home({ country }: HomeProps) {
   const HomeMobileWidth = 1140;

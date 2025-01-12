@@ -1,29 +1,68 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import image from '../assets/images/Dubai.jpg'
 import { Card, CardDescription, CardTitle } from './ui/card'
 import { Checkbox } from './ui/checkbox'
-import bargraph from '../assets/images/bargraph.png'
+import barGraph from '../assets/images/bargraph.png'
 import { Slider } from './ui/slider'
 import { useSearchParams } from 'react-router-dom'
+import { IconCounterMinus, IconCounterPlus } from './ui/Icons'
+import { cn } from '@/lib/utils'
+import { cf, cw } from '@/utils/functions'
+import CheckpointMap, { LatLng } from './CheckpointMap'
+import { IProperty } from '@/types/propertyTypes'
 
+const distanceOptions = {
+    "Less than 1 km": 1,
+    "Less than 3 km": 3,
+    "Less than 5 km": 5,
+}
 
-function FilterSearchResult({filters} : any) {
+interface IFilters {
+    overall_count: number;
+    type: { [key: string]: number };
+    rating: { [key: number]: number };
+    popularFacilities: { [key: string]: number };
+    roomType: { [key: string]: number };
+    roomFacilities: { [key: string]: number };
+    meals: { [key: string]: number };
+    freeCancellation: number;
+    onlinePayment: number;
+    region: { [key: string]: number };
+    price: {
+        min: number;
+        max: number;
+    };
+    doubleBeds: number;
+    singleBeds: number;
+}
+
+interface FilterSearchResultProps {
+    filters: IFilters;
+    coordinates: LatLng[];
+}
+
+function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [count, setCount] = useState(0);
-    // const [priceRange, setPriceRange] = useState([50, 200]);
-    // const priceRange = [filters.price.min, filters.price.max]
-
-
-    function plusClick() {
-        setCount(count +1)
-    }
-    function minusClick() {
-        setCount(count -1)
-    }
+    const [priceRange, setPriceRange] = useState<number[]>();
 
     console.log(filters);
 
+    useEffect(() => {
+        // Default start price range
+        setPriceRange([
+            parseInt(searchParams.get('min') || String(filters?.price.min) || '0'),
+            parseInt(searchParams.get('max') || String(filters?.price.max) || '1000'),
+        ])
+    }, [filters])
+
+    const handleSliderValueChange = (newRange: number[]) => {
+        setPriceRange(newRange);
+
+        searchParams.set('min', newRange[0].toString());
+        searchParams.set('max', newRange[1].toString());
+        setSearchParams(searchParams)
+    }
 
     const handleCheckboxChange = (category: string, value: string) => {
         const existingValues = searchParams.getAll(category);
@@ -48,15 +87,32 @@ function FilterSearchResult({filters} : any) {
         console.log("SUBMIT",
             searchParams.getAll("type"),
             searchParams.getAll("facility"),
+            searchParams.get("min"),
+            searchParams.get("max"),
+            searchParams.get("Bedrooms"),
+            searchParams.get("Bathrooms"),
 
         )
-
     }
+
+    function handlePlusBeds(category: string) {
+        const newVal =parseInt(searchParams.get(category) || '0') + 1;
+        if(newVal > 10 ) return;
+        searchParams.set(category, newVal.toString());
+        setSearchParams(searchParams);
+    }
+    function handleMinusBeds(category: string) {
+        const newVal =parseInt(searchParams.get(category) || '0') - 1;
+        if(newVal < 0 ) return;
+        searchParams.set(category, newVal.toString());
+        setSearchParams(searchParams);
+    }
+
 
     return (
         <div className='border max-w-[260px] grid gap-4'>
             <div className='border h-[150px] max-w-[260px] rounded-lg'>
-                <img src={image} alt="" className='h-[150px] w-[100%]' />
+                {/* {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />} */}
             </div>
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
@@ -74,7 +130,7 @@ function FilterSearchResult({filters} : any) {
                             onCheckedChange={() => handleCheckboxChange("type", key)}
                         />
                         <label htmlFor={key} className="text-sm">
-                            {key}
+                            {cf(key)}
                         </label>
                         </div>
                         <div>
@@ -87,25 +143,25 @@ function FilterSearchResult({filters} : any) {
                 </div>
 
                 {/* Price Slider */} 
-                {/* <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
-                { filters?.price && <>
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
+                { filters?.price && priceRange && <>
                 <h3 className="text-sm font-semibold">
-                {`₪${filters.price.min} - ₪${filters.price.max}`}
+                    {`₪${priceRange[0]} - ₪${priceRange[1]}`}
                 </h3>
+                <img src={barGraph} className='-mb-2'/>
                 <Slider 
-                    value={priceRange} 
-                    onValueChange={setPriceRange} 
-                    min={0} 
-                    max={500} 
+                    value={priceRange}
+                    onValueChange={handleSliderValueChange}
+                    min={filters.price.min} 
+                    max={filters.price.max} 
                     step={10} 
                     className="w-full"
                 />
                 
+                </>}
+                </div>
                 
-                
-                </>} */}
-                
-
                 {/* Facilities */}
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
                     { filters?.popularFacilities && <>
@@ -132,19 +188,258 @@ function FilterSearchResult({filters} : any) {
                 
                 </div>
 
-
-
-                <div className='border-b-2 p-2 flex flex-col gap-3 '>
-                    <CardTitle>Bedrooms and bathrooms</CardTitle>
-                    <div className=' flex justify-between'>
-                        <p className='flex items-center'>Bedrooms</p>
-                        <div className='border p-2 flex justify-around items-center w-[50%]'>
-                            <button onClick={minusClick} className='text-2xl'>-</button>
-                            <p>{count}</p>
-                            <button onClick={plusClick} className='text-lg text-blue-600'>+</button>
-                            
+                {/* Meals */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.meals && <>
+                    <CardTitle className='font-semibold'>Meals</CardTitle>
+                    {Object.entries(filters.meals).map(([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={key}
+                            className="rounded-md p-2 border-black"
+                            checked={searchParams.getAll("meal").includes(key)}
+                            onCheckedChange={() => handleCheckboxChange("meal", key)}
+                        />
+                        <label htmlFor={key} className="text-sm">
+                            {cf(key)}
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(value)}</p>
                         </div>
                     </div>
+                    ))}
+                    </>}
+                
+                </div>
+
+                {/* Rating */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.rating && <>
+                    <CardTitle className='font-semibold'>Property rating</CardTitle>
+                    {Object.entries(filters.rating).map(([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={key}
+                            className="rounded-md p-2 border-black"
+                            checked={searchParams.getAll("rating").includes(key)}
+                            onCheckedChange={() => handleCheckboxChange("rating", key)}
+                        />
+                        <label htmlFor={key} className="text-sm">
+                            {key + (key === "1" ? " Star": " Stars")}
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(value)}</p>
+                        </div>
+                    </div>
+                    ))}
+                    </>}
+                
+                </div>
+
+                {/* Bedrooms And Bathrooms */}
+                <div className='border-b-2 p-2 flex flex-col gap-3 '>
+                    <CardTitle>Bedrooms And Bathrooms</CardTitle>
+                    {/* Bedroom Button */}
+                    <div className=' flex justify-between'>
+                        <p className='flex items-center'>Bedrooms</p>
+                        <div
+                        className="border-[#868686] border-[1.5px]  rounded-lg p-2 flex justify-around items-center w-[50%]"
+                        >
+                        <button
+                            onClick={() => handleMinusBeds("Bedrooms")}
+                            className={cn("text-2xl fill-blue-600", 
+                                parseInt(searchParams.get("Bedrooms") || '0') === 0 && "cursor-not-allowed fill-softGray")}
+                        >
+                            <IconCounterMinus />
+                        </button>
+                        <p>{searchParams.get("Bedrooms") || '0'}</p>
+                        <button
+                            onClick={() => handlePlusBeds("Bedrooms")}
+                            className={cn("text-lg fill-blue-600", 
+                                parseInt(searchParams.get("Bedrooms") || '0') === 10 && "cursor-not-allowed fill-softGray")}
+                        >
+                            <IconCounterPlus />
+                        </button>
+                        </div>
+                    </div>
+                    {/* Bathrooms Button */}
+                    <div className=' flex justify-between'>
+                        <p className='flex items-center'>Bathrooms</p>
+                        <div
+                        className="border-[#868686] border-[1.5px]  rounded-lg p-2 flex justify-around items-center w-[50%]"
+                        >
+                        <button
+                            onClick={() => handleMinusBeds("Bathrooms")}
+                            className={cn("text-2xl fill-blue-600", 
+                                parseInt(searchParams.get("Bathrooms") || '0') === 0 && "cursor-not-allowed fill-softGray")}
+                        >
+                            <IconCounterMinus />
+                        </button>
+                        <p>{searchParams.get("Bathrooms") || '0'}</p>
+                        <button
+                            onClick={() => handlePlusBeds("Bathrooms")}
+                            className={cn("text-lg fill-blue-600", 
+                                parseInt(searchParams.get("Bathrooms") || '0') === 10 && "cursor-not-allowed fill-softGray")}
+                        >
+                            <IconCounterPlus />
+                        </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Distance */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    <CardTitle className='font-semibold'>Distance from center of Paris</CardTitle>
+                    {Object.entries(distanceOptions).map(([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={value.toString()}
+                            className="rounded-md p-2 border-black"
+                            checked={searchParams.getAll("distance").includes(value.toString())}
+                            onCheckedChange={() => handleCheckboxChange("distance", value.toString())}
+                        />
+                        <label htmlFor={key} className="text-sm">
+                            {key}
+                        </label>
+                        </div>
+                    </div>
+                    ))}
+                    
+                
+                </div>
+
+                {/* Room Type */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.roomType && <>
+                    <CardTitle className='font-semibold'>Room Types</CardTitle>
+                    {Object.entries(filters.roomType).map(([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={key}
+                            className="rounded-md p-2 border-black"
+                            checked={searchParams.getAll("room").includes(key)}
+                            onCheckedChange={() => handleCheckboxChange("room", key)}
+                        />
+                        <label htmlFor={key} className="text-sm">
+                            {cf(key)}
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(value)}</p>
+                        </div>
+                    </div>
+                    ))}
+                    </>}
+                
+                </div>
+
+                {/* Room facilities */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.roomFacilities && <>
+                    <CardTitle className='font-semibold'>Room facilities </CardTitle>
+                    {Object.entries(filters.roomFacilities).map(([key, value]) => (
+                    <div key={key} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={key}
+                            className="rounded-md p-2 border-black"
+                            checked={searchParams.getAll("roomFacility").includes(key)}
+                            onCheckedChange={() => handleCheckboxChange("roomFacility", key)}
+                        />
+                        <label htmlFor={key} className="text-sm">
+                            {cw(key)}
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(value)}</p>
+                        </div>
+                    </div>
+                    ))}
+                    </>}
+                
+                </div>
+
+                {/* Bed preference */}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                { (filters?.doubleBeds || filters?.singleBeds) && <>
+                <CardTitle className='font-semibold'>Bed preference</CardTitle>
+                {Object.entries({"Double Bed": filters.doubleBeds , "Single Bed": filters.singleBeds})
+                .map(([key, value]) => {
+                return (value === 0) ? null : (
+                <div key={key} className="flex justify-between">
+                    <div className="flex items-center gap-2">
+                    <Checkbox
+                        id={key}
+                        className="rounded-md p-2 border-black"
+                        checked={searchParams.getAll("Bed preference").includes(key)}
+                        onCheckedChange={() => handleCheckboxChange("Bed preference", key)}
+                    />
+                    <label htmlFor={key} className="text-sm">
+                        {cf(key)}
+                    </label>
+                    </div>
+                    <div>
+                    <p>{String(value)}</p>
+                    </div>
+                </div>
+                )}
+                )}
+                </>}
+                
+                </div>
+
+                {/* Reservation policy*/}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.freeCancellation && <>
+                    <CardTitle className='font-semibold'>Reservation policy</CardTitle>
+                    <div key={"free"} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={"free"}
+                            className="rounded-md p-2 border-black"
+                            checked={!!searchParams.get("free")}
+                            onCheckedChange={() => handleCheckboxChange("free", "1")}
+                        />
+                        <label htmlFor={"free"} className="text-sm">
+                            Free cancellation
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(filters.freeCancellation)}</p>
+                        </div>
+                    </div>
+                    </>}
+                
+                </div>
+
+                {/* Online Payment*/}
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                    { filters?.onlinePayment && <>
+                    <CardTitle className='font-semibold'>Online Payment</CardTitle>
+                    <div key={"online"} className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={"online"}
+                            className="rounded-md p-2 border-black"
+                            checked={!!searchParams.get("online")}
+                            onCheckedChange={() => handleCheckboxChange("online", "1")}
+                        />
+                        <label htmlFor={"online"} className="text-sm">
+                            Accepts online payments
+                        </label>
+                        </div>
+                        <div>
+                        <p>{String(filters.onlinePayment)}</p>
+                        </div>
+                    </div>
+                    </>}
+                
                 </div>
             </Card>
         </div>
@@ -152,135 +447,3 @@ function FilterSearchResult({filters} : any) {
 }
 
 export default FilterSearchResult
-
-
-
-
-
-
-
-
-
-
-// import { useState } from 'react'
-// import image from '../assets/images/Dubai.jpg'
-// import { Card, CardDescription, CardTitle } from './ui/card'
-// import { Checkbox } from './ui/checkbox'
-// import bargraph from '../assets/images/bargraph.png'
-// import { Slider } from './ui/slider'
-
-// function FilterSearchResult() {
-//     const[count,setCount] = useState(0)
-//     const [sliderValue, setSliderValue] = useState<[number, number]>([30, 700]); // Initial slider value
-
-//     function plusClick() {
-//         setCount(count +1)
-//     }
-//     function minusClick() {
-//         setCount(count -1)
-//     }
-
-//     const handleSliderChange = (newValue: [number, number]) => {
-//         setSliderValue(newValue); // עדכון הערך כמערך
-//     };
-
-//     return (
-//         <div className='border max-w-[260px] grid gap-4'>
-//             <div className='border h-[150px] max-w-[260px] rounded-lg'>
-//                 <img src={image} alt="" className='h-[150px] w-[100%]	' />
-//             </div>
-//             <Card className='p-2'>
-//                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
-//                 <div className='flex flex-col gap-2 border-b-2 p-2 '>
-//                     <CardTitle className='font-semibold'>Your previous filter</CardTitle>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Guest houses</p>
-//                         </div>
-//                         <div>
-//                             <p>74</p>
-//                         </div>
-//                     </div>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Bed and breakfasts</p>
-//                         </div>
-//                         <div>
-//                             <p>26</p>
-//                         </div>
-//                     </div>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Holiday homes</p>
-//                         </div>
-//                         <div>
-//                             <p>20</p>
-//                         </div>
-//                     </div>
-
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Homestays</p>
-//                         </div>
-//                         <div>
-//                             <p>38</p>
-//                         </div>
-//                     </div>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Apartments</p>
-//                         </div>
-//                         <div>
-//                             <p>4593</p>
-//                         </div>
-//                     </div>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Villas</p>
-//                         </div>
-//                         <div>
-//                             <p>17</p>
-//                         </div>
-//                     </div>
-//                     <div className='flex justify-between'>
-//                         <div className='flex items-center gap-2'>
-//                             <Checkbox className='rounded-md p-2 border-black' />
-//                             <p className='text-sm'>Boats</p>
-//                         </div>
-//                         <div>
-//                             <p>1</p>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div>
-//                     <CardTitle className='p-2'>Your budget (per night)</CardTitle>
-//                 </div>
-//                 <p className='p-2'>₪ {sliderValue} - ₪ {sliderValue} +</p>
-//                 <div className='border-b-2 p-2'>
-//                     <img src={bargraph} alt="" />
-//                     <Slider value={sliderValue} onValueChange={handleSliderChange} max={1000} step={10} min={0} defaultValue={[30, 700]} />
-//                 </div>
-//                 <div className='border-b-2 p-2 flex flex-col gap-3 '>
-//                     <CardTitle>Bedrooms and bathrooms</CardTitle>
-//                     <div className=' flex justify-between'>
-//                         <p>Bedrooms</p>
-//                         <div className='border p-2 flex justify-around items-center w-[50%]'>
-//                             <button onClick={minusClick} className='text-2xl'>-</button>
-//                             <p>{count}</p>
-//                             <button onClick={plusClick} className='text-lg text-blue-600'>+</button>
-//                         </div>
-//                     </div>
-
-//                 </div>
-//             </Card>
-//         </div>
-//     )
-// }
-
-// export default FilterSearchResult

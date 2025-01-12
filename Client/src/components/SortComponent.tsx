@@ -5,16 +5,18 @@ import { Switch } from "./ui/switch"
 import { Dispatch, SetStateAction, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Badge } from "./ui/badge";
+import { useSearchParams } from "react-router-dom";
 
 
 
 
 interface SortComponentProps {
     setIsGrid : Dispatch<SetStateAction<boolean>>
+    filters: any;
 }
 
-function SortComponent({setIsGrid} : SortComponentProps ) {
-
+function SortComponent({setIsGrid, filters} : SortComponentProps ) {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [isVisible, setIsVisible] = useState<boolean>(true);
 
     function HandleClick() {
@@ -28,7 +30,8 @@ function SortComponent({setIsGrid} : SortComponentProps ) {
 
             <div className="border p-4 flex justify-center">
                 <div className=" w-[50%] rounded-xl grid gap-3 p-3">
-                    <p className="font-bold text-lg">Dubai: 1,559 properties found</p>
+                    <p className="font-bold text-lg">
+                        {searchParams.get("city") || "unknown"}: {filters ? filters.overall_count : "..."} properties found</p>
                     <div >
                         <Popover>
                             <PopoverTrigger>

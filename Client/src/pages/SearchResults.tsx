@@ -1,4 +1,5 @@
 import BreadcrumbCard from "@/components/Breadcrumb";
+import { LatLng } from "@/components/CheckpointMap";
 import FilterSearchResult from "@/components/FilterSearchResult";
 import PropertyCard from "@/components/PropertyCard";
 import Search from "@/components/search";
@@ -95,18 +96,28 @@ function SearchResults() {
     };
   }, [hasNextPage, isFetchingNextPage]);
 
+  let properties = data?.pages[0].filteredProperties as IProperty[]
+  let coordinates = [] as LatLng[];
+  if(properties)
+    coordinates = properties.map(prop => {
+      return {
+          lat: prop.location.coordinates?.coordinates[0],
+          lng: prop.location.coordinates?.coordinates[1],
+      } as LatLng
+      });
 
   return (
     <div className="max-w-[1100px] mx-auto">
       
-      {/* <Search /> */}
+      <Search />
       <BreadcrumbCard />
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
-          <FilterSearchResult filters={data?.pages[0].filters}/>
+          <FilterSearchResult coordinates={coordinates} filters={data?.pages[0].filters}/>
+          
         </div>
         <div className="flex-1">
-          <SortComponent setIsGrid={setIsGrid} />
+          <SortComponent filters={data?.pages[0].filters} setIsGrid={setIsGrid} />
           <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
             { !data && isFetching && SkeletonCard(5) }
             { data && 
