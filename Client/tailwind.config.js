@@ -57,6 +57,7 @@ module.exports = {
         },
         search: "#ffb700",
         searchGrayText: "#595959",
+        buttonBlue: "#006ce4",
         navBarRoundedButton: "#868686",
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
@@ -100,5 +101,5 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-  important: true
+  important: true,
 };
