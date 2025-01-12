@@ -98,6 +98,11 @@
     "petsLink": "Read more about traveling with assistance animals",
     "Done": "Done"
   },
+  "languages": {
+    "header": "Select your language",
+    "subHeader": "Suggested for you",
+    "all": "All languages"
+  },
   "button": {
     "search": "Search"
   }
