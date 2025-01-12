@@ -17,16 +17,16 @@ export interface IProperty {
     free_wifi: number; // default: 0
   };
   description?: string;
-  popularFacilities: string[]; // enum: EFacility
+  popularFacilities: EFacility[]; // enum: EFacility
   highlights: [
     {
-      title: string; // enum: EPropertyHighlight
+      title: EPropertyHighlight;
       content: string;
     }
   ];
   features: [
     {
-      category: string; // enum: EFeatures
+      category: EFeatures;
       sub: string[];
     }
   ];
@@ -80,6 +80,17 @@ export interface IProperty {
     end: number;
   };
   host: string;
+  hotel_area_info: {
+    category: IHotelAreaInfoCategoty;
+    id: string;
+    _id: string;
+    sub: {
+      content: string;
+      distance: number;
+      _id: string;
+      id: string;
+    }[];
+  }[];
   total_rating?: number;
   reviews_num?: number;
   selectedRooms?: {
@@ -88,7 +99,7 @@ export interface IProperty {
     available: {
       startDate: Date;
       availableRooms: number;
-    }
+    };
   }[];
 }
 
@@ -143,3 +154,120 @@ interface IFilterPropertiesOptions {
 }
 
 export type TPartialProperty = Partial<IProperty>;
+
+export interface IHotelAreaInfoCategoty {
+  category:
+    | "Public transit"
+    | "Closest Airports"
+    | "Restaurants & cafes"
+    | "Natural Beauty"
+    | "What's nearby"
+    | "Top attractions";
+}
+
+export type EPropertyHighlight =
+  | "Location"
+  | "Wellness"
+  | "View"
+  | "Breakfast"
+  | "Dining"
+  | "Value"
+  | "WiFi"
+  | "Beach access"
+  | "Family-friendly"
+  | "Pet-friendly"
+  | "Luxury"
+  | "Sustainability"
+  | "Unique stay"
+  | "Transport options"
+  | "Fitness"
+  | "Pool"
+  | "Parking"
+  | "Spa"
+  | "Business facilities"
+  | "Historical building"
+  | "Modern design"
+  | "Romantic"
+  | "Adventure activities"
+  | "All-inclusive"
+  | "Sports facilities"
+  | "Accessibility"
+  | "Kids-friendly"
+  | "Quiet environment";
+
+export type EFacility =
+  | "Free parking"
+  | "Free WiFi"
+  | "Parking"
+  | "Airport shuttle"
+  | "Family rooms"
+  | "Outdoor pool"
+  | "Indoor pool"
+  | "Spa and wellness center"
+  | "Fitness center"
+  | "Restaurant"
+  | "Bar"
+  | "Non-smoking rooms"
+  | "Beachfront"
+  | "Room service"
+  | "Breakfast included"
+  | "Private beach area"
+  | "Free cancellation"
+  | "Air conditioning"
+  | "Heating"
+  | "Terrace"
+  | "Garden"
+  | "Hot tub/Jacuzzi"
+  | "Sauna"
+  | "Tennis court"
+  | "Golf course"
+  | "Water sports facilities"
+  | "Skiing"
+  | "Ski storage"
+  | "Ski equipment rental"
+  | "Children's playground"
+  | "Business center"
+  | "Meeting/banquet facilities"
+  | "Laundry services"
+  | "Dry cleaning"
+  | "Kitchen facilities"
+  | "Balcony"
+  | "Mini market on site"
+  | "Facilities for disabled guests"
+  | "ATM on site"
+  | "Currency exchange"
+  | "BBQ facilities"
+  | "Nightclub/DJ"
+  | "Library"
+  | "Cycling"
+  | "Hiking"
+  | "Car rental"
+  | "Shuttle service"
+  | "Valet parking"
+  | "Electric vehicle charging station"
+  | "Tea/Coffee Maker in All Rooms"
+  | "Very Good Breakfast";
+
+export type EFeatures =
+  | "Accessibility"
+  | "Outdoor swimming pool"
+  | "Spa"
+  | "Languages Spoken"
+  | "Front Desk Services"
+  | "Entertainment & Family Services"
+  | "Cleaning Services"
+  | "Business Facilities"
+  | "Safety & security"
+  | "General"
+  | "Bathroom"
+  | "Bedroom"
+  | "Outdoors"
+  | "Kitchen"
+  | "Room Amenities"
+  | "Pets"
+  | "Activities"
+  | "Living Area"
+  | "Media & Technology"
+  | "Food & Drink"
+  | "Internet"
+  | "Parking";
