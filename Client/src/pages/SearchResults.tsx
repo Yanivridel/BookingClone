@@ -103,7 +103,7 @@ function SearchResults() {
       <BreadcrumbCard />
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
-          <FilterSearchResult />
+          <FilterSearchResult filters={data?.pages[0].filters}/>
         </div>
         <div className="flex-1">
           <SortComponent setIsGrid={setIsGrid} />
