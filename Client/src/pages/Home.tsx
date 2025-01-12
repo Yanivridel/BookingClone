@@ -80,8 +80,7 @@ function SamplePrevArrow({ onClick, currentSlide }: any) {
 }
 
 // Tailwind - render
-"col-span-2"
-
+("col-span-2");
 
 function Home({ country }: HomeProps) {
   const HomeMobileWidth = 1140;
@@ -114,9 +113,7 @@ function Home({ country }: HomeProps) {
       });
     };
 
-
     window.addEventListener("resize", checkMobile);
-
 
     return () => {
       window.removeEventListener("resize", checkMobile);
@@ -304,12 +301,12 @@ function Home({ country }: HomeProps) {
           <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
 
           <div className="grid grid-cols-6 gap-4">
-<
+            {/* <
             {TrendingImages.map((details, idx) =>
             <ImageCard key={details.city} details={details} 
               className={`col-span-${ idx <=1 ? 3:2}`} />
             )}
->
+> */}
           </div>
         </div>
 
