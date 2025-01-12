@@ -17,11 +17,26 @@ export const getPropertyById = async (id: string) => {
   }
 };
 
+// * Done
+export const getPropertyByIdForCard = async (id: string) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/property/card/${id}`);
+    return data.data;
+  } catch (error) {
+    console.error("Auth check error:", error);
+    throw error;
+  }
+};
+
 // * Working
 export const searchPropertiesChunks = async (
-  searchBody: ISearchPropertiesReq
+  searchBody: ISearchPropertiesReq,
+  page?: number,
+  limit?: number
 ) => {
-  const response = await fetch(`${API_URL}/api/property/`, {
+  if(!page) page = 1;
+  if(!limit) limit= 15;
+  const response = await fetch(`${API_URL}/api/property/?page=${page}&limit=${limit}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

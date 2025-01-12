@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
 import { TPartialUser } from "@/types/userTypes";
 import { getPropertyById, searchPropertiesChunks } from "@/utils/api/propertyApi";
 import { editProfile, getInterested, getSavedLists, getSearch, getSelf, modifyUserArrays, sendEmailCode, signinUser } from "@/utils/api/userApi";
@@ -142,7 +144,7 @@ function UserSetting() {
       }
     },
     secondary: {}
-  } as any;
+  } as ISearchPropertiesReq;
 
   async function fetchingSearch() {
     try {
@@ -171,8 +173,16 @@ function UserSetting() {
       
     }
   }
-  return (
-    <Button onClick={fetchingSearch}>Click</Button>
+  return (<>
+  <div className="flex flex-col space-y-3">
+      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
+  <Button onClick={fetchingSearch}>Click</Button>
+  </>
   );
 }
 

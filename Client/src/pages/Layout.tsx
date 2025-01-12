@@ -6,7 +6,7 @@ function Layout() {
   return (
     <div>
       <TopNav />
-      <div className="max-w-[1100px] mx-auto">
+      <div className="">
         <Outlet />
       </div>
     </div>

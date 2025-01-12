@@ -93,6 +93,39 @@ export const getPropertyById =  async (req: Request , res: Response): Promise<vo
         });
     }
 };
+//* Done - Get By Id For Card
+export const getPropertyByIdForCard =  async (req: Request , res: Response): Promise<void> => {
+    try {
+        const propertyId = req.params.id;
+
+        // Find property by ID
+        const property = await propertyModel.findById(propertyId)
+        .select("title location images rating reviews_num")
+        .populate('reviews_num');
+
+        // If property doesn't exist, return 404
+        if (!property) {
+            res.status(404).json({
+                status: "error",
+                message: "Property not found",
+            });
+            return
+        }
+
+        // Send success response
+        res.status(200).json({
+            status: "success",
+            message: "Property with rooms found successfully",
+            data: property,
+        });
+    } catch (error) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Server error",
+        });
+    }
+};
 
 // Get & Filter Properties
 interface IGetPropertiesBody {
@@ -178,7 +211,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             country, region, city, addressLine,
             startDate, endDate, length, isWeekend, fromDay, yearMonths,
             adults, children, rooms, distance, isAnimalAllowed
-        }, (key, value) => value === undefined ? null : value);
+        }, (_, value) => value === undefined ? null : value);
 
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Transfer-Encoding', 'chunked');
@@ -213,6 +246,13 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         if(req.body?.secondary)
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
+
+        // ! REMOVE LATER
+        // const properties = await propertyModel.find({}).populate("rooms") as IProperty[];
+        // for(let i = 0; i< 10; i++){
+        //     filteredProperties.push(...properties);
+        // }
+
 
         const paginatedProperties = filteredProperties.slice(skip, skip + limit);
             

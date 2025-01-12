@@ -79,6 +79,7 @@ export interface IProperty extends Document {
     };
     host: Types.ObjectId;
     total_rating?: number;
+    reviews_num?: number;
 }
 
 export type TPartialProperty = Partial<IProperty>;

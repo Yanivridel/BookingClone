@@ -21,7 +21,9 @@
     "lovedHomesDealsHeader": "Homes guests love",
     "lovedHomesButton": "Discover homes",
     "uniqueHeader": "Stay at our top unique properties",
-    "uniqueSecondaryHeader": "From castles and villas to boats and igloos, we have it all"
+    "uniqueSecondaryHeader": "From castles and villas to boats and igloos, we have it all",
+    "1 person": "1 person",
+    "people": "people"
   },
   "search": {
     "placholderInput": "Where are you going?",
@@ -50,7 +52,56 @@
       "Friday",
       "Saturday",
       "Sunday"
-    ]
+    ],
+    "selectDates": "select dates",
+    "selectDatesParagraph": "Select preferred days"
+  },
+  "mainCard": {
+    "reviews": "reviews",
+    "nights": "nights"
+  },
+  "SearchPeople": {
+    "Adults": "Adults",
+    "Children": "Children",
+    "ChildrenMessage": "To find you a place to stay that fits your entire group along with correct prices, we need to know how old your child will be at check-out",
+    "pets": "pets",
+    "petsDialogHeader": "Traveling with assistance animals",
+    "petsDialogContent": [
+      "Certified assistance animals",
+      "are highly trained disability support aids that play an essential role in helping individuals with disabilities engage in daily tasks safely and confidently.",
+      "In many countries, travelers with assistance animals are entitled to book any accommodations without facing additional fees or conditions, even if pets aren’t allowed. Legal requirements on assistance animals vary based on location – familiarize yourself with local laws before traveling."
+    ],
+    "ChildrenAges": [
+      "Age needed",
+      "0 years old",
+      "1 year old",
+      "2 years old",
+      "3 years old",
+      "4 years old",
+      "5 years old",
+      "6 years old",
+      "7 years old",
+      "8 years old",
+      "9 years old",
+      "10 years old",
+      "11 years old",
+      "12 years old",
+      "13 years old",
+      "14 years old",
+      "15 years old",
+      "16 years old",
+      "17 years old"
+    ],
+    "rooms": "Rooms",
+    "petsSwich": "Traveling with pets?",
+    "petsInfo": "Assistance animals aren’t considered pets. ",
+    "petsLink": "Read more about traveling with assistance animals",
+    "Done": "Done"
+  },
+  "languages": {
+    "header": "Select your language",
+    "subHeader": "Suggested for you",
+    "all": "All languages"
   },
   "button": {
     "search": "Search"

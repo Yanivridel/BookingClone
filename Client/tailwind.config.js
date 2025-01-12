@@ -57,6 +57,7 @@ module.exports = {
         },
         search: "#ffb700",
         searchGrayText: "#595959",
+        buttonBlue: "#006ce4",
         navBarRoundedButton: "#868686",
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
@@ -92,13 +93,14 @@ module.exports = {
       },
       screens: {
         search: "900px",
+        TopHeader: "1022px",
         signInLayoutTop: "575px",
       },
       boxShadow: {
-        searchPopupsShadow: "0 2px 16px 0 rgba(26, 26, 26, 0.24)",
+        searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-  important: true
+  important: true,
 };

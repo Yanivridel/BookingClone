@@ -4,6 +4,7 @@ import { Information, SmallUpDown, UpDown } from "./ui/Icons"
 import { Switch } from "./ui/switch"
 import { Dispatch, SetStateAction, useState } from "react";
 import { Label } from "@radix-ui/react-label";
+import { Badge } from "./ui/badge";
 
 
 
@@ -31,7 +32,9 @@ function SortComponent({setIsGrid} : SortComponentProps ) {
                     <div >
                         <Popover>
                             <PopoverTrigger>
-                                <Button variant="outline" className="rounded-full border-black"><UpDown></UpDown> Sort by: Our top picks <SmallUpDown></SmallUpDown></Button>
+                                <Badge variant="outline" className="flex gap-2 rounded-full border-black p-2">
+                                    <UpDown className="w-4"></UpDown> Sort by: Our top picks 
+                                    <SmallUpDown className="w-4"></SmallUpDown></Badge>
                             </PopoverTrigger>
                             <PopoverContent className="rounded-lg grid gap-2">
                                 <div className="p-2 hover:bg-gray-200 cursor-pointer text-xs">our top picks</div>

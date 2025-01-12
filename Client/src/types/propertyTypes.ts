@@ -1,4 +1,5 @@
 import { ILocation } from "./locationTypes";
+import { IRoom } from "./roomTypes";
 
 export interface IProperty {
   _id: string;
@@ -29,7 +30,7 @@ export interface IProperty {
       sub: string[];
     }
   ];
-  rooms: string;
+  rooms: string | IRoom[];
   qa: [
     {
       question: string;
@@ -79,6 +80,16 @@ export interface IProperty {
     end: number;
   };
   host: string;
+  total_rating?: number;
+  reviews_num?: number;
+  selectedRooms?: {
+    id: string;
+    count: number;
+    available: {
+      startDate: Date;
+      availableRooms: number;
+    }
+  }[];
 }
 
 export interface ISearchPropertiesReq {

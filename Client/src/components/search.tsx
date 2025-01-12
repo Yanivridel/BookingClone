@@ -13,10 +13,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { searchCalendarButtonsData, monthsAndYears } from "@/utils/staticData";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
-import { EmptyCalendarImg } from "./ui/Icons";
+import { EmptyCalendarImg, IconMen } from "./ui/Icons";
 import { cn } from "@/lib/utils";
-import { ISearchPropertiesReq } from "@/types/propertyTypes";
-import { searchPropertiesChunks } from "@/utils/api/propertyApi";
+import SearchPeople from "./SearchPeople";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // damy data
 const items = [
@@ -47,6 +47,14 @@ interface MonthYear {
 // todo: icons and "powred by google"
 
 function Search() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  searchParams.set("city", "asda");
+  searchParams.set("city", "asda");
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // * place
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [popularSearches, setpopularSearches] =
@@ -56,6 +64,7 @@ function Search() {
   const [variant, setVariant] = useState<"default" | "disabled">("disabled");
 
   // * dates
+  const [openDatesPophover, setOpenDatesPophover] = useState(false);
   const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(),
@@ -64,14 +73,22 @@ function Search() {
 
   const [activePlusMinusButton, setActivePlusMinusButton] =
     useState<string>("");
-  const [activeNavButton, setActiveNavButton] = useState<string>(
-    t("search.calendar")
-  );
-
+  const [activeNavButton, setActiveNavButton] = useState<string>("calendar");
   const [isWeedend, setIsWeedend] = useState(false);
   const [preferredDays, setPreferredDays] = useState("");
   const [fromDay, setfromDay] = useState("1");
   const [nights, setNights] = useState("1");
+
+  // * pepole && rooms
+
+  const [openPepolePophover, setopenPepolePophover] = useState(false);
+  const [adultsCount, setAdultsCount] = useState(1);
+  const [childrenCount, setChildrenCount] = useState(0);
+  const [roomsCount, setRoomsCount] = useState(1);
+  const [isPets, setIsPets] = useState(false);
+  const [childrenAges, setChildrenAges] = useState<
+    (number | typeof NaN | undefined | null | "")[]
+  >([]);
 
   // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
@@ -84,24 +101,23 @@ function Search() {
       },
       date: {
         startDate:
-          activeNavButton === t("search.calendar") ||
-          clickedMonthsCards.length === 0
+          activeNavButton === "calendar" || clickedMonthsCards.length === 0
             ? rangeDates?.from
             : null,
         endDate:
-          activeNavButton === t("search.calendar") ||
-          clickedMonthsCards.length === 0
+          activeNavButton === "calendar" || clickedMonthsCards.length === 0
             ? rangeDates?.to
             : null,
         length: Number(preferredDays) || Number(nights),
-        fromDay: fromDay,
+        fromDay,
         yearMonths: clickedMonthsCards,
         isWeekend: isWeedend,
       },
       options: {
-        adults: 3,
-        rooms: 1,
-        childrenAges: [4],
+        adults: adultsCount,
+        childrenAges: childrenAges,
+        rooms: roomsCount,
+        isAnimalAllowed: isPets,
       },
     },
   };
@@ -208,7 +224,6 @@ function Search() {
       } else {
         setIsWeedend(false);
       }
-      // console.log(preferredDays);
     }
   };
 
@@ -220,6 +235,49 @@ function Search() {
   const formattedHebrew = "EEE, dd MMMM";
   // english format
   const formattedEnglish = "EEE, MMM dd";
+
+  //  preferred days - monthes and day number
+  const handleSubmit = () => {
+    searchParams.get("city");
+    setSearchParams(searchParams);
+
+    // dates
+    let url = "/searchresults?";
+    if (finalData.primary.date.startDate) {
+      url += `startDate=${finalData.primary.date.startDate}&`;
+    }
+    if (finalData.primary.date.endDate) {
+      url += `endDate=${finalData.primary.date.endDate}&`;
+    }
+    if (finalData.primary.date.isWeekend) {
+      url += `isWeekend=${finalData.primary.date.isWeekend}&`;
+    }
+    if (finalData.primary.date.length) {
+      url += `length=${finalData.primary.date.length}&`;
+    }
+    if (finalData.primary.date.fromDay) {
+      url += `fromDay=${finalData.primary.date.fromDay}&`;
+    }
+
+    // options
+    if (finalData.primary.options.adults) {
+      url += `adults=${finalData.primary.options.adults}&`;
+    }
+    if (finalData.primary.options.rooms) {
+      url += `rooms=${finalData.primary.options.rooms}&`;
+    }
+
+    if (finalData.primary.options.childrenAges) {
+      url += `childrenAges=${finalData.primary.options.childrenAges.join(
+        ", "
+      )}&`;
+    }
+    if (finalData.primary.options.isAnimalAllowed) {
+      url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
+    }
+
+    navigate(url);
+  };
 
   useEffect(() => {
     if (preferredDays === "other") {
@@ -239,14 +297,13 @@ function Search() {
   useEffect(() => {
     // console.log(preferredDays);
 
-    clickedMonthsCards.length > 0
+    clickedMonthsCards.length > 0 && preferredDays !== ""
       ? setVariant("default")
       : setVariant("disabled");
-  }, [clickedMonthsCards]);
+  }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
     console.log(finalData.primary.date);
-
     // console.log(finalData.primary.date.startDate);
     // console.log(finalData.primary.date.endDate);
     // console.log(finalData.primary.date.isWeekend);
@@ -254,6 +311,14 @@ function Search() {
     // monthsAndYears()
     // setYearsMonths(monthsAndYears());
   }, [finalData]);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <form className="p-2 text-[14px]">
@@ -271,8 +336,8 @@ function Search() {
               } min-w-[430px] rounded-[8px] `}
             >
               <div className="p-3 font-bold">
-                {popularSearches && t("search.dropDouwnHeader")}
                 {/* only when initialized */}
+                {popularSearches && t("search.dropDouwnHeader")}
               </div>
               <ul>
                 {popularSearches?.map((element, i) => {
@@ -330,7 +395,7 @@ function Search() {
           />
         </div>
         {/* date */}
-        <Popover>
+        <Popover open={openDatesPophover} onOpenChange={setOpenDatesPophover}>
           <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
               className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
@@ -349,7 +414,7 @@ function Search() {
                       : "navBarUnderline"
                   }
                   size="navBarUnderline"
-                  onClick={() => handleNavButtonClick(t("search.calendar"))}
+                  onClick={() => handleNavButtonClick("calendar")}
                 >
                   {t("search.caledar")}
                 </Button>
@@ -361,13 +426,13 @@ function Search() {
                       : "navBarUnderline"
                   }
                   size="navBarUnderline"
-                  onClick={() => handleNavButtonClick(t("search.flexible"))}
+                  onClick={() => handleNavButtonClick("flexible")}
                 >
                   {t("search.flexible")}
                 </Button>
               </div>
               {/* calender */}
-              {activeNavButton === t("search.calendar") && (
+              {activeNavButton === "calendar" && (
                 <Calendar
                   initialFocus
                   mode="range"
@@ -383,7 +448,7 @@ function Search() {
                   dir={i18n.language === "he" ? "rtl" : "ltr"}
                 />
               )}
-              {activeNavButton === t("search.calendar") && (
+              {activeNavButton === "calendar" && (
                 <div className="flex justify-end gap-2 py-4 mx-6  border-t-[1px] border-[#e7e7e7]">
                   {searchCalendarButtonsData.map((element) => (
                     <Button
@@ -409,7 +474,7 @@ function Search() {
                 </div>
               )}
               {/* flexible*/}
-              {activeNavButton === t("search.flexible") && (
+              {activeNavButton === "flexible" && (
                 <div className="px-4  w-[642px]">
                   <h3 className="font-bold text-base pt-8">
                     {t("search.flexibleHeader")}
@@ -419,7 +484,6 @@ function Search() {
                     loop={true}
                     className="py-2"
                     value={preferredDays}
-                    // onChange={handleRadioGroup}
                     onClick={handleRadioGroup}
                   >
                     <div className="flex items-center space-x-2">
@@ -561,9 +625,17 @@ function Search() {
                   </div>
                   <hr />
                   <div className="flex justify-end items-center gap-3 py-3">
-                    <p className="text-sm">Select preferred days</p>
-                    <Button className="px-2" variant={variant}>
-                      select dates
+                    <p className="text-sm">
+                      {t("search.selectDatesParagraph")}
+                    </p>
+                    <Button
+                      onClick={() =>
+                        variant === "default" && setOpenDatesPophover(false)
+                      }
+                      className="px-2"
+                      variant={variant}
+                    >
+                      {t("search.selectDates")}
                     </Button>
                   </div>
                 </div>
@@ -639,19 +711,52 @@ function Search() {
         </Popover>
         {/* pepole number */}
         <div className="border-search bg-white rounded-[4px] p-[11px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="w-6 h-6 fill-[#595959]"
+          <Popover
+            open={openPepolePophover}
+            onOpenChange={setopenPepolePophover}
           >
-            <path d="M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0M18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0M3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0"></path>
-          </svg>
-          <p>{["23;o,iluy42", "uykf"].join(". ")}</p>
+            <PopoverContent
+              className="w-[475px] p-10  shadow-searchPopupsShadow PopoverContent rounded-xl "
+              sideOffset={11.5}
+              side="bottom"
+              align={windowWidth > 900 ? "end" : "start"}
+              alignOffset={-11.5}
+              avoidCollisions={false}
+            >
+              <SearchPeople
+                setopenPepolePophover={setopenPepolePophover}
+                childrenCount={childrenCount}
+                setChildrenCount={setChildrenCount}
+                adultsCount={adultsCount}
+                roomsCount={roomsCount}
+                setRoomsCount={setRoomsCount}
+                setAdultsCount={setAdultsCount}
+                setChildrenAges={setChildrenAges}
+                setIsPets={setIsPets}
+              ></SearchPeople>
+            </PopoverContent>
+            <PopoverTrigger
+              className="flex-grow py-1 px-2 focus:outline-none placeholder:text-black placeholder:font-medium flex"
+              asChild
+            >
+              <div className="flex gap-2">
+                <IconMen />
+                <p>
+                  {`${adultsCount} ${t("SearchPeople.Adults")}`}{" "}
+                  {childrenCount > 0 &&
+                    `· ${childrenCount} ${t("SearchPeople.Children")}`}{" "}
+                  {isPets && `· ${t("SearchPeople.pets")} `}
+                  {`· ${roomsCount} ${t("SearchPeople.rooms")} `}
+                </p>
+              </div>
+            </PopoverTrigger>
+          </Popover>
         </div>
         <Button
           type="button"
+          onClick={handleSubmit}
           size={null}
-          className="p-2 py-3 hover:bg-[#0057b8]"
+          className="p-2 py-[13px] text-xl hover:bg-[#0057b8]"
         >
           {t("button.search")}
         </Button>

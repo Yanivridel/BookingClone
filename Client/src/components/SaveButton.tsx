@@ -16,7 +16,7 @@ import {
 function SaveButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLike, setIsLike] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [paragraphs, setParagraphs] = useState<string[]>([]);
 
@@ -38,16 +38,10 @@ function SaveButton() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
+      setOpen(true)
       setIsLike((prevIsLike) => !prevIsLike);
     }, 800);
   }
-
-  useEffect(() => {
-    if (!isLoading) setOpen(true);
-    else {
-      setOpen(false);
-    }
-  }, [isLoading]);
 
   return (
     <div className="flex flex-col items-center">

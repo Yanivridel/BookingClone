@@ -8,6 +8,34 @@ export const cw = (str: string) =>
 // Capitalize first letter only
 export const cf = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+export function getDescByRating(rating: number) {
+  if (rating >= 9) {
+    return "Exceptional";
+  } else if (rating >= 8) {
+    return "Fabulous";
+  } else if (rating >= 7) {
+    return "Excellent";
+  } else if (rating >= 6) {
+    return "Very Good";
+  } else if (rating >= 5) {
+    return "Good";
+  } else if (rating >= 4) {
+    return "Average";
+  } else if (rating >= 3) {
+    return "Fair";
+  } else if (rating >= 2) {
+    return "Poor";
+  } else {
+    return "Bad";
+  }
+}
+
+export function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export const toFormattedDate = (date: Date) => {
   return date.toISOString().split("T")[0];
 };
