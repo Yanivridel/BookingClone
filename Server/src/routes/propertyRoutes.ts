@@ -16,9 +16,9 @@ router.post("/", getSearchProperties);
 
 router.get("/test", test);
 
-router.get("/card/:id", getPropertyByIdForCard);
-
 router.get("/:id", getPropertyById);
+
+router.get("/card/:id", getPropertyByIdForCard);
 
 
 

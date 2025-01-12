@@ -211,7 +211,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             country, region, city, addressLine,
             startDate, endDate, length, isWeekend, fromDay, yearMonths,
             adults, children, rooms, distance, isAnimalAllowed
-        }, (key, value) => value === undefined ? null : value);
+        }, (_, value) => value === undefined ? null : value);
 
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Transfer-Encoding', 'chunked');
@@ -247,7 +247,15 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         if(req.body?.secondary)
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
 
-        const paginatedProperties = filteredProperties.slice(skip, skip + limit);
+        // ! REMOVE LATER
+        const properties = await propertyModel.find({}).populate("rooms") as IProperty[];
+        const temp = filteredProperties
+        for(let i = 0; i< 10; i++){
+            temp.push(...properties);
+        }
+
+
+        const paginatedProperties = temp.slice(skip, skip + limit);
             
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
 
