@@ -35,74 +35,93 @@ interface HomeProps {
   country: string;
 }
 
-function SampleNextArrow({onClick, currentSlide, slideCount, slidesToShow }: any) {
+function SampleNextArrow({
+  onClick,
+  currentSlide,
+  slideCount,
+  slidesToShow,
+}: any) {
   const isDisabled = currentSlide >= slideCount - slidesToShow;
 
   return (
-    <div
-    onClick={onClick}
-    >
+    <div onClick={onClick}>
       <svg
-      className={`absolute top-1/3 -right-6 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+        className={`absolute top-1/3 -right-6 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
       w-[36px] hover:bg-gray-200 transition-all p-2 cursor-pointer 
-      ${isDisabled ? 'hidden' : ''}`}
-      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px" data-rtl-flip="true"><path d="M8.913 19.236a.9.9 0 0 0 .642-.266l6.057-6.057a1.3 1.3 0 0 0 .388-.945c.008-.35-.123-.69-.364-.945L9.58 4.966a.91.91 0 0 0-1.284 0 .896.896 0 0 0 0 1.284l5.694 5.718-5.718 5.718a.896.896 0 0 0 0 1.284.88.88 0 0 0 .642.266"></path></svg>
+      ${isDisabled ? "hidden" : ""}`}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="50px"
+        data-rtl-flip="true"
+      >
+        <path d="M8.913 19.236a.9.9 0 0 0 .642-.266l6.057-6.057a1.3 1.3 0 0 0 .388-.945c.008-.35-.123-.69-.364-.945L9.58 4.966a.91.91 0 0 0-1.284 0 .896.896 0 0 0 0 1.284l5.694 5.718-5.718 5.718a.896.896 0 0 0 0 1.284.88.88 0 0 0 .642.266"></path>
+      </svg>
     </div>
   );
 }
-function SamplePrevArrow({onClick, currentSlide }: any) {
+function SamplePrevArrow({ onClick, currentSlide }: any) {
   const isDisabled = currentSlide === 0;
 
   return (
-    <div
-    onClick={onClick}
-    >
+    <div onClick={onClick}>
       <svg
-      className={`absolute top-1/3 -left-5 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+        className={`absolute top-1/3 -left-5 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
       w-[36px] hover:bg-gray-200 transition-all p-2 cursor-pointer 
-      ${isDisabled ? 'hidden' : ''}`}
-    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px" data-rtl-flip="true"><path d="M15.087 19.236a.9.9 0 0 1-.642-.266l-6.057-6.057A1.3 1.3 0 0 1 8 11.968c-.008-.35.123-.69.364-.945l6.057-6.057a.91.91 0 0 1 1.284 0 .895.895 0 0 1 0 1.284l-5.694 5.718 5.718 5.718a.896.896 0 0 1 0 1.284.88.88 0 0 1-.642.266"></path></svg>
+      ${isDisabled ? "hidden" : ""}`}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="50px"
+        data-rtl-flip="true"
+      >
+        <path d="M15.087 19.236a.9.9 0 0 1-.642-.266l-6.057-6.057A1.3 1.3 0 0 1 8 11.968c-.008-.35.123-.69.364-.945l6.057-6.057a.91.91 0 0 1 1.284 0 .895.895 0 0 1 0 1.284l-5.694 5.718 5.718 5.718a.896.896 0 0 1 0 1.284.88.88 0 0 1-.642.266"></path>
+      </svg>
     </div>
   );
 }
+
 // Tailwind - render
 "col-span-2"
 
+
 function Home({ country }: HomeProps) {
-  const HomeMobileWidth = 1140
-  const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < HomeMobileWidth);
+  const HomeMobileWidth = 1140;
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
+  const [isMobile, setIsMobile] = useState<boolean>(
+    window.innerWidth < HomeMobileWidth
+  );
 
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "he";
   const dateLanguage = isRtl ? "he-IL" : "en-US";
-  
+
   const settingsSearch = {
-    infinite:false,
+    infinite: false,
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
   };
-  
+
   console.log(currentUser);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile((prevIsMobile) => {
-        if (window.innerWidth < HomeMobileWidth && !prevIsMobile)
-          return true;
-        else if (window.innerWidth >= HomeMobileWidth && prevIsMobile) 
+        if (window.innerWidth < HomeMobileWidth && !prevIsMobile) return true;
+        else if (window.innerWidth >= HomeMobileWidth && prevIsMobile)
           return false;
         return prevIsMobile;
       });
     };
 
+
     window.addEventListener("resize", checkMobile);
+
 
     return () => {
       window.removeEventListener("resize", checkMobile);
-    }
+    };
   }, []);
-  
 
   const currentDate = new Date();
 
@@ -142,68 +161,103 @@ function Home({ country }: HomeProps) {
             <h2 className="text-2xl font-bold py-4 ">
               {t("home.recentSearchHeader")}
             </h2>
-            {isMobile ?
-            <div
-              className={cn(
-                "w-full flex gap-2 overflow-scroll",
-                styles.scrollContainer
-              )}
-            >  
-              {mapUserSearches(currentUser, t)}
-            </div>
-            :
-            <Slider 
-            key={isRtl ? 'rtl' : 'ltr'}
-            {...{ ...settingsSearch, slidesToShow: 3.5, 
-            initialSlide: isRtl ? currentUser.search.length - 3.5 : 0,
-            nextArrow: <SampleNextArrow slidesToShow={3.5}/>,
-            }}>
-              {mapUserSearches(currentUser, t)}
-            </Slider>
-          }
+            {isMobile ? (
+              <div
+                className={cn(
+                  "w-full flex gap-2 overflow-scroll",
+                  styles.scrollContainer
+                )}
+              >
+                {mapUserSearches(currentUser, t)}
+              </div>
+            ) : (
+              <Slider
+                key={isRtl ? "rtl" : "ltr"}
+                {...{
+                  ...settingsSearch,
+                  slidesToShow: 3.5,
+                  initialSlide: isRtl ? currentUser.search.length - 3.5 : 0,
+                  nextArrow: <SampleNextArrow slidesToShow={3.5} />,
+                }}
+              >
+                {mapUserSearches(currentUser, t)}
+              </Slider>
+            )}
           </div>
         )}
 
         {/* Interested Carousel */}
-        { currentUser.interested.length > 0 &&
-        <div>
-          <h2 className="text-2xl font-bold py-4">
-            {t("home.interestedInHeader")}
-          </h2>
-          {isMobile ?
-            <div
-              className={cn(
-                "w-full flex gap-2 overflow-scroll",
-                styles.scrollContainer
-              )}
-            >  
-              {
-                currentUser.interested.map((propertyId) => 
-                  <MainCard key={propertyId} is_heart={true} propertyId={propertyId} />)
-              }
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-            </div>
-            :
-            <Slider 
-            key={isRtl ? 'rtl' : 'ltr'}
-            {...{ ...settingsSearch, slidesToShow: 3.8,
-            initialSlide: isRtl ? currentUser.interested.length*2 - 3.8 : 0,
-            nextArrow: <SampleNextArrow slidesToShow={3.8}/>,
-            }}>
-              {
-                currentUser.interested.map((propertyId) => 
-                  <MainCard key={propertyId} is_heart={true} propertyId={propertyId} />)
-              }
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-              <MainCard is_heart={true} propertyId={currentUser.interested[0]}/>
-            </Slider>
-          }
-        </div>
-        }
+        {currentUser.interested.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold py-4">
+              {t("home.interestedInHeader")}
+            </h2>
+            {isMobile ? (
+              <div
+                className={cn(
+                  "w-full flex gap-2 overflow-scroll",
+                  styles.scrollContainer
+                )}
+              >
+                {currentUser.interested.map((propertyId) => (
+                  <MainCard
+                    key={propertyId}
+                    is_heart={true}
+                    propertyId={propertyId}
+                  />
+                ))}
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+              </div>
+            ) : (
+              <Slider
+                key={isRtl ? "rtl" : "ltr"}
+                {...{
+                  ...settingsSearch,
+                  slidesToShow: 3.8,
+                  initialSlide: isRtl
+                    ? currentUser.interested.length * 2 - 3.8
+                    : 0,
+                  nextArrow: <SampleNextArrow slidesToShow={3.8} />,
+                }}
+              >
+                {currentUser.interested.map((propertyId) => (
+                  <MainCard
+                    key={propertyId}
+                    is_heart={true}
+                    propertyId={propertyId}
+                  />
+                ))}
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+                <MainCard
+                  is_heart={true}
+                  propertyId={currentUser.interested[0]}
+                />
+              </Slider>
+            )}
+          </div>
+        )}
 
         {/* Offers */}
         <div className="py-4">
@@ -211,32 +265,35 @@ function Home({ country }: HomeProps) {
           <h3 className="text-searchGrayText mb-2">
             {t("home.OffersSecondaryHeader")}
           </h3>
-        {isMobile ?
+          {isMobile ? (
             <div
               className={cn(
                 "w-full flex gap-2 overflow-scroll",
                 styles.scrollContainer
               )}
-            >  
+            >
               {[...Array(3)].map((_, index) => (
                 <OffersCard key={index} />
               ))}
             </div>
-            :
-        <Slider 
-            key={isRtl ? 'rtl' : 'ltr'}
-            className="mb-8"
-            {...{ ...settingsSearch, slidesToShow: 2,
-              dots: true,
-              dotsClass: "slick-dots -bottom-[45px]",
-            initialSlide: isRtl ? 3 - 2 : 0,
-            nextArrow: <SampleNextArrow slidesToShow={2}/>,
-            }}>
+          ) : (
+            <Slider
+              key={isRtl ? "rtl" : "ltr"}
+              className="mb-8"
+              {...{
+                ...settingsSearch,
+                slidesToShow: 2,
+                dots: true,
+                dotsClass: "slick-dots -bottom-[45px]",
+                initialSlide: isRtl ? 3 - 2 : 0,
+                nextArrow: <SampleNextArrow slidesToShow={2} />,
+              }}
+            >
               {[...Array(3)].map((_, index) => (
                 <OffersCard key={index} />
               ))}
-        </Slider>
-        }
+            </Slider>
+          )}
         </div>
 
         {/* Trending destinations */}
@@ -245,12 +302,14 @@ function Home({ country }: HomeProps) {
             {t("home.trandingDestinationsHeader")}
           </h2>
           <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
-        
+
           <div className="grid grid-cols-6 gap-4">
+<
             {TrendingImages.map((details, idx) =>
             <ImageCard key={details.city} details={details} 
               className={`col-span-${ idx <=1 ? 3:2}`} />
             )}
+>
           </div>
         </div>
 
@@ -333,9 +392,7 @@ function Home({ country }: HomeProps) {
             </CarouselItem>
           </CarouselContent>
           <CarouselNext />
-        </Carousel> */
-        }
-
+        </Carousel> */}
 
         {/* //! Travel more, spend less */}
         {/* <div>
@@ -510,9 +567,6 @@ function Home({ country }: HomeProps) {
           </div>
         )}
 
-
-
-        
         <div>
           <h2 className="text-2xl font-bold ">
             {t("home.lovedHomesDealsHeader")}
@@ -520,20 +574,18 @@ function Home({ country }: HomeProps) {
           <Button variant={"simpleLink"}>{t("home.lovedHomesButton")}</Button>
         </div>
 
-        
         <div
           className={cn(
             "w-full flex gap-2 overflow-scroll py-4",
             styles.scrollContainer
           )}
         >
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
         </div>
         <div className="py-4">
           <h2 className="text-2xl font-bold ">{t("home.uniqueHeader")}</h2>
@@ -547,15 +599,14 @@ function Home({ country }: HomeProps) {
             styles.scrollContainer
           )}
         >
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
-          <MainCard propertyId={currentUser.interested[0]}/>
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
+          <MainCard propertyId={currentUser.interested[0]} />
         </div>
-
       </div>
     </div>
   );
@@ -563,50 +614,52 @@ function Home({ country }: HomeProps) {
 
 export default Home;
 
-
-function mapUserSearches(user: IUser, t: TFunctionNonStrict<"translation", undefined>) {
-  return (
-    user.search.map((details) => (
-      <div
-        key={details._id}
-        className="flex-shrink-0 !flex gap-2 items-center 
+function mapUserSearches(
+  user: IUser,
+  t: TFunctionNonStrict<"translation", undefined>
+) {
+  return user.search.map((details) => (
+    <div
+      key={details._id}
+      className="flex-shrink-0 !flex gap-2 items-center 
         shadow-searchPopupsShadow p-4 rounded-xl h-[100px] w-[294px] mx-1 my-2"
-      >
-        <img
-          className=" rounded-lg h-16 w-16"
-          src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
-          alt={details.location.city}
-        />
-        <div>
-          <b>{details.location.city} </b>
-          <p className="text-gray-500">
+    >
+      <img
+        className=" rounded-lg h-16 w-16"
+        src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
+        alt={details.location.city}
+      />
+      <div>
+        <b>{details.location.city} </b>
+        <p className="text-gray-500">
+          <span>
+            {details.checkin &&
+              new Date(details.checkin).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+          </span>
+          <span>
+            {details.checkout && <span>-</span>}
+            {details.checkout &&
+              new Date(details.checkout).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            {", "}
+          </span>
+          {(Number(details.group_adults) || 0) +
+            (Number(details.group_children) || 0) <=
+          1 ? (
+            <span>{t("home.1 person")}</span>
+          ) : (
             <span>
-              {details.checkin &&
-                new Date(details.checkin).toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
+              {Number(details.group_adults) + Number(details.group_children)}{" "}
+              {t("home.people")}
             </span>
-            <span>
-              {details.checkout && <span>-</span>}
-              {details.checkout &&
-                new Date(details.checkout).toLocaleString("en-US", { month: "short", day: "numeric" })}
-              {", "} 
-            </span>
-            {(Number(details.group_adults) || 0) +
-              (Number(details.group_children) || 0) <=
-            1 ? (
-              <span>{t("home.1 person")}</span>
-            ) : (
-              <span>
-                {Number(details.group_adults) +
-                  Number(details.group_children)}{" "}
-                {t("home.people")}
-              </span>
-            )}
-          </p>
-        </div>
+          )}
+        </p>
       </div>
-    ))
-  )
+    </div>
+  ));
 }
