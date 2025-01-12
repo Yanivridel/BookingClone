@@ -51,6 +51,9 @@ function TopNav() {
         </div>
 
         <div className="flex gap-4">
+          <div className="p-[13px] cursor-pointer">
+            <Languages></Languages>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -71,7 +74,6 @@ function TopNav() {
             <IconHamburger className="fill-white" />
           </button>
         </div>
-        <Languages></Languages>
       </div>
 
       <div className={cn(" flex  overflow-scroll  ", styles.scrollContainer)}>

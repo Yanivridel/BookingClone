@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetClose,
@@ -11,38 +8,52 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { MainStates } from "@/utils/staticData";
+import { useEffect, useState } from "react";
+import i18n from "@/i18n";
 
 function Languages() {
+  // const because click close the sheet
+  const [currentLanguage, setCurrentLanguage] = useState(
+    i18n.language === "he" ? MainStates[0] : MainStates[1]
+  );
+  useEffect(() => {
+    setCurrentLanguage(i18n.language === "he" ? MainStates[0] : MainStates[1]);
+    i18n.language === "he" ? MainStates[0] : MainStates[1];
+  }, [i18n.language]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Avatar className="h-[24px] w-[24px]">
+          <AvatarImage
+            src={currentLanguage.src}
+            alt="state flag avatar for languages change"
+          />
+          <AvatarFallback>{currentLanguage.initial}</AvatarFallback>
+        </Avatar>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent
+        className="top-0 bottom-0 start-0 end-0 h-full w-full"
+        side={"bottom"}
+      >
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription>
+          <SheetTitle>בחרו את השפה שלכם</SheetTitle>
+          <SheetDescription>מומלץ</SheetDescription>
         </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
-        </div>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
-          </SheetClose>
+          {MainStates.map(() => (
+            <SheetClose asChild>
+              <Avatar className="h-[24px] w-[24px]">
+                <AvatarImage
+                  src={currentLanguage.src}
+                  alt="state flag avatar for languages change"
+                />
+                <AvatarFallback>{currentLanguage.initial}</AvatarFallback>
+              </Avatar>
+            </SheetClose>
+          ))}
         </SheetFooter>
       </SheetContent>
     </Sheet>
