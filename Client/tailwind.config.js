@@ -93,6 +93,7 @@ module.exports = {
       },
       screens: {
         search: "900px",
+        TopHeader: "1022px",
         signInLayoutTop: "575px",
       },
       boxShadow: {

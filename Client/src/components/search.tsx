@@ -15,9 +15,8 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { EmptyCalendarImg, IconMen } from "./ui/Icons";
 import { cn } from "@/lib/utils";
-import { ISearchPropertiesReq } from "@/types/propertyTypes";
-import { searchPropertiesChunks } from "@/utils/api/propertyApi";
 import SearchPeople from "./SearchPeople";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // damy data
 const items = [
@@ -48,6 +47,12 @@ interface MonthYear {
 // todo: icons and "powred by google"
 
 function Search() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  searchParams.set("city", "asda");
+  searchParams.set("city", "asda");
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place
   const [open, setOpen] = useState(false);
@@ -96,17 +101,15 @@ function Search() {
       },
       date: {
         startDate:
-          activeNavButton === t("search.calendar") ||
-          clickedMonthsCards.length === 0
+          activeNavButton === "calendar" || clickedMonthsCards.length === 0
             ? rangeDates?.from
             : null,
         endDate:
-          activeNavButton === t("search.calendar") ||
-          clickedMonthsCards.length === 0
+          activeNavButton === "calendar" || clickedMonthsCards.length === 0
             ? rangeDates?.to
             : null,
         length: Number(preferredDays) || Number(nights),
-        fromDay: fromDay,
+        fromDay,
         yearMonths: clickedMonthsCards,
         isWeekend: isWeedend,
       },
@@ -233,6 +236,49 @@ function Search() {
   // english format
   const formattedEnglish = "EEE, MMM dd";
 
+  //  preferred days - monthes and day number
+  const handleSubmit = () => {
+    searchParams.get("city");
+    setSearchParams(searchParams);
+
+    // dates
+    let url = "/searchresults?";
+    if (finalData.primary.date.startDate) {
+      url += `startDate=${finalData.primary.date.startDate}&`;
+    }
+    if (finalData.primary.date.endDate) {
+      url += `endDate=${finalData.primary.date.endDate}&`;
+    }
+    if (finalData.primary.date.isWeekend) {
+      url += `isWeekend=${finalData.primary.date.isWeekend}&`;
+    }
+    if (finalData.primary.date.length) {
+      url += `length=${finalData.primary.date.length}&`;
+    }
+    if (finalData.primary.date.fromDay) {
+      url += `fromDay=${finalData.primary.date.fromDay}&`;
+    }
+
+    // options
+    if (finalData.primary.options.adults) {
+      url += `adults=${finalData.primary.options.adults}&`;
+    }
+    if (finalData.primary.options.rooms) {
+      url += `rooms=${finalData.primary.options.rooms}&`;
+    }
+
+    if (finalData.primary.options.childrenAges) {
+      url += `childrenAges=${finalData.primary.options.childrenAges.join(
+        ", "
+      )}&`;
+    }
+    if (finalData.primary.options.isAnimalAllowed) {
+      url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
+    }
+
+    navigate(url);
+  };
+
   useEffect(() => {
     if (preferredDays === "other") {
       setIsOther(true);
@@ -257,7 +303,7 @@ function Search() {
   }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
-    // console.log(finalData.primary.options);
+    console.log(finalData.primary.date);
     // console.log(finalData.primary.date.startDate);
     // console.log(finalData.primary.date.endDate);
     // console.log(finalData.primary.date.isWeekend);
@@ -708,6 +754,7 @@ function Search() {
         </div>
         <Button
           type="button"
+          onClick={handleSubmit}
           size={null}
           className="p-2 py-[13px] text-xl hover:bg-[#0057b8]"
         >

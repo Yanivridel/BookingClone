@@ -301,10 +301,13 @@ function Home({ country }: HomeProps) {
           <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
 
           <div className="grid grid-cols-6 gap-4">
-            {TrendingImages.map((details, idx) =>
-            <ImageCard key={details.city} details={details} 
-              className={`col-span-${ idx <=1 ? 3:2}`} />
-            )}
+            {TrendingImages.map((details, idx) => (
+              <ImageCard
+                key={details.city}
+                details={details}
+                className={`col-span-${idx <= 1 ? 3 : 2}`}
+              />
+            ))}
           </div>
         </div>
 
