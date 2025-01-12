@@ -248,14 +248,13 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
 
         // ! REMOVE LATER
-        const properties = await propertyModel.find({}).populate("rooms") as IProperty[];
-        const temp = filteredProperties
-        for(let i = 0; i< 10; i++){
-            temp.push(...properties);
-        }
+        // const properties = await propertyModel.find({}).populate("rooms") as IProperty[];
+        // for(let i = 0; i< 10; i++){
+        //     filteredProperties.push(...properties);
+        // }
 
 
-        const paginatedProperties = temp.slice(skip, skip + limit);
+        const paginatedProperties = filteredProperties.slice(skip, skip + limit);
             
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
 

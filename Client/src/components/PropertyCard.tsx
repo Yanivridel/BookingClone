@@ -8,6 +8,7 @@ import Genius from '../assets/images/Genius.png'
 import { Information } from './ui/Icons'
 import { Button } from './ui/button'
 import { IProperty } from '@/types/propertyTypes'
+import { IRoom } from '@/types/roomTypes'
 
 
 interface PropertyCardProp {
@@ -17,8 +18,23 @@ interface PropertyCardProp {
 
 function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     
+    const selectedRooms = (propertyData.rooms as IRoom[])
+    .filter(room => propertyData.selectedRooms?.some(selected => selected.id === room._id));
+
+    const discountedPrice = selectedRooms.reduce((total, currRoom) => {
+        const offer = currRoom.offers?.[0];
+        const discount = offer?.discount?.percentage || 0;
+        return total + (offer ? offer.price_per_night * (1 - discount / 100) : 0);
+    }, 0);
+    const price = selectedRooms.reduce((total, currRoom) => {
+        const offer = currRoom.offers?.[0];
+        return total + (offer ? offer.price_per_night : 0);
+    }, 0);
+
+
+    console.log(selectedRooms);
+
     const arr = ["a", "b", "c"]
-    const rating = 5;
     return (
         <div>
         {isGrid? 
@@ -31,7 +47,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                     <CardTitle className='text-blue-600 hover:text-black text-lg'>Flora Inn Hotel Dubai Airport</CardTitle>
                     <div className=' flex gap-1 p-1'>
                         <div className='flex'>
-                            {Array(rating).fill(0).map((_, index) => <Stars key={index} className='w-4 fill-yellow-300' />)}
+                            {/* {Array(rating).fill(0).map((_, index) => <Stars key={index} className='w-4 fill-yellow-300' />)} */}
                         </div>
                         <img src={ThumbsUp} alt="t" className='w-4 h-4' />
                         <img src={Genius} alt="" className='w-9 h-4 rounded-md' />
@@ -85,7 +101,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                     <img src={propertyData?.images[0]} alt="" className='h-[240px] w-[240px] rounded-xl' />
                 </div>
                 <div className='flex flex-col gap-2 '>
-                    <CardTitle className='text-blue-600 text-xl hover:text-black'>{propertyData?.title}</CardTitle>
+                    <CardTitle className='text-blue-600 text-xl hover:text-black'>{propertyData.title}</CardTitle>
                     <div className='flex gap-1'>
                         <div className='flex'>
                             {Array(Math.round((propertyData.total_rating || 0)/2)).fill(0).map((_, index) => <Stars key={index} className='w-4 fill-yellow-300' />)}
@@ -135,13 +151,26 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                 </div>
                 <div className='grid gap-2'>
                     <div className='text-xs border'>
-                        <p>Mon 17 Feb - Sat 22 Feb</p>
+                        <p>
+                            { propertyData.selectedRooms &&
+                            new Date(propertyData.selectedRooms[0].available.startDate).
+                            toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })
+                            }
+                            -
+                            Sat 22 Feb</p>
                     </div>
                     <p className='text-xs text-gray-600'>5 nights, 2 adults</p>
                     <div className='flex items-center gap-1'>
                         <Information className='text-gray-600 w-4 h-4' />
-                        <p>₪ 1,297</p>
-                        <p className='text-red-600 '><s>₪ 2,137</s></p>
+                        
+                        { selectedRooms && <>
+                        <p>
+                            {discountedPrice + " ₪"}
+                        </p>
+                        <p className='text-red-600 '><s>
+                        { price + " ₪"}
+                        </s></p>
+                        </>}
                     </div>
                     <Button>{"<"} See availability </Button>
                 </div>
