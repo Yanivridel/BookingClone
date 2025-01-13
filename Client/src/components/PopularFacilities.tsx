@@ -1,17 +1,16 @@
 import { EFacility } from "@/types/propertyTypes";
 import { popularFacilitiesIcons } from "@/utils/staticData";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 interface PopularFacilitiesProps {
   popularFacilities: EFacility[] | undefined;
 }
 function PopularFacilities({ popularFacilities }: PopularFacilitiesProps) {
+  const { t } = useTranslation();
   return (
     <div>
-      <h2 className="py-3 text-lg font-bold flex-wrap">
-        {t("highlights.header")}
-      </h2>
-      <div className="flex gap-3 ">
+      <h2 className="py-3 text-lg font-bold ">{t("highlights.header")}</h2>
+      <div className="flex gap-3 flex-wrap">
         {popularFacilities?.map((facility) => {
           const path = popularFacilitiesIcons[facility];
           return (
@@ -19,7 +18,7 @@ function PopularFacilities({ popularFacilities }: PopularFacilitiesProps) {
               className="flex justify-between gap-3 items-center"
               key={facility}
             >
-              <div className="py-3 flex gap-3">
+              <div className="py-2 flex gap-3">
                 <svg
                   className="fill-IconsGreen h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +26,7 @@ function PopularFacilities({ popularFacilities }: PopularFacilitiesProps) {
                 >
                   <path d={path}></path>
                 </svg>
-                <span className="text-md">{facility}</span>
+                <span className="text-sm">{facility}</span>
               </div>
             </div>
           );
