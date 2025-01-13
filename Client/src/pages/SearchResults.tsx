@@ -10,21 +10,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useInfiniteProperties from "@/hooks/useInfiniteProperties";
 import { IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 
-const searchBody = {
+
+
+function SearchResults() {
+  const [isGrid, setIsGrid] = useState(false)
+  const [filterDisplay, SetFilterDisplay] = useState(true)
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // console.log(searchParams.get("childrenAges")?.split(", "));
+
+  const searchBody = {
     primary: {
       location: {
-        country: "Israel",
-        region: "Center District Israel",
-        city: "Ness Ziona",
-        // addressLine: "24 Rothschild Street"
+        country: searchParams.get("country") ?? "Israel",
+        region: searchParams.get("region") ?? "Center District Israel",
+        city: searchParams.get("city") ?? "Tel Aviv",
+        addressLine: searchParams.get("addressLine") ?? undefined
       },
       date: {
-        startDate: "2025-01-10",
-        endDate: "2025-01-12",
-        // length: 3,
-        // fromDay: 0,
+        startDate: searchParams.get("startDate") ?? undefined,
+        endDate: searchParams.get("endDate") ?? undefined,
+        length: searchParams.get("length") ? +searchParams.get("length")! : undefined,
+        fromDay: searchParams.get("fromDay") ? +searchParams.get("fromDay")! : undefined,
         // yearMonths: [
         //   {
         //     year: 2025,
@@ -35,22 +46,18 @@ const searchBody = {
         //     month: 1
         //   }
         // ],
-        // isWeekend: true
+        isWeekend: searchParams.get("isWeekend") ?? undefined
       },
       options: {
-        adults: 6,
-        rooms: 2,
-        childrenAges: [
-          4
-        ]
+        adults: searchParams.get("adults") ? +searchParams.get("adults")! : undefined,
+        rooms: searchParams.get("rooms") ? +searchParams.get("rooms")! : undefined,
+        childrenAges: searchParams.get("childrenAges")?.split(", ")
       }
     },
     secondary: {}
   } as ISearchPropertiesReq;
 
-function SearchResults() {
-  const [isGrid, setIsGrid] = useState(false)
-  const [filterDisplay, SetFilterDisplay] = useState(true)
+console.log("SEARCH", searchBody)
 
   const {
     data,
