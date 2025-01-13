@@ -27,14 +27,16 @@ function SearchResults() {
   const popularFacilities = searchParams.getAll("facility");
   const roomType = searchParams.getAll("room");
   const roomFacilities = searchParams.getAll("roomFacility");
-  const meals = searchParams.getAll("meals");
+  const meals = searchParams.getAll("meal");
+
+  const distance = Math.min(...searchParams.getAll("distance").map(Number));
 
   const searchBody = {
     primary: {
       location: {
         country: searchParams.get("country") ?? "Israel",
         region: searchParams.get("region") ?? "Center District Israel",
-        city: searchParams.get("city") ?? "Tel Aviv",
+        city: searchParams.get("city") ?? "Rishon LeẔiyyon",
         addressLine: searchParams.get("addressLine") ?? undefined
       },
       date: {
@@ -48,7 +50,8 @@ function SearchResults() {
       options: {
         adults: searchParams.get("adults") ? +searchParams.get("adults")! : undefined,
         rooms: searchParams.get("rooms") ? +searchParams.get("rooms")! : undefined,
-        childrenAges: searchParams.get("childrenAges")?.split(", ")
+        childrenAges: searchParams.get("childrenAges")?.split(", "),
+        distance: distance 
       }
     },
     secondary: {
@@ -58,7 +61,8 @@ function SearchResults() {
       roomType: roomType.length > 0 ? roomType : undefined,
       roomFacilities: roomFacilities.length > 0 ? roomFacilities : undefined,
       meals: meals.length > 0 ? meals : undefined,
-      // freeCancellation: searchParams.get("freeCancellation") ?? undefined,
+      freeCancellation: searchParams.get("free") ? true : undefined,
+      onlinePayment: searchParams.get("online") ? true : undefined,
 
       price: {
         min: searchParams.get("min") ? +searchParams.get("min")! : undefined,
@@ -66,6 +70,8 @@ function SearchResults() {
       }
     }
   } as ISearchPropertiesReq;
+
+  console.log("MEALS", searchBody);
 
   function handleSubmit() {
     console.log("SUBMIT",
@@ -79,7 +85,7 @@ function SearchResults() {
 }
 
 
-console.log("SEARCH",  searchParams.getAll("rating").map(Number))
+
 
   const {
     data,
@@ -89,7 +95,7 @@ console.log("SEARCH",  searchParams.getAll("rating").map(Number))
     isFetchingNextPage
   } = useInfiniteProperties(searchBody, 5);
   
-  console.log(data);
+  console.log("DATA", data);
 
   useEffect(() => {
     function checkScreenSize() {
