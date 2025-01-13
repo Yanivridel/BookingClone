@@ -29,14 +29,16 @@ function SearchResults() {
   const roomFacilities = searchParams.getAll("roomFacility");
   const meals = searchParams.getAll("meal");
 
-  const distance = Math.min(...searchParams.getAll("distance").map(Number));
+  let distance = Math.min(...searchParams.getAll("distance").map(Number)) as number | null;
+  if(distance === Infinity) 
+    distance = null;
 
   const searchBody = {
     primary: {
       location: {
         country: searchParams.get("country") ?? "Israel",
-        region: searchParams.get("region") ?? "Center District Israel",
-        city: searchParams.get("city") ?? "Rishon LeẔiyyon",
+        region: searchParams.get("region") ?? undefined,
+        city: searchParams.get("city") ?? undefined,
         addressLine: searchParams.get("addressLine") ?? undefined
       },
       date: {
