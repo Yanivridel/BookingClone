@@ -106,9 +106,13 @@
   "button": {
     "search": "Search"
   },
-  "highlights": {
+  "popularFacilities": {
     "header": "Most popular facilities"
   },
+  "highlights": {
+    "header": "Property highlights"
+  },
+
   "nearBy": {
     "header": "Hotel area info"
   }

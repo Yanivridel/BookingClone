@@ -17,47 +17,59 @@ import { getPropertyById } from "@/utils/api/propertyApi";
 import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import PropertyTable from "@/components/PropertyTable";
+import { IReview } from "@/types/reviewTypes";
+import Search from "@/components/search";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
-    const { id } = useParams();
-    const [propertyData, setPropertyData] = useState<IProperty | undefined>();
-    const [propertyReviews, setPropertyReviews] = useState<IProperty | undefined>();
-    const arr = ["Overview", "Info & prices", "Facilities", " House rules", "The fine print", "Guest reviews(30,075)"]
+  const { id } = useParams();
+  const [propertyData, setPropertyData] = useState<IProperty | undefined>();
+  const [propertyReviews, setPropertyReviews] = useState<
+    IReview[] | undefined
+  >();
+  const arr = [
+    "Overview",
+    "Info & prices",
+    "Facilities",
+    " House rules",
+    "The fine print",
+    "Guest reviews(30,075)",
+  ];
 
-    
-    useEffect(() => {
-        if(id) {
-            getPropertyById(id)
-            .then(data => {
-                setPropertyData(data)
-                console.log(data)
-            });
-            getReviewsByPropertyId(id).then((data) => {
-              setPropertyReviews(data);
-              console.log(data);
-            });
-        }
-    }, [id])
-
+  useEffect(() => {
+    if (id) {
+      getPropertyById(id).then((data) => {
+        setPropertyData(data);
+        console.log(data);
+      });
+      getReviewsByPropertyId(id).then((data) => {
+        setPropertyReviews(data);
+        console.log(data);
+      });
+    }
+  }, [id]);
 
   return (
     <div className="p-10">
-         
-      <PropertyDescription propertyData = {propertyData}/>
-      <QualityCard  propertyData = {propertyData}/>
-       <AsksComponents propertyData = {propertyData}/>
-       <GuestReviews propertyData = {propertyData}/>
-      <GeniusCard /> 
+      <Search></Search>
       <BreadcrumbProperty />
-      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       <NavProperty arr={arr} />
-      <PropertyFeatures features={propertyData?.features} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
       <ImagesProperty propertyData={propertyData} />
-      {/* <PropertyHighlight highlights={propertyData?.highlights} /> */}
+      <PropertyDescription propertyData={propertyData} />
+      <PropertyHighlight highlights={propertyData?.highlights} />
+      <GeniusCard />
+      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
+      <PropertyTable />
+      <GuestReviews propertyData={propertyData} />
+      <QualityCard propertyData={propertyData} />
+      <AsksComponents propertyData={propertyData} />
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
+      {/* todo ridel carusel 5 km close by */}
+      <PropertyFeatures features={propertyData?.features} />
     </div>
   );
 }

@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-[#006ce4] text-primary-foreground shadow hover:bg-[#0057b8]",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
@@ -31,6 +31,8 @@ const buttonVariants = cva(
         simpleLink: "text-primary hover:bg-softBlue",
         navBarRounded: "rounded-full border-[1px] border-navBarRoundedButton",
         disabled: "cursor-not-allowed bg-softGray text-[#a2a2a2]",
+        negativeDefault:
+          "bg-white border-[1.5px] border-buttonBlue text-buttonBlue hover:bg-softBlue py-[18px] rounded-lg",
       },
       size: {
         default: "h-9 px-4 py-2",

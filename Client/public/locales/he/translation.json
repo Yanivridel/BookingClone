@@ -99,8 +99,11 @@
   "button": {
     "search": "חיפוש"
   },
-  "highlights": {
+  "popularFacilities": {
     "header": "המתקנים הפופולריים ביותר"
+  },
+  "highlights": {
+    "header": "עיקרי המקום"
   },
   "nearBy": {
     "header": "סביבת המלון"

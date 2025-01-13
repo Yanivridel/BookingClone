@@ -9,7 +9,9 @@ function PopularFacilities({ popularFacilities }: PopularFacilitiesProps) {
   const { t } = useTranslation();
   return (
     <div>
-      <h2 className="py-3 text-lg font-bold ">{t("highlights.header")}</h2>
+      <h2 className="py-3 text-lg font-bold ">
+        {t("popularFacilities.header")}
+      </h2>
       <div className="flex gap-3 flex-wrap">
         {popularFacilities?.map((facility) => {
           const path = popularFacilitiesIcons[facility];

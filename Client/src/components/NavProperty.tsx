@@ -1,25 +1,21 @@
-import React, { useState } from 'react'
-import { Button } from './ui/button'
-import { t } from 'i18next';
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { t } from "i18next";
 
 interface NavPropertyProps {
-  arr:string[]
+  arr: string[];
 }
 
-function NavProperty({arr} : NavPropertyProps ) {
-  const [activeNavButton, setActiveNavButton] = useState<string>(
-    arr[0]
-  );
-
+function NavProperty({ arr }: NavPropertyProps) {
+  const [activeNavButton, setActiveNavButton] = useState<string>(arr[0]);
 
   const handleNavButtonClick = (buttonName: string) => {
     setActiveNavButton(buttonName);
   };
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex">
       {arr.map((buttonName) => (
-
         <Button
           className="flex-grow"
           variant={
@@ -34,10 +30,8 @@ function NavProperty({arr} : NavPropertyProps ) {
           <a href={`#${buttonName}`}>{buttonName}</a>
         </Button>
       ))}
-
-
     </div>
-  )
+  );
 }
 
-export default NavProperty
+export default NavProperty;
