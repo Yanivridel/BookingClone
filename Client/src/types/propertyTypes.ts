@@ -155,15 +155,13 @@ interface IFilterPropertiesOptions {
 
 export type TPartialProperty = Partial<IProperty>;
 
-export interface IHotelAreaInfoCategoty {
-  category:
-    | "Public transit"
-    | "Closest Airports"
-    | "Restaurants & cafes"
-    | "Natural Beauty"
-    | "What's nearby"
-    | "Top attractions";
-}
+export type IHotelAreaInfoCategoty =
+  | "Public transit"
+  | "Closest Airports"
+  | "Restaurants & cafes"
+  | "Natural Beauty"
+  | "What's nearby"
+  | "Top attractions";
 
 export type EPropertyHighlight =
   | "Location"

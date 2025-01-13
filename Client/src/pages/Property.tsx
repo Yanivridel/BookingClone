@@ -1,6 +1,8 @@
 import BreadcrumbProperty from "@/components/BreadcrumbProperty";
 import ImagesProperty from "@/components/ImagesProperty";
 import NavProperty from "@/components/NavProperty";
+import PopularFacilities from "@/components/PopularFacilities";
+import PropertyFeatures from "@/components/PropertyFeatures";
 import PropertyHighlight from "@/components/PropertyHighlight";
 import PropertyNearBy from "@/components/PropertyNearBy";
 import PropertyTitle from "@/components/PropertyTitle";
@@ -39,7 +41,10 @@ function Property() {
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
       <ImagesProperty propertyData={propertyData} />
       <PropertyHighlight highlights={propertyData?.highlights} />
+      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+      <PropertyFeatures features={propertyData?.features} />
+
     </div>
   );
 }
