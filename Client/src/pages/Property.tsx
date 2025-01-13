@@ -1,7 +1,12 @@
+import AsksComponents from "@/components/AsksComponents";
 import BreadcrumbProperty from "@/components/BreadcrumbProperty";
+import GeniusCard from "@/components/GeniusCard";
+import GuestReviews from "@/components/GuestReviews";
 import ImagesProperty from "@/components/ImagesProperty";
 import NavProperty from "@/components/NavProperty";
+import PropertyDescription from "@/components/PropertyDescription";
 import PropertyTitle from "@/components/PropertyTitle";
+import QualityCard from "@/components/QualityCard";
 import { IProperty } from "@/types/propertyTypes";
 import { getPropertyById } from "@/utils/api/propertyApi";
 import { useEffect, useState } from "react";
@@ -28,12 +33,15 @@ function Property() {
     
     return (
         <div> 
-          <BreadcrumbProperty />
+          {/* <BreadcrumbProperty />
           <NavProperty arr = {arr}/>
           <PropertyTitle propertyData = {propertyData} id = {arr[0]} />
           <ImagesProperty propertyData = {propertyData}/>
-
-
+          <GeniusCard /> 
+        <PropertyDescription propertyData = {propertyData}/>
+        <QualityCard  propertyData = {propertyData}/>
+         <AsksComponents propertyData = {propertyData}/> */}
+         <GuestReviews propertyData = {propertyData}/>
         </div>
     )
 
