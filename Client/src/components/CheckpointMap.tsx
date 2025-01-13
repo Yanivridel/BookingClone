@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
 
 declare global {
@@ -16,14 +17,15 @@ export interface LatLng {
 interface MapProps {
     center: LatLng;
     markers: LatLng[];
+    className?: string;
 }
 
-export default function CheckpointMap({center, markers}: MapProps ) {
+export default function CheckpointMap({center, markers, className}: MapProps ) {
     const mapRef = useGoogleMap({center,markers});
 
     return (
         <div ref={mapRef}
-        className='w-full h-full' 
+        className={cn('w-full h-full', className)} 
         // style={{ height: '400px', width: '100%' }}
         />
     );

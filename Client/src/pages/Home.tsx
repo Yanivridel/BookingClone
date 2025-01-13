@@ -197,7 +197,7 @@ function Home({ country }: HomeProps) {
                   styles.scrollContainer
                 )}
               >
-                {currentUser.interested.map((propertyId) => (
+                {/* {currentUser.interested.map((propertyId) => (
                   <MainCard
                     key={propertyId}
                     is_heart={true}
@@ -215,7 +215,7 @@ function Home({ country }: HomeProps) {
                 <MainCard
                   is_heart={true}
                   propertyId={currentUser.interested[0]}
-                />
+                /> */}
                 <MainCard
                   is_heart={true}
                   propertyId={currentUser.interested[0]}

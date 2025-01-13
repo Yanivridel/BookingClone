@@ -54,7 +54,7 @@ const MainCard = ({
         />
         {is_heart && (
           <div className="absolute top-2 end-1">
-            <SaveButton />
+            <SaveButton id={propertyData._id} />
           </div>
         )}
       </div>
