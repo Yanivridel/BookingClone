@@ -51,14 +51,13 @@ function Property() {
        <GuestReviews propertyData = {propertyData}/>
       <GeniusCard /> 
       <BreadcrumbProperty />
+      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       <NavProperty arr={arr} />
+      <PropertyFeatures features={propertyData?.features} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
       <ImagesProperty propertyData={propertyData} />
-      <PropertyHighlight highlights={propertyData?.highlights} />
-      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
+      {/* <PropertyHighlight highlights={propertyData?.highlights} /> */}
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
-      <PropertyFeatures features={propertyData?.features} />
-
     </div>
   );
 }

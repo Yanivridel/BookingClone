@@ -20,7 +20,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
 import { convertMonthsToQueryString } from "@/utils/functions";
 
-// damy data
+// location initial data data
 const items: LocationRes[] = [
   {
     location: {
