@@ -160,8 +160,8 @@ interface IFilterPropertiesLocation {
     addressLine?: string;
 }
 interface IFilterPropertiesDate {
-    startDate?: string;
-    endDate?: string;
+    startDate?: string | Date;
+    endDate?: string | Date;
     length?: number;
     isWeekend?: boolean;
     fromDay?: number;
@@ -201,14 +201,11 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         adults ??= 1
         rooms ??= 1;
         isAnimalAllowed ??= false; 
-        distance ??= 15;
 
         if(childrenAges){
             isBaby = childrenAges.some((age: number) => typeof age === "number" && age <= 3);
             children = (childrenAges.filter((age: number) => typeof age === "number" && age > 3)).length;
         }
-        console.log(req.body)
-
 
         const cacheKey = JSON.stringify({
             country, region, city, addressLine,
@@ -232,8 +229,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 return;
             }
 
-            // Get sorted paginated properties sorted by distance (closest first)
-            const properties = await getPropertiesByRadius(coordinates, distance);
+            let properties = [] as IProperty[];
+
+            if(!region && !city && !addressLine && !distance) {
+                properties = await propertyModel.find({ "location.country": { $regex: country, $options: "i" }})
+                .populate("rooms reviews_num")
+            }
+            else {
+                // Get sorted paginated properties sorted by distance (closest first)
+                properties = await getPropertiesByRadius(coordinates, distance);
+            }
 
             filteredProperties = await filterPropertiesPrimary(properties,
                 { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
@@ -290,15 +295,15 @@ async function getPropertyCoordinates(country?: string, region?: string, city?: 
         return await getCoordinatesByLocation(`${addressLine}, ${city}, ${region}, ${country}`);
 }
 //* Done
-async function getPropertiesByRadius(coordinates: number[], distance: number) {
+async function getPropertiesByRadius(coordinates: number[], distance: number | undefined) {
     return await propertyModel.find({
         "location.coordinates": {
             $near: {
                 $geometry: { type: "Point", coordinates },
-                $maxDistance: distance * 1000 // 15km radius default
+                $maxDistance: distance ? distance * 1000: 15000 // 15km radius default
             },
         },
-    }).populate("rooms");
+    }).populate("rooms reviews_num");
 }
 //* Done
 async function filterPropertiesPrimary(
@@ -336,8 +341,8 @@ async function filterPropertiesPrimary(
         // Step 3: Filter rooms that have availability
         const availableRooms: any = roomsWithAvailability
             .filter(({ availability }) => 
-                availability.startDate !== null && 
-                availability.availableRooms > 0
+                availability?.startDate && 
+                availability?.availableRooms > 0
             )
             // .sort((a, b) => a.maxGuests - b.maxGuests); // Sort by capacity for optimal distribution
 
@@ -384,7 +389,10 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
             (!meals || 
                 meals.every((meal: string) => 
                     (property.rooms as unknown as IRoom[]).some((room) => 
-                        room.offers.some((offer) => offer.meals?.includes(meal as any))
+                        room.offers.some((offer) => 
+                            offer.meals.some(type =>
+                                type.type.toLowerCase() === meal)
+                        )
                 ))
             ) &&
             (!freeCancellation || 
@@ -654,12 +662,6 @@ function getFiltersFromProperties(properties: IProperty[]) {
         // Rating
         const rating = Math.ceil((property.total_rating as number) / 2);
         filters.rating[rating] = (filters.rating[rating] || 0) + 1;
-        // Pets
-        if(property.houseRules.pets)
-            filters.popularFacilities["animals allowed"] = (filters.popularFacilities["animals allowed"] || 0) + 1;
-        // Help Desk 24/7
-        if(property.desk_help.start === 0 && property.desk_help.end === 24 )
-            filters.popularFacilities["24-hour reception desk"] = (filters.popularFacilities["24-hour reception desk"] || 0) + 1;
         // Online Payment
         if(property.houseRules.accepted_payments.length > 0)
             filters.onlinePayment += 1;

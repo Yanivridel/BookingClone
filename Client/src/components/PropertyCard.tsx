@@ -37,7 +37,6 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
         const offer = currRoom.offers?.[0];
         return total + (offer ? offer.price_per_night : 0);
     }, 0);
-    console.log(selectedRooms);
     
     const isLimited = selectedRooms.some(room => 
         new Date(room.offers[0].discount.expires).getTime() <= new Date().setDate(new Date().getDate() + DAYS_FOR_LIMITED)

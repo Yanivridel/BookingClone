@@ -436,7 +436,9 @@ export enum EFacility {
     VALET_PARKING = "Valet parking",
     ELECTRIC_VEHICLE_CHARGING = "Electric vehicle charging station",
     TeaOrCoffeeMakerInAllRooms = "Tea/Coffee Maker in All Rooms",
-    VeryGoodBreakfast = "Very Good Breakfast"
+    VeryGoodBreakfast = "Very Good Breakfast",
+    allTimeReception = "24-hour reception desk",
+    AnimalsAllows = "Animals Allowed",
 }
 
 export enum EPropertyHighlight {
