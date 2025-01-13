@@ -61,6 +61,17 @@ export const searchPropertiesChunks = async (
   return { firstChunkPromise, secondChunkPromise };
 };
 
+// * Done
+export const getAutocompleteLocations = async (searchText: string) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/property/location-search-autocomplete/${searchText}`);
+    return data.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 // Help functions
 const createChunkReader = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
