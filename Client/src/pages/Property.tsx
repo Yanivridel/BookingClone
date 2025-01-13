@@ -23,6 +23,7 @@ import { useParams } from "react-router-dom";
 function Property() {
     const { id } = useParams();
     const [propertyData, setPropertyData] = useState<IProperty | undefined>();
+    const [propertyReviews, setPropertyReviews] = useState<IProperty | undefined>();
     const arr = ["Overview", "Info & prices", "Facilities", " House rules", "The fine print", "Guest reviews(30,075)"]
 
     
@@ -33,6 +34,10 @@ function Property() {
                 setPropertyData(data)
                 console.log(data)
             });
+            getReviewsByPropertyId(id).then((data) => {
+              setPropertyReviews(data);
+              console.log(data);
+            });
         }
     }, [id])
 
@@ -42,7 +47,7 @@ function Property() {
          
       <PropertyDescription propertyData = {propertyData}/>
       <QualityCard  propertyData = {propertyData}/>
-       <AsksComponents propertyData = {propertyData}/> */}
+       <AsksComponents propertyData = {propertyData}/>
        <GuestReviews propertyData = {propertyData}/>
       <GeniusCard /> 
       <BreadcrumbProperty />
