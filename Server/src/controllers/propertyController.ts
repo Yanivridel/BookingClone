@@ -195,6 +195,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         const limit = req.query.limit ? parseInt(req.query.limit) : 15;
         const skip = (page - 1) * limit;
 
+
         // Default parameters
         let isBaby = false, children = 0;
         adults ??= 1
@@ -203,9 +204,11 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         distance ??= 15;
 
         if(childrenAges){
-            isBaby = childrenAges.some((age: number) => age <= 3);
-            children = (childrenAges.filter((age: number) => age > 3)).length;
+            isBaby = childrenAges.some((age: number) => typeof age === "number" && age <= 3);
+            children = (childrenAges.filter((age: number) => typeof age === "number" && age > 3)).length;
         }
+        console.log(req.body)
+
 
         const cacheKey = JSON.stringify({
             country, region, city, addressLine,
