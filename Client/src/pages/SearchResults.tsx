@@ -22,6 +22,12 @@ function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // console.log(searchParams.get("childrenAges")?.split(", "));
+  const type = searchParams.getAll("type")
+  const rating = searchParams.getAll("rating").map(Number);
+  const popularFacilities = searchParams.getAll("facility");
+  const roomType = searchParams.getAll("room");
+  const roomFacilities = searchParams.getAll("roomFacility");
+  const meals = searchParams.getAll("meals");
 
   const searchBody = {
     primary: {
@@ -36,16 +42,7 @@ function SearchResults() {
         endDate: searchParams.get("endDate") ?? undefined,
         length: searchParams.get("length") ? +searchParams.get("length")! : undefined,
         fromDay: searchParams.get("fromDay") ? +searchParams.get("fromDay")! : undefined,
-        // yearMonths: [
-        //   {
-        //     year: 2025,
-        //     month: 0
-        //   },
-        //   {
-        //     year: 2025,
-        //     month: 1
-        //   }
-        // ],
+        yearMonths: searchParams.get("yearMonths") ? parseMonthsFromQueryString(searchParams.get("yearMonths")!) : undefined,
         isWeekend: searchParams.get("isWeekend") ?? undefined
       },
       options: {
@@ -54,10 +51,35 @@ function SearchResults() {
         childrenAges: searchParams.get("childrenAges")?.split(", ")
       }
     },
-    secondary: {}
+    secondary: {
+      type: type.length > 0 ? type : undefined,
+      rating: rating.length > 0 ? rating : undefined,
+      popularFacilities: popularFacilities.length > 0 ? popularFacilities : undefined,
+      roomType: roomType.length > 0 ? roomType : undefined,
+      roomFacilities: roomFacilities.length > 0 ? roomFacilities : undefined,
+      meals: meals.length > 0 ? meals : undefined,
+      // freeCancellation: searchParams.get("freeCancellation") ?? undefined,
+
+      price: {
+        min: searchParams.get("min") ? +searchParams.get("min")! : undefined,
+        max: searchParams.get("max") ? +searchParams.get("max")! : undefined,
+      }
+    }
   } as ISearchPropertiesReq;
 
-console.log("SEARCH", searchBody)
+  function handleSubmit() {
+    console.log("SUBMIT",
+        searchParams.getAll("facility"),
+        searchParams.get("min"),
+        searchParams.get("max"),
+        searchParams.get("Bedrooms"),
+        searchParams.get("Bathrooms"),
+
+    )
+}
+
+
+console.log("SEARCH",  searchParams.getAll("rating").map(Number))
 
   const {
     data,
@@ -175,3 +197,15 @@ function SkeletonCard(length?: number) {
     )}</>
   )
 }
+interface MonthYear {
+  month: number;
+  year: number;
+}
+const parseMonthsFromQueryString = (queryString: string): MonthYear[] => {
+  return queryString
+    .split(",")
+    .map(item => {
+      const [month, year] = item.split("_");
+      return { month: parseInt(month), year: parseInt(year) };
+    });
+};

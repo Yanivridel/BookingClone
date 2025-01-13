@@ -77,23 +77,8 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
         // Add to URL if not checked
         searchParams.append(category, value);
         }
-    
         setSearchParams(searchParams);
-
-        handleSubmit();
     };
-
-    function handleSubmit() {
-        console.log("SUBMIT",
-            searchParams.getAll("type"),
-            searchParams.getAll("facility"),
-            searchParams.get("min"),
-            searchParams.get("max"),
-            searchParams.get("Bedrooms"),
-            searchParams.get("Bathrooms"),
-
-        )
-    }
 
     function handlePlusBeds(category: string) {
         const newVal =parseInt(searchParams.get(category) || '0') + 1;
@@ -117,8 +102,8 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
                 {/* Property Type */}
+                { filters?.type &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.type && <>
                     <CardTitle className='font-semibold'>Property Type</CardTitle>
                     {Object.entries(filters.type).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -138,14 +123,14 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         </div>
                     </div>
                     ))}
-                    </>}
-                
                 </div>
+                }
+                
 
                 {/* Price Slider */} 
+                { filters?.price && priceRange && 
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
                 <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
-                { filters?.price && priceRange && <>
                 <h3 className="text-sm font-semibold">
                     {`₪${priceRange[0]} - ₪${priceRange[1]}`}
                 </h3>
@@ -158,13 +143,12 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                     step={10} 
                     className="w-full"
                 />
-                
-                </>}
                 </div>
+                }
                 
                 {/* Facilities */}
+                { filters?.popularFacilities &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.popularFacilities && <>
                     <CardTitle className='font-semibold'>Popular Facilities</CardTitle>
                     {Object.entries(filters.popularFacilities).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -183,14 +167,13 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(value)}</p>
                         </div>
                     </div>
-                    ))}
-                    </>}
-                
+                    ))}                
                 </div>
+                }
 
                 {/* Meals */}
+                { filters?.meals &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.meals && <>
                     <CardTitle className='font-semibold'>Meals</CardTitle>
                     {Object.entries(filters.meals).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -209,14 +192,13 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(value)}</p>
                         </div>
                     </div>
-                    ))}
-                    </>}
-                
+                    ))}                
                 </div>
+                }
 
                 {/* Rating */}
+                { filters?.rating &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.rating && <>
                     <CardTitle className='font-semibold'>Property rating</CardTitle>
                     {Object.entries(filters.rating).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -235,10 +217,9 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(value)}</p>
                         </div>
                     </div>
-                    ))}
-                    </>}
-                
+                    ))}                
                 </div>
+                }
 
                 {/* Bedrooms And Bathrooms */}
                 <div className='border-b-2 p-2 flex flex-col gap-3 '>
@@ -314,8 +295,8 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                 </div>
 
                 {/* Room Type */}
+                { filters?.roomType &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.roomType && <>
                     <CardTitle className='font-semibold'>Room Types</CardTitle>
                     {Object.entries(filters.roomType).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -334,14 +315,13 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(value)}</p>
                         </div>
                     </div>
-                    ))}
-                    </>}
-                
+                    ))}                
                 </div>
+                }
 
                 {/* Room facilities */}
+                { filters?.roomFacilities &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.roomFacilities && <>
                     <CardTitle className='font-semibold'>Room facilities </CardTitle>
                     {Object.entries(filters.roomFacilities).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -361,13 +341,12 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         </div>
                     </div>
                     ))}
-                    </>}
-                
                 </div>
+                }       
 
                 {/* Bed preference */}
+                { (filters?.doubleBeds || filters?.singleBeds) &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                { (filters?.doubleBeds || filters?.singleBeds) && <>
                 <CardTitle className='font-semibold'>Bed preference</CardTitle>
                 {Object.entries({"Double Bed": filters.doubleBeds , "Single Bed": filters.singleBeds})
                 .map(([key, value]) => {
@@ -390,13 +369,12 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                 </div>
                 )}
                 )}
-                </>}
-                
                 </div>
+                }
 
                 {/* Reservation policy*/}
+                { filters?.freeCancellation &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.freeCancellation && <>
                     <CardTitle className='font-semibold'>Reservation policy</CardTitle>
                     <div key={"free"} className="flex justify-between">
                         <div className="flex items-center gap-2">
@@ -414,13 +392,12 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(filters.freeCancellation)}</p>
                         </div>
                     </div>
-                    </>}
-                
                 </div>
+                }
 
                 {/* Online Payment*/}
+                { filters?.onlinePayment &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    { filters?.onlinePayment && <>
                     <CardTitle className='font-semibold'>Online Payment</CardTitle>
                     <div key={"online"} className="flex justify-between">
                         <div className="flex items-center gap-2">
@@ -438,9 +415,8 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         <p>{String(filters.onlinePayment)}</p>
                         </div>
                     </div>
-                    </>}
-                
                 </div>
+                }
             </Card>
         </div>
     )

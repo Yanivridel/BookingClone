@@ -68,7 +68,7 @@ export const getPropertyById =  async (req: Request , res: Response): Promise<vo
         const propertyId = req.params.id;
 
         // Find property by ID
-        const property = await propertyModel.findById(propertyId).populate("rooms");
+        const property = await propertyModel.findById(propertyId).populate("rooms reviews_num");
 
         // If property doesn't exist, return 404
         if (!property) {
@@ -402,7 +402,7 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
             (!region || 
                 property.location.region === region
             ) &&
-            (!price || 
+            (!price || !price.min || !price.max || 
                 (property.rooms as unknown as IRoom[]).some((room) => 
                     room.offers.some((offer) => 
                         offer.price_per_night >= price.min &&

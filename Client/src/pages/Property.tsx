@@ -8,14 +8,16 @@ import PropertyNearBy from "@/components/PropertyNearBy";
 import PropertyTitle from "@/components/PropertyTitle";
 import { IProperty } from "@/types/propertyTypes";
 import { getPropertyById } from "@/utils/api/propertyApi";
+import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-// ! Route for testing : http://localhost:5173/property/67810bb5824440db4b93a785
+// ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
   const { id } = useParams();
   const [propertyData, setPropertyData] = useState<IProperty | undefined>();
+  const [propertyReviews, setPropertyReviews] = useState<IProperty | undefined>();
   const arr = [
     "Overview",
     "Info & prices",
@@ -29,6 +31,10 @@ function Property() {
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
+        console.log(data);
+      });
+      getReviewsByPropertyId(id).then((data) => {
+        setPropertyReviews(data);
         console.log(data);
       });
     }
