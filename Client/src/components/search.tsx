@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
+import { convertMonthsToQueryString } from "@/utils/functions";
 
 // damy data
 const items = [
@@ -37,7 +38,7 @@ interface IUnknownData {
   icon: string;
 }
 
-interface MonthYear {
+export interface MonthYear {
   month?: number;
   monthName: string;
   year: number;
@@ -58,6 +59,7 @@ function Search() {
   // * place
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [location, setLocation] = useState("");
   const [popularSearches, setpopularSearches] =
     useState<Array<IUnknownData> | null>(items); // for drop down initialization
   // !need to change the type with the real data
@@ -145,9 +147,9 @@ function Search() {
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       setInputValue(e.target.value);
-      if(e.target.value.length > 0){
-        const res = await getAutocompleteLocations(e.target.value)
-        console.log(res);  
+      if (e.target.value.length > 0) {
+        const res = await getAutocompleteLocations(e.target.value);
+        console.log(res);
       }
     } catch (error) {
       console.log(error);
@@ -271,7 +273,7 @@ function Search() {
       url += `rooms=${finalData.primary.options.rooms}&`;
     }
 
-    if (finalData.primary.options.childrenAges) {
+    if (finalData.primary.options.childrenAges.length > 0) {
       url += `childrenAges=${finalData.primary.options.childrenAges.join(
         ", "
       )}&`;
@@ -280,6 +282,10 @@ function Search() {
       url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
     }
 
+    if (finalData.primary.date.yearMonths.length > 0) {
+      const monthsQueryString = convertMonthsToQueryString(clickedMonthsCards);
+      url += `yearMonths=${monthsQueryString}&`;
+    }
     navigate(url);
   };
 
@@ -308,7 +314,6 @@ function Search() {
 
   useEffect(() => {
     // console.log(finalData.primary.date);
-
     // console.log(finalData.primary.date.startDate);
     // console.log(finalData.primary.date.endDate);
     // console.log(finalData.primary.date.isWeekend);
