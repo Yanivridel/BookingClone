@@ -27,7 +27,6 @@ function PropertyNearBy({ hotel_area_info }: PropertyNearByCardProps) {
         {hotel_area_info?.map((area) => {
           const category = area.category;
           const path = hotelAreaInfo[category]; // מוצאים את ה-path עבור כל קטגוריה
-          console.log(category);
           // console.log(path);
 
           // אם ה-path קיים, נציג את ה-svg
