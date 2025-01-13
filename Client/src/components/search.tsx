@@ -305,8 +305,23 @@ function Search() {
 
   //  preferred days - monthes and day number
   const handleSubmit = () => {
-    // dates
     let url = "/searchresults?";
+
+    //  locations
+    if (finalData.primary.location.country) {
+      url += `country=${finalData.primary.location.country}&`;
+    }
+    if (finalData.primary.location.region) {
+      url += `region=${finalData.primary.location.region}&`;
+    }
+    if (finalData.primary.location.city) {
+      url += `.city=${finalData.primary.location.city}&`;
+    }
+    if (finalData.primary.location.addressLine) {
+      url += `.addressLine=${finalData.primary.location.addressLine}&`;
+    }
+
+    // dates
     if (finalData.primary.date.startDate) {
       url += `startDate=${finalData.primary.date.startDate}&`;
     }
