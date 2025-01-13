@@ -838,14 +838,188 @@ function countOccurrences(arr: string[], availableRooms: any): { id: string; cou
 }
 
 
-export async function test(req: Request, res: Response): Promise<void> {
+export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
+    const lowerSearchText = req.params.searchText.toLowerCase();
     
-    const properties = await propertyModel.find({}).populate("rooms");
+    try {
+        const locations = await propertyModel.aggregate([
+            {
+                $match: {
+                    // Match properties where any location field contains the search text (case-insensitive)
+                    $or: [
+                        { 'location.country': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.city': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.region': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.addressLine': { $regex: lowerSearchText, $options: 'i' } },
+                    ],
+                },
+            },
+            {
+                $project: {
+                    location: 1,  // Only include location fields
+                },
+            },
+            {
+                $addFields: {
+                    // Determine where the search text was found
+                    matchedIn: {
+                        $cond: {
+                            if: { $regexMatch: { input: { $toLower: '$location.country' }, regex: lowerSearchText } },
+                            then: 'country',
+                            else: {
+                                $cond: {
+                                    if: { $regexMatch: { input: { $toLower: '$location.region' }, regex: lowerSearchText } },
+                                    then: 'region',
+                                    else: {
+                                        $cond: {
+                                            if: { $regexMatch: { input: { $toLower: '$location.city' }, regex: lowerSearchText } },
+                                            then: 'city',
+                                            else: 'addressLine',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    location: 1,
+                    matchedIn: 1, // Add the matchedIn field to indicate where the match occurred
+                },
+            },
+            {
+                $match: {
+                    // Ensure we are returning valid locations
+                    'location': { $ne: null },
+                },
+            },
+            {
+                $sort: {
+                    // Sort by matched field order (country > region > city > addressLine)
+                    matchedIn: -1, 
+                },
+            },
+        ]);
 
-    const result = getFiltersFromProperties(properties);
+        // Format the result based on where the match was found
+        const result = locations.map((item: { location: any, matchedIn: string }) => {
+            const location = item.location;
+            const matchedIn = item.matchedIn;
 
-    res.json(
-        result
-    )
+            // Return the full location but only include relevant parts based on the match
+            if (matchedIn === 'country') {
+                return { country: location.country, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'region') {
+                return { country: location.country, region: location.region, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'city') {
+                return { country: location.country, region: location.region, city: location.city, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'addressLine') {
+                return { country: location.country, region: location.region, city: location.city, addressLine: location.addressLine, matchedIn, fullLocation: location };
+            }
+        });
 
-}
+        res.status(200).json({
+            status: "success",
+            message: "Property with rooms found successfully",
+            data: locations,
+        });
+    } catch (error) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Server error",
+        });
+    }
+};
+
+
+
+// export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
+//     const lowerSearchText = req.params.searchText.toLowerCase();
+    
+//     try {
+//         const locations = await propertyModel.aggregate([
+//             {
+//                 $match: {
+//                     // Match properties where any location field contains the search text (case-insensitive)
+//                     $or: [
+//                         { 'location.country': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.city': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.region': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.addressLine': { $regex: lowerSearchText, $options: 'i' } },
+//                     ],
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     location: 1,  // Only include location fields
+//                 },
+//             },
+//             {
+//                 $addFields: {
+//                     // Add a priority field based on where the match occurred
+//                     priority: {
+//                         $cond: {
+//                             if: { $regexMatch: { input: { $toLower: '$location.country' }, regex: lowerSearchText } },
+//                             then: 1,
+//                             else: {
+//                                 $cond: {
+//                                     if: { $regexMatch: { input: { $toLower: '$location.region' }, regex: lowerSearchText } },
+//                                     then: 2,
+//                                     else: {
+//                                         $cond: {
+//                                             if: { $regexMatch: { input: { $toLower: '$location.city' }, regex: lowerSearchText } },
+//                                             then: 3,
+//                                             else: 4,
+//                                         },
+//                                     },
+//                                 },
+//                             },
+//                         },
+//                     },
+//                 },
+//             },
+//             {
+//                 $sort: {
+//                     priority: 1,  // Sort by priority to return country first, then region, etc.
+//                 },
+//             },
+//             {
+//                 $group: {
+//                     _id: '$_id',
+//                     location: { $first: '$location' },  // Take the first matched location based on priority
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     _id: 0,
+//                     location: 1,
+//                 },
+//             },
+//             {
+//                 $match: {
+//                     // Ensure we are returning valid locations
+//                     'location': { $ne: null },
+//                 },
+//             },
+//         ]);
+
+//         // Format the result to return an array of location objects based on priority order
+//         const result = locations.map((item: { location: any }) => item.location);
+
+//         res.status(200).json({
+//             status: "success",
+//             message: "Property with rooms found successfully",
+//             data: result,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching property:", error);
+//         res.status(500).json({
+//             status: "error",
+//             message: "Server error",
+//         });
+//     }
+// };

@@ -4,7 +4,7 @@ import {
     getSearchProperties,
     getPropertyById,
     getPropertyByIdForCard,
-    test,
+    getAutocompleteLocations,
 } from '../controllers/propertyController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -14,7 +14,7 @@ router.post("/create", createProperty)
 
 router.post("/", getSearchProperties);
 
-router.get("/test", test);
+router.get("/location-search-autocomplete/:searchText", getAutocompleteLocations);
 
 router.get("/:id", getPropertyById);
 

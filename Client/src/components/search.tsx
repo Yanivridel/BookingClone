@@ -17,6 +17,7 @@ import { EmptyCalendarImg, IconMen } from "./ui/Icons";
 import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { getAutocompleteLocations } from "@/utils/api/propertyApi";
 
 // damy data
 const items = [
@@ -64,7 +65,7 @@ function Search() {
   const [variant, setVariant] = useState<"default" | "disabled">("disabled");
 
   // * dates
-  const [openDatesPophover, setOpenDatesPophover] = useState(false);
+  const [openDatesPopHover, setOpenDatesPopHover] = useState(false);
   const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(),
@@ -138,13 +139,16 @@ function Search() {
   const handleBlur = () => {
     setTimeout(() => {
       setOpen(false);
-    }, 250);
+    }, 100);
   };
 
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       setInputValue(e.target.value);
-      //  const res = await someSearchFunction(e.target.value)  // * when connect to the data base
+      if(e.target.value.length > 0){
+        const res = await getAutocompleteLocations(e.target.value)
+        console.log(res);  
+      }
     } catch (error) {
       console.log(error);
     }
@@ -152,7 +156,7 @@ function Search() {
 
   // drop down
   const handleLocationListClick = (element: IUnknownData) => {
-    console.log(element);
+    // console.log(element);
     setInputValue(() => [element.city, element.country].join(", "));
   };
 
@@ -303,7 +307,8 @@ function Search() {
   }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
-    console.log(finalData.primary.date);
+    // console.log(finalData.primary.date);
+
     // console.log(finalData.primary.date.startDate);
     // console.log(finalData.primary.date.endDate);
     // console.log(finalData.primary.date.isWeekend);
@@ -395,7 +400,7 @@ function Search() {
           />
         </div>
         {/* date */}
-        <Popover open={openDatesPophover} onOpenChange={setOpenDatesPophover}>
+        <Popover open={openDatesPopHover} onOpenChange={setOpenDatesPopHover}>
           <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
               className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
@@ -630,7 +635,7 @@ function Search() {
                     </p>
                     <Button
                       onClick={() =>
-                        variant === "default" && setOpenDatesPophover(false)
+                        variant === "default" && setOpenDatesPopHover(false)
                       }
                       className="px-2"
                       variant={variant}
