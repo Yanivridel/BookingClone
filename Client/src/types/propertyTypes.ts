@@ -125,6 +125,8 @@ export interface ISearchPropertiesReq {
     };
     doubleBeds: boolean;
     singleBeds: boolean;
+    bathrooms: number;
+    bedrooms: number;
   };
 }
 

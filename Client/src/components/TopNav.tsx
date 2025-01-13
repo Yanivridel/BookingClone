@@ -45,6 +45,7 @@ function TopNav() {
   }, [i18n.language]);
   return (
     <div className="flex-col  bg-[#013b94] px-4 py-2">
+      <div className="max-w-[1100px] m-auto">
       <div className="flex justify-between items-center p-2 ">
         <div className="cursor-pointer" onClick={() => navigate("/")}>
           <BookingLogo className=" h-5 w-[98px]" />
@@ -154,6 +155,7 @@ function TopNav() {
           <MdOutlineLocalTaxi />
           Airport Taxis
         </Button>
+      </div>
       </div>
     </div>
   );

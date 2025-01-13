@@ -28,6 +28,7 @@ function SearchResults() {
   const roomType = searchParams.getAll("room");
   const roomFacilities = searchParams.getAll("roomFacility");
   const meals = searchParams.getAll("meal");
+  const BedPreference = searchParams.getAll("Bed preference");
 
   let distance = Math.min(...searchParams.getAll("distance").map(Number)) as number | null;
   if(distance === Infinity) 
@@ -65,7 +66,10 @@ function SearchResults() {
       meals: meals.length > 0 ? meals : undefined,
       freeCancellation: searchParams.get("free") ? true : undefined,
       onlinePayment: searchParams.get("online") ? true : undefined,
-
+      doubleBeds: BedPreference.includes("Double Bed") ? true: undefined,
+      singleBeds: BedPreference.includes("Single Bed") ? true: undefined,
+      bedrooms: +(searchParams.get("Bedrooms") ?? 0),
+      bathrooms: +(searchParams.get("Bathrooms") ?? 0),
       price: {
         min: searchParams.get("min") ? +searchParams.get("min")! : undefined,
         max: searchParams.get("max") ? +searchParams.get("max")! : undefined,
