@@ -1,4 +1,5 @@
 import BreadcrumbCard from "@/components/Breadcrumb";
+import { LatLng } from "@/components/CheckpointMap";
 import FilterSearchResult from "@/components/FilterSearchResult";
 import PropertyCard from "@/components/PropertyCard";
 import Search from "@/components/search";
@@ -9,47 +10,82 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useInfiniteProperties from "@/hooks/useInfiniteProperties";
 import { IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 
-const searchBody = {
-    primary: {
-      location: {
-        country: "Israel",
-        region: "Center District Israel",
-        city: "Ness Ziona",
-        // addressLine: "24 Rothschild Street"
-      },
-      date: {
-        startDate: "2025-01-10",
-        endDate: "2025-01-12",
-        // length: 3,
-        // fromDay: 0,
-        // yearMonths: [
-        //   {
-        //     year: 2025,
-        //     month: 0
-        //   },
-        //   {
-        //     year: 2025,
-        //     month: 1
-        //   }
-        // ],
-        // isWeekend: true
-      },
-      options: {
-        adults: 6,
-        rooms: 2,
-        childrenAges: [
-          4
-        ]
-      }
-    },
-    secondary: {}
-  } as ISearchPropertiesReq;
+
 
 function SearchResults() {
   const [isGrid, setIsGrid] = useState(false)
   const [filterDisplay, SetFilterDisplay] = useState(true)
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // console.log(searchParams.get("childrenAges")?.split(", "));
+  const type = searchParams.getAll("type")
+  const rating = searchParams.getAll("rating").map(Number);
+  const popularFacilities = searchParams.getAll("facility");
+  const roomType = searchParams.getAll("room");
+  const roomFacilities = searchParams.getAll("roomFacility");
+  const meals = searchParams.getAll("meal");
+
+  const distance = Math.min(...searchParams.getAll("distance").map(Number));
+
+  const searchBody = {
+    primary: {
+      location: {
+        country: searchParams.get("country") ?? "Israel",
+        region: searchParams.get("region") ?? "Center District Israel",
+        city: searchParams.get("city") ?? "Rishon LeẔiyyon",
+        addressLine: searchParams.get("addressLine") ?? undefined
+      },
+      date: {
+        startDate: searchParams.get("startDate") ?? undefined,
+        endDate: searchParams.get("endDate") ?? undefined,
+        length: searchParams.get("length") ? +searchParams.get("length")! : undefined,
+        fromDay: searchParams.get("fromDay") ? +searchParams.get("fromDay")! : undefined,
+        yearMonths: searchParams.get("yearMonths") ? parseMonthsFromQueryString(searchParams.get("yearMonths")!) : undefined,
+        isWeekend: searchParams.get("isWeekend") ?? undefined
+      },
+      options: {
+        adults: searchParams.get("adults") ? +searchParams.get("adults")! : undefined,
+        rooms: searchParams.get("rooms") ? +searchParams.get("rooms")! : undefined,
+        childrenAges: searchParams.get("childrenAges")?.split(", "),
+        distance: distance 
+      }
+    },
+    secondary: {
+      type: type.length > 0 ? type : undefined,
+      rating: rating.length > 0 ? rating : undefined,
+      popularFacilities: popularFacilities.length > 0 ? popularFacilities : undefined,
+      roomType: roomType.length > 0 ? roomType : undefined,
+      roomFacilities: roomFacilities.length > 0 ? roomFacilities : undefined,
+      meals: meals.length > 0 ? meals : undefined,
+      freeCancellation: searchParams.get("free") ? true : undefined,
+      onlinePayment: searchParams.get("online") ? true : undefined,
+
+      price: {
+        min: searchParams.get("min") ? +searchParams.get("min")! : undefined,
+        max: searchParams.get("max") ? +searchParams.get("max")! : undefined,
+      }
+    }
+  } as ISearchPropertiesReq;
+
+  console.log("MEALS", searchBody);
+
+  function handleSubmit() {
+    console.log("SUBMIT",
+        searchParams.getAll("facility"),
+        searchParams.get("min"),
+        searchParams.get("max"),
+        searchParams.get("Bedrooms"),
+        searchParams.get("Bathrooms"),
+
+    )
+}
+
+
+
 
   const {
     data,
@@ -59,7 +95,7 @@ function SearchResults() {
     isFetchingNextPage
   } = useInfiniteProperties(searchBody, 5);
   
-  console.log(data);
+  console.log("DATA", data);
 
   useEffect(() => {
     function checkScreenSize() {
@@ -95,18 +131,28 @@ function SearchResults() {
     };
   }, [hasNextPage, isFetchingNextPage]);
 
+  let properties = data?.pages[0].filteredProperties as IProperty[]
+  let coordinates = [] as LatLng[];
+  if(properties)
+    coordinates = properties.map(prop => {
+      return {
+          lat: prop.location.coordinates?.coordinates[0],
+          lng: prop.location.coordinates?.coordinates[1],
+      } as LatLng
+      });
 
   return (
     <div className="max-w-[1100px] mx-auto">
       
-      {/* <Search /> */}
+      <Search />
       <BreadcrumbCard />
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
-          <FilterSearchResult />
+          <FilterSearchResult coordinates={coordinates} filters={data?.pages[0].filters}/>
+          
         </div>
         <div className="flex-1">
-          <SortComponent setIsGrid={setIsGrid} />
+          <SortComponent filters={data?.pages[0].filters} setIsGrid={setIsGrid} />
           <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
             { !data && isFetching && SkeletonCard(5) }
             { data && 
@@ -157,3 +203,15 @@ function SkeletonCard(length?: number) {
     )}</>
   )
 }
+interface MonthYear {
+  month: number;
+  year: number;
+}
+const parseMonthsFromQueryString = (queryString: string): MonthYear[] => {
+  return queryString
+    .split(",")
+    .map(item => {
+      const [month, year] = item.split("_");
+      return { month: parseInt(month), year: parseInt(year) };
+    });
+};

@@ -16,30 +16,86 @@ import { Label } from "./ui/label";
 import { EmptyCalendarImg, IconMen } from "./ui/Icons";
 import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { getAutocompleteLocations } from "@/utils/api/propertyApi";
+import { convertMonthsToQueryString } from "@/utils/functions";
 
 // damy data
-const items = [
-  { id: "1a", city: "ramat gan", country: "Israel", icon: "location" },
-  { id: "2", city: "tel aviv", country: "Israel", icon: "location" },
-  { id: "3", city: "jerusalem", country: "Israel", icon: "location" },
-  { id: "4", city: "haifa", country: "Israel", icon: "location" },
-  { id: "6", city: "maon", country: "Israel", icon: "location" },
-  { id: "5", city: "beer sheva", country: "Israel", icon: "location" },
+const items: LocationRes[] = [
+  {
+    location: {
+      _id: "1a",
+      city: "ramat gan",
+      country: "Israel",
+      region: "Tel Aviv District",
+    },
+    matchedIn: "city",
+  },
+  {
+    location: {
+      _id: "2",
+      city: "tel aviv",
+      country: "Israel",
+      region: "Tel Aviv District", // אזור רלוונטי
+      addressLine: "3323",
+    },
+    matchedIn: "addressLine",
+  },
+  {
+    location: {
+      _id: "3",
+      city: "jerusalem",
+      country: "Israel",
+      region: "Jerusalem District",
+    },
+    matchedIn: "city",
+  },
+  {
+    location: {
+      _id: "4",
+      city: "haifa",
+      country: "Israel",
+      region: "Haifa District",
+    },
+    matchedIn: "city",
+  },
+  {
+    location: {
+      _id: "6",
+      city: "maon",
+      country: "Israel",
+      region: "Southern District",
+    },
+    matchedIn: "city",
+  },
+  {
+    location: {
+      _id: "5",
+      city: "beer sheva",
+      country: "Israel",
+      region: "Southern District",
+    },
+    matchedIn: "city",
+  },
 ];
 
-// todo: change the name
-interface IUnknownData {
-  id: string;
-  city: string; // region:
-  country: string;
-  icon: string;
-}
-
-interface MonthYear {
+export interface MonthYear {
   month?: number;
   monthName: string;
   year: number;
+}
+
+export interface Location {
+  _id?: string;
+  country: string;
+  region?: string | null;
+  city?: string | null;
+  addressLine?: string | null;
+}
+
+export interface LocationRes {
+  location: Location;
+  matchedIn: "region" | "city" | "country" | "addressLine";
 }
 
 // ! need to get props "isAllHome" that make the search diffrent
@@ -48,23 +104,26 @@ interface MonthYear {
 
 function Search() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  searchParams.set("city", "asda");
-  searchParams.set("city", "asda");
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place
-  const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [popularSearches, setpopularSearches] =
-    useState<Array<IUnknownData> | null>(items); // for drop down initialization
+  const [openLocationDropDown, setOpenLocationDropDown] = useState(false);
+  const [locationInputValue, setLocationInputValue] = useState("");
+  const [locationSearchRes, setLocationSearchRes] =
+    useState<LocationRes[]>(items); // for drop down initialization
   // !need to change the type with the real data
+  const [finalLocation, setFinalLocation] = useState<Location>({
+    country: "Israel",
+    region: null,
+    city: null,
+    addressLine: null,
+  });
+
+  // * dates
   const [isOther, setIsOther] = useState<boolean>(false);
   const [variant, setVariant] = useState<"default" | "disabled">("disabled");
 
-  // * dates
-  const [openDatesPophover, setOpenDatesPophover] = useState(false);
+  const [openDatesPopHover, setOpenDatesPopHover] = useState(false);
   const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(),
@@ -94,10 +153,10 @@ function Search() {
   const finalData = {
     primary: {
       location: {
-        country: "Israel",
-        region: "Center District Israel",
-        city: "Ness Ziona",
-        addressLine: "24 Rothschild Street",
+        country: finalLocation.country,
+        region: finalLocation.region,
+        city: finalLocation.city,
+        addressLine: finalLocation.addressLine,
       },
       date: {
         startDate:
@@ -132,28 +191,36 @@ function Search() {
   // * place input (includ drop down)
   // trigger
   const handleFocus = () => {
-    setOpen(true);
+    setOpenLocationDropDown(true);
   };
 
   const handleBlur = () => {
     setTimeout(() => {
-      setOpen(false);
-    }, 250);
+      setOpenLocationDropDown(false);
+    }, 100);
   };
 
   const handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
-      setInputValue(e.target.value);
-      //  const res = await someSearchFunction(e.target.value)  // * when connect to the data base
+      setLocationInputValue(e.target.value);
+      if (e.target.value.length > 0) {
+        const res = await getAutocompleteLocations(e.target.value);
+        // console.log(res[0].location);
+        res.length > 0 && setLocationSearchRes(res);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   // drop down
-  const handleLocationListClick = (element: IUnknownData) => {
-    console.log(element);
-    setInputValue(() => [element.city, element.country].join(", "));
+  const handleLocationListClick = (
+    element: Location,
+    matchedIn: string,
+    locationChain: string | null
+  ) => {
+    setLocationInputValue(() => [matchedIn, locationChain].join(", "));
+    setFinalLocation(element);
   };
 
   // * dates
@@ -238,11 +305,23 @@ function Search() {
 
   //  preferred days - monthes and day number
   const handleSubmit = () => {
-    searchParams.get("city");
-    setSearchParams(searchParams);
+    let url = "/searchresults?";
+
+    //  locations
+    if (finalData.primary.location.country) {
+      url += `country=${finalData.primary.location.country}&`;
+    }
+    if (finalData.primary.location.region) {
+      url += `region=${finalData.primary.location.region}&`;
+    }
+    if (finalData.primary.location.city) {
+      url += `.city=${finalData.primary.location.city}&`;
+    }
+    if (finalData.primary.location.addressLine) {
+      url += `.addressLine=${finalData.primary.location.addressLine}&`;
+    }
 
     // dates
-    let url = "/searchresults?";
     if (finalData.primary.date.startDate) {
       url += `startDate=${finalData.primary.date.startDate}&`;
     }
@@ -267,7 +346,7 @@ function Search() {
       url += `rooms=${finalData.primary.options.rooms}&`;
     }
 
-    if (finalData.primary.options.childrenAges) {
+    if (finalData.primary.options.childrenAges.length > 0) {
       url += `childrenAges=${finalData.primary.options.childrenAges.join(
         ", "
       )}&`;
@@ -276,6 +355,10 @@ function Search() {
       url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
     }
 
+    if (finalData.primary.date.yearMonths.length > 0) {
+      const monthsQueryString = convertMonthsToQueryString(clickedMonthsCards);
+      url += `yearMonths=${monthsQueryString}&`;
+    }
     navigate(url);
   };
 
@@ -286,30 +369,14 @@ function Search() {
   }, [preferredDays]);
 
   useEffect(() => {
-    // // date?.from === date?.to ? date?.to = undefined :
-    // if (date && date?.to === date?.from) {
-    //   console.log("equle");
-    // }
-    // console.log("date");
-    // console.log(date);
-  }, [rangeDates]);
-
-  useEffect(() => {
-    // console.log(preferredDays);
-
     clickedMonthsCards.length > 0 && preferredDays !== ""
       ? setVariant("default")
       : setVariant("disabled");
   }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
-    console.log(finalData.primary.date);
-    // console.log(finalData.primary.date.startDate);
-    // console.log(finalData.primary.date.endDate);
-    // console.log(finalData.primary.date.isWeekend);
-    // if(clickedMonthsCards.length> 0) console.log([clickedMonthsCards[]]);
-    // monthsAndYears()
-    // setYearsMonths(monthsAndYears());
+    // console.log("final data");
+    // console.log(finalData.primary.location);
   }, [finalData]);
 
   useEffect(() => {
@@ -332,22 +399,40 @@ function Search() {
             {/* open modal */}
             <Card
               className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-50 ${
-                open ? "" : "hidden"
+                openLocationDropDown ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
               <div className="p-3 font-bold">
                 {/* only when initialized */}
-                {popularSearches && t("search.dropDouwnHeader")}
+                {locationSearchRes && t("search.dropDouwnHeader")}
               </div>
               <ul>
-                {popularSearches?.map((element, i) => {
+                {locationSearchRes?.map((element, i) => {
+                  const header =
+                    element.location[element.matchedIn] ||
+                    element.location.country;
+                  const subHeader =
+                    element.matchedIn === "region"
+                      ? element.location.country
+                      : element.matchedIn === "city"
+                      ? `${element.location.region}, ${element.location.country} `
+                      : element.matchedIn === "addressLine"
+                      ? `${element.location.city}, ${element.location.region}, ${element.location.country} `
+                      : null;
+
                   return (
                     i < 5 && (
                       <li
-                        onClick={() => handleLocationListClick(element)}
-                        key={element.id}
+                        onClick={() =>
+                          handleLocationListClick(
+                            element.location,
+                            header,
+                            subHeader
+                          )
+                        }
+                        key={element.location._id}
                         className={`${
-                          i !== popularSearches.length - 1 && " border-b"
+                          i !== locationSearchRes.length - 1 && " border-b"
                         } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
                       >
                         <div className="flex gap-2 items-center">
@@ -360,9 +445,9 @@ function Search() {
                             <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
                           </svg>
                           <div className="flex flex-col">
-                            <span className="font-bold">{element.city} </span>
+                            <span className="font-bold">{header} </span>
                             <span className="text-xs font-normal">
-                              {element.country}
+                              {subHeader}
                             </span>
                           </div>
                         </div>
@@ -391,11 +476,11 @@ function Search() {
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            value={inputValue}
+            value={locationInputValue}
           />
         </div>
         {/* date */}
-        <Popover open={openDatesPophover} onOpenChange={setOpenDatesPophover}>
+        <Popover open={openDatesPopHover} onOpenChange={setOpenDatesPopHover}>
           <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
               className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
@@ -630,7 +715,7 @@ function Search() {
                     </p>
                     <Button
                       onClick={() =>
-                        variant === "default" && setOpenDatesPophover(false)
+                        variant === "default" && setOpenDatesPopHover(false)
                       }
                       className="px-2"
                       variant={variant}

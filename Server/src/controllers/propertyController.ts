@@ -68,7 +68,7 @@ export const getPropertyById =  async (req: Request , res: Response): Promise<vo
         const propertyId = req.params.id;
 
         // Find property by ID
-        const property = await propertyModel.findById(propertyId).populate("rooms");
+        const property = await propertyModel.findById(propertyId).populate("rooms reviews_num");
 
         // If property doesn't exist, return 404
         if (!property) {
@@ -160,8 +160,8 @@ interface IFilterPropertiesLocation {
     addressLine?: string;
 }
 interface IFilterPropertiesDate {
-    startDate?: string;
-    endDate?: string;
+    startDate?: string | Date;
+    endDate?: string | Date;
     length?: number;
     isWeekend?: boolean;
     fromDay?: number;
@@ -195,16 +195,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         const limit = req.query.limit ? parseInt(req.query.limit) : 15;
         const skip = (page - 1) * limit;
 
+
         // Default parameters
         let isBaby = false, children = 0;
         adults ??= 1
         rooms ??= 1;
         isAnimalAllowed ??= false; 
-        distance ??= 15;
 
         if(childrenAges){
-            isBaby = childrenAges.some((age: number) => age <= 3);
-            children = (childrenAges.filter((age: number) => age > 3)).length;
+            isBaby = childrenAges.some((age: number) => typeof age === "number" && age <= 3);
+            children = (childrenAges.filter((age: number) => typeof age === "number" && age > 3)).length;
         }
 
         const cacheKey = JSON.stringify({
@@ -229,8 +229,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 return;
             }
 
-            // Get sorted paginated properties sorted by distance (closest first)
-            const properties = await getPropertiesByRadius(coordinates, distance);
+            let properties = [] as IProperty[];
+
+            if(!region && !city && !addressLine && !distance) {
+                properties = await propertyModel.find({ "location.country": { $regex: country, $options: "i" }})
+                .populate("rooms reviews_num")
+            }
+            else {
+                // Get sorted paginated properties sorted by distance (closest first)
+                properties = await getPropertiesByRadius(coordinates, distance);
+            }
 
             filteredProperties = await filterPropertiesPrimary(properties,
                 { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
@@ -287,15 +295,15 @@ async function getPropertyCoordinates(country?: string, region?: string, city?: 
         return await getCoordinatesByLocation(`${addressLine}, ${city}, ${region}, ${country}`);
 }
 //* Done
-async function getPropertiesByRadius(coordinates: number[], distance: number) {
+async function getPropertiesByRadius(coordinates: number[], distance: number | undefined) {
     return await propertyModel.find({
         "location.coordinates": {
             $near: {
                 $geometry: { type: "Point", coordinates },
-                $maxDistance: distance * 1000 // 15km radius default
+                $maxDistance: distance ? distance * 1000: 15000 // 15km radius default
             },
         },
-    }).populate("rooms");
+    }).populate("rooms reviews_num");
 }
 //* Done
 async function filterPropertiesPrimary(
@@ -333,8 +341,8 @@ async function filterPropertiesPrimary(
         // Step 3: Filter rooms that have availability
         const availableRooms: any = roomsWithAvailability
             .filter(({ availability }) => 
-                availability.startDate !== null && 
-                availability.availableRooms > 0
+                availability?.startDate && 
+                availability?.availableRooms > 0
             )
             // .sort((a, b) => a.maxGuests - b.maxGuests); // Sort by capacity for optimal distribution
 
@@ -381,7 +389,10 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
             (!meals || 
                 meals.every((meal: string) => 
                     (property.rooms as unknown as IRoom[]).some((room) => 
-                        room.offers.some((offer) => offer.meals?.includes(meal as any))
+                        room.offers.some((offer) => 
+                            offer.meals.some(type =>
+                                type.type.toLowerCase() === meal)
+                        )
                 ))
             ) &&
             (!freeCancellation || 
@@ -399,7 +410,7 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
             (!region || 
                 property.location.region === region
             ) &&
-            (!price || 
+            (!price || !price.min || !price.max || 
                 (property.rooms as unknown as IRoom[]).some((room) => 
                     room.offers.some((offer) => 
                         offer.price_per_night >= price.min &&
@@ -651,12 +662,6 @@ function getFiltersFromProperties(properties: IProperty[]) {
         // Rating
         const rating = Math.ceil((property.total_rating as number) / 2);
         filters.rating[rating] = (filters.rating[rating] || 0) + 1;
-        // Pets
-        if(property.houseRules.pets)
-            filters.popularFacilities["animals allowed"] = (filters.popularFacilities["animals allowed"] || 0) + 1;
-        // Help Desk 24/7
-        if(property.desk_help.start === 0 && property.desk_help.end === 24 )
-            filters.popularFacilities["24-hour reception desk"] = (filters.popularFacilities["24-hour reception desk"] || 0) + 1;
         // Online Payment
         if(property.houseRules.accepted_payments.length > 0)
             filters.onlinePayment += 1;
@@ -838,14 +843,188 @@ function countOccurrences(arr: string[], availableRooms: any): { id: string; cou
 }
 
 
-export async function test(req: Request, res: Response): Promise<void> {
+export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
+    const lowerSearchText = req.params.searchText.toLowerCase();
     
-    const properties = await propertyModel.find({}).populate("rooms");
+    try {
+        const locations = await propertyModel.aggregate([
+            {
+                $match: {
+                    // Match properties where any location field contains the search text (case-insensitive)
+                    $or: [
+                        { 'location.country': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.city': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.region': { $regex: lowerSearchText, $options: 'i' } },
+                        { 'location.addressLine': { $regex: lowerSearchText, $options: 'i' } },
+                    ],
+                },
+            },
+            {
+                $project: {
+                    location: 1,  // Only include location fields
+                },
+            },
+            {
+                $addFields: {
+                    // Determine where the search text was found
+                    matchedIn: {
+                        $cond: {
+                            if: { $regexMatch: { input: { $toLower: '$location.country' }, regex: lowerSearchText } },
+                            then: 'country',
+                            else: {
+                                $cond: {
+                                    if: { $regexMatch: { input: { $toLower: '$location.region' }, regex: lowerSearchText } },
+                                    then: 'region',
+                                    else: {
+                                        $cond: {
+                                            if: { $regexMatch: { input: { $toLower: '$location.city' }, regex: lowerSearchText } },
+                                            then: 'city',
+                                            else: 'addressLine',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    location: 1,
+                    matchedIn: 1, // Add the matchedIn field to indicate where the match occurred
+                },
+            },
+            {
+                $match: {
+                    // Ensure we are returning valid locations
+                    'location': { $ne: null },
+                },
+            },
+            {
+                $sort: {
+                    // Sort by matched field order (country > region > city > addressLine)
+                    matchedIn: -1, 
+                },
+            },
+        ]);
 
-    const result = getFiltersFromProperties(properties);
+        // Format the result based on where the match was found
+        const result = locations.map((item: { location: any, matchedIn: string }) => {
+            const location = item.location;
+            const matchedIn = item.matchedIn;
 
-    res.json(
-        result
-    )
+            // Return the full location but only include relevant parts based on the match
+            if (matchedIn === 'country') {
+                return { country: location.country, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'region') {
+                return { country: location.country, region: location.region, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'city') {
+                return { country: location.country, region: location.region, city: location.city, matchedIn, fullLocation: location };
+            } else if (matchedIn === 'addressLine') {
+                return { country: location.country, region: location.region, city: location.city, addressLine: location.addressLine, matchedIn, fullLocation: location };
+            }
+        });
 
-}
+        res.status(200).json({
+            status: "success",
+            message: "Property with rooms found successfully",
+            data: locations,
+        });
+    } catch (error) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Server error",
+        });
+    }
+};
+
+
+
+// export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
+//     const lowerSearchText = req.params.searchText.toLowerCase();
+    
+//     try {
+//         const locations = await propertyModel.aggregate([
+//             {
+//                 $match: {
+//                     // Match properties where any location field contains the search text (case-insensitive)
+//                     $or: [
+//                         { 'location.country': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.city': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.region': { $regex: lowerSearchText, $options: 'i' } },
+//                         { 'location.addressLine': { $regex: lowerSearchText, $options: 'i' } },
+//                     ],
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     location: 1,  // Only include location fields
+//                 },
+//             },
+//             {
+//                 $addFields: {
+//                     // Add a priority field based on where the match occurred
+//                     priority: {
+//                         $cond: {
+//                             if: { $regexMatch: { input: { $toLower: '$location.country' }, regex: lowerSearchText } },
+//                             then: 1,
+//                             else: {
+//                                 $cond: {
+//                                     if: { $regexMatch: { input: { $toLower: '$location.region' }, regex: lowerSearchText } },
+//                                     then: 2,
+//                                     else: {
+//                                         $cond: {
+//                                             if: { $regexMatch: { input: { $toLower: '$location.city' }, regex: lowerSearchText } },
+//                                             then: 3,
+//                                             else: 4,
+//                                         },
+//                                     },
+//                                 },
+//                             },
+//                         },
+//                     },
+//                 },
+//             },
+//             {
+//                 $sort: {
+//                     priority: 1,  // Sort by priority to return country first, then region, etc.
+//                 },
+//             },
+//             {
+//                 $group: {
+//                     _id: '$_id',
+//                     location: { $first: '$location' },  // Take the first matched location based on priority
+//                 },
+//             },
+//             {
+//                 $project: {
+//                     _id: 0,
+//                     location: 1,
+//                 },
+//             },
+//             {
+//                 $match: {
+//                     // Ensure we are returning valid locations
+//                     'location': { $ne: null },
+//                 },
+//             },
+//         ]);
+
+//         // Format the result to return an array of location objects based on priority order
+//         const result = locations.map((item: { location: any }) => item.location);
+
+//         res.status(200).json({
+//             status: "success",
+//             message: "Property with rooms found successfully",
+//             data: result,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching property:", error);
+//         res.status(500).json({
+//             status: "error",
+//             message: "Server error",
+//         });
+//     }
+// };
