@@ -42,7 +42,7 @@ function Property() {
          
       <PropertyDescription propertyData = {propertyData}/>
       <QualityCard  propertyData = {propertyData}/>
-       <AsksComponents propertyData = {propertyData}/> */}
+       <AsksComponents propertyData = {propertyData}/> 
        <GuestReviews propertyData = {propertyData}/>
       <GeniusCard /> 
       <BreadcrumbProperty />
