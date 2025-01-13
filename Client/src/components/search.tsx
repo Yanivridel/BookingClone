@@ -360,8 +360,8 @@ function Search() {
   }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
-    console.log("final data");
-    console.log(finalData.primary.location);
+    // console.log("final data");
+    // console.log(finalData.primary.location);
   }, [finalData]);
 
   useEffect(() => {
