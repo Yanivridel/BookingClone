@@ -1,5 +1,5 @@
 import BreadcrumbCard from "@/components/Breadcrumb";
-import { LatLng } from "@/components/CheckpointMap";
+import CheckpointMap, { LatLng } from "@/components/CheckpointMap";
 import FilterSearchResult from "@/components/FilterSearchResult";
 import PropertyCard from "@/components/PropertyCard";
 import Search from "@/components/search";
@@ -77,22 +77,6 @@ function SearchResults() {
     }
   } as ISearchPropertiesReq;
 
-  console.log("MEALS", searchBody);
-
-  function handleSubmit() {
-    console.log("SUBMIT",
-        searchParams.getAll("facility"),
-        searchParams.get("min"),
-        searchParams.get("max"),
-        searchParams.get("Bedrooms"),
-        searchParams.get("Bathrooms"),
-
-    )
-}
-
-
-
-
   const {
     data,
     fetchNextPage,
@@ -154,7 +138,10 @@ function SearchResults() {
       <BreadcrumbCard />
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
-          <FilterSearchResult coordinates={coordinates} filters={data?.pages[0].filters}/>
+          <div className='border h-[150px] max-w-[260px] rounded-lg mb-2'>
+            {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} filters={data?.pages[0].filters} />}
+          </div>
+          <FilterSearchResult filters={data?.pages[0].filters}/>
           
         </div>
         <div className="flex-1">

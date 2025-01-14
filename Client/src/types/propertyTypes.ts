@@ -157,6 +157,25 @@ interface IFilterPropertiesOptions {
 
 export type TPartialProperty = Partial<IProperty>;
 
+export interface IFilters {
+  overall_count: number;
+  type: { [key: string]: number };
+  rating: { [key: number]: number };
+  popularFacilities: { [key: string]: number };
+  roomType: { [key: string]: number };
+  roomFacilities: { [key: string]: number };
+  meals: { [key: string]: number };
+  freeCancellation: number;
+  onlinePayment: number;
+  region: { [key: string]: number };
+  price: {
+      min: number;
+      max: number;
+  };
+  doubleBeds: number;
+  singleBeds: number;
+}
+
 export type IHotelAreaInfoCategoty =
   | "Public transit"
   | "Closest Airports"

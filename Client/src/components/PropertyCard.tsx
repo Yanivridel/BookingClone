@@ -10,6 +10,11 @@ import { Button } from './ui/button'
 import { IProperty } from '@/types/propertyTypes'
 import { IRoom, TSelectedRoom } from '@/types/roomTypes'
 import { cf, cw, getDescByRating } from '@/utils/functions'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addInterest } from '@/store/slices/userSlices'
+import { modifyUserArrays } from '@/utils/api/userApi'
+import SaveButton from './SaveButton'
 
 
 interface PropertyCardProp {
@@ -20,13 +25,14 @@ const DAYS_FOR_LIMITED = 30;
 const ROOMS_FOR_LIMITED = 5;
 
 function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
-    
     const selectedRooms = (propertyData.rooms as IRoom[])
     .filter(room => propertyData.selectedRooms?.some(selected => selected.id === room._id))
     .map(room => {
         const selected = propertyData.selectedRooms?.find(selected => selected.id === room._id);
         return { ...room, ...selected };
     }) as unknown as TSelectedRoom[];
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const discountedPrice = selectedRooms.reduce((total, currRoom) => {
         const offer = currRoom.offers?.[0];
@@ -41,6 +47,17 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     const isLimited = selectedRooms.some(room => 
         new Date(room.offers[0].discount.expires).getTime() <= new Date().setDate(new Date().getDate() + DAYS_FOR_LIMITED)
     )
+
+    async function handleNavToProperty() {
+        try {
+            navigate(`/property/${propertyData._id}`)
+            const updatedUser = await modifyUserArrays("add", { interested: propertyData._id})
+            console.log("interestedArr", updatedUser.interested)
+            dispatch(addInterest(updatedUser.interested))
+        } catch(err) {
+            console.log("React Client Error: ", err)
+        }
+    }
     
     const arr = ["a", "b", "c"]
     return (
@@ -105,12 +122,17 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
         : 
         <Card className='flex justify-between p-5 max-w-[815px]'>
             <div className='flex gap-5'>
-                <div className='w-50%'>
+                <div className='w-50% relative'>
                     <img src={propertyData?.images[0]} alt="" className='h-[240px] w-[240px] rounded-xl' />
+                    <div className="absolute top-2 end-1">
+                        <SaveButton id={propertyData._id}/>
+                    </div>
                 </div>
                 <div className='flex flex-col gap-2 '>
                     <CardTitle>
-                    <span className='text-blue-600 text-xl hover:text-black cursor-pointer'>{cf(propertyData.title)}</span>
+                    <span className='text-blue-600 text-xl hover:text-black cursor-pointer'
+                    onClick={handleNavToProperty}
+                    >{cf(propertyData.title)}</span>
                     <div className='flex gap-1'>
                         <div className='flex'>
                             {Array(Math.round((propertyData.total_rating || 0)/2)).fill(0).map((_, index) => <Stars key={index} className='w-4 fill-yellow-300' />)}

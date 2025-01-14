@@ -31,6 +31,7 @@ const buttonVariants = cva(
         simpleLink: "text-primary hover:bg-softBlue",
         navBarRounded: "rounded-full border-[1px] border-navBarRoundedButton",
         disabled: "cursor-not-allowed bg-softGray text-[#a2a2a2]",
+        iconHover: "w-10 h-10 hover:bg-[#e3e3e3] rounded-lg",
       },
       size: {
         default: "h-9 px-4 py-2",
