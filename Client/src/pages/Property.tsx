@@ -17,24 +17,33 @@ import { getPropertyById } from "@/utils/api/propertyApi";
 import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-<<<<<<< HEAD
+
 import ReviewsCard from "@/components/ReviewsCard";
-=======
 import PropertyTable from "@/components/PropertyTable";
 import { IReview } from "@/types/reviewTypes";
 import Search from "@/components/search";
 import { useTranslation } from "react-i18next";
->>>>>>> e7c013e88677f2af2f9c06fb8060bf1c05ca1ddb
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
-<<<<<<< HEAD
+
+
     const { id } = useParams();
     const [propertyData, setPropertyData] = useState<IProperty | undefined>();
-    const [propertyReviews, setPropertyReviews] = useState<IProperty | undefined>();
-    const arr = ["Overview", "Info & prices", "Facilities", " House rules", "The fine print", "Guest reviews(30,075)"]
-
+ 
+  const [propertyReviews, setPropertyReviews] = useState<
+    IReview[] | undefined
+  >();
+const { t } = useTranslation();
+ const arr = [
+    "Overview",
+    "Info & prices",
+    "Facilities",
+    " House rules",
+    "The fine print",
+    "Guest reviews(30,075)",
+  ];
     
     useEffect(() => {
         if(id) {
@@ -50,22 +59,7 @@ function Property() {
             
         }
     }, [id])
-=======
-  const { id } = useParams();
-  const [propertyData, setPropertyData] = useState<IProperty | undefined>();
-  const [propertyReviews, setPropertyReviews] = useState<
-    IReview[] | undefined
-  >();
-  const { t } = useTranslation();
-  const arr = [
-    "Overview",
-    "Info & prices",
-    "Facilities",
-    " House rules",
-    "The fine print",
-    "Guest reviews(30,075)",
-  ];
->>>>>>> e7c013e88677f2af2f9c06fb8060bf1c05ca1ddb
+
 
   useEffect(() => {
     if (id) {
@@ -86,12 +80,10 @@ function Property() {
       <BreadcrumbProperty />
       <NavProperty arr={arr} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
-<<<<<<< HEAD
-      <ImagesProperty propertyData={propertyData} /> 
-      <PropertyHighlight highlights={propertyData?.highlights} />
-      <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} /> 
+
+
       <ReviewsCard propertyReviews={propertyReviews}/>
-=======
+
       <ImagesProperty propertyData={propertyData} />
       <PropertyDescription propertyData={propertyData} />
       <PropertyHighlight highlights={propertyData?.highlights} />
@@ -112,7 +104,7 @@ function Property() {
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo ridel carusel 5 km close by */}
       <PropertyFeatures features={propertyData?.features} />
->>>>>>> e7c013e88677f2af2f9c06fb8060bf1c05ca1ddb
+
     </div>
   );
 }
