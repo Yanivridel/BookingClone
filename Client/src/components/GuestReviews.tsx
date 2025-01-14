@@ -12,10 +12,9 @@ interface GuestReviewsProps {
 }
 
 function GuestReviews({ propertyData }: GuestReviewsProps) {
-  const [progress, setProgress] = React.useState(13)
   return (
-    <div className='h-[760px] w-[1100px] border'>
-      <div className='flex p-2 '>
+    <div className='w-[1100px] border grid gap-2 p-2'>
+      <div className='flex'>
         <div className='border w-[1100px]'>
           <p className='text-xl font-bold'>Guest Reviews</p>
         </div>
@@ -37,19 +36,19 @@ function GuestReviews({ propertyData }: GuestReviewsProps) {
         <p className='font-bold'>Categories:</p>
         <div className='flex justify-between max-w-[1100px]'>
         <div className='w-[350px] h-[35px]'>
-        {propertyData?.rating.cleanliness &&<div className='border'> 
+        {propertyData?.rating.cleanliness &&<div > 
           <h1>Cleanliness</h1>
           <p>{propertyData?.rating.cleanliness}</p>
           <Progress value={propertyData?.rating.cleanliness * 10} className="w-[60%] h-[8px] "></Progress>
           </div>
         }
-        {propertyData?.rating.conform &&<div className='border'> 
+        {propertyData?.rating.conform &&<div > 
           <h1>Conform</h1>
           <p>{propertyData?.rating.conform}</p>
           <Progress value={propertyData?.rating.conform * 10} className="w-[60%] h-[8px]"></Progress>
           </div>
         }
-        {propertyData?.rating.facilities &&<div className='border'> 
+        {propertyData?.rating.facilities &&<div > 
           <h1>facilities</h1>
           <p>{propertyData?.rating.facilities}</p>
           <Progress value={propertyData?.rating.facilities * 10} className="w-[60%] h-[8px]"></Progress>
@@ -57,13 +56,13 @@ function GuestReviews({ propertyData }: GuestReviewsProps) {
         }
         </div>
         <div className='w-[350px] h-[35px]'>
-        {propertyData?.rating.free_wifi &&<div className='border'> 
+        {propertyData?.rating.free_wifi &&<div > 
           <h1>free_wifi</h1>
           <p>{propertyData?.rating.free_wifi}</p>
           <Progress value={propertyData?.rating.free_wifi * 10} className="w-[60%] h-[8px]"></Progress>
           </div>
         }
-        {propertyData?.rating.cleanliness &&<div className='border'> 
+        {propertyData?.rating.cleanliness &&<div > 
           <h1>location</h1>
           <p>{propertyData?.rating.location}</p>
           <Progress value={propertyData?.rating.location * 10} className="w-[60%] h-[8px]"></Progress>
@@ -72,13 +71,13 @@ function GuestReviews({ propertyData }: GuestReviewsProps) {
         
         </div>
         <div className='w-[350px] h-[35px]'>
-        {propertyData?.rating.staff &&<div className='border'> 
+        {propertyData?.rating.staff &&<div > 
           <h1>staff</h1>
           <p>{propertyData?.rating.staff}</p>
           <Progress value={propertyData?.rating.staff * 10} className="w-[60%]"></Progress>
           </div>
         }
-        {propertyData?.rating.value_for_money &&<div className='border'> 
+        {propertyData?.rating.value_for_money &&<div > 
           <h1>value_for_money</h1>
           <p>{propertyData?.rating.value_for_money}</p>
           <Progress value={propertyData?.rating.value_for_money * 10} className="w-[60%] h-[8px]"></Progress>

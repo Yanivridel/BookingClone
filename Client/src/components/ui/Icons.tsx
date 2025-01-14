@@ -360,18 +360,15 @@ export const FacebookWhiteIcon = ({ className }: IconsProps) => {
   );
 };
 
+
 export const Xicon = ({ className }: IconsProps) => {
   return (
-    <svg
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 22.03 22.51"
-      width="50px"
-    >
-      <path d="M13.11 9.53 21.31 0h-1.94l-7.12 8.28L6.56 0H0l8.6 12.52L0 22.51h1.94l7.52-8.74 6.01 8.74h6.56zm-2.66 3.09-.87-1.25-6.94-9.91h2.98l5.59 8 .87 1.25 7.27 10.4h-2.98l-5.93-8.49Z"></path>
-    </svg>
-  );
-};
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22.03 22.51" width="50px"><path d="M13.11 9.53 21.31 0h-1.94l-7.12 8.28L6.56 0H0l8.6 12.52L0 22.51h1.94l7.52-8.74 6.01 8.74h6.56zm-2.66 3.09-.87-1.25-6.94-9.91h2.98l5.59 8 .87 1.25 7.27 10.4h-2.98l-5.93-8.49Z"></path></svg>
+  )
+}
+    
+
+
 
 export const IconMen = ({ className }: IconsProps) => {
   return (
