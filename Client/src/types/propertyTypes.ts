@@ -244,7 +244,9 @@ export type EFacility =
   | "Valet parking"
   | "Electric vehicle charging station"
   | "Tea/Coffee Maker in All Rooms"
-  | "Very Good Breakfast";
+  | "Very Good Breakfast"
+  | "Animals Allowed"
+  | "24-hour reception desk";
 
 export type EFeatures =
   | "Accessibility"

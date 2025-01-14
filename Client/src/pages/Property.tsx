@@ -17,12 +17,14 @@ import { getPropertyById } from "@/utils/api/propertyApi";
 import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReviewsCard from "@/components/ReviewsCard";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
     const { id } = useParams();
     const [propertyData, setPropertyData] = useState<IProperty | undefined>();
+    const [propertyReviews, setPropertyReviews] = useState<IProperty | undefined>();
     const arr = ["Overview", "Info & prices", "Facilities", " House rules", "The fine print", "Guest reviews(30,075)"]
 
     
@@ -33,6 +35,11 @@ function Property() {
                 setPropertyData(data)
                 console.log(data)
             });
+            getReviewsByPropertyId(id).then((data) => {
+              setPropertyReviews(data);
+              console.log(data);
+            });
+            
         }
     }, [id])
 
@@ -42,18 +49,18 @@ function Property() {
          
       <PropertyDescription propertyData = {propertyData}/>
       <QualityCard  propertyData = {propertyData}/>
-       <AsksComponents propertyData = {propertyData}/> 
+       <AsksComponents propertyData = {propertyData}/>
        <GuestReviews propertyData = {propertyData}/>
       <GeniusCard /> 
       <BreadcrumbProperty />
-      <NavProperty arr={arr} />
-      <PropertyTitle propertyData={propertyData} id={arr[0]} />
-      <ImagesProperty propertyData={propertyData} />
-      <PropertyHighlight highlights={propertyData?.highlights} />
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
-      <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+      <NavProperty arr={arr} />
       <PropertyFeatures features={propertyData?.features} />
-
+      <PropertyTitle propertyData={propertyData} id={arr[0]} />
+      <ImagesProperty propertyData={propertyData} /> 
+      <PropertyHighlight highlights={propertyData?.highlights} />
+      <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} /> 
+      <ReviewsCard propertyReviews={propertyReviews}/>
     </div>
   );
 }

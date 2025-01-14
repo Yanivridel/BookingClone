@@ -16,16 +16,16 @@ import { Label } from "./ui/label";
 import { EmptyCalendarImg, IconMen } from "./ui/Icons";
 import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
 import { convertMonthsToQueryString } from "@/utils/functions";
 
-// damy data
+// location initial data data
 const items: LocationRes[] = [
   {
     location: {
       _id: "1a",
-      city: "ramat gan",
+      city: "Ramat gan",
       country: "Israel",
       region: "Tel Aviv District",
     },
@@ -34,7 +34,7 @@ const items: LocationRes[] = [
   {
     location: {
       _id: "2",
-      city: "tel aviv",
+      city: "Tel aviv",
       country: "Israel",
       region: "Tel Aviv District", // אזור רלוונטי
       addressLine: "3323",
@@ -44,7 +44,7 @@ const items: LocationRes[] = [
   {
     location: {
       _id: "3",
-      city: "jerusalem",
+      city: "Jerusalem",
       country: "Israel",
       region: "Jerusalem District",
     },
@@ -53,7 +53,7 @@ const items: LocationRes[] = [
   {
     location: {
       _id: "4",
-      city: "haifa",
+      city: "Haifa",
       country: "Israel",
       region: "Haifa District",
     },
@@ -62,7 +62,7 @@ const items: LocationRes[] = [
   {
     location: {
       _id: "6",
-      city: "maon",
+      city: "Maon",
       country: "Israel",
       region: "Southern District",
     },
@@ -71,7 +71,7 @@ const items: LocationRes[] = [
   {
     location: {
       _id: "5",
-      city: "beer sheva",
+      city: "Beer sheva",
       country: "Israel",
       region: "Southern District",
     },
@@ -104,6 +104,7 @@ export interface LocationRes {
 
 function Search() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place
@@ -113,10 +114,10 @@ function Search() {
     useState<LocationRes[]>(items); // for drop down initialization
   // !need to change the type with the real data
   const [finalLocation, setFinalLocation] = useState<Location>({
-    country: "Israel",
-    region: null,
-    city: null,
-    addressLine: null,
+    country: searchParams.get("country") ?? "Israel",
+    region: searchParams.get("region") ?? null,
+    city: searchParams.get("city") ?? null,
+    addressLine: searchParams.get("addressLine") ?? null,
   });
 
   // * dates
@@ -126,28 +127,33 @@ function Search() {
   const [openDatesPopHover, setOpenDatesPopHover] = useState(false);
   const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 6),
+    from: new Date(searchParams.get("startDate") || new Date()),
+    to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)) ,
   });
 
   const [activePlusMinusButton, setActivePlusMinusButton] =
     useState<string>("");
   const [activeNavButton, setActiveNavButton] = useState<string>("calendar");
-  const [isWeedend, setIsWeedend] = useState(false);
+  const [isWeekend, setIsWeekend] = useState(false);
   const [preferredDays, setPreferredDays] = useState("");
-  const [fromDay, setfromDay] = useState("1");
+  const [fromDay, setFromDay] = useState("1");
   const [nights, setNights] = useState("1");
 
-  // * pepole && rooms
+  // * people && rooms
 
-  const [openPepolePophover, setopenPepolePophover] = useState(false);
-  const [adultsCount, setAdultsCount] = useState(1);
-  const [childrenCount, setChildrenCount] = useState(0);
+  const [openPeoplePopHover, setOpenPeoplePopHover] = useState(false);
+  const [adultsCount, setAdultsCount] = useState(parseInt(searchParams.get("adults") || "1"));
+  const [childrenCount, setChildrenCount] = useState(searchParams.get("childrenAges")?.split(",").length || 0);
   const [roomsCount, setRoomsCount] = useState(1);
   const [isPets, setIsPets] = useState(false);
   const [childrenAges, setChildrenAges] = useState<
     (number | typeof NaN | undefined | null | "")[]
-  >([]);
+  >( searchParams.get("childrenAges") 
+  ? searchParams.get("childrenAges")!.split(",").map(age => {
+      const num = parseInt(age.trim(), 10);
+      return isNaN(num) ? "" : num; // Replace invalid values with ""
+    })
+  : []);
 
   // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
@@ -170,7 +176,7 @@ function Search() {
         length: Number(preferredDays) || Number(nights),
         fromDay,
         yearMonths: clickedMonthsCards,
-        isWeekend: isWeedend,
+        isWeekend: isWeekend,
       },
       options: {
         adults: adultsCount,
@@ -287,15 +293,15 @@ function Search() {
     if (target.value !== undefined) {
       setPreferredDays(target.value);
       if (target.value === "weekend") {
-        setIsWeedend(true);
+        setIsWeekend(true);
       } else {
-        setIsWeedend(false);
+        setIsWeekend(false);
       }
     }
   };
 
   const handleFromDayClick = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setfromDay(e.target.value);
+    setFromDay(e.target.value);
   };
 
   //hebrew formt
@@ -315,10 +321,10 @@ function Search() {
       url += `region=${finalData.primary.location.region}&`;
     }
     if (finalData.primary.location.city) {
-      url += `.city=${finalData.primary.location.city}&`;
+      url += `city=${finalData.primary.location.city}&`;
     }
     if (finalData.primary.location.addressLine) {
-      url += `.addressLine=${finalData.primary.location.addressLine}&`;
+      url += `addressLine=${finalData.primary.location.addressLine}&`;
     }
 
     // dates
@@ -380,7 +386,10 @@ function Search() {
   }, [finalData]);
 
   useEffect(() => {
+    setLocationInputValue(Object.values(finalLocation).filter(isNaN).join(", "));
+
     const handleResize = () => setWindowWidth(window.innerWidth);
+
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -794,11 +803,11 @@ function Search() {
             </PopoverTrigger>
           </div>
         </Popover>
-        {/* pepole number */}
+        {/* people number */}
         <div className="border-search bg-white rounded-[4px] p-[11px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3">
           <Popover
-            open={openPepolePophover}
-            onOpenChange={setopenPepolePophover}
+            open={openPeoplePopHover}
+            onOpenChange={setOpenPeoplePopHover}
           >
             <PopoverContent
               className="w-[475px] p-10  shadow-searchPopupsShadow PopoverContent rounded-xl "
@@ -809,7 +818,7 @@ function Search() {
               avoidCollisions={false}
             >
               <SearchPeople
-                setopenPepolePophover={setopenPepolePophover}
+                setopenPepolePophover={setOpenPeoplePopHover}
                 childrenCount={childrenCount}
                 setChildrenCount={setChildrenCount}
                 adultsCount={adultsCount}

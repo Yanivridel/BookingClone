@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { cf, cw } from '@/utils/functions'
 import CheckpointMap, { LatLng } from './CheckpointMap'
 import { IProperty } from '@/types/propertyTypes'
+import { Skeleton } from './ui/skeleton'
 
 const distanceOptions = {
     "Less than 1 km": 1,
@@ -93,14 +94,41 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
         setSearchParams(searchParams);
     }
 
-
     return (
         <div className='border max-w-[260px] grid gap-4'>
             <div className='border h-[150px] max-w-[260px] rounded-lg'>
-                {/* {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />} */}
+                {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />}
             </div>
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
+
+                {/* Price Slider */} 
+                {  priceRange && 
+                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
+                <h3 className="text-sm font-semibold">
+                    {`₪${priceRange[0] || ""} - ₪${priceRange[1]  || ""}`}
+                </h3>
+                <img src={barGraph} className='-mb-2'/>
+                <Slider 
+                    value={priceRange}
+                    onValueChange={handleSliderValueChange}
+                    min={filters?.price.min} 
+                    max={filters?.price.max} 
+                    step={10} 
+                    className="w-full"
+                />
+                </div>
+                }
+
+                { !filters && [... Array(14)].map(_ => <>
+                    <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
+                    <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
+                    <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
+                    <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
+                    <CardTitle className='border-b-2 my-5'></CardTitle>
+                </>)}
+
                 {/* Property Type */}
                 { filters?.type &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
@@ -123,26 +151,6 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         </div>
                     </div>
                     ))}
-                </div>
-                }
-                
-
-                {/* Price Slider */} 
-                { filters?.price && priceRange && 
-                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
-                <h3 className="text-sm font-semibold">
-                    {`₪${priceRange[0]} - ₪${priceRange[1]}`}
-                </h3>
-                <img src={barGraph} className='-mb-2'/>
-                <Slider 
-                    value={priceRange}
-                    onValueChange={handleSliderValueChange}
-                    min={filters.price.min} 
-                    max={filters.price.max} 
-                    step={10} 
-                    className="w-full"
-                />
                 </div>
                 }
                 
@@ -222,6 +230,7 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                 }
 
                 {/* Bedrooms And Bathrooms */}
+                { filters &&
                 <div className='border-b-2 p-2 flex flex-col gap-3 '>
                     <CardTitle>Bedrooms And Bathrooms</CardTitle>
                     {/* Bedroom Button */}
@@ -271,10 +280,13 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                         </div>
                     </div>
                 </div>
+                }
 
                 {/* Distance */}
+                { filters &&
                 <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                    <CardTitle className='font-semibold'>Distance from center of Paris</CardTitle>
+                    <CardTitle className='font-semibold'>Distance from center of 
+                        {" " + (searchParams.get("city") ?? searchParams.get("country") ?? "you")}</CardTitle>
                     {Object.entries(distanceOptions).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
                         <div className="flex items-center gap-2">
@@ -293,6 +305,7 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                     
                 
                 </div>
+                }
 
                 {/* Room Type */}
                 { filters?.roomType &&
@@ -423,3 +436,9 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
 }
 
 export default FilterSearchResult
+
+
+const getRandomWidth = () => {
+    const randomWidth = Math.floor(Math.random() * 7) + 3;
+    return `${randomWidth*10}%`;
+};

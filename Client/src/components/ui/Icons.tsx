@@ -380,9 +380,6 @@ export const IconCounterMinus = ({ className }: IconsProps) => {
   );
 };
 
-
-
-
 export const YellowVi = ({ className }: IconsProps) => {
   return (
     <svg className="bk-icon -iconset-checkmark_selected bui-list__icon benefits_list__icon" fill="#FEBB02" height="16" role="presentation" width="16" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><path d="M64 8a56 56 0 1 0 56 56A56 56 0 0 0 64 8zm38.2 42.2l-44 44a6 6 0 0 1-8.4 0l-24-24a6 6 0 0 1 8.4-8.4L54 81.5l39.8-39.7a6 6 0 1 1 8.5 8.4z"></path></svg>

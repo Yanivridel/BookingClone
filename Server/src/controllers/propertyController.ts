@@ -256,10 +256,10 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
 
         // ! REMOVE LATER
-        // const properties = await propertyModel.find({}).populate("rooms") as IProperty[];
-        // for(let i = 0; i< 10; i++){
-        //     filteredProperties.push(...properties);
-        // }
+        const properties = await propertyModel.find({}).populate("rooms reviews_num") as IProperty[];
+        for(let i = 0; i< 10; i++){
+            filteredProperties.push(...properties);
+        }
 
 
         const paginatedProperties = filteredProperties.slice(skip, skip + limit);
@@ -286,21 +286,21 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 // Help Functions
 //* Done
 async function getPropertyCoordinates(country?: string, region?: string, city?: string, addressLine?: string) {
-    let locationQuery: any = {};
-        if (country) locationQuery["location.country"] = { $regex: new RegExp(country, 'i') };
-        if (region) locationQuery["location.region"] = { $regex: new RegExp(region, 'i') };
-        if (city) locationQuery["location.city"] = { $regex: new RegExp(city, 'i') };
-        if (addressLine) locationQuery["location.addressLine"] = { $regex: new RegExp(addressLine, 'i') };
-
-        return await getCoordinatesByLocation(`${addressLine}, ${city}, ${region}, ${country}`);
+        let completeAddress = country || "";
+        if(region) completeAddress += " " + region;
+        if(city) completeAddress += " " + city;
+        if(addressLine) completeAddress += " " + addressLine;
+        return await getCoordinatesByLocation(completeAddress);
 }
 //* Done
 async function getPropertiesByRadius(coordinates: number[], distance: number | undefined) {
+    console.log(coordinates,distance);
+    distance = 20;
     return await propertyModel.find({
         "location.coordinates": {
             $near: {
                 $geometry: { type: "Point", coordinates },
-                $maxDistance: distance ? distance * 1000: 15000 // 15km radius default
+                $maxDistance: distance ? distance * 1000: process.env.SEARCH_RADIUS // 100km radius default
             },
         },
     }).populate("rooms reviews_num");
@@ -446,6 +446,12 @@ function getAvailability(
     room: IRoom,
     { startDate, endDate, length, isWeekend, fromDay, yearMonths }: IFilterPropertiesDate
 ) {
+    if (!startDate && !endDate && (!yearMonths || !isWeekend || !length)) {
+        startDate = new Date();
+        endDate = new Date();
+        endDate.setDate(endDate.getDate() + 5);
+    }
+    
     // If startDate and endDate are provided
     if (startDate && endDate) {
         let minAvailable = room.overall_count;
@@ -939,92 +945,3 @@ export const getAutocompleteLocations = async (req: Request, res: Response): Pro
         });
     }
 };
-
-
-
-// export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
-//     const lowerSearchText = req.params.searchText.toLowerCase();
-    
-//     try {
-//         const locations = await propertyModel.aggregate([
-//             {
-//                 $match: {
-//                     // Match properties where any location field contains the search text (case-insensitive)
-//                     $or: [
-//                         { 'location.country': { $regex: lowerSearchText, $options: 'i' } },
-//                         { 'location.city': { $regex: lowerSearchText, $options: 'i' } },
-//                         { 'location.region': { $regex: lowerSearchText, $options: 'i' } },
-//                         { 'location.addressLine': { $regex: lowerSearchText, $options: 'i' } },
-//                     ],
-//                 },
-//             },
-//             {
-//                 $project: {
-//                     location: 1,  // Only include location fields
-//                 },
-//             },
-//             {
-//                 $addFields: {
-//                     // Add a priority field based on where the match occurred
-//                     priority: {
-//                         $cond: {
-//                             if: { $regexMatch: { input: { $toLower: '$location.country' }, regex: lowerSearchText } },
-//                             then: 1,
-//                             else: {
-//                                 $cond: {
-//                                     if: { $regexMatch: { input: { $toLower: '$location.region' }, regex: lowerSearchText } },
-//                                     then: 2,
-//                                     else: {
-//                                         $cond: {
-//                                             if: { $regexMatch: { input: { $toLower: '$location.city' }, regex: lowerSearchText } },
-//                                             then: 3,
-//                                             else: 4,
-//                                         },
-//                                     },
-//                                 },
-//                             },
-//                         },
-//                     },
-//                 },
-//             },
-//             {
-//                 $sort: {
-//                     priority: 1,  // Sort by priority to return country first, then region, etc.
-//                 },
-//             },
-//             {
-//                 $group: {
-//                     _id: '$_id',
-//                     location: { $first: '$location' },  // Take the first matched location based on priority
-//                 },
-//             },
-//             {
-//                 $project: {
-//                     _id: 0,
-//                     location: 1,
-//                 },
-//             },
-//             {
-//                 $match: {
-//                     // Ensure we are returning valid locations
-//                     'location': { $ne: null },
-//                 },
-//             },
-//         ]);
-
-//         // Format the result to return an array of location objects based on priority order
-//         const result = locations.map((item: { location: any }) => item.location);
-
-//         res.status(200).json({
-//             status: "success",
-//             message: "Property with rooms found successfully",
-//             data: result,
-//         });
-//     } catch (error) {
-//         console.error("Error fetching property:", error);
-//         res.status(500).json({
-//             status: "error",
-//             message: "Server error",
-//         });
-//     }
-// };

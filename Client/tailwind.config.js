@@ -2,6 +2,17 @@
 module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  safelist: [
+    'w-[30%]',
+    'w-[40%]',
+    'w-[50%]',
+    'w-[60%]',
+    'w-[70%]',
+    'w-[80%]',
+    'w-[90%]',
+    "col-span-2",
+    "col-span-3"
+  ],
   theme: {
     extend: {
       textShadow: {
