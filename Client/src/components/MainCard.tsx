@@ -9,10 +9,17 @@ import { IProperty } from "@/types/propertyTypes";
 import { getPropertyByIdForCard } from "@/utils/api/propertyApi";
 import { getDescByRating, getRandomInt } from "@/utils/functions";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { getInterested, modifyUserArrays } from "@/utils/api/userApi";
+import { useDispatch } from "react-redux";
+import { addInterest } from "@/store/slices/userSlices";
+import { CardXIcon } from "./ui/Icons";
 
 interface mainCardProps {
   propertyId: string,
   is_heart?: boolean;
+  is_X?: boolean;
+  listName?: string;
   deals?: string;
   price?: { coin: string; value: string };
   genius?: string;
@@ -25,6 +32,8 @@ const MainCard = ({
   propertyId,
   deals,
   is_heart,
+  is_X,
+  listName,
   isThumbsUp,
   price,
   genius,
@@ -33,6 +42,8 @@ const MainCard = ({
 }: mainCardProps) => {
   const [propertyData, setPropertyData] = useState<IProperty | null>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if(propertyId)
@@ -42,19 +53,31 @@ const MainCard = ({
     });
   }, [propertyId])
   
+  const handleCardClick = async () => {
+    try {
+      navigate(`/property/${propertyId}`)
+      const updatedUser = await modifyUserArrays("add", { interested: propertyId})
+      console.log("interestedArr", updatedUser.interested)
+      dispatch(addInterest(updatedUser.interested))
+    } catch(err) {
+      console.log("React Client Error: ", err)
+    }
+  }
 
   return (<>
     {propertyData && 
-      <Card className="flex flex-col w-[255px] h-[347px] sm:w-[274px] sm:h-[333px] rounded-lg">
+      <Card className="flex flex-col w-[255px] h-[347px] sm:w-[274px] sm:h-[333px] rounded-lg cursor-pointer"
+      onClick={handleCardClick}
+      >
       <div className="h-[65%] sm:max-h-none rounded-t-lg relative">
         <img
           src={propertyData.images[0]}
           alt={propertyData.title}
           className="w-full h-full object-cover object-center rounded-t-lg "
         />
-        {is_heart && (
+        {(is_heart || is_X) && (
           <div className="absolute top-2 end-1">
-            <SaveButton id={propertyData._id} />
+            <SaveButton id={propertyData._id} is_X={is_X} listName={listName}/>
           </div>
         )}
       </div>

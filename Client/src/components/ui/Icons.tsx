@@ -63,6 +63,12 @@ export const IconHeart = ({ className }: IconsProps) => {
   );
 };
 
+export const CardXIcon = ({ className }: IconsProps) => {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="m13.31 12 6.89-6.89a.93.93 0 1 0-1.31-1.31L12 10.69 5.11 3.8A.93.93 0 0 0 3.8 5.11L10.69 12 3.8 18.89a.93.93 0 0 0 1.31 1.31L12 13.31l6.89 6.89a.93.93 0 1 0 1.31-1.31z"></path></svg>
+  );
+};
+
 export const IconPlusMinus = ({ className }: IconsProps) => {
   return (
     <svg
@@ -160,6 +166,28 @@ export const UpDown = ({ className }: IconsProps) => {
       >
         <path d="M10.28 15.22a.75.75 0 0 1 0 1.06l-4.5 4.5a.8.8 0 0 1-.24.16.73.73 0 0 1-.58 0 .8.8 0 0 1-.24-.16l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3.75a.75.75 0 0 1 1.5 0v14.69l3.22-3.22a.75.75 0 0 1 1.06 0m13.5-7.5-4.5-4.5a.8.8 0 0 0-.28-.16.73.73 0 0 0-.58 0 .8.8 0 0 0-.24.16l-4.5 4.5a.75.75 0 1 0 1.06 1.06L18 5.56v14.69a.75.75 0 0 0 1.5 0V5.56l3.22 3.22a.75.75 0 0 0 1.06 0 .75.75 0 0 0 0-1.06"></path>
       </svg>
+    </div>
+  );
+};
+
+export const UpDownHeads = ({ className }: IconsProps) => {
+  return (
+    <div>
+      <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M12 20.09a1.24 1.24 0 0 1-.88-.36L6 14.61a.75.75 0 1 1 1.06-1.06L12 18.49l4.94-4.94A.75.75 0 0 1 18 14.61l-5.12 5.12a1.24 1.24 0 0 1-.88.36m6-9.46a.75.75 0 0 0 0-1.06l-5.12-5.11a1.24 1.24 0 0 0-1.754-.006l-.006.006L6 9.57a.75.75 0 0 0 0 1.06.74.74 0 0 0 1.06 0L12 5.7l4.94 4.93a.73.73 0 0 0 .53.22c.2 0 .39-.078.53-.22"></path></svg>
+    </div>
+  );
+};
+export const XIcon = ({ className }: IconsProps) => {
+  return (
+    <div>
+      <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="m5.03 20.03 15-15a.75.75 0 0 0-1.06-1.06l-15 15a.75.75 0 1 0 1.06 1.06m-1.06-15 15 15a.75.75 0 1 0 1.06-1.06l-15-15a.75.75 0 0 0-1.06 1.06"></path></svg>    
+    </div>
+);
+};
+export const ViIcon = ({ className }: IconsProps) => {
+  return (
+    <div>
+      <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="50px"><path d="M56.33 100a4 4 0 0 1-2.82-1.16L20.68 66.12a4 4 0 1 1 5.64-5.65l29.57 29.46 45.42-60.33a4 4 0 1 1 6.38 4.8l-48.17 64a4 4 0 0 1-2.91 1.6z"></path></svg>
     </div>
   );
 };
@@ -539,3 +567,14 @@ export const SmallIconVi = ({ className }: IconsProps) => {
     </svg>
   );
 };
+
+export const EditIcon = ({ className }: IconsProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M22.72 1.279a4.39 4.39 0 0 0-6.208.013l-.028.029L1.99 15.815a.75.75 0 0 0-.197.344l-1.77 6.905a.75.75 0 0 0 .913.913l6.905-1.771a.75.75 0 0 0 .344-.197l14.5-14.5a4.385 4.385 0 0 0 .067-6.197l-.03-.031zm-1.061 1.06.02.02a2.887 2.887 0 0 1-.048 4.083L7.125 20.95l.344-.197-6.905 1.771.913.913 1.77-6.905-.197.344 14.5-14.5.025-.025a2.89 2.89 0 0 1 4.086-.009zm-5.583.451 5.134 5.134a.75.75 0 1 0 1.06-1.06L17.136 1.73a.75.75 0 1 0-1.06 1.06M1.99 16.875l5.14 5.13a.75.75 0 0 0 1.059-1.062l-5.14-5.13a.75.75 0 0 0-1.059 1.062"></path></svg>
+  )
+}
+
+export const DeleteIcon = ({ className }: IconsProps) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M7.5 12.75h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5m15-.75c0 5.799-4.701 10.5-10.5 10.5S1.5 17.799 1.5 12 6.201 1.5 12 1.5 22.5 6.201 22.5 12m1.5 0c0-6.627-5.373-12-12-12S0 5.373 0 12s5.373 12 12 12 12-5.373 12-12"></path></svg>  )
+}

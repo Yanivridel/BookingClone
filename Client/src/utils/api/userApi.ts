@@ -68,8 +68,9 @@ export const editProfile = async (userProperties : TPartialUser ) => {
     }
 }
 // * Done
-export const modifyUserArrays = async (action: string, userArrays : TPartialUser ) => {
+export const modifyUserArrays = async (action: string, userArrays : any ) => {
     try {
+        console.log("userArrays", userArrays)
         const { data } = await axios.patch(`${API_URL}/api/users/modify-arrays`,
             {
                 action,
@@ -81,8 +82,7 @@ export const modifyUserArrays = async (action: string, userArrays : TPartialUser
                     Authorization: `Bearer ${getCookie("token")}`
                 }
             });
-            console.log(data);
-        return data.data as IUser;
+        return data.data;
     } 
     catch (error) {
         console.error('Add SavedList error:', error);

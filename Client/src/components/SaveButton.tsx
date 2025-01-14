@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import IconHeartRed, { IconHeart, Spinner } from "./ui/Icons";
+import IconHeartRed, { CardXIcon, IconHeart, Spinner } from "./ui/Icons";
 import {
   Tooltip,
   TooltipTrigger,
@@ -20,9 +20,12 @@ import { useMutation } from "@tanstack/react-query";
 import { modifyUserArrays } from "@/utils/api/userApi";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Link } from "react-router-dom";
 
 interface SavedButtonProps {
   id: string;
+  is_X?: boolean;
+  listName?: string;
 }
 interface MutationVariables {
   action: string;
@@ -32,37 +35,18 @@ interface MutationContext {
   rollback: () => void;
 }
 
-function SaveButton({ id }: SavedButtonProps ) {
+function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
   const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
   const dispatch = useDispatch();
   const [isLiked, setIsLiked] = useState(currentUser.savedLists.some(list => list.properties.includes(id)));
-  const [open, setOpen] = useState(true);
-  const [value, setValue] = useState("");
-  const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const [newList, setNewList] = useState("");
   const allLists = currentUser.savedLists;
   const [selectedList, setSelectedList] = useState(() => {
     const defaultList = allLists.find((list) => list.properties.includes(id));
-    return defaultList ? defaultList.name : ""; 
+    return defaultList ? defaultList.name : "My Next Trip"; 
   });  
   const [lastList, setLastList] = useState(selectedList);
-
-  console.log(allLists)
-
-  console.log(currentUser);
-
-  function clickButton() {
-    if (value) {
-      setParagraphs([...paragraphs, value]);
-
-      setValue("");
-
-    }
-  }
-
-  const change = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setValue(newValue);
-  };
 
   const mutationFn = async ({ action, listName }: MutationVariables): Promise<IUser> => {
     return modifyUserArrays(
@@ -104,19 +88,39 @@ function SaveButton({ id }: SavedButtonProps ) {
   };
   const { mutate, isPending } = useSavedListMutation();
 
-  const handleLikeClick = () => {
-    if(isLiked) {
+  const handleLikeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    if(isLiked)
       mutate({ action: "delete" });
-    }
-    else {
+    else
       mutate({ action: "add" });
-    }
-
   };
 
   const handleChangeList = (value: string) => {
+    mutate({ action: "delete", listName: selectedList });
     mutate({ action: "add", listName: value});
     setSelectedList(value);
+    setNewList("");
+  }
+
+  const handleDeleteFromList = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    mutate({ action: "delete", listName: listName})
+  }
+
+  if(currentUser.savedLists.length < 1)
+    return null;
+
+  if(is_X) {
+    return (
+      <div 
+      className="bg-white rounded-full h-[36px] w-[36px] flex items-center justify-center
+      hover:bg-gray-100 transition-all cursor-pointer"
+      onClick={handleDeleteFromList}
+      >
+        <CardXIcon className="w-5 h-5" />
+      </div>
+    )
   }
 
   return (
@@ -124,12 +128,16 @@ function SaveButton({ id }: SavedButtonProps ) {
       <TooltipProvider>
         <Popover open={open} onOpenChange={setOpen}>
           <Tooltip>
-            <PopoverContent dir="rtl" className="rounded-lg" sideOffset={45}>
+            <PopoverContent dir="rtl" className="rounded-lg" sideOffset={45} onClick={(e) => e.stopPropagation()}>
               {isLiked && !isPending && (
                 <div>
                   {/* <p>נשמר ב: הטיול הבא שלי</p> */}
-                  <p>Saved to: {selectedList}</p>
-                  <hr />
+                  <p className="ms-auto w-fit">Saved to: 
+                    <Link to={`/account/saved-lists/${selectedList}`} className="me-2 text-blue-600" >
+                      {selectedList}
+                    </Link>
+                  </p>
+                  <hr className="mt-1"/>
                   <Collapsible>
                     <CollapsibleTrigger className="w-full">
                       <div className="flex justify-between flex-row-reverse w-full px-4 py-3">
@@ -143,42 +151,25 @@ function SaveButton({ id }: SavedButtonProps ) {
                     onValueChange={handleChangeList}
                     >
                       { allLists.map(list =>
-                      <div className="flex items-center space-x-2"
+                      <div key={list.name} className="flex items-center space-x-2"
                       >
-                        <RadioGroupItem value={list.name} 
-                          id={list.name} key={list.name} />
+                        <RadioGroupItem value={list.name}
+                          id={list.name}  key={list.name+"radio"}/>
                         <Label htmlFor={list.name}>{list.name}</Label>
                       </div>
                     )}
-                    </RadioGroup>
-
-
-
-                      {paragraphs.map((paragraph, index) => (
-                        <p key={index}>
-                          <input type="radio" id="myRadio" className="my-2	" />
-                          {paragraph}
-                        </p>
-                      ))}
-                      <label>
-                        <div className="flex gap-1">
-                          <input type="radio" id="myRadio" className="my-2	" />
-                          <p>הטיול הבא שלי</p>
-                        </div>
-                        <div>
-                          <input type="radio" disabled className="" />
-                          <input
-                            onChange={change}
-                            type="text"
-                            value={value}
-                            className="border black p-1"
-                            placeholder="יצירת רשימה"
-                          />
-                          <button onClick={clickButton} className="p-2 border">
-                            click
-                          </button>
-                        </div>
-                      </label>
+                      <div>
+                      <RadioGroupItem disabled={newList === ""}
+                        value={newList} id={newList} key={newList+"radio"}/>
+                        <input
+                          onChange={(e) => setNewList(e.target.value)}
+                          type="text"
+                          value={newList}
+                          className="border black p-1 ml-1"
+                          placeholder="Create a list"
+                        />
+                      </div>
+                      </RadioGroup>
                     </CollapsibleContent>
                   </Collapsible>
                 </div>
@@ -186,7 +177,11 @@ function SaveButton({ id }: SavedButtonProps ) {
               {!isLiked && !isPending && (
                 <div>
                   {/* <p> הוסר מ: הטיול הבא שלי</p> */}
-                  <p>Removed from: {lastList}</p>
+                  <p className="ms-auto w-fit">Removed from:
+                    <Link to={`/account/saved-lists/${lastList}`} className="me-2 text-blue-600" >
+                      {lastList}
+                    </Link>
+                  </p>
                 </div>
               )}
             </PopoverContent>

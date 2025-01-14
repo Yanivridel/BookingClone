@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
+import Layout from "./Layout";
 
 function Account() {
   return (
     <div>
-      <Outlet />
+      <Layout />
     </div>
   );
 }

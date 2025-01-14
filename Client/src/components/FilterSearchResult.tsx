@@ -9,7 +9,7 @@ import { IconCounterMinus, IconCounterPlus } from './ui/Icons'
 import { cn } from '@/lib/utils'
 import { cf, cw } from '@/utils/functions'
 import CheckpointMap, { LatLng } from './CheckpointMap'
-import { IProperty } from '@/types/propertyTypes'
+import { IFilters, IProperty } from '@/types/propertyTypes'
 import { Skeleton } from './ui/skeleton'
 
 const distanceOptions = {
@@ -18,31 +18,11 @@ const distanceOptions = {
     "Less than 5 km": 5,
 }
 
-interface IFilters {
-    overall_count: number;
-    type: { [key: string]: number };
-    rating: { [key: number]: number };
-    popularFacilities: { [key: string]: number };
-    roomType: { [key: string]: number };
-    roomFacilities: { [key: string]: number };
-    meals: { [key: string]: number };
-    freeCancellation: number;
-    onlinePayment: number;
-    region: { [key: string]: number };
-    price: {
-        min: number;
-        max: number;
-    };
-    doubleBeds: number;
-    singleBeds: number;
-}
-
 interface FilterSearchResultProps {
     filters: IFilters | null;
-    coordinates: LatLng[];
 }
 
-function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
+function FilterSearchResult({filters} : FilterSearchResultProps) {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const [priceRange, setPriceRange] = useState<number[]>();
@@ -97,9 +77,6 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
 
     return (
         <div className='border max-w-[260px] grid gap-4'>
-            <div className='border h-[150px] max-w-[260px] rounded-lg'>
-                {/* {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />} */}
-            </div>
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
 

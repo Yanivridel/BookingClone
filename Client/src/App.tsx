@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./store/slices/userSlices.ts";
 import { getSelf } from "./utils/api/userApi.ts";
 import Property from "./pages/Property.tsx";
+import SavedLists from "./pages/SavedLists.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home country="bongarta" />,
+          element: <Home />,
         },
         {
           path: "/searchresults",
@@ -54,6 +55,10 @@ function App() {
           element: <EmailCode />,
           path: "email-code/:email",
         },
+        {
+          element: <SavedLists />,
+          path: "saved-lists/:listName",
+        }
       ],
     },
   ]);
