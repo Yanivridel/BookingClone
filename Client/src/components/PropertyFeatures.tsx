@@ -2,7 +2,7 @@ import { EFeatures } from "@/types/propertyTypes";
 import { featuresIcons } from "@/utils/staticData";
 import { SmallIconVi } from "./ui/Icons";
 
-interface PropertyFeaturesProps {
+export interface PropertyFeaturesProps {
   features:
     | [
         {

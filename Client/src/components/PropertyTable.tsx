@@ -1,52 +1,86 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { IRoom } from "@/types/roomTypes";
+import { useTranslation } from "react-i18next";
+import PopularFacilities from "./PopularFacilities";
+import RoomFeatures from "./RoomFeatures.tsx";
+import { IoPersonSharp } from "react-icons/io5";
+import { off } from "process";
 
-function PropertyTable() {
-  const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-  ];
+const headerRowsNumber = 6;
 
+type PropertyRoomsTableProps = {
+  rooms: IRoom[] | undefined;
+  nightsNum: number;
+};
+
+function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
+  const { t } = useTranslation();
   return (
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader className="bg-[#4b76b2] ">
-        <TableRow className="">
-          <TableHead className="text-white w-[100px]">Invoice</TableHead>
-          <TableHead className="text-white">Status</TableHead>
-          <TableHead className="text-white">Method</TableHead>
-          <TableHead className="text-white text-end">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-          </TableRow>
+    <table>
+      <thead>
+        <tr className="bg-[#4b76b2] text-white text-xs  sticky top-0 z-10">
+          {[...Array(headerRowsNumber)].map((_, i) => (
+            <th
+              key={i}
+              className="border-e-[1px] border-b-[1px] align-text-top text-start  py-2 border-[#5bbaff] "
+            >
+              {i === 2
+                ? t(`propertyTable.THeader.${i}`) +
+                  ` ${nightsNum} ` +
+                  t(`propertyTable.THeader.${i + 1}`)
+                : i === 3 || i === 4
+                ? t(`propertyTable.THeader.${i + 1}`)
+                : t(`propertyTable.THeader.${i}`)}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rooms?.map((room) => (
+          <tr>
+            <td className="border-e-[1px] border-b-[3px] border-[#5bbaff]">
+              <h3 className="text-primary cursor-pointer font-bold underline py-">
+                {room.title}
+              </h3>
+              <div className="pb-3">
+                <PopularFacilities
+                  iconsClassName={"fill-black w-4 h-4"}
+                  facilityTitleClassName={"text-[12px]"}
+                  facilityWrapperClassName="py-0"
+                  popularFacilities={room.facilities}
+                />
+              </div>
+              <hr />
+              <div className="py-2">
+                <RoomFeatures features={room.features} />
+              </div>
+            </td>
+            <td className="border-e-[1px] border-[#5bbaff]">
+              {room.offers.map((offer) => (
+                <div className="border-[1px] border-[#5bbaff] flex flex-col">
+                  {Array.from({ length: offer.group_adults }).map(
+                    (_, index) => (
+                      <div className="inline">
+                        <IoPersonSharp key={index} />
+                      </div>
+                    )
+                  )}
+                </div>
+              ))}
+            </td>
+            <td className="border-e-[1px] border-[#5bbaff]">
+              {room.offers.map((offer) => (
+                <div className="border-[1px] border-[#5bbaff] flex flex-col">
+                  {offer.price_per_night * nightsNum}
+                </div>
+              ))}
+            </td>
+            <td className="border-e-[1px] border-[#5bbaff]">vavasdfssdf</td>
+            <td className="border-e-[1px] border-[#5bbaff]">vavasdfssdf</td>
+            <td className="">vavasdfssdf</td>
+          </tr>
         ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+      </tbody>
+    </table>
   );
 }
 

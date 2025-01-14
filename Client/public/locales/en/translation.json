@@ -115,5 +115,15 @@
 
   "nearBy": {
     "header": "Hotel area info"
+  },
+  "propertyTable": {
+    "THeader": [
+      "Room type",
+      "Number of guests",
+      "Price for",
+      "nights",
+      "Your choices",
+      "Select Rooms"
+    ]
   }
 }

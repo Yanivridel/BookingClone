@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import PropertyTable from "@/components/PropertyTable";
 import { IReview } from "@/types/reviewTypes";
 import Search from "@/components/search";
+import { useTranslation } from "react-i18next";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -29,6 +30,7 @@ function Property() {
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
+  const { t } = useTranslation();
   const arr = [
     "Overview",
     "Info & prices",
@@ -61,12 +63,19 @@ function Property() {
       <PropertyDescription propertyData={propertyData} />
       <PropertyHighlight highlights={propertyData?.highlights} />
       <GeniusCard />
+      <h2 className="py-3 text-lg font-bold ">
+        {t("popularFacilities.header")}
+      </h2>
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
-      <PropertyTable />
+      {/* todo: pass real data */}
+      <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
       <GuestReviews propertyData={propertyData} />
       <QualityCard propertyData={propertyData} />
       <AsksComponents propertyData={propertyData} />
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+      <h2 className="py-3 text-lg font-bold ">
+        {t("popularFacilities.header")}
+      </h2>
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo ridel carusel 5 km close by */}
       <PropertyFeatures features={propertyData?.features} />
