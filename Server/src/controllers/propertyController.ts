@@ -136,21 +136,23 @@ interface IGetPropertiesBody {
         
     };
     secondary?: {
-        type: string[]; // hotel etc..
-        rating: number[]; // 1-5
-        popularFacilities: string[];
-        roomType: string[],
-        roomFacilities: string[];
-        meals: string[];
-        freeCancellation: boolean;
-        onlinePayment: boolean;
-        region: string;
-        price: {
+        type?: string[]; // hotel etc..
+        rating?: number[]; // 1-5
+        popularFacilities?: string[];
+        roomType?: string[],
+        roomFacilities?: string[];
+        meals?: string[];
+        freeCancellation?: boolean;
+        onlinePayment?: boolean;
+        region?: string;
+        price?: {
             min: number;
             max: number;
         }
-        doubleBeds: boolean;
-        singleBeds: boolean;
+        doubleBeds?: boolean;
+        singleBeds?: boolean;
+        bathrooms?: number;
+        bedrooms?: number;
     };
 }
 interface IFilterPropertiesLocation {
@@ -256,10 +258,10 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
 
         // ! REMOVE LATER
-        const properties = await propertyModel.find({}).populate("rooms reviews_num") as IProperty[];
-        for(let i = 0; i< 10; i++){
-            filteredProperties.push(...properties);
-        }
+        // const properties = await propertyModel.find({}).populate("rooms reviews_num") as IProperty[];
+        // for(let i = 0; i< 10; i++){
+        //     filteredProperties.push(...properties);
+        // }
 
 
         const paginatedProperties = filteredProperties.slice(skip, skip + limit);
@@ -364,8 +366,8 @@ async function filterPropertiesPrimary(
     return filteredProperties.filter((property): property is IProperty => property !== null);
 }
 function filterPropertiesSecondary(properties: IProperty[], body: IGetPropertiesBody): IProperty[] { 
-    const { type, rating, popularFacilities, roomType, roomFacilities, meals,
-        freeCancellation, onlinePayment, region, price, doubleBeds, singleBeds} = body.secondary || {};
+    const { type, rating, popularFacilities, roomType, roomFacilities, meals, freeCancellation,
+        onlinePayment, region, price, doubleBeds, singleBeds, bathrooms, bedrooms} = body.secondary || {};
 
     return properties.filter(property => {
         return (
@@ -436,6 +438,16 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
                             insideRoom.beds.bunk > 0 
                         )
                     )
+                )
+            ) && 
+            (!bedrooms || bedrooms===0 ||
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.rooms.filter(insideRoom => insideRoom.type === "sleep").length >= bedrooms
+                )
+            ) &&
+            (!bathrooms || bathrooms===0 ||
+                (property.rooms as unknown as IRoom[]).some((room) => 
+                    room.rooms.filter(insideRoom => insideRoom.type === "shower").length >= bathrooms
                 )
             )
         ); 

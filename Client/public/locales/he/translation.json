@@ -99,10 +99,23 @@
   "button": {
     "search": "חיפוש"
   },
-  "highlights": {
+  "popularFacilities": {
     "header": "המתקנים הפופולריים ביותר"
+  },
+  "highlights": {
+    "header": "עיקרי המקום"
   },
   "nearBy": {
     "header": "סביבת המלון"
+  },
+  "propertyTable": {
+    "THeader": [
+      "סוג החדר",
+      "מס' אורחים",
+      "מחיר עבור",
+      "לילות",
+      "האפשרויות שלכם",
+      "בחירת חדרים"
+    ]
   }
 }

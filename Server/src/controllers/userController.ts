@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose, { Types } from 'mongoose';
-import { MongoError } from 'mongodb'; 
+import { MongoError, ObjectId } from 'mongodb'; 
 import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
 
@@ -311,7 +311,27 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
                 return;
             }
 
-            const existingList = user?.savedLists.find((list: any) => list.name === savedList.name);
+            const userSavedList = user?.savedLists;
+
+            if(!savedList?.name) {
+                if(action === "add")
+                    savedList.name = "My Next Trip"
+                else {
+                    const foundList = userSavedList.find((list) => 
+                        list.properties.includes(new ObjectId(savedList.propertyId)))
+                    if(!foundList) {
+                        res.status(400).json({
+                            status: "error",
+                            message: `The property id wasn't found on any user list`,
+                        });
+                        return;
+                    }
+                    savedList.name = foundList.name;
+                }
+            }
+
+            const existingList = userSavedList.find((list: any) => list.name === savedList.name);
+
 
             if (action === "add" && propertyIdObj) {
                 if (existingList) {
@@ -486,188 +506,3 @@ export const deleteUserById = async (req: Request, res: Response): Promise<void>
         });
     }
 };
-
-
-
-
-
-
-/*
-//  LIKE TEACHER - Done
-export const likeTeacher = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
-        const { id:teacherId } = req.params;
-
-        if(!userId || !teacherId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-
-        const teacher = await userModel.findById(teacherId);
-        if (!teacher) {
-            res.status(404).json({ status: "error", message: 'Teacher not found' });
-            return
-        }
-
-        const user = await userModel.findById(userId);
-        if (!user) {
-            res.status(404).json({ status: "error", message: 'User not found' });
-            return;
-        }
-
-        if ((!user.myTeachers.some((teacher: mongoose.Types.ObjectId) => teacher.equals(new mongoose.Types.ObjectId(teacherId))))) {
-            user.myTeachers.push(new mongoose.Types.ObjectId(teacherId));
-            await user.save();
-            res.status(200).json({ message: 'Teacher liked successfully', myTeachers: user.myTeachers });
-        } else {
-            res.status(400).json({ status: "error", message: 'Teacher already liked' });
-        }
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-
-//  UNLIKE TEACHER - Done
-export const unlikeTeacher = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
-        const { id:teacherId } = req.params;
-
-        if(!userId || !teacherId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-
-        const user = await userModel.findById(userId);
-        if (!user) {
-            res.status(404).json({ status:"error", message: 'User not found' });
-            return;
-        }
-
-        if ((user.myTeachers.some((teacher: mongoose.Types.ObjectId) => teacher.equals(new mongoose.Types.ObjectId(teacherId))))) {
-            user.myTeachers = user.myTeachers.filter((id) => id.toString() !== teacherId);
-            await user.save();
-            res.status(200).json({ status:"success", message: 'Teacher unliked successfully', myTeachers: user.myTeachers });
-        } else {
-            res.status(400).json({ status:"error", message: 'Teacher not found in liked list' });
-        }
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-
-
-// GET TEACHERS - Done
-export const getTeachers = async (req: Request, res: Response): Promise<void> => {
-    try {
-
-        const teachers = await userModel.find({ role: "teacher"});
-
-        if (!teachers) {
-            res.status(404).json({ status:"error", message: 'There are no teachers' });
-            return;
-        }
-
-        res.status(200).send({
-            status: "success",
-            message: "teachers found successfully",
-            teachers
-        })
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-
-//  GET USER BY ID - PROGRESS
-export const getUserById = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id:userId } = req.params;
-
-        if(!userId) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-
-        const user = await userModel.findOne({ _id: userId }).populate("myTeachers").populate("schedule");
-
-        if (!user) {
-            res.status(404).json({ status:"error", message: 'User not Found' });
-            return;
-        }
-
-        res.status(200).send({
-            status: "success",
-            message: "teachers found successfully",
-            user
-        })
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-
-
-// HANDLE COINS - 
-export const handleCoins = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const authenticatedReq = req as AuthenticatedRequest;
-        const { userId } = authenticatedReq;
-        let { number } = req.params;
-
-        if(!userId || !number) {
-            res.status(400).send({status: "error", message: "Missing required parameters"});
-            return;
-        }
-        
-        const user = await userModel.findOne({ _id: userId });
-
-        if (!user) {
-            res.status(404).json({ status:"error", message: 'User not Found' });
-            return;
-        }
-
-        if(user.coins + parseFloat(number) < 0) {
-            res.status(400).send({ status:"error", message: 'Not enough coins' })
-            return;
-        }
-
-        user.coins += parseFloat(number);
-        await user.save();
-
-        res.status(200).send({
-            status: "success",
-            message: "Coins handled successfully",
-            coins: user.coins
-        })
-    } catch (error) {
-        console.log(error); // dev mode
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error occurred",
-            error: error instanceof Error ? error.message : 'Unknown error',
-        });
-    }
-}
-*/
