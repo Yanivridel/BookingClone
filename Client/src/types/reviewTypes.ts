@@ -1,9 +1,7 @@
-import { Types } from "mongoose";
-
-export interface IReview extends Document {
-  _id?: Types.ObjectId;
-  propertyId: Types.ObjectId; // ref: Property
-  userId: Types.ObjectId; // ref: User
+export interface IReview {
+  _id?: string;
+  propertyId: string; // ref: Property
+  userId: string; // ref: User
   passenger_type: string; // enum: [family, couple, friends, single, business]
   language: string; // enum : ELanguage
   rating: number; // min:0, max:10

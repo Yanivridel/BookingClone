@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TPartialUser } from '@/types/userTypes';
+import { IUser, TPartialUser } from '@/types/userTypes';
 import { getCookie } from './../cookies';
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
@@ -68,19 +68,24 @@ export const editProfile = async (userProperties : TPartialUser ) => {
     }
 }
 // * Done
-export const modifyUserArrays = async (userArrays : TPartialUser ) => {
+export const modifyUserArrays = async (action: string, userArrays : TPartialUser ) => {
     try {
-        const { data } = await axios.patch(`${API_URL}/api/users/modify-arrays`, 
-            userArrays, 
+        const { data } = await axios.patch(`${API_URL}/api/users/modify-arrays`,
+            {
+                action,
+                ...userArrays
+            }
+            ,
             {
                 headers: {
                     Authorization: `Bearer ${getCookie("token")}`
                 }
             });
-        return data.data;
+            console.log(data);
+        return data.data as IUser;
     } 
     catch (error) {
-        console.error('Add recipe error:', error);
+        console.error('Add SavedList error:', error);
         throw error;
     }
 }

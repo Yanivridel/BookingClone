@@ -38,7 +38,7 @@ interface IFilters {
 }
 
 interface FilterSearchResultProps {
-    filters: IFilters;
+    filters: IFilters | null;
     coordinates: LatLng[];
 }
 
@@ -47,7 +47,8 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
 
     const [priceRange, setPriceRange] = useState<number[]>();
 
-    console.log(filters);
+    if(filters?.overall_count === 0)
+        filters = null;
 
     useEffect(() => {
         // Default start price range
@@ -97,7 +98,7 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
     return (
         <div className='border max-w-[260px] grid gap-4'>
             <div className='border h-[150px] max-w-[260px] rounded-lg'>
-                {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />}
+                {/* {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />} */}
             </div>
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
@@ -121,7 +122,7 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
                 </div>
                 }
 
-                { !filters && [... Array(14)].map(_ => <>
+                { !filters && [... Array(7)].map(_ => <>
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
