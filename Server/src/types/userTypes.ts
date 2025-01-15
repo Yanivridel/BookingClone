@@ -59,18 +59,7 @@ export interface IUser extends Document {
             offerConfirmOrders: boolean;
         };
     };
-    search: [
-        {
-            location: ILocation;
-            checkin: Date;
-            checkout: Date;
-            group_adults: number;
-            group_children: number;
-            ages: number[];
-            rooms_num: number;
-            is_animal: boolean;
-        }
-    ];
+    search: [ISearchEntry];
     interested: [Types.ObjectId];
     savedLists: [
         {
@@ -86,7 +75,35 @@ export interface IUser extends Document {
     fullName?: string; // Virtual property
 }
 
-/*
-the default of showing name is fullname = fname + lname (virtual)
-
-*/
+export interface ISearchEntry {
+    _id?: string;
+    location: IFilterPropertiesLocation
+    date: IFilterPropertiesDate
+    options: IFilterPropertiesOptions
+}
+export interface IFilterPropertiesLocation {
+    country?: string;
+    region?: string;
+    city?: string;
+    addressLine?: string;
+}
+export interface IFilterPropertiesDate {
+    startDate?: string | Date;
+    endDate?: string | Date;
+    length?: number;
+    isWeekend?: boolean;
+    fromDay?: number;
+    yearMonths: [{
+        year: number,
+        month: number
+    }];
+}
+export interface IFilterPropertiesOptions {
+    adults?: number;
+    children?: number;
+    childrenAges?: number[];
+    rooms?: number;
+    isAnimalAllowed?: boolean;
+    distance?: number; // km
+    isBaby?: boolean;
+}

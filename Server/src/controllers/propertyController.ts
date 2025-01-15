@@ -1,18 +1,13 @@
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { MongoError } from 'mongodb'; 
-import { userModel } from "../models/userModel";
-import jwt from 'jsonwebtoken';
 
 // utils imports
-import { AuthenticatedRequest } from 'src/types/expressTypes';
 import { IProperty, TPartialProperty } from 'src/types/propertyTypes';
 import { propertyModel } from './../models/propertyModel';
 import { getCoordinatesByLocation } from 'src/utils/maps';
 import { roomModel } from 'src/models/roomModel';
 import { IRoom } from 'src/types/roomTypes';
 import { getCache, setCache } from 'src/utils/redisClient';
-
+import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from 'src/types/userTypes'; 
 //* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {
@@ -154,32 +149,6 @@ interface IGetPropertiesBody {
         bathrooms?: number;
         bedrooms?: number;
     };
-}
-interface IFilterPropertiesLocation {
-    country?: string;
-    region?: string;
-    city?: string;
-    addressLine?: string;
-}
-interface IFilterPropertiesDate {
-    startDate?: string | Date;
-    endDate?: string | Date;
-    length?: number;
-    isWeekend?: boolean;
-    fromDay?: number;
-    yearMonths: [{
-        year: number,
-        month: number
-    }];
-}
-interface IFilterPropertiesOptions {
-    adults?: number;
-    children?: number;
-    childrenAges?: number[];
-    rooms?: number;
-    isAnimalAllowed?: boolean;
-    distance?: number; // km
-    isBaby?: boolean;
 }
 interface IGetPropertiesQuery {
     page?: string;

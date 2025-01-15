@@ -19,6 +19,9 @@ import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
 import { convertMonthsToQueryString } from "@/utils/functions";
+import { modifyUserArrays } from "@/utils/api/userApi";
+import { useDispatch } from "react-redux";
+import { addSearchEntry } from "@/store/slices/userSlices";
 
 // location initial data data
 const items: LocationRes[] = [
@@ -154,6 +157,7 @@ function Search() {
       return isNaN(num) ? "" : num; // Replace invalid values with ""
     })
   : []);
+  const dispatch = useDispatch();
 
   // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
@@ -310,7 +314,7 @@ function Search() {
   const formattedEnglish = "EEE, MMM dd";
 
   //  preferred days - monthes and day number
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let url = "/searchresults?";
 
     //  locations
@@ -366,6 +370,13 @@ function Search() {
       url += `yearMonths=${monthsQueryString}&`;
     }
     navigate(url);
+    try {
+      console.log("finalData", finalData);
+      const updatedUser = await modifyUserArrays("add", { search: finalData.primary});
+      dispatch(addSearchEntry(updatedUser.search));
+    } catch(err) {
+      console.log("React Client Error: ", err);
+    }
   };
 
   useEffect(() => {

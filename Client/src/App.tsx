@@ -17,6 +17,8 @@ import { getSelf } from "./utils/api/userApi.ts";
 import Property from "./pages/Property.tsx";
 import MyAccountPage from "./pages/MyAccountPage.tsx";
 
+import SavedLists from "./pages/SavedLists.tsx";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -26,7 +28,7 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home country="bongarta" />,
+          element: <Home />,
         },
         {
           path: "/searchresults",
@@ -60,6 +62,9 @@ function App() {
           path: "MyAccountPage",
         },
 
+          element: <SavedLists />,
+          path: "saved-lists/:listName",
+        }
       ],
     },
   ]);

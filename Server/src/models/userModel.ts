@@ -73,13 +73,24 @@ const UserSchema = new Schema<IUser>(
         search: {
             type: [{
                     location: { type: LocationSchema },
-                    checkin: { type: Date },
-                    checkout: { type: Date },
-                    group_adults: { type: Number },
-                    group_children: { type: Number },
-                    ages: { type: [Number], default: []},
-                    rooms_num: { type: Number },
-                    is_animal: { type: Boolean },
+                    date : {
+                        startDate: { type: Schema.Types.Mixed },
+                        endDate: Schema.Types.Mixed,
+                        length: Number,
+                        isWeekend: Boolean,
+                        fromDay: Number,
+                        yearMonths: [{
+                            year: Number,
+                            month: Number
+                        }]
+                    },
+                    options: {
+                        adults: Number,
+                        childrenAges: [Number],
+                        rooms: Number,
+                        isAnimalAllowed: Boolean,
+                        isBaby: Boolean,
+                    },
                     createdAt: { type: Date, default: Date.now}
                 }],
             default: [],

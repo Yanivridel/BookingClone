@@ -33,6 +33,7 @@ const buttonVariants = cva(
         disabled: "cursor-not-allowed bg-softGray text-[#a2a2a2]",
         negativeDefault:
           "bg-white border-[1.5px] border-buttonBlue text-buttonBlue hover:bg-softBlue py-[18px] rounded-lg",
+        iconHover: "w-10 h-10 hover:bg-[#e3e3e3] rounded-lg",
       },
       size: {
         default: "h-9 px-4 py-2",
