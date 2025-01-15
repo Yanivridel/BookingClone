@@ -11,8 +11,9 @@ import SelectOffer from "./SelectOffer.tsx";
 import { SmallIconVi } from "./ui/Icons.tsx";
 import MealsOffer from "./MealsOffer.tsx";
 import QuestionMarkInfo from "./QuestionMarkInfo.tsx";
+import { Button } from "./ui/button.tsx";
 
-const headerRowsNumber = 5;
+const headerRowsNumber = 6;
 
 type PropertyRoomsTableProps = {
   rooms: IRoom[];
@@ -33,7 +34,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
   }, [offersRoomSelected]);
 
   return (
-    <div className="grid grid-col grid-cols-[repeat(15,_minmax(0,1fr))]   relative">
+    <div className="grid grid-col grid-cols-[repeat(20,_minmax(0,1fr))]   relative">
       {[...Array(headerRowsNumber)].map((_, i) => (
         <h2
           key={i}
@@ -47,7 +48,9 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
               ? "col-span-3"
               : i === 3
               ? "col-span-4"
-              : "col-span-1"
+              : i === 5
+              ? "col-span-4"
+              : "col-span-2"
           )}
         >
           {i === 2
@@ -56,23 +59,48 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
               t(`propertyTable.THeader.${i + 1}`)
             : i === 3 || i === 4
             ? t(`propertyTable.THeader.${i + 1}`)
+            : i === 5
+            ? ""
             : t(`propertyTable.THeader.${i}`)}
+          {i === 5 && (
+            <div className="absolute top-[60px] left-2 right-2 flex flex-col text-black">
+              <Button>{t("order.beforeSelectRooms.button")}</Button>
+
+              <div className="py-2 text-sm flex flex-col gap-2">
+                <div className="flex gap-3">
+                  <span>•</span>
+                  <span className="">
+                    {t("order.beforeSelectRooms.firstText")}
+                  </span>
+                </div>
+                <div className=" flex gap-3">
+                  <span>•</span>
+                  <span className="">
+                    {t("order.beforeSelectRooms.secondText")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </h2>
       ))}
 
       {rooms?.map((room) => (
         <>
           {/* room Description */}
+          {/* 5 */}
           <div
             key={room._id}
             className={`border-e-[1px] border-b-[3px] border-[#5bbaff] col-span-5 `}
           >
             <RoomTypeDescription room={room} />
           </div>
-          <div className="grid grid-cols-10 col-span-10">
+          {/* 10 */}
+          <div className="grid grid-cols-11 col-span-11">
             {room.offers.map((offer) => (
               <>
                 {/* offers group */}
+                {/* 2 */}
                 <div className="border-[1px] border-[#5bbaff] col-span-2">
                   <OffersGroups
                     group_adults={offer.group_adults}
@@ -80,7 +108,9 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                     ages={offer.ages}
                   />
                 </div>
+
                 {/* payment */}
+                {/* 3 */}
                 <div className="border-[1px] border-[#5bbaff] flex flex-col gap-2 col-span-3 p-1">
                   <OffersPayment
                     discount={offer.discount}
@@ -91,6 +121,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                 </div>
 
                 {/* choices */}
+                {/* 4 */}
                 <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-4 text-xs">
                   <div className="list-outside 	p-4 flex flex-col gap-2 ">
                     {offer.meals && (
@@ -122,8 +153,8 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                       </div>
                     )}
 
-                    {room.overall_count > 6 && (
-                      <div className=" flex gap-[17px]">
+                    {room.overall_count < 6 && (
+                      <div className="flex gap-[17px]">
                         <span>•</span>
                         <div className="text-[#a30100] ">
                           {t("offersChoices.only")}{" "}
@@ -135,7 +166,8 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                   </div>
                 </div>
                 {/* select offer */}
-                <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-1 ">
+                {/* 2 */}
+                <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-2 ">
                   <div className="p-1 flex">
                     <SelectOffer
                       overall_count={room.overall_count}
@@ -146,15 +178,11 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                 </div>
               </>
             ))}
+            {/* 5 */}
           </div>
+          <div className="border grid col-span-4 border-none relative p-2"></div>
         </>
       ))}
-      {/* </div> */}
-      {/* <div className="border-e-[1px] border-[#5bbaff]">
-            {room.offers.map((offer) => (
-              
-            ))} */}
-      {/* </div> */}
     </div>
   );
 }

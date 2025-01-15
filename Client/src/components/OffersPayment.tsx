@@ -29,7 +29,6 @@ function OffersPayment({
   const currentDate = new Date();
   return (
     <>
-      {/* <div className="border-[1px] border-[#5bbaff] flex flex-col gap-2 col-span-3 p-1"> */}
       {/* discount */}
 
       {discount.percentage && new Date(discount.expires) > currentDate && (

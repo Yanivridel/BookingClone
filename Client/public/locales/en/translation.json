@@ -155,5 +155,12 @@
     "prepaymentHeader": "prepayment",
     "prepaymentSubHeader": "Pay online now",
     "cancellationHeader": "cancellation"
+  },
+  "order": {
+    "beforeSelectRooms": {
+      "button": "I'll reserve",
+      "firstText": "It only takes 2 minutes",
+      "secondText": "Confirmation is immediate"
+    }
   }
 }
