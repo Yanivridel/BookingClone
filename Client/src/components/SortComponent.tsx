@@ -6,6 +6,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { Badge } from "./ui/badge";
 import { useSearchParams } from "react-router-dom";
+import { Skeleton } from "./ui/skeleton";
 
 
 
@@ -23,15 +24,15 @@ function SortComponent({setIsGrid, filters} : SortComponentProps ) {
         setIsVisible(false);
     }
 
-
-
     return (
         <div className=" p-3">
 
             <div className="border p-4 flex justify-center">
                 <div className=" w-[50%] rounded-xl grid gap-3 p-3">
-                    <p className="font-bold text-lg">
-                        {searchParams.get("city") || "unknown"}: {filters ? filters.overall_count : "..."} properties found</p>
+                    <p className="font-bold text-lg flex items-center gap-2">
+                        { searchParams.get("city") ? searchParams.get("country") + ", " + searchParams.get("city") + ":" : 
+                        searchParams.get("country") ? searchParams.get("country") + ":" : "unknown"}
+                        {filters ? filters.overall_count : <Skeleton className="h-5 w-8 inline-block"/>} properties found</p>
                     <div >
                         <Popover>
                             <PopoverTrigger>

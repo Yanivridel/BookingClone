@@ -42,6 +42,8 @@ export const createProperty = async (req: Request<{},{},TPartialProperty> , res:
         const newProperty = new propertyModel(propertyData);
         await newProperty.save();
 
+        console.log("property created")
+
         res.status(201).json({
             status: "success",
             message: "Property created successfully",

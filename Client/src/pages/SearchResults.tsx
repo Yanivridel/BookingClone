@@ -147,7 +147,7 @@ function SearchResults() {
         <div className="flex-1">
           <SortComponent filters={data?.pages[0].filters} setIsGrid={setIsGrid} />
           <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
-            { !data && isFetching && SkeletonCard(5) }
+            { !data && isFetching && SkeletonCard(10) }
             { data && 
             data.pages.map(page => {
               return (page.filteredProperties as IProperty[]).map((property,idx) =>
