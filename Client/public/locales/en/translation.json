@@ -141,8 +141,19 @@
     "off": "off"
   },
   "offersChoices": {
-    "guniesDiscount": "12% Genius discount applied to the price before taxes and charges",
-    "only": "only",
+    "guniesDiscountHeader": "12% Genius discount",
+    "guniesDiscountText": "applied to the price before taxes and charges",
+    "only": "Only",
     "left": "left on our site"
+  },
+  "questionMarkInfo": {
+    "mealsHeader": "Meals",
+    "included": "included",
+    "rated": "rated",
+    "based": "based on",
+    "reviews": "reviews.",
+    "prepaymentHeader": "prepayment",
+    "prepaymentSubHeader": "Pay online now",
+    "cancellationHeader": "cancellation"
   }
 }

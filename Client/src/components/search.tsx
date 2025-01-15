@@ -114,7 +114,7 @@ function Search() {
     useState<LocationRes[]>(items); // for drop down initialization
   // !need to change the type with the real data
   const [finalLocation, setFinalLocation] = useState<Location>({
-    country: searchParams.get("country") ?? "Israel",
+    country: searchParams.get("country") ?? "",
     region: searchParams.get("region") ?? null,
     city: searchParams.get("city") ?? null,
     addressLine: searchParams.get("addressLine") ?? null,
@@ -128,7 +128,7 @@ function Search() {
   const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(searchParams.get("startDate") || new Date()),
-    to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)) ,
+    to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)),
   });
 
   const [activePlusMinusButton, setActivePlusMinusButton] =
@@ -142,18 +142,27 @@ function Search() {
   // * people && rooms
 
   const [openPeoplePopHover, setOpenPeoplePopHover] = useState(false);
-  const [adultsCount, setAdultsCount] = useState(parseInt(searchParams.get("adults") || "1"));
-  const [childrenCount, setChildrenCount] = useState(searchParams.get("childrenAges")?.split(",").length || 0);
+  const [adultsCount, setAdultsCount] = useState(
+    parseInt(searchParams.get("adults") || "1")
+  );
+  const [childrenCount, setChildrenCount] = useState(
+    searchParams.get("childrenAges")?.split(",").length || 0
+  );
   const [roomsCount, setRoomsCount] = useState(1);
   const [isPets, setIsPets] = useState(false);
   const [childrenAges, setChildrenAges] = useState<
     (number | typeof NaN | undefined | null | "")[]
-  >( searchParams.get("childrenAges") 
-  ? searchParams.get("childrenAges")!.split(",").map(age => {
-      const num = parseInt(age.trim(), 10);
-      return isNaN(num) ? "" : num; // Replace invalid values with ""
-    })
-  : []);
+  >(
+    searchParams.get("childrenAges")
+      ? searchParams
+          .get("childrenAges")!
+          .split(",")
+          .map((age) => {
+            const num = parseInt(age.trim(), 10);
+            return isNaN(num) ? "" : num; // Replace invalid values with ""
+          })
+      : []
+  );
 
   // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
@@ -386,7 +395,9 @@ function Search() {
   }, [finalData]);
 
   useEffect(() => {
-    setLocationInputValue(Object.values(finalLocation).filter(isNaN).join(", "));
+    // setLocationInputValue(
+    //   Object.values(finalLocation).filter(isNaN).join(", ")
+    // );
 
     const handleResize = () => setWindowWidth(window.innerWidth);
 

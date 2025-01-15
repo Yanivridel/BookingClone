@@ -18,7 +18,7 @@ function SelectOffer({
   setOffersRoomSelected,
   overall_count,
 }: SelectOfferProps) {
-  const [value, setValue] = useState<number>();
+  const [value, setValue] = useState<number>(0);
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setValue(Number(e.currentTarget.value));
     setOffersRoomSelected((prev) => {
@@ -44,8 +44,9 @@ function SelectOffer({
   return (
     <select
       onChange={handleChange}
-      className="border-[1px] border-black rounded-md text-sm px-2 min-w-0"
+      className="border-[1px] border-black rounded-md text-sm px-2 min-w-12 bg-inherit"
       value={value}
+      defaultValue={0}
       id={offerId}
     >
       {[...Array(overall_count + 1)].map((_, i) => (

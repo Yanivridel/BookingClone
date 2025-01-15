@@ -1,4 +1,3 @@
-import { EFacility, EFeatures } from "@/types/propertyTypes";
 import PopularFacilities from "./PopularFacilities";
 import RoomFeatures from "./RoomFeatures";
 import { IRoom } from "@/types/roomTypes";

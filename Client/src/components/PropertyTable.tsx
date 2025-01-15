@@ -8,6 +8,9 @@ import OffersPayment from "./OffersPayment.tsx";
 import { useEffect, useState } from "react";
 import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import SelectOffer from "./SelectOffer.tsx";
+import { SmallIconVi } from "./ui/Icons.tsx";
+import MealsOffer from "./MealsOffer.tsx";
+import QuestionMarkInfo from "./QuestionMarkInfo.tsx";
 
 const headerRowsNumber = 5;
 
@@ -69,6 +72,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
           <div className="grid grid-cols-10 col-span-10">
             {room.offers.map((offer) => (
               <>
+                {/* offers group */}
                 <div className="border-[1px] border-[#5bbaff] col-span-2">
                   <OffersGroups
                     group_adults={offer.group_adults}
@@ -87,21 +91,50 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                 </div>
 
                 {/* choices */}
-                <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-4">
-                  {offer.cancellation}
-                  {offer.is_genius && (
-                    <div>{t("offersChoices.guniesDiscount")}</div>
-                  )}
-                  {
-                    <div>
-                      {t("offersChoices.only")}
-                      <span>{room.overall_count}</span>
-                      {t("gunies.left")}
+                <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-4 text-xs">
+                  <div className="list-outside 	p-4 flex flex-col gap-2 ">
+                    {offer.meals && (
+                      <div className="flex justify-between">
+                        <MealsOffer meals={offer.meals} />
+                        <QuestionMarkInfo
+                          cancellation={offer.cancellation}
+                          meals={offer.meals}
+                          prepayment={offer.prepayment.text}
+                        />
+                      </div>
+                    )}
+
+                    {/* cancellation */}
+                    <div className=" flex gap-[17px]">
+                      <span>•</span>
+                      <span className="font-bold">{offer.cancellation}</span>
                     </div>
-                  }
-                  {/* is_gunies 
-                  prepayment */}
+
+                    {offer.is_genius && (
+                      <div className="text-deals  fill-deals flex gap-2">
+                        <SmallIconVi className="h-4 w-4 self-start shrink-0  stroke-deals stroke-5" />
+                        <div>
+                          <span className="font-bold">
+                            {t("offersChoices.guniesDiscountHeader")}
+                          </span>{" "}
+                          <span>{t("offersChoices.guniesDiscountText")}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {room.overall_count > 6 && (
+                      <div className=" flex gap-[17px]">
+                        <span>•</span>
+                        <div className="text-[#a30100] ">
+                          {t("offersChoices.only")}{" "}
+                          <span>{room.overall_count}</span>{" "}
+                          {t("offersChoices.left")}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+                {/* select offer */}
                 <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-1 ">
                   <div className="p-1 flex">
                     <SelectOffer
