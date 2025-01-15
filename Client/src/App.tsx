@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./store/slices/userSlices.ts";
 import { getSelf } from "./utils/api/userApi.ts";
 import Property from "./pages/Property.tsx";
+import MyAccountPage from "./pages/MyAccountPage.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,6 +55,11 @@ function App() {
           element: <EmailCode />,
           path: "email-code/:email",
         },
+        {
+          element: <MyAccountPage />,
+          path: "MyAccountPage",
+        },
+
       ],
     },
   ]);

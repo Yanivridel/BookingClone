@@ -5,12 +5,15 @@ import KidsImage from "../assets/images/kids.jpeg";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { IReview } from "@/types/reviewTypes";
 
 interface ImagePropertyProps {
   propertyData?: IProperty;
+    propertyReviews? : IReview[]
+  
 }
 
-function ImagesProperty({ propertyData }: ImagePropertyProps) {
+function ImagesProperty({ propertyData, propertyReviews }: ImagePropertyProps) {
   if (!propertyData) {
     return <div></div>;
   }
@@ -70,28 +73,26 @@ function ImagesProperty({ propertyData }: ImagePropertyProps) {
           <div className="h-[20%] p-2 border-b-2 flex items-center justify-end">
             <div className="flex gap-1 ">
               <div className="flex flex-col items-end">
-                <CardTitle>Suberb</CardTitle>
+                <CardTitle>{propertyData.title}</CardTitle>
                 <CardDescription className="text-xs">
-                  3,551 reviews
+                {propertyData.reviews_num} reviews 
                 </CardDescription>
               </div>
               <div className="flex gap-1 p-1  ">
-                <Badge variant="rating" className="cursor-pointer h-full">
-                  {propertyData.rating.cleanliness}
+                <Badge variant="rating" className="cursor-pointer h-full p-1">
+                {Math.round(propertyData?.total_rating ?? 0)}
                 </Badge>
               </div>
             </div>
           </div>
-          <div className="h-[60%] border-b-2 p-2 grid gap-2">
+          <div className="h-[60%] border-b-2 p-4 grid gap-2">
             <div className=" max-h-[10%]">
               <p className="text-xs font-bold">Guests who stayed here loved</p>
             </div>
             <div className=" grid justify-center">
               <div className="w-40 ">
                 <p className="text-xs">
-                  “Check in and check out was very smooth. I arrived early and
-                  they got me a room earlier than check-in time when it became
-                  available. The porters...”
+                 {propertyReviews[0].reviewText}
                 </p>
               </div>
             </div>
@@ -114,7 +115,7 @@ function ImagesProperty({ propertyData }: ImagePropertyProps) {
               <p className="font-bold">Great location!</p>
             </div>
             <div>
-              <Badge variant="outline">8.9</Badge>
+              <Badge variant="outline">{Math.round(propertyData?.total_rating ?? 0)}</Badge>
             </div>
           </div>
         </Card>
