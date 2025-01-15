@@ -7,7 +7,7 @@ function Account() {
     <div>
       <TopNav />
       <Outlet />
-      <Layout />
+      {/* <Layout /> */}
     </div>
   );
 }
