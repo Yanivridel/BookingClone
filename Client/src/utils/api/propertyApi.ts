@@ -34,8 +34,9 @@ export const searchPropertiesChunks = async (
   page?: number,
   limit?: number
 ) => {
-  if(!page) page = 1;
-  if(!limit) limit= 15;
+  
+  page ??= 1;
+  limit ??= 15;
   const response = await fetch(`${API_URL}/api/property/?page=${page}&limit=${limit}`, {
     method: "POST",
     headers: {
@@ -61,18 +62,6 @@ export const searchPropertiesChunks = async (
   return { firstChunkPromise, secondChunkPromise };
 };
 
-// * Done
-export const getAutocompleteLocations = async (searchText: string) => {
-  try {
-    const { data } = await axios.get(`${API_URL}/api/property/location-search-autocomplete/${searchText}`);
-    return data.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-
-// Help functions
 const createChunkReader = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
   resultKey: "filteredProperties" | "Filters"
@@ -119,4 +108,16 @@ const createChunkReader = (
 
     readChunk();
   });
+};
+
+
+// * Done
+export const getAutocompleteLocations = async (searchText: string) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/property/location-search-autocomplete/${searchText}`);
+    return data.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 };

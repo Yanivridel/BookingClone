@@ -418,7 +418,7 @@ function Search() {
           <div className="relative">
             {/* open modal */}
             <Card
-              className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-50 ${
+              className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-[60] ${
                 openLocationDropDown ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
@@ -453,7 +453,7 @@ function Search() {
                         key={element.location._id}
                         className={`${
                           i !== locationSearchRes.length - 1 && " border-b"
-                        } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
+                        } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f] cursor-pointer`}
                       >
                         <div className="flex gap-2 items-center">
                           {/*? element.icon */}
