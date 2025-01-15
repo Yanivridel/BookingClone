@@ -61,10 +61,10 @@ function App() {
           element: <MyAccountPage />,
           path: "MyAccountPage",
         },
-
+        {
           element: <SavedLists />,
           path: "saved-lists/:listName",
-        }
+        },
       ],
     },
   ]);
