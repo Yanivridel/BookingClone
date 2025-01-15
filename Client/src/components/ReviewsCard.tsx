@@ -2,12 +2,12 @@ import React from 'react'
 import { Card } from './ui/card'
 import { IProperty } from '@/types/propertyTypes'
 import { Avatar, AvatarImage } from './ui/avatar'
-import Dubai from '../assets/images/Dubai.jpg'
+import Dubai from '../assets/images/dubaiLogo.png'
 import Kids from '../assets/images/kids.jpeg'
+import { IReview } from '@/types/reviewTypes'
 
 
 interface propertyReviewsProps {
-    propertyReviews? : IProperty
     propertyData? : IProperty
 }
 
@@ -15,8 +15,8 @@ function ReviewsCard({ propertyReviews, propertyData } : propertyReviewsProps) {
   return (
     <div className='flex'>
     {propertyReviews?.slice(0, 1).map(item => (
-      <Card key={item._id} className=' h-[210px] p-2'>
-        <div className='h-[50%]  grid'>
+      <Card key={item._id} className=' h-[210px] p-5'>
+        <div className='h-[50%] grid gap-3'>
           <div className='flex  gap-2 items-center'>
             <div>
               <Avatar className='w-8 h-8'>

@@ -35,6 +35,10 @@ function TopNav() {
     setActiveButton(buttonName);
   };
 
+  function hanldeClickAccount() {
+    navigate("/account/MyAccountPage")
+  }
+
   useEffect(() => {
     const html = document.documentElement;
     if (i18n.language === "he") {
@@ -58,7 +62,7 @@ function TopNav() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="hover:bg-[#234e9e] p-[13px] rounded-[4px] cursor-pointer">
+                <div onClick={hanldeClickAccount} className="hover:bg-[#234e9e] p-[13px] rounded-[4px] cursor-pointer">
                   <div className="relative ">
                     <div className="absolute bg-[#d4111e] h-2 w-2 rounded-full border top-0 end-0"></div>
                     <IconGuest className="h-6 w-6 fill-white" />
