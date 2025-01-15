@@ -117,5 +117,19 @@
       "האפשרויות שלכם",
       "בחירת חדרים"
     ]
+  },
+  "offersGroups": {
+    "child": "ילד אחד",
+    "children": "ילדים",
+    "ageDescriptionEn": "",
+    "ageDescriptionHe": "בגיל",
+    "agesDescriptionHe": "בגילאי"
+  },
+  "OffersDiscount": {
+    "pay": "משלמת",
+    "nights": "לילות",
+    "BookingDiscountExplenation": "",
+    "total": "סה׳׳כ",
+    "off": "הנחה"
   }
 }

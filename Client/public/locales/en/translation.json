@@ -125,5 +125,24 @@
       "Your choices",
       "Select Rooms"
     ]
+  },
+  "offersGroups": {
+    "child": "1 child",
+    "children": "Children",
+    "ageDescriptionEn": " years old",
+    "ageDescriptionHe": "",
+    "agesDescriptionHe": ""
+  },
+  "OffersDiscount": {
+    "pay": "pays",
+    "nights": "nights",
+    "BookingDiscountExplenation": "You’re getting a reduced rate because Booking.com is paying part of the price.",
+    "total": "Total",
+    "off": "off"
+  },
+  "offersChoices": {
+    "guniesDiscount": "12% Genius discount applied to the price before taxes and charges",
+    "only": "only",
+    "left": "left on our site"
   }
 }

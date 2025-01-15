@@ -23,20 +23,19 @@ import PropertyTable from "@/components/PropertyTable";
 import { IReview } from "@/types/reviewTypes";
 import Search from "@/components/search";
 import { useTranslation } from "react-i18next";
+import { IRoom } from "@/types/roomTypes";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
+  const { id } = useParams();
+  const [propertyData, setPropertyData] = useState<IProperty | undefined>();
 
-
-    const { id } = useParams();
-    const [propertyData, setPropertyData] = useState<IProperty | undefined>();
- 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
-const { t } = useTranslation();
- const arr = [
+  const { t } = useTranslation();
+  const arr = [
     "Overview",
     "Info & prices",
     "Facilities",
@@ -44,22 +43,19 @@ const { t } = useTranslation();
     "The fine print",
     "Guest reviews(30,075)",
   ];
-    
-    useEffect(() => {
-        if(id) {
-            getPropertyById(id)
-            .then(data => {
-                setPropertyData(data)
-                console.log(data)
-            });
-            getReviewsByPropertyId(id).then((data) => {
-              setPropertyReviews(data);
-              console.log(data);
-            });
-            
-        }
-    }, [id])
 
+  useEffect(() => {
+    if (id) {
+      getPropertyById(id).then((data) => {
+        setPropertyData(data);
+        console.log(data);
+      });
+      getReviewsByPropertyId(id).then((data) => {
+        setPropertyReviews(data);
+        console.log(data);
+      });
+    }
+  }, [id]);
 
   useEffect(() => {
     if (id) {
@@ -81,8 +77,7 @@ const { t } = useTranslation();
       <NavProperty arr={arr} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
 
-
-      <ReviewsCard propertyReviews={propertyReviews}/>
+      <ReviewsCard propertyReviews={propertyReviews} />
 
       <ImagesProperty propertyData={propertyData} />
       <PropertyDescription propertyData={propertyData} />
@@ -93,7 +88,7 @@ const { t } = useTranslation();
       </h2>
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo: pass real data */}
-      <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
+      <PropertyTable nightsNum={4} rooms={propertyData?.rooms as IRoom[]} />
       <GuestReviews propertyData={propertyData} />
       <QualityCard propertyData={propertyData} />
       <AsksComponents propertyData={propertyData} />
@@ -104,7 +99,6 @@ const { t } = useTranslation();
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo ridel carusel 5 km close by */}
       <PropertyFeatures features={propertyData?.features} />
-
     </div>
   );
 }
