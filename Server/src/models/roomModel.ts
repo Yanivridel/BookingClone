@@ -40,7 +40,6 @@ const RoomSchema = new Schema<IRoom>({
         offers: [{
             price_per_night: { type: Number, required: true },
             discount: {
-                type: { type: String, required: true },
                 percentage: { type: Number, required: true },
                 expires: { type: Date, required: true }
             },

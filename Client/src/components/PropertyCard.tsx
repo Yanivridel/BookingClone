@@ -10,7 +10,7 @@ import { Button } from './ui/button'
 import { IProperty } from '@/types/propertyTypes'
 import { IRoom, TSelectedRoom } from '@/types/roomTypes'
 import { cf, cw, getDescByRating } from '@/utils/functions'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { addInterest } from '@/store/slices/userSlices'
 import { modifyUserArrays } from '@/utils/api/userApi'
@@ -33,6 +33,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     }) as unknown as TSelectedRoom[];
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const discountedPrice = selectedRooms.reduce((total, currRoom) => {
         const offer = currRoom.offers?.[0];
@@ -59,7 +60,21 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
         }
     }
     
-    const arr = ["a", "b", "c"]
+    const arr = ["a", "b", "c"];
+
+    let nights: number;
+    const startDate = searchParams.get("startDate") ? new Date(searchParams.get("startDate") as string) : undefined;
+    const endDate = searchParams.get("endDate") ? new Date(searchParams.get("endDate") as string) : undefined;
+    const isWeekend = Boolean(searchParams.get("isWeekend") as string);
+    const length = Number(searchParams.get("length") || 1);
+
+    if(startDate && endDate)
+        nights = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
+    else if(isWeekend)
+        nights = 5;
+    else
+        nights = length
+
     return (
         <div>
         {isGrid? 
@@ -184,40 +199,43 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                             </div>
                         )
                         }
-
-                        
                     </CardDescription>
                 </div>
             </div>
             <div dir='rtl' className='flex flex-col gap-16	'>
+                {/* Rating Location */}
                 <div className='grid gap-2'>
-                    <div className='flex gap-1'>
+                    <div className='flex gap-3'>
                         <div>
-                            <Badge variant="rating" className='cursor-pointer h-full'>9.0</Badge>
+                            <Badge variant="rating" className='cursor-pointer h-full'>{propertyData.total_rating?.toFixed(1)}</Badge>
                         </div>
                         <div>
                             <CardTitle>{getDescByRating(propertyData.total_rating || 0)}</CardTitle>
                             <CardDescription className='text-xs'>{propertyData.reviews_num} reviews</CardDescription>
                         </div>
                     </div>
-                    {/* <div>
+                    <div>
                         <p className='text-blue-600 text-sm hover:underline cursor-pointer' >Location 9.6</p>
-                    </div> */}
+                    </div>
                 </div>
+                {/* Dates Nights */}
                 <div className='grid gap-2'>
                     <div className='text-xs border'>
                         <p>
                             { propertyData.selectedRooms &&
                             new Date(propertyData.selectedRooms[0].available.startDate).
                             toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })
+                            + " - " +
+                            new Date(new Date(propertyData.selectedRooms[0].available.startDate).setDate(new Date(propertyData.selectedRooms[0].available.startDate).getDate() + nights + 1))
+                            .toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })
                             }
-                            -
-                            Sat 22 Feb</p>
+                            </p>
                     </div>
-                    <p className='text-xs text-gray-600'>5 nights, 2 adults</p>
+                    <p className='text-xs text-gray-600'>
+                        overall: {nights} nights, {searchParams.get("adults")} adults
+                    </p>
                     <div className='flex items-center gap-1'>
                         <Information className='text-gray-600 w-4 h-4' />
-                        
                         { selectedRooms && <>
                         <p>
                             {discountedPrice + " ₪"}

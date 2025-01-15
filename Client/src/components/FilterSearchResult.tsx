@@ -11,6 +11,7 @@ import { cf, cw } from '@/utils/functions'
 import CheckpointMap, { LatLng } from './CheckpointMap'
 import { IFilters, IProperty } from '@/types/propertyTypes'
 import { Skeleton } from './ui/skeleton'
+import MultiRangeSlider from './multiRangeSlider/MultiRangeSlider'
 
 const distanceOptions = {
     "Less than 1 km": 1,
@@ -25,24 +26,30 @@ interface FilterSearchResultProps {
 function FilterSearchResult({filters} : FilterSearchResultProps) {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [priceRange, setPriceRange] = useState<number[]>();
+    const [min, setMin] = useState(filters?.price.min)
+    const [max, setMax] = useState(filters?.price.max)
 
     if(filters?.overall_count === 0)
         filters = null;
 
     useEffect(() => {
         // Default start price range
-        setPriceRange([
-            parseInt(searchParams.get('min') || String(filters?.price.min) || '0'),
-            parseInt(searchParams.get('max') || String(filters?.price.max) || '1000'),
-        ])
+        setMin(parseInt(searchParams.get('min') || String(filters?.price.min) || '0'))
+        setMax(parseInt(searchParams.get('max') || String(filters?.price.max) || '1000'));
     }, [filters])
 
-    const handleSliderValueChange = (newRange: number[]) => {
-        setPriceRange(newRange);
+    const handleSliderValueChange = (min?: number, max?: number) => {
+        console.log("activated", min, max);
 
-        searchParams.set('min', newRange[0].toString());
-        searchParams.set('max', newRange[1].toString());
+        if(min) {
+            setMin(min);
+            searchParams.set('min', min.toString());
+        }
+        if(max) {
+            setMax(max);
+            searchParams.set('max', max.toString());
+        }
+
         setSearchParams(searchParams)
     }
 
@@ -81,21 +88,20 @@ function FilterSearchResult({filters} : FilterSearchResultProps) {
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
 
                 {/* Price Slider */} 
-                {  priceRange && 
-                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
+                {  min && max && 
+                <div className='flex flex-col gap-2 border-b-2 p-2'> 
                 <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
                 <h3 className="text-sm font-semibold">
-                    {`₪${priceRange[0] || ""} - ₪${priceRange[1]  || ""}`}
+                    {`₪${min || ""} - ₪${ max || ""}`}
                 </h3>
-                <img src={barGraph} className='-mb-2'/>
-                <Slider 
-                    value={priceRange}
-                    onValueChange={handleSliderValueChange}
-                    min={filters?.price.min} 
-                    max={filters?.price.max} 
-                    step={10} 
-                    className="w-full"
-                />
+                <img src={barGraph} className='-mb-2 w-[200px]'/>
+                <div className='mb-3'>
+                    <MultiRangeSlider
+                        min={min}
+                        max={max}
+                        onChange={({ min, max }) => handleSliderValueChange(min, max)}
+                    />
+                </div>
                 </div>
                 }
 
