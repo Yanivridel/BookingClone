@@ -19,6 +19,9 @@ import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
 import { convertMonthsToQueryString } from "@/utils/functions";
+import { modifyUserArrays } from "@/utils/api/userApi";
+import { useDispatch } from "react-redux";
+import { addSearchEntry } from "@/store/slices/userSlices";
 
 // location initial data data
 const items: LocationRes[] = [
@@ -152,17 +155,15 @@ function Search() {
   const [isPets, setIsPets] = useState(false);
   const [childrenAges, setChildrenAges] = useState<
     (number | typeof NaN | undefined | null | "")[]
-  >(
-    searchParams.get("childrenAges")
-      ? searchParams
-          .get("childrenAges")!
-          .split(",")
-          .map((age) => {
-            const num = parseInt(age.trim(), 10);
-            return isNaN(num) ? "" : num; // Replace invalid values with ""
-          })
-      : []
-  );
+
+  >( searchParams.get("childrenAges") 
+  ? searchParams.get("childrenAges")!.split(",").map(age => {
+      const num = parseInt(age.trim(), 10);
+      return isNaN(num) ? "" : num; // Replace invalid values with ""
+    })
+  : []);
+  const dispatch = useDispatch();
+
 
   // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
@@ -319,7 +320,7 @@ function Search() {
   const formattedEnglish = "EEE, MMM dd";
 
   //  preferred days - monthes and day number
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let url = "/searchresults?";
 
     //  locations
@@ -375,6 +376,13 @@ function Search() {
       url += `yearMonths=${monthsQueryString}&`;
     }
     navigate(url);
+    try {
+      console.log("finalData", finalData);
+      const updatedUser = await modifyUserArrays("add", { search: finalData.primary});
+      dispatch(addSearchEntry(updatedUser.search));
+    } catch(err) {
+      console.log("React Client Error: ", err);
+    }
   };
 
   useEffect(() => {
@@ -418,7 +426,7 @@ function Search() {
           <div className="relative">
             {/* open modal */}
             <Card
-              className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-50 ${
+              className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-[60] ${
                 openLocationDropDown ? "" : "hidden"
               } min-w-[430px] rounded-[8px] `}
             >
@@ -453,7 +461,7 @@ function Search() {
                         key={element.location._id}
                         className={`${
                           i !== locationSearchRes.length - 1 && " border-b"
-                        } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f]`}
+                        } border-[#e7e7e7] p-2  hover:bg-[#1a1a1a0f] cursor-pointer`}
                       >
                         <div className="flex gap-2 items-center">
                           {/*? element.icon */}

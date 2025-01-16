@@ -40,17 +40,11 @@ const userSlice = createSlice({
             Object.assign(state, initialState);
             removeCookie("token");
         },
-        addSearchEntry: (state, action: PayloadAction<ISearchEntry>) => {
-            if(state.search.length === 10) 
-                state.search.pop();
-            state.search.unshift(action.payload);
+        addSearchEntry: (state, action: PayloadAction<ISearchEntry[]>) => {
+            state.search = action.payload;
         },
-        addInterest: (state, action: PayloadAction<string>) => {
-            if(state.interested.length === 10) 
-                state.search.pop();
-            if (!state.interested.includes(action.payload)) {
-                state.interested.unshift(action.payload);
-            }
+        addInterest: (state, action: PayloadAction<string[]>) => {
+            state.interested = action.payload;
         },
         updateSavedList: (state, action: PayloadAction<ISavedList[]>) => {
             state.savedLists = action.payload;

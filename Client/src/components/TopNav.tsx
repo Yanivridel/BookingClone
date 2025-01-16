@@ -35,6 +35,10 @@ function TopNav() {
     setActiveButton(buttonName);
   };
 
+  function hanldeClickAccount() {
+    navigate("/account/MyAccountPage")
+  }
+
   useEffect(() => {
     const html = document.documentElement;
     if (i18n.language === "he") {
@@ -51,6 +55,7 @@ function TopNav() {
             <BookingLogo className=" h-5 w-[98px]" />
           </div>
 
+
           <div className="flex gap-4">
             <div className="p-[13px] cursor-pointer">
               <Languages></Languages>
@@ -63,6 +68,7 @@ function TopNav() {
                       <div className="absolute bg-[#d4111e] h-2 w-2 rounded-full border top-0 end-0"></div>
                       <IconGuest className="h-6 w-6 fill-white" />
                     </div>
+
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="bg-black text-sm">

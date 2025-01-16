@@ -148,8 +148,8 @@ function UserSetting() {
 
   async function fetchingSearch() {
     try {
-      const { firstChunkPromise, secondChunkPromise } = await searchPropertiesChunks(searchBody);
-      console.log(firstChunkPromise, secondChunkPromise);
+      const { firstChunkPromise } = await searchPropertiesChunks(searchBody);
+      console.log(firstChunkPromise);
       // Handle first chunk
       firstChunkPromise
         .then(results => {
@@ -159,13 +159,27 @@ function UserSetting() {
         })
         // .finally(() => setIsLoadingFirst(false));
 
-      // Handle second chunk
-      secondChunkPromise
-        .then(results => {
-          if (results) {
-            console.log(results);
+        async function fetchSecond() {
+          while (true) {
+            const { secondChunkPromise } = await searchPropertiesChunks(searchBody);
+        
+            const results = await secondChunkPromise;
+            
+            console.log("status2", !!results);
+            
+            if (results) {
+              console.log("Second chunk:", results);
+              break; // Exit loop when results are received
+            }
+        
+            // Optional: Prevent tight looping
+            // await new Promise(resolve => setTimeout(resolve, 1000));
           }
-        })
+        }
+        
+        fetchSecond();
+      // Handle second chunk
+      
         // .finally(() => setIsLoadingSecond(false));
 
     } catch (err) {

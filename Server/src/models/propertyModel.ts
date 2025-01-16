@@ -4,7 +4,6 @@ import { IProperty } from 'src/types/propertyTypes';
 import { EAccommodationType, EFacility, EFeatures, EHotelAreaInfo,
     EPaymentMethods, EPropertyHighlight } from './../utils/structures';
 import { LocationSchema } from './locationSchema';
-import { reviewModel } from './reviewModel';
 
 const PropertySchema = new Schema<IProperty>({
     title: { type: String, required: true },
@@ -51,7 +50,6 @@ const PropertySchema = new Schema<IProperty>({
             start: { type: String, required: true },
             end: { type: String, required: false },
         },
-        // cancellation_prepayment: { type: String, required: true },
         children_beds: {
             child_policy: { type: String },
             bed_policy: [{

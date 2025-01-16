@@ -7,10 +7,12 @@ import { Slider } from './ui/slider'
 import { useSearchParams } from 'react-router-dom'
 import { IconCounterMinus, IconCounterPlus } from './ui/Icons'
 import { cn } from '@/lib/utils'
-import { cf, cw } from '@/utils/functions'
+import { cf, cw, scrollToTop } from '@/utils/functions'
 import CheckpointMap, { LatLng } from './CheckpointMap'
-import { IProperty } from '@/types/propertyTypes'
+import { IFilters, IProperty } from '@/types/propertyTypes'
 import { Skeleton } from './ui/skeleton'
+import MultiRangeSlider from './multiRangeSlider/MultiRangeSlider'
+import { IPage } from '@/pages/SearchResults'
 
 const distanceOptions = {
     "Less than 1 km": 1,
@@ -18,53 +20,47 @@ const distanceOptions = {
     "Less than 5 km": 5,
 }
 
-interface IFilters {
-    overall_count: number;
-    type: { [key: string]: number };
-    rating: { [key: number]: number };
-    popularFacilities: { [key: string]: number };
-    roomType: { [key: string]: number };
-    roomFacilities: { [key: string]: number };
-    meals: { [key: string]: number };
-    freeCancellation: number;
-    onlinePayment: number;
-    region: { [key: string]: number };
-    price: {
-        min: number;
-        max: number;
-    };
-    doubleBeds: number;
-    singleBeds: number;
-}
-
 interface FilterSearchResultProps {
-    filters: IFilters | null;
-    coordinates: LatLng[];
+    data?: IPage;
+    isFetching?: boolean;
+    isOnMap?: boolean
 }
 
-function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
+function FilterSearchResult({data, isFetching, isOnMap} : FilterSearchResultProps) {
+    let { filters, filteredProperties } = data || {};
+
+    if(!isOnMap && !isFetching && !filteredProperties?.length) {
+        return (
+            <div className=' w-[260px] grid gap-4'>
+                <Card className='p-2'>
+                    <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
+                    <CardDescription className='p-2'>No Available Filters...</CardDescription>
+                </Card>
+            </div>
+        )
+    }
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [priceRange, setPriceRange] = useState<number[]>();
+    const [min, setMin] = useState<number>()
+    const [max, setMax] = useState<number>()
 
     if(filters?.overall_count === 0)
-        filters = null;
+        filters = undefined;
 
     useEffect(() => {
         // Default start price range
-        setPriceRange([
-            parseInt(searchParams.get('min') || String(filters?.price.min) || '0'),
-            parseInt(searchParams.get('max') || String(filters?.price.max) || '1000'),
-        ])
+        setMin(Number(searchParams.get('min') || filters?.price.min || 0))
+        setMax(Number(searchParams.get('max') || filters?.price.max || 0));
     }, [filters])
 
-    const handleSliderValueChange = (newRange: number[]) => {
-        setPriceRange(newRange);
-
-        searchParams.set('min', newRange[0].toString());
-        searchParams.set('max', newRange[1].toString());
-        setSearchParams(searchParams)
-    }
+    const handleSliderValueChange = (min: number, max: number) => {
+        const updatedSearchParams = new URLSearchParams(searchParams);
+        setMin(min);
+        updatedSearchParams.set('min', min.toString());
+        setMax(max);
+        updatedSearchParams.set('max', max.toString());
+        setSearchParams(updatedSearchParams);
+    };
 
     const handleCheckboxChange = (category: string, value: string) => {
         const existingValues = searchParams.getAll(category);
@@ -79,6 +75,7 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
         // Add to URL if not checked
         searchParams.append(category, value);
         }
+        scrollToTop();
         setSearchParams(searchParams);
     };
 
@@ -86,43 +83,42 @@ function FilterSearchResult({filters, coordinates} : FilterSearchResultProps) {
         const newVal =parseInt(searchParams.get(category) || '0') + 1;
         if(newVal > 10 ) return;
         searchParams.set(category, newVal.toString());
+        scrollToTop();
         setSearchParams(searchParams);
     }
     function handleMinusBeds(category: string) {
         const newVal =parseInt(searchParams.get(category) || '0') - 1;
         if(newVal < 0 ) return;
         searchParams.set(category, newVal.toString());
+        scrollToTop();
         setSearchParams(searchParams);
     }
 
+    // console.log(min, max)
+    
+
     return (
-        <div className='border max-w-[260px] grid gap-4'>
-            <div className='border h-[150px] max-w-[260px] rounded-lg'>
-                {/* {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />} */}
-            </div>
+        <div className=' w-[260px] grid gap-4'>
             <Card className='p-2'>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
 
                 {/* Price Slider */} 
-                {  priceRange && 
-                <div className='flex flex-col gap-2 border-b-2 p-2 '> 
-                <CardTitle className='font-semibold'>Your budget (per night)</CardTitle>
-                <h3 className="text-sm font-semibold">
-                    {`₪${priceRange[0] || ""} - ₪${priceRange[1]  || ""}`}
-                </h3>
-                <img src={barGraph} className='-mb-2'/>
-                <Slider 
-                    value={priceRange}
-                    onValueChange={handleSliderValueChange}
-                    min={filters?.price.min} 
-                    max={filters?.price.max} 
-                    step={10} 
-                    className="w-full"
-                />
-                </div>
+                {  (min  && max) ? 
+                <div className='flex flex-col gap-2 border-b-2 p-2'> 
+                    <CardTitle className='font-semibold mb-6'>Your budget (per night)</CardTitle>
+                    <img src={barGraph} className='-mb-2 w-[200px]'/>
+                    <div className='mb-3'>
+                        <MultiRangeSlider
+                            min={min}
+                            max={max}
+                            onChange={({ min, max }) => handleSliderValueChange(min, max)}
+                        />
+                    </div>
+                </div> 
+                : <></>
                 }
 
-                { !filters && [... Array(7)].map(_ => <>
+                { !filters && [... Array(14)].map(_ => <>
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />

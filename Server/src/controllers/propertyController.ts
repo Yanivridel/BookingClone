@@ -1,18 +1,13 @@
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { MongoError } from 'mongodb'; 
-import { userModel } from "../models/userModel";
-import jwt from 'jsonwebtoken';
 
 // utils imports
-import { AuthenticatedRequest } from 'src/types/expressTypes';
 import { IProperty, TPartialProperty } from 'src/types/propertyTypes';
 import { propertyModel } from './../models/propertyModel';
 import { getCoordinatesByLocation } from 'src/utils/maps';
 import { roomModel } from 'src/models/roomModel';
 import { IRoom } from 'src/types/roomTypes';
 import { getCache, setCache } from 'src/utils/redisClient';
-
+import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from 'src/types/userTypes'; 
 //* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {
@@ -46,6 +41,8 @@ export const createProperty = async (req: Request<{},{},TPartialProperty> , res:
         // Create new property with full schema
         const newProperty = new propertyModel(propertyData);
         await newProperty.save();
+
+        console.log("property created")
 
         res.status(201).json({
             status: "success",
@@ -155,32 +152,6 @@ interface IGetPropertiesBody {
         bedrooms?: number;
     };
 }
-interface IFilterPropertiesLocation {
-    country?: string;
-    region?: string;
-    city?: string;
-    addressLine?: string;
-}
-interface IFilterPropertiesDate {
-    startDate?: string | Date;
-    endDate?: string | Date;
-    length?: number;
-    isWeekend?: boolean;
-    fromDay?: number;
-    yearMonths: [{
-        year: number,
-        month: number
-    }];
-}
-interface IFilterPropertiesOptions {
-    adults?: number;
-    children?: number;
-    childrenAges?: number[];
-    rooms?: number;
-    isAnimalAllowed?: boolean;
-    distance?: number; // km
-    isBaby?: boolean;
-}
 interface IGetPropertiesQuery {
     page?: string;
     limit?: string;
@@ -257,24 +228,18 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         if(req.body?.secondary)
             filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
 
-        // ! REMOVE LATER
-        // const properties = await propertyModel.find({}).populate("rooms reviews_num") as IProperty[];
-        // for(let i = 0; i< 10; i++){
-        //     filteredProperties.push(...properties);
-        // }
-
-
         const paginatedProperties = filteredProperties.slice(skip, skip + limit);
-            
+        
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
 
-        setImmediate(async () => {
+        process.nextTick(async () => {
             const filterCount = await getFiltersFromProperties(filteredProperties);
-    
+            console.log(" ")
             res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
             res.end();
         })
         
+
     } catch (error) {
         console.log(error); // dev mode
         res.status(500).json({

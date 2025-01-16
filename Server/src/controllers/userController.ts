@@ -298,9 +298,26 @@ export const modifyUserArrays = async (req: Request<{}, {}, IModifyUserArraysBod
             updateQuery["$push"] = { search };
         }
         else if (interested) {
-            updateQuery[action === "add" ? "$addToSet" : "$pull"] = {
-                interested: new Types.ObjectId(interested), // Property ID
-            };
+            // Add at the end
+            await userModel.updateOne(
+                { _id: userId },
+                [{
+                    $set: {
+                        interested: {
+                            $concatArrays: [
+                                {
+                                    $filter: {
+                                        input: "$interested",
+                                        as: "item",
+                                        cond: { $ne: ["$$item", new Types.ObjectId(interested)] } // Remove existing
+                                    }
+                                },
+                                [new Types.ObjectId(interested)] // Append to end
+                            ]
+                        }
+                    }
+                }]
+            );
         }
         else if (savedList) {
             const propertyIdObj = savedList.propertyId ? new Types.ObjectId(savedList.propertyId) : null;
@@ -409,14 +426,14 @@ export const getSearches = async (req: Request, res: Response) : Promise<void> =
     }
 };
 
-//! Get Interested - Done + (GET HOW MANY REVIEWS)
+// Get Interested - Done
 export const getInterested = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
         const { userId } = authenticatedReq;
 
-        const user = await userModel.findById(userId).select('interested').
-        populate('interested', "title location rating");
+        const user = await userModel.findById(userId).select('interested');
+        // /populate('interested', "title location rating");
 
         if (!user) {
             res.status(404).json({
@@ -441,7 +458,7 @@ export const getInterested = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-//! Get SavedLists - Done +  (GET HOW MANY REVIEWS)
+// Get SavedLists - Done
 export const getSavedLists = async (req: Request, res: Response) : Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
@@ -478,7 +495,7 @@ export const getSavedLists = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-// Delete Account - COME BACK LATER FIX RECURSIVE DELETE TO OTHER MODELS
+//! Delete Account - COME BACK LATER FIX RECURSIVE DELETE TO OTHER MODELS
 export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;

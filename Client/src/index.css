@@ -79,3 +79,7 @@
   color: #006ce4 !important;
   font-size: 10px;
 }
+
+.scrollContainer::-webkit-scrollbar {
+  display: none;
+}
