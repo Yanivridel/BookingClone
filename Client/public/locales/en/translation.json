@@ -125,5 +125,49 @@
       "Your choices",
       "Select Rooms"
     ]
+  },
+  "offersGroups": {
+    "child": "1 child",
+    "children": "Children",
+    "ageDescriptionEn": " years old",
+    "ageDescriptionHe": "",
+    "agesDescriptionHe": ""
+  },
+  "OffersDiscount": {
+    "pay": "pays",
+    "nights": "nights",
+    "BookingDiscountExplenation": "You’re getting a reduced rate because Booking.com is paying part of the price.",
+    "total": "Total",
+    "off": "off"
+  },
+  "offersChoices": {
+    "guniesDiscountHeader": "12% Genius discount",
+    "guniesDiscountText": "applied to the price before taxes and charges",
+    "only": "Only",
+    "left": "left on our site"
+  },
+  "questionMarkInfo": {
+    "mealsHeader": "Meals",
+    "included": "included",
+    "rated": "rated",
+    "based": "based on",
+    "reviews": "reviews.",
+    "prepaymentHeader": "prepayment",
+    "prepaymentSubHeader": "Pay online now",
+    "cancellationHeader": "cancellation"
+  },
+  "order": {
+    "beforeSelectRooms": {
+      "button": "I'll reserve",
+      "firstText": "It only takes 2 minutes",
+      "secondText": "Confirmation is immediate"
+    }
+  },
+  "beds": {
+    "queen": "queen beds",
+    "double": "double beds",
+    "bunk": "bunk beds",
+    "single": "single beds",
+    "sofa": "sofa beds"
   }
 }

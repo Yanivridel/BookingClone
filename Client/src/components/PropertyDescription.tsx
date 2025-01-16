@@ -1,4 +1,3 @@
-import React from "react";
 import { IProperty } from "@/types/propertyTypes";
 import { Vi } from "./ui/Icons";
 

@@ -23,6 +23,9 @@ import PropertyTable from "@/components/PropertyTable";
 import { IReview } from "@/types/reviewTypes";
 import Search from "@/components/search";
 import { useTranslation } from "react-i18next";
+
+import { IRoom } from "@/types/roomTypes";
+
 import HouseRules from "@/components/HouseRules";
 import Note from "@/components/Note";
 import { Button } from "@/components/ui/button";
@@ -35,16 +38,14 @@ import FaqComponent from "@/components/FaqComponent";
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
+  const { id } = useParams();
+  const [propertyData, setPropertyData] = useState<IProperty | undefined>();
 
-
-    const { id } = useParams();
-    const [propertyData, setPropertyData] = useState<IProperty | undefined>();
- 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
-const { t } = useTranslation();
- const arr = [
+  const { t } = useTranslation();
+  const arr = [
     "Overview",
     "Info & prices",
     "Facilities",
@@ -52,22 +53,19 @@ const { t } = useTranslation();
     "The fine print",
     "Guest reviews(30,075)",
   ];
-    
-    useEffect(() => {
-        if(id) {
-            getPropertyById(id)
-            .then(data => {
-                setPropertyData(data)
-                console.log(data)
-            });
-            getReviewsByPropertyId(id).then((data) => {
-              setPropertyReviews(data);
-              console.log(data);
-            });
-            
-        }
-    }, [id])
 
+  useEffect(() => {
+    if (id) {
+      getPropertyById(id).then((data) => {
+        setPropertyData(data);
+        console.log(data);
+      });
+      getReviewsByPropertyId(id).then((data) => {
+        setPropertyReviews(data);
+        console.log(data);
+      });
+    }
+  }, [id]);
 
   useEffect(() => {
     if (id) {
@@ -90,6 +88,8 @@ const { t } = useTranslation();
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
 
 
+      <ReviewsCard propertyReviews={propertyReviews} />
+
 
       {propertyReviews && <ImagesProperty propertyData={propertyData} propertyReviews={propertyReviews}/>}
       <PropertyDescription propertyData={propertyData} />
@@ -100,6 +100,7 @@ const { t } = useTranslation();
       </h2>
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo: pass real data */}
+
       <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
       {propertyReviews && <GuestReviews propertyData={propertyData}  propertyReviews={propertyReviews}/>}
       <Button
@@ -108,6 +109,7 @@ const { t } = useTranslation();
             >
               Read all reviews
         </Button>
+
       <QualityCard propertyData={propertyData} />
       <p className="py-3 text-lg font-bold">Travellers are asking</p>
       <AsksComponents propertyData={propertyData} />
@@ -132,6 +134,7 @@ const { t } = useTranslation();
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo ridel carusel 5 km close by */}
       <PropertyFeatures features={propertyData?.features} />
+
       <div className="flex flex-col gap-2 ">
         <h2 className="py-3 text-lg font-bold ">
           House Rules
@@ -153,6 +156,7 @@ const { t } = useTranslation();
         <Note />
         <FaqComponent  propertyData={propertyData}/>
       </div>
+
     </div>
   );
 }
