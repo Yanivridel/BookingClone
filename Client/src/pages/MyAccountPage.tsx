@@ -7,10 +7,12 @@ import React from 'react'
 
 function MyAccountPage() {
   return (
-    <div>
-      <GeniusRewardAccount />
-      <BookingAwayCardAccount />
-      <CreditAccount />
+    <div className='max-w-[1100px]'>
+      <div>
+        <GeniusRewardAccount />
+        <BookingAwayCardAccount />
+        <CreditAccount />
+      </div>
       <CompleteProfile />
     </div>
   )
