@@ -39,9 +39,9 @@ function App() {
           element: <UserSetting />,
         },
         {
-          path: '/property/:id',
-          element: <Property/>
-        }
+          path: "/property/:id",
+          element: <Property />,
+        },
       ],
     },
 
@@ -71,9 +71,8 @@ function App() {
 
   const reloadUser = async () => {
     const user = await getSelf();
-    if(user)
-      dispatch(setUser(user));
-  }
+    if (user) dispatch(setUser(user));
+  };
 
   useEffect(() => {
     reloadUser();

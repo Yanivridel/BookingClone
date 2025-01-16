@@ -37,6 +37,13 @@ export function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
 export const toFormattedDate = (date: Date) => {
   return date.toISOString().split("T")[0];
 };

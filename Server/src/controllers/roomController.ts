@@ -22,6 +22,8 @@ export const createRoom = async (req: Request<{},{},TPartialRoom> , res: Respons
         const newRoom = new roomModel(roomData);
         await newRoom.save(); 
 
+        console.log("New Room created : ", newRoom._id)
+
         res.status(201).json({
             status: "success",
             message: "Room created successfully",

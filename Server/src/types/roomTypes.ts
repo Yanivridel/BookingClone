@@ -32,7 +32,6 @@ export interface IRoom extends Document {
     offers: [{
         price_per_night: number; // לפני מעמ
         discount : {
-            type: string;
             percentage: number; // e.x 0.3
             expires: Date;
         },

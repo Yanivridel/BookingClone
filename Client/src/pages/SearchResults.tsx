@@ -8,11 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import useInfiniteProperties from "@/hooks/useInfiniteProperties";
-import { IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
-import { useEffect, useState } from "react";
+import { IFilters, IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-
+export interface IPage {
+  filters: IFilters;
+  filteredProperties: IProperty[];
+  pageParam: number;
+}
 
 
 function SearchResults() {
@@ -105,7 +109,7 @@ function SearchResults() {
   
   // Infinite scroll listener
   const handleScroll = () => {
-    const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
+    const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1100;
     if (bottom && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
@@ -122,14 +126,17 @@ function SearchResults() {
   }, [hasNextPage, isFetchingNextPage]);
 
   let properties = data?.pages[0].filteredProperties as IProperty[]
-  let coordinates = [] as LatLng[];
-  if(properties)
-    coordinates = properties.map(prop => {
-      return {
-          lat: prop.location.coordinates?.coordinates[0],
-          lng: prop.location.coordinates?.coordinates[1],
-      } as LatLng
-      });
+  const coordinates = useMemo(() => {
+    if (!properties) return [];
+    return properties.map(prop => ({
+      lat: prop.location.coordinates?.coordinates[0],
+      lng: prop.location.coordinates?.coordinates[1],
+    } as LatLng));
+  }, [properties]);
+
+  const center = useMemo(() => (
+    properties && properties.length ? coordinates[0] : { lat: 32.0717, lng: 34.7754 } as LatLng
+  ), [properties, coordinates]);
 
   return (
     <div className="max-w-[1100px] mx-auto">
@@ -139,17 +146,19 @@ function SearchResults() {
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
           <div className='border h-[150px] max-w-[260px] rounded-lg mb-2'>
-            {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} filters={data?.pages[0].filters} />}
+            <CheckpointMap center={center} 
+            markers={coordinates.length > 0 ? coordinates : undefined}
+            data={data?.pages[0] as IPage} showFilter={true} />
           </div>
-          <FilterSearchResult filters={data?.pages[0].filters}/>
+          <FilterSearchResult data={data?.pages[0] as IPage} isFetching={isFetching}/>
           
         </div>
         <div className="flex-1">
-          <SortComponent filters={data?.pages[0].filters} setIsGrid={setIsGrid} />
+          <SortComponent filters={data?.pages[0].filters} isGrid={isGrid} setIsGrid={setIsGrid} />
           <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
-            { !data && isFetching && SkeletonCard(5) }
+            { !data && isFetching && SkeletonCard(10) }
             { data && 
-            data.pages.map(page => {
+            data.pages.map((page:any) => {
               return (page.filteredProperties as IProperty[]).map((property,idx) =>
                 <PropertyCard key={idx+property._id} propertyData={property} isGrid={isGrid} />
               )
@@ -177,7 +186,7 @@ function SkeletonCard(length?: number) {
   return (<>
     {[...Array(length)].map((_,idx) => 
       <Card key={`skeleton-card-${idx}`}
-        className="max-w-[815px] h-[200px] p-4 flex gap-3">
+        className="max-w-[815px] h-[200px] p-4 my-4 flex gap-3">
       <Skeleton className=" w-[225px] rounded-xl" />
       <div className="space-y-2 w-[40%]">
         <Skeleton className="h-4 w-full mb-5" />

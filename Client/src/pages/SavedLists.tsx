@@ -5,7 +5,7 @@ import IconHeartRed, { DeleteIcon, EditIcon, UpDownHeads, ViIcon, XIcon } from "
 import { RootState } from "@/store";
 import { IUser } from "@/types/userTypes";
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick";
@@ -25,7 +25,7 @@ function SavedLists() {
     const navigate = useNavigate();
     const [editName, setEditName] = useState("");
     const [ properties, setProperties] = useState<IProperty[] | null>(null);
-    const [coordinates, setCoordinates] = useState<LatLng[]>([]);
+    // const [coordinates, setCoordinates] = useState<LatLng[]>([]);
 
     const [isMobile, setIsMobile] = useState<boolean>(
         window.innerWidth < 1140
@@ -71,15 +71,27 @@ function SavedLists() {
         fetchProperties();
     }, [selectedList]);
 
-    useEffect(() => {
-        if (properties) {
-            const newCoordinates = properties.map(prop => ({
-                lat: prop.location.coordinates?.coordinates[0],
-                lng: prop.location.coordinates?.coordinates[1],
-            })) as LatLng[];
-            setCoordinates(newCoordinates );
-        }
+    // useEffect(() => {
+    //     if (properties) {
+    //         const newCoordinates = properties.map(prop => ({
+    //             lat: prop.location.coordinates?.coordinates[0],
+    //             lng: prop.location.coordinates?.coordinates[1],
+    //         })) as LatLng[];
+    //         setCoordinates(newCoordinates );
+    //     }
+    // }, [properties]);
+
+    const coordinates = useMemo(() => {
+        if (!properties) return [];
+        return properties.map(prop => ({
+        lat: prop.location.coordinates?.coordinates[0],
+        lng: prop.location.coordinates?.coordinates[1],
+        } as LatLng));
     }, [properties]);
+    
+    const center = useMemo(() => (
+        properties && properties.length ? coordinates[0] : { lat: 32.0717, lng: 34.7754 } as LatLng
+    ), [properties, coordinates]);
 
     function handleChangeListName(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation(); 
@@ -87,6 +99,8 @@ function SavedLists() {
 
     if(!selectedList)
         return null;
+
+    console.log(selectedList);
 
     return (
         <div className="max-w-[1100px] mx-auto">
@@ -195,7 +209,8 @@ function SavedLists() {
                     <Card className='h-[100px] w-[260px]rounded-lg relative'>
                         { coordinates && <>
                         <div className='border h-[100px] w-[260px] rounded-lg mb-2'>
-                            {coordinates && <CheckpointMap center={coordinates[0]} markers={coordinates} />}
+                            <CheckpointMap center={center} 
+                            markers={coordinates.length > 0 ? coordinates : undefined} showFilter={false} />
                         </div>
                         </>}
                     </Card>
@@ -222,13 +237,13 @@ function SavedLists() {
                 
             </div>
             ) : (
-            <Slider
+            <Slider className=" p-4"
             key={isRtl ? "rtl" : "ltr"}
             {...{
                 ...settingsCarousel,
                 slidesToShow: 3.8,
                 initialSlide: isRtl
-                ? currentUser.interested.length /** 2*/ - 3.8
+                ? selectedList.properties.length - 3.8
                 : 0,
                 nextArrow: <SampleNextArrow slidesToShow={3.8} />,
             }}

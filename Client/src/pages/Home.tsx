@@ -149,22 +149,6 @@ function Home() {
                     propertyId={propertyId}
                   />
                 ))}
-                {/* <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                /> */}
               </div>
             ) : (
               <Slider
@@ -173,7 +157,7 @@ function Home() {
                   ...settingsSearch,
                   slidesToShow: 3.8,
                   initialSlide: isRtl
-                    ? currentUser.interested.length /** 2*/ - 3.8
+                    ? currentUser.interested.length - 3.8
                     : 0,
                   nextArrow: <SampleNextArrow slidesToShow={3.8} />,
                 }}
