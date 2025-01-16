@@ -26,8 +26,8 @@ import { useTranslation } from "react-i18next";
 
 import { IRoom } from "@/types/roomTypes";
 
-// import HouseRules from "@/components/HouseRules";
-// import Note from "@/components/Note";
+import HouseRules from "@/components/HouseRules";
+import Note from "@/components/Note";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -36,9 +36,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-// import LocationCard from "@/components/LocationCard";
-// import PropertyTitles from "@/components/PropertyTitles";
-// import FaqComponent from "@/components/FaqComponent";
+import LocationCard from "@/components/LocationCard";
+import PropertyTitles from "@/components/PropertyTitles";
+import FaqComponent from "@/components/FaqComponent";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -94,7 +94,7 @@ function Property() {
       <NavProperty arr={arr} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
 
-      {/* <ReviewsCard propertyReviews={propertyReviews} /> */}
+      <ReviewsCard propertyReviews={propertyReviews} />
 
       {propertyReviews && (
         <ImagesProperty
@@ -111,7 +111,7 @@ function Property() {
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo: pass real data */}
 
-      {/* <PropertyTable nightsNum={4} rooms={propertyData?.rooms} /> */}
+      <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
       {propertyReviews && (
         <GuestReviews
           propertyData={propertyData}
@@ -129,9 +129,9 @@ function Property() {
         See other Questions <span>{propertyReviews?.length}</span>
       </Button>
       <p className="py-3 text-lg font-bold">Guests who stayed here loved</p>
-      {/* <ReviewsCard propertyReviews={propertyReviews} /> */}
-      {/* <PropertyTitles /> */}
-      {/* <LocationCard propertyData={propertyData} /> */}
+      <ReviewsCard propertyReviews={propertyReviews} />
+      <PropertyTitles />
+      <LocationCard propertyData={propertyData} />
 
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
       <h2 className="py-3 text-lg font-bold ">
@@ -146,7 +146,7 @@ function Property() {
         <p className="text-gray-500 text-sm">
           Aparthotel Stare Miasto takes special requests - add in the next step!
         </p>
-        {/* <HouseRules propertyData={propertyData} /> */}
+        <HouseRules propertyData={propertyData} />
       </div>
 
       <div className="flex flex-col gap-3">
@@ -155,7 +155,7 @@ function Property() {
           Need-to-know information for guests at this property
         </p>
         {/* <Note /> */}
-        {/* <FaqComponent propertyData={propertyData} /> */}
+        <FaqComponent propertyData={propertyData} />
       </div>
     </div>
   );

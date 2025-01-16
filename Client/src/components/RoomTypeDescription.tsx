@@ -2,10 +2,10 @@ import PopularFacilities from "./PopularFacilities";
 import RoomFeatures from "./RoomFeatures";
 import { IRoom } from "@/types/roomTypes";
 
-import QueenBad from "../assets/images/Screenshot 2025-01-15 at 22.24.04.png";
-import BunkBad from "../assets/images/bunk.png";
-import SofaBad from "../assets/images/sofa.png";
-import TweenSingleBad from "../assets/images/tweenSingle.png";
+// import QueenBad from "../assets/images/Screenshot 2025-01-15 at 22.24.04.png";
+// import BunkBad from "../assets/images/bunk.png";
+// import SofaBad from "../assets/images/sofa.png";
+// import TweenSingleBad from "../assets/images/tweenSingle.png";
 import { useTranslation } from "react-i18next";
 import InnerRoomsDialog from "./InnerRoomsDialog";
 
@@ -26,6 +26,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
     },
     { bunk: 0, double: 0, queen: 0, single: 0, sofa: 0 } // ערכים התחליים
   );
+  console.log("baba");
 
   return (
     <div>
@@ -42,9 +43,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
           <div className="flex flex-wrap">
             <span className="pe-1">{badesCount.bunk}</span>
             <span className="pe-1">{t("beds.bunk")}</span>
-            <span>
-              <img className="h-6 w-6" src={BunkBad} />
-            </span>
+            <span>{/* <img className="h-6 w-6" src={BunkBad} /> */}</span>
           </div>
         )}
         {badesCount.double > 0 && (
@@ -52,7 +51,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
             <span className="pe-1">{badesCount.double}</span>
             <span className="pe-1">{t("beds.double")}</span>
             <span>
-              <img className="h-4 w-7" src={TweenSingleBad} />
+              {/* <img className="h-4 w-7" src={TweenSingleBad} /> */}
             </span>
           </div>
         )}
@@ -61,9 +60,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
           <div className="flex flex-wrap">
             <span className="pe-1">{badesCount.queen}</span>
             <span className="pe-1">{t("beds.queen")}</span>
-            <span>
-              <img className="h-5 w-10" src={QueenBad} />
-            </span>
+            <span>{/* <img className="h-5 w-10" src={QueenBad} /> */}</span>
           </div>
         )}
         {badesCount.single > 0 && (
@@ -71,7 +68,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
             <span className="pe-1">{badesCount.single}</span>
             <span className="pe-1">{t("beds.single")}</span>
             <span>
-              <img className="h-4 w-7" src={TweenSingleBad} />
+              {/* <img className="h-4 w-7" src={TweenSingleBad} /> */}
             </span>
           </div>
         )}
@@ -80,9 +77,7 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
             <span className="pe-1">{badesCount.sofa}</span>
             <span className="pe-1">{t("beds.sofa")}</span>
 
-            <span>
-              <img className="h-5 w-8" src={SofaBad} />
-            </span>
+            <span>{/* <img className="h-5 w-8" src={SofaBad} /> */}</span>
           </div>
         )}
       </div>
