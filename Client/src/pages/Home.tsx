@@ -21,10 +21,8 @@ import { RootState } from "./../store/index.ts";
 import { IUser } from "@/types/userTypes.ts";
 import Slider from "react-slick";
 import { TFunctionNonStrict } from "i18next";
-import {
-  SampleNextArrow,
-  SamplePrevArrow,
-} from "@/components/ui/carousel-slick.tsx";
+import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick.tsx";
+
 
 // Tailwind - render
 ("col-span-2");
@@ -32,14 +30,12 @@ import {
 
 function Home() {
   const HomeMobileWidth = 1140;
-  const currentUser = useSelector(
-    (state: RootState) => state.currentUser
-  ) as unknown as IUser;
+  const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
   const [isMobile, setIsMobile] = useState<boolean>(
     window.innerWidth < HomeMobileWidth
   );
   const interestedArr = currentUser.interested.slice().reverse();
-  console.log(currentUser);
+  console.log(currentUser)
 
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "he";
@@ -160,7 +156,9 @@ function Home() {
                 {...{
                   ...settingsSearch,
                   slidesToShow: 3.8,
-                  initialSlide: isRtl ? currentUser.interested.length - 3.8 : 0,
+                  initialSlide: isRtl
+                    ? currentUser.interested.length - 3.8
+                    : 0,
                   nextArrow: <SampleNextArrow slidesToShow={3.8} />,
                 }}
               >
@@ -554,24 +552,18 @@ function mapUserSearches(
       key={details._id}
       className="flex-shrink-0 !flex gap-2 items-center 
         shadow-searchPopupsShadow p-4 rounded-xl h-[100px] w-[294px] mx-1 my-2"
-    >
+      >
       <img
         className=" rounded-lg h-16 w-16"
         src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
         alt={details.location.country}
       />
       <div>
-        <b>
-          {details.location.country +
-            " " +
-            (details.location.region ? details.location.region : "") +
-            " " +
-            (details.location.city ? details.location.city : "") +
-            " " +
-            (details.location.addressLine
-              ? details.location.addressLine
-              : "")}{" "}
-        </b>
+        <b>{details.location.country + " " +
+          (details.location.region ? details.location.region : "") + " " +
+          (details.location.city ? details.location.city : "") + " " +
+          (details.location.addressLine ? details.location.addressLine : "")
+          } </b>
         <p className="text-gray-500">
           <span>
             {details.date.fromDay &&
@@ -595,8 +587,7 @@ function mapUserSearches(
             <span>{t("home.1 person")}</span>
           ) : (
             <span>
-              {Number(details.options.adults) +
-                Number(details.options.childrenAges?.length || 0)}{" "}
+              {Number(details.options.adults) + Number(details.options.childrenAges?.length || 0)}{" "}
               {t("home.people")}
             </span>
           )}

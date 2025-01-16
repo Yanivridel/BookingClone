@@ -89,7 +89,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
             key={room._id}
             className={`border-e-[1px] border-b-[3px] border-[#5bbaff] col-span-5 `}
           >
-            {/* <RoomTypeDescription room={room} /> */}
+            <RoomTypeDescription room={room} />
           </div>
           {/* 10 */}
           <div className="grid grid-cols-11 col-span-11">

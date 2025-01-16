@@ -73,8 +73,6 @@ function Property() {
   }, [id]);
 
   useEffect(() => {
-    console.log("baba");
-
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
@@ -112,6 +110,15 @@ function Property() {
       {/* todo: pass real data */}
 
       <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
+      {propertyReviews && (
+        <GuestReviews
+          propertyData={propertyData}
+          propertyReviews={propertyReviews}
+        />
+      )}
+      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
+        Read all reviews
+      </Button>
       {propertyReviews && (
         <GuestReviews
           propertyData={propertyData}
