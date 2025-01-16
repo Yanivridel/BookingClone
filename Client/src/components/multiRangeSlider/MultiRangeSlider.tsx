@@ -49,7 +49,7 @@ const MultiRangeSlider: React.FC<MultiRangeSliderProps> = ({ min, max, onChange 
           minValRef.current = value;
         }}
         onMouseUp={() => onChange({ min: minVal, max: maxVal })}
-        className="thumb thumb--left z-[40]"
+        className="thumb thumb--left !z-[30]"
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={minVal}
@@ -67,7 +67,7 @@ const MultiRangeSlider: React.FC<MultiRangeSliderProps> = ({ min, max, onChange 
           maxValRef.current = value;
         }}
         onMouseUp={() => onChange({ min: minVal, max: maxVal })}
-        className="thumb thumb--right z-[30]"
+        className="thumb thumb--right !z-[30]"
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={maxVal}
