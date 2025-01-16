@@ -26,14 +26,19 @@ import { useTranslation } from "react-i18next";
 
 import { IRoom } from "@/types/roomTypes";
 
-import HouseRules from "@/components/HouseRules";
-import Note from "@/components/Note";
+// import HouseRules from "@/components/HouseRules";
+// import Note from "@/components/Note";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import LocationCard from "@/components/LocationCard";
-import PropertyTitles from "@/components/PropertyTitles";
-import FaqComponent from "@/components/FaqComponent";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+// import LocationCard from "@/components/LocationCard";
+// import PropertyTitles from "@/components/PropertyTitles";
+// import FaqComponent from "@/components/FaqComponent";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -68,6 +73,8 @@ function Property() {
   }, [id]);
 
   useEffect(() => {
+    console.log("baba");
+
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
@@ -87,11 +94,14 @@ function Property() {
       <NavProperty arr={arr} />
       <PropertyTitle propertyData={propertyData} id={arr[0]} />
 
+      {/* <ReviewsCard propertyReviews={propertyReviews} /> */}
 
-      <ReviewsCard propertyReviews={propertyReviews} />
-
-
-      {propertyReviews && <ImagesProperty propertyData={propertyData} propertyReviews={propertyReviews}/>}
+      {propertyReviews && (
+        <ImagesProperty
+          propertyData={propertyData}
+          propertyReviews={propertyReviews}
+        />
+      )}
       <PropertyDescription propertyData={propertyData} />
       <PropertyHighlight highlights={propertyData?.highlights} />
       <GeniusCard />
@@ -101,32 +111,28 @@ function Property() {
       <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
       {/* todo: pass real data */}
 
-      <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
-      {propertyReviews && <GuestReviews propertyData={propertyData}  propertyReviews={propertyReviews}/>}
-      <Button
-              className="text-[13px] border-[1px]"
-              variant={"negativeDefault"}
-            >
-              Read all reviews
-        </Button>
+      {/* <PropertyTable nightsNum={4} rooms={propertyData?.rooms} /> */}
+      {propertyReviews && (
+        <GuestReviews
+          propertyData={propertyData}
+          propertyReviews={propertyReviews}
+        />
+      )}
+      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
+        Read all reviews
+      </Button>
 
       <QualityCard propertyData={propertyData} />
       <p className="py-3 text-lg font-bold">Travellers are asking</p>
       <AsksComponents propertyData={propertyData} />
-      <Button
-              
-              className="text-[13px] border-[1px]"
-              variant={"negativeDefault"}
-            >
-              See other Questions <span>{propertyReviews?.length}</span>
-        </Button>
+      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
+        See other Questions <span>{propertyReviews?.length}</span>
+      </Button>
       <p className="py-3 text-lg font-bold">Guests who stayed here loved</p>
-      <ReviewsCard propertyReviews={propertyReviews} />
-      <PropertyTitles />
-      <LocationCard propertyData={propertyData}/>
+      {/* <ReviewsCard propertyReviews={propertyReviews} /> */}
+      {/* <PropertyTitles /> */}
+      {/* <LocationCard propertyData={propertyData} /> */}
 
-      
-      
       <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
       <h2 className="py-3 text-lg font-bold ">
         {t("popularFacilities.header")}
@@ -136,27 +142,21 @@ function Property() {
       <PropertyFeatures features={propertyData?.features} />
 
       <div className="flex flex-col gap-2 ">
-        <h2 className="py-3 text-lg font-bold ">
-          House Rules
-        </h2>
+        <h2 className="py-3 text-lg font-bold ">House Rules</h2>
         <p className="text-gray-500 text-sm">
-        Aparthotel Stare Miasto takes special requests - add in the next step!
+          Aparthotel Stare Miasto takes special requests - add in the next step!
         </p>
-        <HouseRules propertyData={propertyData}/>
+        {/* <HouseRules propertyData={propertyData} /> */}
       </div>
-      
+
       <div className="flex flex-col gap-3">
-        <h2 className="py-3 text-lg font-bold ">
-        The fine print
-
-        </h2>
+        <h2 className="py-3 text-lg font-bold ">The fine print</h2>
         <p className="text-gray-500 text-sm">
-        Need-to-know information for guests at this property
+          Need-to-know information for guests at this property
         </p>
-        <Note />
-        <FaqComponent  propertyData={propertyData}/>
+        {/* <Note /> */}
+        {/* <FaqComponent propertyData={propertyData} /> */}
       </div>
-
     </div>
   );
 }
