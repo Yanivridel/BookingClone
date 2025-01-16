@@ -162,5 +162,12 @@
       "firstText": "It only takes 2 minutes",
       "secondText": "Confirmation is immediate"
     }
+  },
+  "beds": {
+    "queen": "queen beds",
+    "double": "double beds",
+    "bunk": "bunk beds",
+    "single": "single beds",
+    "sofa": "sofa beds"
   }
 }
