@@ -1,10 +1,15 @@
 import { cn } from '@/lib/utils';
-import { IFilters } from '@/types/propertyTypes';
+import { IFilters, IProperty } from '@/types/propertyTypes';
 import { useEffect, useRef, useState } from 'react';
 import FilterSearchResult from './FilterSearchResult';
 import { Button } from './ui/button';
-import { CardXIcon, Location } from './ui/Icons';
+import { CardXIcon, Information, Location, Stars } from './ui/Icons';
 import { IPage } from '@/pages/SearchResults';
+import PropertyCard from './PropertyCard';
+import { createRoot } from "react-dom/client";
+import { Card, CardDescription, CardTitle } from './ui/card';
+import { Badge } from 'lucide-react';
+import { cf, getDescByRating } from '@/utils/functions';
 
 declare global {
     interface Window {
@@ -30,7 +35,7 @@ interface MapProps {
 
 
 export default function CheckpointMap({center, markers, className, data, isFetching, showFilter}: MapProps ) {
-    const mapRef = useGoogleMap({center,markers});
+    const mapRef = useGoogleMap({center,markers, data});
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
@@ -83,7 +88,7 @@ export default function CheckpointMap({center, markers, className, data, isFetch
 }
 
 
-function useGoogleMap({ center, markers }: MapProps) {
+function useGoogleMap({ center, markers, data }: MapProps) {
     const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const mapId = import.meta.env.VITE_GOOGLE_MAP_ID;
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -151,29 +156,22 @@ function useGoogleMap({ center, markers }: MapProps) {
         if (!markers) return;
 
         // Add new markers
-        markers.forEach((position) => {
+        for(let i=0; i< markers.length; i++) {
+            const position = markers[i];
+            const markerData = data?.filteredProperties[i];
             const marker = new window.google.maps.marker.AdvancedMarkerElement({
                 position,
                 map: mapInstanceRef.current,
-                title: position.info,
+                // title: position.info,
                 content: createCustomMarkerIcon()
             });
 
             const infoWindow = new window.google.maps.InfoWindow({
-                content: `
-                    <div class="p-4 bg-white rounded-lg shadow-lg max-w-xs cursor-pointer">
-                        <div class="space-y-2">
-                            <h3 class="font-semibold text-lg">${position.info}</h3>
-                            <div class="text-sm text-gray-600">
-                                <p>Comfort Double Room</p>
-                                <p>1 bed • 1 night • 5 adults</p>
-                                <p class="mt-2 text-2xl font-bold">₹ 2,807</p>
-                            </div>
-                        </div>
-                    </div>
-                `,
+                content: createCardHtml(markerData as IProperty),
                 pixelOffset: new google.maps.Size(0, -20)
             });
+
+            
 
             if (marker.content) {
                 const markerContent = marker.content.getRootNode();
@@ -192,8 +190,7 @@ function useGoogleMap({ center, markers }: MapProps) {
             }
 
             markersRef.current.push(marker);
-
-        });
+        }
     }, [markers]);
 
     return mapRef;
@@ -208,3 +205,110 @@ function createCustomMarkerIcon() {
     div.style.backgroundRepeat = 'no-repeat';
     return div;
 }
+function createCardHtml(markerData: IProperty) {
+    return (
+        `
+        <div class="w-[280px] p-3 rounded-lg shadow-lg bg-white font-sans">
+            
+            <!-- Image -->
+            <div class="relative">
+                <img src="${markerData?.images[0]}" alt="Hotel Image" class="w-full h-[160px] object-cover rounded-lg">
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-blue-600 text-lg font-bold mt-2 cursor-pointer">
+                ${markerData.title}
+            </h2>
+
+            <!-- Rating and Reviews -->
+            <div class="flex items-center text-sm mt-1">
+                <span class="text-yellow-400">${'⭐'.repeat(Math.round((markerData.total_rating || 0) / 2))}</span>
+                <span class="ml-2 bg-blue-600 text-white px-2 py-1 rounded text-xs">${markerData.total_rating?.toFixed(1)}</span>
+                <span class="ml-2 text-gray-600">${markerData.reviews_num} reviews</span>
+            </div>
+
+            <!-- Location -->
+            <p class="text-gray-700 text-sm mt-2">${markerData.location.city}, ${markerData.location.addressLine}</p>
+
+            <!-- Badge -->
+
+            <!-- Room Info -->
+
+            <!-- Price -->
+            <div class="flex items-center mt-2">
+            </div>
+
+            <p class="text-gray-500 text-xs">Includes taxes and fees</p>
+        </div>
+        `
+    )
+}
+
+
+/*
+useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    // Clear existing markers
+    //! Missing clean up old markers
+    markersRef.current = [];
+
+    if (!markers) return;
+
+    // Add new markers
+    for(let i=0; i< markers.length; i++) {
+        const position = markers[i];
+        const markerData = data?.filteredProperties[i];
+        console.log("markerData",markerData )
+        const marker = new window.google.maps.marker.AdvancedMarkerElement({
+            position,
+            map: mapInstanceRef.current,
+            // title: position.info,
+            content: createCustomMarkerIcon()
+        });
+
+        const infoWindow = new window.google.maps.InfoWindow({
+            // content: `
+            //     <div class="p-4 bg-white rounded-lg shadow-lg max-w-xs cursor-pointer">
+            //         <div class="space-y-2">
+            //             <h3 class="font-semibold text-lg">${position.info}</h3>
+            //             <div class="text-sm text-gray-600">
+            //                 <p>Comfort Double Room</p>
+            //                 <p>1 bed • 1 night • 5 adults</p>
+            //                 <p class="mt-2 text-2xl font-bold">₹ 2,807</p>
+            //             </div>
+            //         </div>
+            //     </div>
+            // `,
+            // content: <PropertyCard propertyData={markerData} isGrid={true}/>,
+            pixelOffset: new google.maps.Size(0, -20)
+        });
+
+        const container = document.createElement('div');
+
+        const root = createRoot(container);
+        root.render(<PropertyCard propertyData={markerData as IProperty} isGrid={true} />);
+
+        // Set the container as content
+        infoWindow.setContent(container);
+
+        if (marker.content) {
+            const markerContent = marker.content.getRootNode();
+            
+            markerContent.addEventListener('mouseenter', () => {
+                infoWindow.open(mapInstanceRef.current!, marker);
+            });
+    
+            markerContent.addEventListener('mouseleave', () => {
+                infoWindow.close();
+            });
+    
+            markerContent.addEventListener('click', () => {
+                position.onClick?.();
+            });
+        }
+
+        markersRef.current.push(marker);
+    }
+}, [markers]);
+*/
