@@ -402,6 +402,20 @@ export const Xicon = ({ className }: IconsProps) => {
   );
 };
 
+
+export const Unlock = ({ className }: IconsProps) => {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M1.5 9.75V6a4.5 4.5 0 0 1 9 0v3.75a.75.75 0 0 0 1.5 0V6A6 6 0 1 0 0 6v3.75a.75.75 0 0 0 1.5 0m21 6.75v5.25a.75.75 0 0 1-.75.75H8.25a.75.75 0 0 1-.75-.75v-10.5a.75.75 0 0 1 .75-.75h13.5a.75.75 0 0 1 .75.75zm1.5 0v-5.25A2.25 2.25 0 0 0 21.75 9H8.25A2.25 2.25 0 0 0 6 11.25v10.5A2.25 2.25 0 0 0 8.25 24h13.5A2.25 2.25 0 0 0 24 21.75zM15 15a1.125 1.125 0 1 0 .004 0h-.006a.75.75 0 0 0 .004 1.5H15a.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5"></path></svg>
+  )
+}
+
+export const Lock = ({ className }: IconsProps) => {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="M19.5 16.5v5.25a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75v-10.5a.75.75 0 0 1 .75-.75h13.5a.75.75 0 0 1 .75.75zm1.5 0v-5.25A2.25 2.25 0 0 0 18.75 9H5.25A2.25 2.25 0 0 0 3 11.25v10.5A2.25 2.25 0 0 0 5.25 24h13.5A2.25 2.25 0 0 0 21 21.75zM7.5 9.75V6a4.5 4.5 0 0 1 9 0v3.75a.75.75 0 0 0 1.5 0V6A6 6 0 0 0 6 6v3.75a.75.75 0 0 0 1.5 0M12 15a1.125 1.125 0 1 0 .004 0h-.006a.75.75 0 0 0 .004 1.5H12a.375.375 0 1 1 0-.75.375.375 0 0 1 0 .75.75.75 0 0 0 0-1.5"></path></svg>
+  )
+}
+
+
   export const XregularIcon = ({ className }: IconsProps) => {
     return (
       <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px"><path d="m13.31 12 6.89-6.89a.93.93 0 1 0-1.31-1.31L12 10.69 5.11 3.8A.93.93 0 0 0 3.8 5.11L10.69 12 3.8 18.89a.93.93 0 0 0 1.31 1.31L12 13.31l6.89 6.89a.93.93 0 1 0 1.31-1.31z"></path></svg>
