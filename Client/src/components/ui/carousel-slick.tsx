@@ -11,7 +11,7 @@ export function SampleNextArrow({
     return (
       <div onClick={onClick}>
         <svg
-          className={`absolute top-1/3 -right-6 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+          className={`absolute top-1/3 -right-6 z-30 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
         w-[36px] hover:bg-gray-200 transition-all p-2 cursor-pointer 
         ${isDisabled ? "hidden" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@ export function SamplePrevArrow({ onClick, currentSlide }: any) {
     return (
       <div onClick={onClick}>
         <svg
-          className={`absolute top-1/3 -left-5 z-50 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
+          className={`absolute top-1/3 -left-5 z-30 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
         w-[36px] hover:bg-gray-200 transition-all p-2 cursor-pointer 
         ${isDisabled ? "hidden" : ""}`}
           xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Button } from "./ui/button"
-import { Information, SmallUpDown, UpDown } from "./ui/Icons"
+import { Information, SmallUpDown, UpDown, XIcon } from "./ui/Icons"
 import { Switch } from "./ui/switch"
 import { Dispatch, SetStateAction, useState } from "react";
 import { Label } from "@radix-ui/react-label";
@@ -13,31 +13,39 @@ import { Skeleton } from "./ui/skeleton";
 
 interface SortComponentProps {
     isGrid: boolean;
-    setIsGrid : Dispatch<SetStateAction<boolean>>
+    setIsGrid: Dispatch<SetStateAction<boolean>>
     filters: any;
 }
 
 function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isVisible, setIsVisible] = useState<boolean>(true);
+    const min = searchParams.get("min") || null;
+    const max = searchParams.get("max") || null;
 
     function HandleClick() {
         setIsVisible(false);
     }
 
+    function handleRemoveSearchParams() {
+        searchParams.delete("min");
+        searchParams.delete("max");
+        setSearchParams(searchParams);
+    }
+
     return (
-        <div className=" p-3">
+        <div className=" p-2 flex flex-col gap-4">
 
             <div className="border p-4 flex justify-center">
-                <div className=" w-[50%] rounded-xl grid gap-3 p-3">
+                <div className=" flex-grow rounded-xl grid gap-3 p-3">
                     <p className="font-bold text-lg flex items-center gap-2">
                         { searchParams.get("city") ? searchParams.get("country") + ", " + searchParams.get("city") + ": " : 
                         searchParams.get("country") ? searchParams.get("country") + ": " : "unknown"}
                         {filters ? filters.overall_count : <Skeleton className="h-5 w-8 inline-block"/>} properties found</p>
-                    <div >
+                    <div className="flex flex-wrap">
                         <Popover>
                             <PopoverTrigger>
-                                <Badge variant="outline" className="flex gap-2 rounded-full border-black p-2">
+                                <Badge variant="outline" className="flex ms-2 gap-2 rounded-full border-black p-2">
                                     <UpDown className="w-4"></UpDown> Sort by: Our top picks 
                                     <SmallUpDown className="w-4"></SmallUpDown></Badge>
                             </PopoverTrigger>
@@ -54,10 +62,20 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                                 <div className="p-2 hover:bg-gray-200 cursor-pointer text-xs">Genius discounts first</div>
                             </PopoverContent>
                         </Popover>
+                        { (min || max) ?
+                        <Button variant="negativeDefault" className="rounded-3xl m-2"
+                        onClick={() => handleRemoveSearchParams()}
+                        >
+                            {`₪${Number(min) || 0} - ₪${Number(max) || 0} (per night)`}
+                            <XIcon/>
+                        </Button>
+                        :
+                        <></>
+                        }
                     </div>
                 </div>
                 {/* Change Grid-List Toggle */}
-                <div className=" w-[50%] pr-7 flex items-center justify-end">
+                <div className=" w-[20%] pr-7 flex items-center justify-end">
                     <label className="relative inline-block w-16 h-8">
                     <input
                         type="checkbox"
@@ -67,7 +85,7 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                     />
                     <div
                         className={`absolute top-0 left-0 w-[85px] h-[40px] flex justify-between items-center
-                            text-black rounded-full transition duration-300 bg-[#f5f5f5] `}
+                            text-black rounded-full transition duration-300 bg-[#f5f5f5] border-[1px] border-y-slate-300`}
                     >
                         <div
                         className={`absolute left-2 top-[1] w-[35px] h-[25px] bg-white rounded-full border-[1px] border-black

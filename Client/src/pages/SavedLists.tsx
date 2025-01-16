@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import CheckpointMap, { LatLng } from "@/components/CheckpointMap";
 import { IProperty } from "@/types/propertyTypes";
 import { getPropertyByIdForCard } from "@/utils/api/propertyApi";
+import { IPage } from "./SearchResults";
 
 
 function SavedLists() {
@@ -99,8 +100,6 @@ function SavedLists() {
 
     if(!selectedList)
         return null;
-
-    console.log(selectedList);
 
     return (
         <div className="max-w-[1100px] mx-auto">
@@ -210,7 +209,8 @@ function SavedLists() {
                         { coordinates && <>
                         <div className='border h-[100px] w-[260px] rounded-lg mb-2'>
                             <CheckpointMap center={center} 
-                            markers={coordinates.length > 0 ? coordinates : undefined} showFilter={false} />
+                            markers={coordinates.length > 0 ? coordinates : undefined} 
+                            showFilter={false} data={{ filteredProperties: properties } as IPage} />
                         </div>
                         </>}
                     </Card>

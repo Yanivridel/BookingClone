@@ -63,8 +63,6 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
         }
     }
     
-    const arr = ["a", "b", "c"];
-
     let nights: number;
     const startDate = searchParams.get("startDate") ? new Date(searchParams.get("startDate") as string) : undefined;
     const endDate = searchParams.get("endDate") ? new Date(searchParams.get("endDate") as string) : undefined;
@@ -179,13 +177,12 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                 <Button>{"<"} See availability</Button>
             </div>
         </Card>
-
-
         : 
-        <Card className='flex justify-between p-5 max-w-[815px]'>
+        <Card className='flex justify-between p-5 mx-auto max-w-[815px]'>
             <div className='flex gap-5'>
                 <div className='w-50% relative'>
-                    <img src={propertyData?.images[0]} alt="" className='h-[240px] w-[240px] rounded-xl' />
+                    <img src={propertyData?.images[0]} alt="" 
+                    className='h-[240px] w-[240px] object-cover rounded-xl' />
                     <div className="absolute top-2 end-1">
                         <SaveButton id={propertyData._id}/>
                     </div>
@@ -213,10 +210,6 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                                 </u></p>
                             <p className='cursor-pointer text-blue-500 text-xs'><u>Show on map</u></p>
                         </div>
-                        {/* <div className='flex gap-2'>
-                            <p className='text-xs'>100 m from centre</p>
-                            <p className='text-xs'>Metro access</p>
-                        </div> */}
                         { isLimited && <Badge variant="deals" className='mt-1'>Limited-time Deal</Badge>}
                     </CardDescription>
                     <CardDescription className={`p-3 flex flex-col gap-2 ${isRtl ? "border-r-2" : "border-l-2"}`}>

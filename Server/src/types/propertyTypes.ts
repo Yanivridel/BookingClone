@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
 import { IUser } from "./userTypes";
-import { IRoom } from "./roomTypes";
+import { IRoom, TSelectedRoom } from "./roomTypes";
 
 export interface IProperty extends Document {
   _id: Types.ObjectId;
@@ -94,6 +94,7 @@ export interface IProperty extends Document {
   host: Types.ObjectId;
   total_rating?: number;
   reviews_num?: number;
+  selectedRooms?: TSelectedRoom[];
 }
 
 export type TPartialProperty = Partial<IProperty>;
@@ -108,15 +109,6 @@ export interface ILocation {
   coordinates?: ICoordinates;
 }
 
-// export interface IHotelAreaInfoCategoty {
-//   category:
-//     | "Public transit"
-//     | "Closest Airports"
-//     | "Restaurants & cafes"
-//     | "Natural Beauty"
-//     | "What's nearby"
-//     | "Top attractions";
-// }
 export interface ICoordinates {
   type: "Point";
   coordinates: number[];

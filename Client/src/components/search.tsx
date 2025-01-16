@@ -103,8 +103,6 @@ export interface LocationRes {
 
 // ! need to get props "isAllHome" that make the search diffrent
 
-// todo: icons and "powred by google"
-
 function Search() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -112,12 +110,11 @@ function Search() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place
   const [openLocationDropDown, setOpenLocationDropDown] = useState(false);
-  const [locationInputValue, setLocationInputValue] = useState("");
+  const [locationInputValue, setLocationInputValue] = useState(searchParams.get("country") ?? "");
   const [locationSearchRes, setLocationSearchRes] =
     useState<LocationRes[]>(items); // for drop down initialization
-  // !need to change the type with the real data
   const [finalLocation, setFinalLocation] = useState<Location>({
-    country: searchParams.get("country") ?? "",
+    country: searchParams.get("country") ?? "Israel",
     region: searchParams.get("region") ?? null,
     city: searchParams.get("city") ?? null,
     addressLine: searchParams.get("addressLine") ?? null,
@@ -149,23 +146,29 @@ function Search() {
     parseInt(searchParams.get("adults") || "1")
   );
   const [childrenCount, setChildrenCount] = useState(
-    searchParams.get("childrenAges")?.split(",").length || 0
-  );
-  const [roomsCount, setRoomsCount] = useState(1);
-  const [isPets, setIsPets] = useState(false);
+    searchParams.get("childrenAges") ? 
+      (
+      searchParams.get("childrenAges")!.length <= 2 ? 1 
+      :
+      searchParams.get("childrenAges")?.split(",")?.length ?? 0
+      )
+    :
+    0
+    );
+  const [roomsCount, setRoomsCount] = useState(Number(searchParams.get("rooms") ?? 1));
+  const [isPets, setIsPets] = useState(!!searchParams.get("isAnimalAllowed"));
   const [childrenAges, setChildrenAges] = useState<
     (number | typeof NaN | undefined | null | "")[]
 
-  >( searchParams.get("childrenAges") 
-  ? searchParams.get("childrenAges")!.split(",").map(age => {
+  >( searchParams.get("childrenAges") ?
+      searchParams.get("childrenAges")!.split(",").map(age => {
       const num = parseInt(age.trim(), 10);
-      return isNaN(num) ? "" : num; // Replace invalid values with ""
+      return isNaN(num) ? "" : num;
     })
   : []);
+
   const dispatch = useDispatch();
 
-
-  // const [yearsMonths, setYearsMonths] = useState<MonthYear[] | []>([]);
   const finalData = {
     primary: {
       location: {
@@ -197,10 +200,6 @@ function Search() {
     },
   };
 
-  //   preferredDays = {length: number , name: name}
-  //  clickedMonthsCards = [] | [index ] max length 3
-  //  finel data to be yearsMonths[clickedindex[0]...] (clickedMonthsCards.forEach...)
-
   const { i18n } = useTranslation();
   const currentLocale = i18n.language === "he" ? he : enUS;
 
@@ -221,7 +220,6 @@ function Search() {
       setLocationInputValue(e.target.value);
       if (e.target.value.length > 0) {
         const res = await getAutocompleteLocations(e.target.value);
-        // console.log(res[0].location);
         res.length > 0 && setLocationSearchRes(res);
       }
     } catch (error) {
@@ -377,7 +375,6 @@ function Search() {
     }
     navigate(url);
     try {
-      console.log("finalData", finalData);
       const updatedUser = await modifyUserArrays("add", { search: finalData.primary});
       dispatch(addSearchEntry(updatedUser.search));
     } catch(err) {
@@ -398,15 +395,6 @@ function Search() {
   }, [clickedMonthsCards, preferredDays]);
 
   useEffect(() => {
-    // console.log("final data");
-    // console.log(finalData.primary.location);
-  }, [finalData]);
-
-  useEffect(() => {
-    // setLocationInputValue(
-    //   Object.values(finalLocation).filter(isNaN).join(", ")
-    // );
-
     const handleResize = () => setWindowWidth(window.innerWidth);
 
     window.addEventListener("resize", handleResize);
@@ -414,6 +402,8 @@ function Search() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const locationDropdownMap = {} as any;
 
   return (
     <form className="p-2 text-[14px]">
@@ -447,9 +437,12 @@ function Search() {
                       : element.matchedIn === "addressLine"
                       ? `${element.location.city}, ${element.location.region}, ${element.location.country} `
                       : null;
+                  if(locationDropdownMap[header+subHeader]) 
+                    return null;
+                  locationDropdownMap[header+subHeader] = 1;
 
                   return (
-                    i < 5 && (
+                    Object.values(locationDropdownMap).length < 5 && (
                       <li
                         onClick={() =>
                           handleLocationListClick(
@@ -484,7 +477,6 @@ function Search() {
                   );
                 })}
               </ul>
-              in some cases put here "power by google" img
             </Card>
           </div>
           <svg
@@ -838,13 +830,15 @@ function Search() {
             >
               <SearchPeople
                 setopenPepolePophover={setOpenPeoplePopHover}
-                childrenCount={childrenCount}
                 setChildrenCount={setChildrenCount}
                 adultsCount={adultsCount}
                 roomsCount={roomsCount}
                 setRoomsCount={setRoomsCount}
                 setAdultsCount={setAdultsCount}
+                childrenCount={childrenCount}
+                childrenAges={childrenAges}
                 setChildrenAges={setChildrenAges}
+                isPets={isPets}
                 setIsPets={setIsPets}
               ></SearchPeople>
             </PopoverContent>

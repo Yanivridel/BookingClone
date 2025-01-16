@@ -1,6 +1,7 @@
 import BreadcrumbCard from "@/components/Breadcrumb";
 import CheckpointMap, { LatLng } from "@/components/CheckpointMap";
 import FilterSearchResult from "@/components/FilterSearchResult";
+import MobileSearchOptions from "@/components/MobileSearchOptions";
 import PropertyCard from "@/components/PropertyCard";
 import Search from "@/components/search";
 import SortComponent from "@/components/SortComponent";
@@ -13,15 +14,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export interface IPage {
-  filters: IFilters;
+  filters?: IFilters;
   filteredProperties: IProperty[];
-  pageParam: number;
+  pageParam?: number;
 }
 
 
 function SearchResults() {
-  const [isGrid, setIsGrid] = useState(false)
-  const [filterDisplay, SetFilterDisplay] = useState(true)
+  const [isGrid, setIsGrid] = useState(false);
+  const [filterDisplay, SetFilterDisplay] = useState(window.innerWidth > 1024)
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -93,7 +94,7 @@ function SearchResults() {
 
   useEffect(() => {
     function checkScreenSize() {
-      if(window.innerWidth <= 768) {
+      if(window.innerWidth <= 1024) {
         SetFilterDisplay(false)
       } else {
         SetFilterDisplay(true)
@@ -143,19 +144,24 @@ function SearchResults() {
       
       <Search />
       <BreadcrumbCard />
+      <div className={filterDisplay ? "hidden" : ""}>
+        <MobileSearchOptions data={data?.pages[0] as IPage} isFetching={isFetching}
+        center={center} markers={coordinates.length > 0 ? coordinates : undefined}/>
+      </div>
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
           <div className='border h-[150px] max-w-[260px] rounded-lg mb-2'>
             <CheckpointMap center={center} 
             markers={coordinates.length > 0 ? coordinates : undefined}
-            data={data?.pages[0] as IPage} showFilter={true} />
+            data={data?.pages[0] as IPage} showFilter={true} isOpen={true}/>
           </div>
           <FilterSearchResult data={data?.pages[0] as IPage} isFetching={isFetching}/>
           
         </div>
         <div className="flex-1">
           <SortComponent filters={data?.pages[0].filters} isGrid={isGrid} setIsGrid={setIsGrid} />
-          <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
+          <div className={isGrid ? "grid grid1:grid-cols-2 sm:grid-cols-2 grid2:grid-cols-3 gap-2 p-2 justify-items-center " 
+            : " flex flex-col gap-2 p-2"}>
             { !data && isFetching && SkeletonCard(10) }
             { data && 
             data.pages.map((page:any) => {

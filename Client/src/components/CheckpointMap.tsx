@@ -1,15 +1,11 @@
 import { cn } from '@/lib/utils';
-import { IFilters, IProperty } from '@/types/propertyTypes';
+import { IProperty } from '@/types/propertyTypes';
 import { useEffect, useRef, useState } from 'react';
 import FilterSearchResult from './FilterSearchResult';
 import { Button } from './ui/button';
-import { CardXIcon, Information, Location, Stars } from './ui/Icons';
+import { CardXIcon, Location } from './ui/Icons';
 import { IPage } from '@/pages/SearchResults';
-import PropertyCard from './PropertyCard';
-import { createRoot } from "react-dom/client";
-import { Card, CardDescription, CardTitle } from './ui/card';
-import { Badge } from 'lucide-react';
-import { cf, getDescByRating } from '@/utils/functions';
+
 import { useNavigate } from 'react-router-dom';
 
 declare global {
@@ -32,12 +28,16 @@ interface MapProps {
     data?: IPage;
     isFetching?: boolean;
     showFilter?: boolean;
+    isFull?: boolean;
+    isOpen?: boolean;
 }
 
 
-export default function CheckpointMap({center, markers, className, data, isFetching, showFilter}: MapProps ) {
-    const mapRef = useGoogleMap({center,markers, data});
-    const [isFullscreen, setIsFullscreen] = useState(false);
+export default function CheckpointMap({center, markers, className, data, isFetching, showFilter, isFull, isOpen}: MapProps ) {
+    const mapRef = useGoogleMap({center,markers, data, isOpen});
+    const [isFullscreen, setIsFullscreen] = useState(isFull ?? false);
+
+    console.log("markers", markers)
 
     useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
@@ -89,114 +89,143 @@ export default function CheckpointMap({center, markers, className, data, isFetch
 }
 
 
-function useGoogleMap({ center, markers, data }: MapProps) {
-    const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    const mapId = import.meta.env.VITE_GOOGLE_MAP_ID;
-    const mapRef = useRef<HTMLDivElement | null>(null);
-    const mapInstanceRef = useRef<google.maps.Map | null>(null);
-    const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-    const scriptId = "google-maps-script";
-    const navigate = useNavigate();
+// function useGoogleMap({ center, markers, data, isOpen, mapId: customMapId }: MapProps) {
+//     const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+//     const defaultMapId = import.meta.env.VITE_GOOGLE_MAP_ID;
+//     const mapRef = useRef<HTMLDivElement | null>(null);
+//     const mapInstanceRef = useRef<google.maps.Map | null>(null);
+//     const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+//     const navigate = useNavigate();
+    
+//     const instanceId = useRef(`map-${Math.random().toString(36).substr(2, 9)}`);
 
-    // Initialize map only once
-    useEffect(() => {
-        if (!googleApiKey || !mapId) {
-            console.error("Google Maps API Key or Map ID is missing.");
-            return;
-        }
+//     useEffect(() => {
+//         if (!googleApiKey || !(customMapId || defaultMapId)) {
+//             console.error("Google Maps API Key or Map ID is missing.");
+//             return;
+//         }
 
-        if (!document.getElementById(scriptId)) {
-            const script = document.createElement("script");
-            script.id = scriptId;
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&callback=initMap&map_ids=${mapId}&libraries=marker&loading=async`;
-            script.async = true;
-            script.defer = true;
-            document.body.appendChild(script);
+//         if (!isOpen || !mapRef.current) return;
 
-            script.onerror = () => {
-                console.error("Failed to load Google Maps API.");
-            };
-        }
+//         const initMap = () => {
+//             if (mapRef.current) {
+//                 console.log(`Initializing Map ${instanceId.current}...`);
+//                 mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+//                     center,
+//                     zoom: 13,
+//                     mapId: customMapId || defaultMapId,
+//                     fullscreenControl: false,
+//                     scrollwheel: true,
+//                 });
+//             }
+//         };
 
-        window.initMap = () => {
-            if (!mapRef.current || !window.google) return;
+//         const loadGoogleMapsScript = () => {
+//             return new Promise<void>((resolve, reject) => {
+//                 if (window.google?.maps?.marker?.AdvancedMarkerElement) {
+//                     resolve();
+//                     return;
+//                 }
 
-            if (!mapInstanceRef.current) {
-                mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-                    center,
-                    zoom: 13,
-                    mapId,
-                    fullscreenControl: false,
-                    scrollwheel: true
-                });
-            }
-        };
-
-        return () => {
-            const existingScript = document.getElementById(scriptId);
-            if (existingScript) {
-                document.body.removeChild(existingScript);
-            }
-        };
-    }, []);
-
-    // Handle center changes
-    useEffect(() => {
-        if (mapInstanceRef.current) {
-            mapInstanceRef.current.setCenter(center);
-        }
-    }, [center.lat, center.lng]);
-
-    // Handle markers changes
-    useEffect(() => {
-        if (!mapInstanceRef.current) return;
-
-        // Clear existing markers
-        //! Missing clean up old markers
-        markersRef.current = [];
-
-        if (!markers) return;
-
-        // Add new markers
-        for(let i=0; i< markers.length; i++) {
-            const position = markers[i];
-            const markerData = data?.filteredProperties[i];
-            const marker = new window.google.maps.marker.AdvancedMarkerElement({
-                position,
-                map: mapInstanceRef.current,
-                // title: position.info,
-                content: createCustomMarkerIcon()
-            });
-
-            const infoWindow = new window.google.maps.InfoWindow({
-                content: createCardHtml(markerData as IProperty),
-                pixelOffset: new google.maps.Size(0, -20)
-            });
-
-            
-
-            if (marker.content) {
-                const markerContent = marker.content.getRootNode();
+//                 const script = document.createElement("script");
+//                 // Add marker library to the URL
+//                 script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=marker`;
+//                 script.async = true;
+//                 script.defer = true;
+//                 script.id = `google-maps-script-${instanceId.current}`;
                 
-                markerContent.addEventListener('mouseenter', () => {
-                    infoWindow.open(mapInstanceRef.current!, marker);
-                });
-        
-                markerContent.addEventListener('mouseleave', () => {
-                    infoWindow.close();
-                });
-        
-                markerContent.addEventListener('click', () => {
-                    navigate(`/property/${markerData?._id}`);
-                });
-            }
+//                 script.onload = () => resolve();
+//                 script.onerror = () => reject(new Error("Google Maps API failed to load"));
+                
+//                 document.head.appendChild(script);
+//             });
+//         };
 
-            markersRef.current.push(marker);
-        }
-    }, [markers]);
+//         loadGoogleMapsScript()
+//             .then(() => {
+//                 initMap();
+//                 updateMarkers();
+//             })
+//             .catch(error => console.error(error));
 
-    return mapRef;
-}
+//         return () => {
+//             clearMarkers();
+//             if (mapInstanceRef.current) {
+//                 console.log(`Cleaning up map ${instanceId.current}...`);
+//                 mapInstanceRef.current = null;
+//             }
+//         };
+//     }, [isOpen]);
+
+//     useEffect(() => {
+//         if (mapInstanceRef.current) {
+//             mapInstanceRef.current.setCenter(center);
+//         }
+//     }, [center.lat, center.lng]);
+
+//     const clearMarkers = () => {
+//         markersRef.current.forEach(marker => {
+//             marker.map = null;
+//             if (marker.content) {
+//                 const markerContent = marker.content.getRootNode();
+//                 if (markerContent instanceof Element) {
+//                     markerContent.replaceWith(markerContent.cloneNode(true));
+//                 } else {
+//                     const parent = markerContent.parentNode;
+//                     if (parent) {
+//                         parent.replaceChild(markerContent.cloneNode(true), markerContent);
+//                     }
+//                 }
+//             }
+//         });
+//         markersRef.current = [];
+//     };
+
+//     const updateMarkers = () => {
+//         if (!mapInstanceRef.current || !markers || !window.google?.maps?.marker?.AdvancedMarkerElement) return;
+
+//         clearMarkers();
+
+//         markers.forEach((position, i) => {
+//             const markerData = data?.filteredProperties[i];
+//             const marker = new window.google.maps.marker.AdvancedMarkerElement({
+//                 position,
+//                 map: mapInstanceRef.current,
+//                 content: createCustomMarkerIcon()
+//             });
+
+//             const infoWindow = new window.google.maps.InfoWindow({
+//                 content: createCardHtml(markerData as IProperty),
+//                 pixelOffset: new google.maps.Size(0, -20)
+//             });
+
+//             if (marker.content) {
+//                 const markerContent = marker.content.getRootNode();
+//                 if (markerContent instanceof Element) {
+//                     markerContent.addEventListener('mouseenter', () => {
+//                         infoWindow.open(mapInstanceRef.current!, marker);
+//                     });
+            
+//                     markerContent.addEventListener('mouseleave', () => {
+//                         infoWindow.close();
+//                     });
+            
+//                     markerContent.addEventListener('click', () => {
+//                         navigate(`/property/${markerData?._id}`);
+//                     });
+//                 }
+//             }
+
+//             markersRef.current.push(marker);
+//         });
+//     };
+
+//     useEffect(() => {
+//         updateMarkers();
+//     }, [markers]);
+
+//     return mapRef;
+// }
 
 function createCustomMarkerIcon() {
     const div = document.createElement('div');
@@ -244,4 +273,118 @@ function createCardHtml(markerData: IProperty) {
         </div>
         `
     )
+}
+
+// Working useGoogleMaps
+function useGoogleMap({ center, markers, data }: MapProps) {
+    const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const mapId = import.meta.env.VITE_GOOGLE_MAP_ID;
+    const mapRef = useRef<HTMLDivElement | null>(null);
+    const mapInstanceRef = useRef<google.maps.Map | null>(null);
+    const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+    const scriptId = "google-maps-script";
+    const navigate = useNavigate();
+
+    // Initialize map only once
+    useEffect(() => {
+        if (!googleApiKey || !mapId) {
+            console.error("Google Maps API Key or Map ID is missing.");
+            return;
+        }
+
+        if (!document.getElementById(scriptId)) {
+            const script = document.createElement("script");
+            script.id = scriptId;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&callback=initMap&map_ids=${mapId}&libraries=marker&loading=async`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+
+            script.onerror = () => {
+                console.error("Failed to load Google Maps API.");
+            };
+        }
+
+        window.initMap = () => {
+            if (!mapRef.current || !window.google) return;
+            
+            if (!mapInstanceRef.current) {
+                console.log("HERE")
+                mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+                    center,
+                    zoom: 13,
+                    mapId,
+                    fullscreenControl: false,
+                    scrollwheel: true
+                });
+            }
+        };
+
+        return () => {
+            const existingScript = document.getElementById(scriptId);
+            if (existingScript) {
+                document.body.removeChild(existingScript);
+            }
+        };
+    }, []);
+
+    // Handle center changes
+    useEffect(() => {
+        if (mapInstanceRef.current) {
+            mapInstanceRef.current.setCenter(center);
+        }
+    }, [center.lat, center.lng]);
+
+    // Handle markers changes
+    useEffect(() => {
+        console.log("INSIDE", mapInstanceRef.current);
+        if (!mapInstanceRef.current) return;
+
+        // Clear existing markers
+        //! Missing clean up old markers
+        markersRef.current = [];
+
+        console.log(markers)
+        if (!markers) return;
+
+        // Add new markers
+        for(let i=0; i< markers.length; i++) {
+            const position = markers[i];
+            const markerData = data?.filteredProperties[i];
+            const marker = new window.google.maps.marker.AdvancedMarkerElement({
+                position,
+                map: mapInstanceRef.current,
+                // title: position.info,
+                content: createCustomMarkerIcon()
+            });
+            console.log(position, markerData);
+
+            const infoWindow = new window.google.maps.InfoWindow({
+                content: createCardHtml(markerData as IProperty),
+                pixelOffset: new google.maps.Size(0, -20)
+            });
+
+            
+
+            if (marker.content) {
+                const markerContent = marker.content.getRootNode();
+                
+                markerContent.addEventListener('mouseenter', () => {
+                    infoWindow.open(mapInstanceRef.current!, marker);
+                });
+        
+                markerContent.addEventListener('mouseleave', () => {
+                    infoWindow.close();
+                });
+        
+                markerContent.addEventListener('click', () => {
+                    navigate(`/property/${markerData?._id}`);
+                });
+            }
+
+            markersRef.current.push(marker);
+        }
+    }, [markers]);
+
+    return mapRef;
 }
