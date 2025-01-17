@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
-import { t } from "i18next";
 
 interface NavPropertyProps {
   arr: string[];
@@ -17,7 +16,7 @@ function NavProperty({ arr }: NavPropertyProps) {
     <div className="flex">
       {arr.map((buttonName) => (
         <Button
-          className="flex-grow"
+          className="flex-grow font-normal"
           variant={
             activeNavButton === buttonName
               ? "navBarUnderlineSelected"

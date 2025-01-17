@@ -24,21 +24,13 @@ import { IReview } from "@/types/reviewTypes";
 import Search from "@/components/search";
 import { useTranslation } from "react-i18next";
 
-import { IRoom } from "@/types/roomTypes";
-
 import HouseRules from "@/components/HouseRules";
-import Note from "@/components/Note";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import LocationCard from "@/components/LocationCard";
 import PropertyTitles from "@/components/PropertyTitles";
 import FaqComponent from "@/components/FaqComponent";
+import MainCarousel from "@/components/MainCarousel";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -86,83 +78,145 @@ function Property() {
   }, [id]);
 
   return (
-    <div className="p-10">
-      <Search></Search>
-      <BreadcrumbProperty />
-      <NavProperty arr={arr} />
-      <PropertyTitle propertyData={propertyData} id={arr[0]} />
+    <div className="relative ">
+      <div className="absolute top-0 w-full -z-10 h-[210px]  bg-[#013b94] search:h-[45px]"></div>
+      <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-10">
+        <div className="absolute top-[150px] "></div>
+        <Search></Search>
 
-      <ReviewsCard propertyReviews={propertyReviews} />
+        <BreadcrumbProperty />
+        <MainCarousel>
+          <NavProperty arr={arr} />
+        </MainCarousel>
 
-      {propertyReviews && (
+        <PropertyTitle propertyData={propertyData} segment={arr[0]} />
+
         <ImagesProperty
           propertyData={propertyData}
           propertyReviews={propertyReviews}
         />
-      )}
-      <PropertyDescription propertyData={propertyData} />
-      <PropertyHighlight highlights={propertyData?.highlights} />
-      <GeniusCard />
-      <h2 className="py-3 text-lg font-bold ">
-        {t("popularFacilities.header")}
-      </h2>
-      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
-      {/* todo: pass real data */}
+        <div className="search:grid search:grid-cols-[5fr_2fr] mt-5">
+          <PropertyDescription propertyData={propertyData} />
+          <div className="hidden search:flex search:flex-col gap-4 search:justify-around items-center">
+            <PropertyHighlight highlights={propertyData?.highlights} />
+            <GeniusCard />
+          </div>
+        </div>
+        <div>
+          <h2 className="py-3 text-lg font-bold ">
+            {t("popularFacilities.header")}
+          </h2>
+          <PopularFacilities
+            popularFacilities={propertyData?.popularFacilities}
+          />
+        </div>
+        <div className="border-[0.5px] border-softGray my-5"></div>
+        {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
+          <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
+        )}
+        {propertyReviews && (
+          <GuestReviews
+            propertyData={propertyData}
+            propertyReviews={propertyReviews}
+          />
+        )}
+        {/* <Button
+          className="text-[13px] border-[1px]"
+          variant={"negativeDefault"}
+        >
+          Read all reviews
+        </Button> */}
+        {/* {propertyReviews && (
+          <GuestReviews
+            propertyData={propertyData}
+            propertyReviews={propertyReviews}
+          />
+        )} */}
+        {/* <Button
+          className="text-[13px] border-[1px]"
+          variant={"negativeDefault"}
+        >
+          Read all reviews
+        </Button> */}
 
-      <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
-      {propertyReviews && (
-        <GuestReviews
-          propertyData={propertyData}
-          propertyReviews={propertyReviews}
-        />
-      )}
-      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
-        Read all reviews
-      </Button>
-      {propertyReviews && (
-        <GuestReviews
-          propertyData={propertyData}
-          propertyReviews={propertyReviews}
-        />
-      )}
-      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
-        Read all reviews
-      </Button>
+        {/* <QualityCard propertyData={propertyData} /> */}
+        {/* <p className="py-3 text-lg font-bold">Travellers are asking</p>
+        <AsksComponents propertyData={propertyData} />
+        <Button
+          className="text-[13px] border-[1px]"
+          variant={"negativeDefault"}
+        >
+          See other Questions <span>{propertyReviews?.length}</span>
+        </Button>
+        <p className="py-3 text-lg font-bold">Guests who stayed here loved</p>
+        {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />}
+        <PropertyTitles />
+        <LocationCard propertyData={propertyData} />
 
-      <QualityCard propertyData={propertyData} />
-      <p className="py-3 text-lg font-bold">Travellers are asking</p>
-      <AsksComponents propertyData={propertyData} />
-      <Button className="text-[13px] border-[1px]" variant={"negativeDefault"}>
-        See other Questions <span>{propertyReviews?.length}</span>
-      </Button>
-      <p className="py-3 text-lg font-bold">Guests who stayed here loved</p>
-      <ReviewsCard propertyReviews={propertyReviews} />
-      <PropertyTitles />
-      <LocationCard propertyData={propertyData} />
+        <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+        <h2 className="py-3 text-lg font-bold ">
+          {t("popularFacilities.header")}
+        </h2>
+        <PopularFacilities
+          popularFacilities={propertyData?.popularFacilities}
+        /> */}
+        {/* {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />} */}
 
-      <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
-      <h2 className="py-3 text-lg font-bold ">
-        {t("popularFacilities.header")}
-      </h2>
-      <PopularFacilities popularFacilities={propertyData?.popularFacilities} />
-      {/* todo ridel carusel 5 km close by */}
-      <PropertyFeatures features={propertyData?.features} />
+        {/* todo ridel carusel 5 km close by */}
+        {/* <PropertyFeatures features={propertyData?.features} />
 
-      <div className="flex flex-col gap-2 ">
-        <h2 className="py-3 text-lg font-bold ">House Rules</h2>
-        <p className="text-gray-500 text-sm">
-          Aparthotel Stare Miasto takes special requests - add in the next step!
-        </p>
-        <HouseRules propertyData={propertyData} />
-      </div>
+        <div className="flex flex-col gap-2 ">
+          <h2 className="py-3 text-lg font-bold ">House Rules</h2>
+          <p className="text-gray-500 text-sm">
+            Aparthotel Stare Miasto takes special requests - add in the next
+            step!
+          </p>
+          <HouseRules propertyData={propertyData} />
+        </div>
 
-      <div className="flex flex-col gap-3">
-        <h2 className="py-3 text-lg font-bold ">The fine print</h2>
-        <p className="text-gray-500 text-sm">
-          Need-to-know information for guests at this property
-        </p>
-        {/* <Note /> */}
-        <FaqComponent propertyData={propertyData} />
+        <div className="flex flex-col gap-3">
+          <h2 className="py-3 text-lg font-bold ">The fine print</h2>
+          <p className="text-gray-500 text-sm">
+            Need-to-know information for guests at this property
+          </p>
+          <FaqComponent propertyData={propertyData} />
+        </div> */}
+        {/* <div>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
+          doloribus, excepturi dolorum numquam iste expedita unde doloremque
+          atque consequatur? Consectetur enim eos magnam rerum possimus
+          molestias dolores, soluta quia. Temporibus? Libero vero quibusdam
+          necessitatibus aspernatur eius, possimus, nihil quis provident dolores
+          eligendi id! Quaerat, laboriosam voluptatibus at explicabo unde iusto
+          qui nobis aperiam modi harum itaque eum. Recusandae, nemo libero!
+          Delectus odit maxime quaerat fuga. Itaque, vel ut. Deleniti distinctio
+          ut doloribus delectus ipsa eos provident tenetur dolores ullam nihil
+          explicabo, suscipit cumque nisi? Repellat natus perferendis cum rerum
+          reprehenderit! Rem nostrum nam natus sit quo doloribus quis dolores
+          eaque commodi ratione distinctio reprehenderit, eveniet nesciunt
+          perspiciatis a reiciendis. Obcaecati alias enim optio rem et
+          repudiandae itaque dicta, reiciendis illo? Ut reprehenderit nemo
+          ducimus modi reiciendis, maiores, ratione iste facilis culpa
+          dignissimos hic laudantium! Dolore, accusamus autem quo deleniti
+          facilis eveniet quasi eum alias rem non assumenda! Maxime, dolorem
+          modi? Iure sequi officiis itaque recusandae fugit, nostrum porro
+          labore tenetur corrupti in beatae, veritatis ex at illo non fugiat
+          voluptates similique ipsum voluptatem repellendus eius maiores.
+          Cumque, repellendus. Quae, quo. Ex reiciendis enim esse sequi
+          similique, nesciunt vitae ab ut. Voluptatem ipsam quas a modi ut
+          adipisci quasi. Dignissimos unde blanditiis neque porro voluptates
+          veniam similique molestiae beatae possimus quas! Voluptas
+          necessitatibus consequatur placeat illum accusamus veritatis, commodi
+          incidunt explicabo pariatur voluptatibus. Nostrum ipsam vero dicta,
+          itaque officia, ipsum cum similique exercitationem illum iste autem at
+          assumenda, recusandae et quis. Sed sint nihil assumenda, quo
+          necessitatibus tempore optio? Accusamus sint iure tenetur quis, hic
+          est doloremque tempora sed libero ipsam dicta nam corrupti et, nisi
+          enim veniam magnam nobis earum! Accusantium totam aut eius, quos ab
+          similique dicta saepe numquam aliquam fugiat, nisi veritatis,
+          asperiores nesciunt! Laudantium ex modi voluptatibus sit. Quod libero
+          laudantium accusantium enim aliquid debitis ab nesciunt.
+        </div> */}
       </div>
     </div>
   );

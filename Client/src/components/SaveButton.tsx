@@ -21,11 +21,15 @@ import { modifyUserArrays } from "@/utils/api/userApi";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { icons } from "lucide-react";
 
 interface SavedButtonProps {
   id: string;
   is_X?: boolean;
   listName?: string;
+  iconFullClassNam?: string;
+  iconEmptyClassName?: string;
 }
 interface MutationVariables {
   action: string;
@@ -35,45 +39,53 @@ interface MutationContext {
   rollback: () => void;
 }
 
-function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
-  const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
+function SaveButton({
+  id,
+  is_X,
+  listName,
+  iconEmptyClassName,
+  iconFullClassNam,
+}: SavedButtonProps) {
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
   const dispatch = useDispatch();
-  const [isLiked, setIsLiked] = useState(currentUser.savedLists.some(list => list.properties.includes(id)));
+  const [isLiked, setIsLiked] = useState(
+    currentUser.savedLists.some((list) => list.properties.includes(id))
+  );
   const [open, setOpen] = useState(false);
   const [newList, setNewList] = useState("");
   const allLists = currentUser.savedLists;
   const [selectedList, setSelectedList] = useState(() => {
     const defaultList = allLists.find((list) => list.properties.includes(id));
-    return defaultList ? defaultList.name : "My Next Trip"; 
-  });  
+    return defaultList ? defaultList.name : "My Next Trip";
+  });
   const [lastList, setLastList] = useState(selectedList);
 
-  const mutationFn = async ({ action, listName }: MutationVariables): Promise<IUser> => {
-    return modifyUserArrays(
-      action,
-      { 
-        savedList: { 
-          name: listName,
-          propertyId: id 
-        } 
-      } as any
-    );
+  const mutationFn = async ({
+    action,
+    listName,
+  }: MutationVariables): Promise<IUser> => {
+    return modifyUserArrays(action, {
+      savedList: {
+        name: listName,
+        propertyId: id,
+      },
+    } as any);
   };
-  
+
   const useSavedListMutation = () => {
     return useMutation<IUser, Error, MutationVariables, MutationContext>({
       mutationFn,
       onMutate: (params) => {
-        if(params.action === "add") 
-          setIsLiked(true);
-        else
-          setIsLiked(false);
-        setOpen(true)
-        
+        if (params.action === "add") setIsLiked(true);
+        else setIsLiked(false);
+        setOpen(true);
+
         setLastList(selectedList);
 
         return {
-          rollback: () => setIsLiked(prev => !prev),
+          rollback: () => setIsLiked((prev) => !prev),
         };
       },
       onError: (err, variables, context) => {
@@ -88,39 +100,40 @@ function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
   };
   const { mutate, isPending } = useSavedListMutation();
 
-  const handleLikeClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleLikeClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
-    if(isLiked)
-      mutate({ action: "delete" });
-    else
-      mutate({ action: "add" });
+    if (isLiked) mutate({ action: "delete" });
+    else mutate({ action: "add" });
   };
 
   const handleChangeList = (value: string) => {
     mutate({ action: "delete", listName: selectedList });
-    mutate({ action: "add", listName: value});
+    mutate({ action: "add", listName: value });
     setSelectedList(value);
     setNewList("");
-  }
+  };
 
-  const handleDeleteFromList = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleDeleteFromList = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     e.stopPropagation();
-    mutate({ action: "delete", listName: listName})
-  }
+    mutate({ action: "delete", listName: listName });
+  };
 
-  if(currentUser.savedLists.length < 1)
-    return null;
+  if (currentUser.savedLists.length < 1) return null;
 
-  if(is_X) {
+  if (is_X) {
     return (
-      <div 
-      className="bg-white rounded-full h-[36px] w-[36px] flex items-center justify-center
+      <div
+        className="bg-white rounded-full h-[36px] w-[36px] flex items-center justify-center
       hover:bg-gray-100 transition-all cursor-pointer"
-      onClick={handleDeleteFromList}
+        onClick={handleDeleteFromList}
       >
         <CardXIcon className="w-5 h-5" />
       </div>
-    )
+    );
   }
 
   return (
@@ -128,16 +141,25 @@ function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
       <TooltipProvider>
         <Popover open={open} onOpenChange={setOpen}>
           <Tooltip>
-            <PopoverContent dir="rtl" className="rounded-lg" sideOffset={45} onClick={(e) => e.stopPropagation()}>
+            <PopoverContent
+              dir="rtl"
+              className="rounded-lg"
+              sideOffset={45}
+              onClick={(e) => e.stopPropagation()}
+            >
               {isLiked && !isPending && (
                 <div>
                   {/* <p>נשמר ב: הטיול הבא שלי</p> */}
-                  <p className="ms-auto w-fit">Saved to: 
-                    <Link to={`/account/saved-lists/${selectedList}`} className="me-2 text-blue-600" >
+                  <p className="ms-auto w-fit">
+                    Saved to:
+                    <Link
+                      to={`/account/saved-lists/${selectedList}`}
+                      className="me-2 text-blue-600"
+                    >
                       {selectedList}
                     </Link>
                   </p>
-                  <hr className="mt-1"/>
+                  <hr className="mt-1" />
                   <Collapsible>
                     <CollapsibleTrigger className="w-full">
                       <div className="flex justify-between flex-row-reverse w-full px-4 py-3">
@@ -146,29 +168,39 @@ function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
                       </div>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-
-                    <RadioGroup className="flex flex-col gap-3" value={selectedList}
-                    onValueChange={handleChangeList}
-                    >
-                      { allLists.map(list =>
-                      <div key={list.name} className="flex items-center space-x-2"
+                      <RadioGroup
+                        className="flex flex-col gap-3"
+                        value={selectedList}
+                        onValueChange={handleChangeList}
                       >
-                        <RadioGroupItem value={list.name}
-                          id={list.name}  key={list.name+"radio"}/>
-                        <Label htmlFor={list.name}>{list.name}</Label>
-                      </div>
-                    )}
-                      <div>
-                      <RadioGroupItem disabled={newList === ""}
-                        value={newList} id={newList} key={newList+"radio"}/>
-                        <input
-                          onChange={(e) => setNewList(e.target.value)}
-                          type="text"
-                          value={newList}
-                          className="border black p-1 ml-1"
-                          placeholder="Create a list"
-                        />
-                      </div>
+                        {allLists.map((list) => (
+                          <div
+                            key={list.name}
+                            className="flex items-center space-x-2"
+                          >
+                            <RadioGroupItem
+                              value={list.name}
+                              id={list.name}
+                              key={list.name + "radio"}
+                            />
+                            <Label htmlFor={list.name}>{list.name}</Label>
+                          </div>
+                        ))}
+                        <div>
+                          <RadioGroupItem
+                            disabled={newList === ""}
+                            value={newList}
+                            id={newList}
+                            key={newList + "radio"}
+                          />
+                          <input
+                            onChange={(e) => setNewList(e.target.value)}
+                            type="text"
+                            value={newList}
+                            className="border black p-1 ml-1"
+                            placeholder="Create a list"
+                          />
+                        </div>
                       </RadioGroup>
                     </CollapsibleContent>
                   </Collapsible>
@@ -177,8 +209,12 @@ function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
               {!isLiked && !isPending && (
                 <div>
                   {/* <p> הוסר מ: הטיול הבא שלי</p> */}
-                  <p className="ms-auto w-fit">Removed from:
-                    <Link to={`/account/saved-lists/${lastList}`} className="me-2 text-blue-600" >
+                  <p className="ms-auto w-fit">
+                    Removed from:
+                    <Link
+                      to={`/account/saved-lists/${lastList}`}
+                      className="me-2 text-blue-600"
+                    >
                       {lastList}
                     </Link>
                   </p>
@@ -190,12 +226,15 @@ function SaveButton({ id, is_X, listName}: SavedButtonProps ) {
               className="bg-white rounded-full h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-100 transition-all cursor-pointer"
               onClick={handleLikeClick}
             >
+              <div>sdflajsl;dkfj</div>
               {isPending ? (
                 <Spinner />
               ) : isLiked ? (
-                <IconHeartRed className="w-5 h-5 fill-red-500" />
+                <IconHeartRed
+                  className={cn("w-5 h-5 fill-red-500", iconFullClassNam)}
+                />
               ) : (
-                <IconHeart className="w-5 h-5" />
+                <IconHeart className={cn("w-5 h-5", iconEmptyClassName)} />
               )}
             </TooltipTrigger>
             <TooltipContent

@@ -1,17 +1,21 @@
 import styles from "@/css/search.module.css";
 import { cn } from "@/lib/utils";
 
-function MainCarousel({ children }: { children: React.ReactNode }) {
+interface MainCarousel {
+  className?: string;
+  children: React.ReactNode;
+}
+
+function MainCarousel({ children, className }: MainCarousel) {
   return (
-    <div>
-      <div
-        className={cn(
-          "w-full flex gap-2 overflow-scroll py-4",
-          styles.scrollContainer
-        )}
-      >
-        {children}
-      </div>
+    <div
+      className={cn(
+        "w-full flex gap-2 overflow-scroll py-2",
+        styles.scrollContainer,
+        className
+      )}
+    >
+      {children}
     </div>
   );
 }
