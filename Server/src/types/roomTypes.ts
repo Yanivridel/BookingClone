@@ -54,4 +54,12 @@ export interface IRoom extends Document {
     overall_count: number; // min: 0
 }
 
+export type TSelectedRoom = Omit<IRoom, "available"> & {
+    available: {
+        availableRooms: number;
+        startDate: string;
+    };
+    count: number;
+};
+
 export type TPartialRoom = Partial<IRoom>;

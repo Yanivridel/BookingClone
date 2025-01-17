@@ -6,7 +6,7 @@ function CardWithDescription({ className }: { className: string }) {
   return (
     <Card
       className={cn(
-        "w-full max-w-[360px] sm:max-w-[450px]  mx-auto relative group rounded-xl",
+        "max-h-[400px] min-w-[550px] mx-auto relative group rounded-xl overflow-hidden cursor-pointer",
         className
       )}
     >

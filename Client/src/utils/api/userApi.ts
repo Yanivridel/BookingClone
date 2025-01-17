@@ -70,7 +70,6 @@ export const editProfile = async (userProperties : TPartialUser ) => {
 // * Done
 export const modifyUserArrays = async (action: string, userArrays : any ) => {
     try {
-        console.log("userArrays", userArrays)
         const { data } = await axios.patch(`${API_URL}/api/users/modify-arrays`,
             {
                 action,

@@ -105,6 +105,7 @@ export interface IProperty {
 
 export interface ISearchPropertiesReq {
   primary: {
+    _id?: string,
     location: IFilterPropertiesLocation;
     date: IFilterPropertiesDate;
     options: IFilterPropertiesOptions;
@@ -138,8 +139,8 @@ interface IFilterPropertiesLocation {
 }
 
 interface IFilterPropertiesDate {
-  startDate?: string;
-  endDate?: string;
+  startDate?: string | Date;
+  endDate?: string | Date;
   length?: number;
   isWeekend?: boolean;
   fromDay?: number;

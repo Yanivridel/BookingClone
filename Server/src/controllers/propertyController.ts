@@ -5,7 +5,7 @@ import { IProperty, TPartialProperty } from 'src/types/propertyTypes';
 import { propertyModel } from './../models/propertyModel';
 import { getCoordinatesByLocation } from 'src/utils/maps';
 import { roomModel } from 'src/models/roomModel';
-import { IRoom } from 'src/types/roomTypes';
+import { IRoom, TSelectedRoom } from 'src/types/roomTypes';
 import { getCache, setCache } from 'src/utils/redisClient';
 import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from 'src/types/userTypes'; 
 //* Done - Create
@@ -156,7 +156,7 @@ interface IGetPropertiesQuery {
     page?: string;
     limit?: string;
 }
-//! On Working
+//* Done
 export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody, IGetPropertiesQuery> , res: Response): Promise<void> => {
     try {
         const { location, date, options } = req.body.primary;
@@ -335,6 +335,18 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
         onlinePayment, region, price, doubleBeds, singleBeds, bathrooms, bedrooms} = body.secondary || {};
 
     return properties.filter(property => {
+        const selectedRooms = (property.rooms as unknown as IRoom[])
+        .filter(room => property.selectedRooms?.some(selected => selected.id === room._id))
+        .map(room => {
+            const selected = property.selectedRooms?.find(selected => selected.id === room._id);
+            return { ...room, ...selected };
+        }) as TSelectedRoom[];
+        const discountedPrice = selectedRooms.reduce((total, currRoom) => {
+            const offer = currRoom.offers?.[0];
+            const discount = offer?.discount?.percentage || 0;
+            return total + (offer ? offer.price_per_night * (1 - discount / 100) : 0);
+        }, 0);
+
         return (
             (!type || type.includes(property.type)) &&
             (!rating || rating.includes(Math.ceil((property.total_rating as number)/2))) &&
@@ -377,12 +389,9 @@ function filterPropertiesSecondary(properties: IProperty[], body: IGetProperties
             (!region || 
                 property.location.region === region
             ) &&
-            (!price || !price.min || !price.max || 
-                (property.rooms as unknown as IRoom[]).some((room) => 
-                    room.offers.some((offer) => 
-                        offer.price_per_night >= price.min &&
-                        offer.price_per_night <= price.max 
-                ))
+            ( !price || !price.min || !price.max || 
+                (price.min <= discountedPrice &&
+                price.max >= discountedPrice)
             ) &&
             (!doubleBeds || 
                 (property.rooms as unknown as IRoom[]).some((room) => 
@@ -663,6 +672,21 @@ function getFiltersFromProperties(properties: IProperty[]) {
             isSingleBed: false
         };
 
+        // Min Max Prices
+        const selectedRooms = (property.rooms as unknown as IRoom[])
+        .filter(room => property.selectedRooms?.some(selected => selected.id === room._id))
+        .map(room => {
+            const selected = property.selectedRooms?.find(selected => selected.id === room._id);
+            return { ...room, ...selected };
+        }) as unknown as TSelectedRoom[];
+        const discountedPrice = selectedRooms.reduce((total, currRoom) => {
+            const offer = currRoom.offers?.[0];
+            const discount = offer?.discount?.percentage || 0;
+            return total + (offer ? offer.price_per_night * (1 - discount / 100) : 0);
+        }, 0);
+        filters.price.min = Math.min(filters.price.min, discountedPrice);
+        filters.price.max = Math.max(filters.price.max, discountedPrice);
+
         // * For Each Room: * //
         (property.rooms as unknown as IRoom[]).forEach((room: IRoom) => {
             // Room Type
@@ -683,9 +707,6 @@ function getFiltersFromProperties(properties: IProperty[]) {
 
             // * For Each Offer: * //
             room.offers.forEach((offer) => {
-                // Min Max Prices
-                filters.price.min = Math.min(filters.price.min, offer.price_per_night);
-                filters.price.max = Math.max(filters.price.max, offer.price_per_night);
                 // Free Cancellation
                 if (offer.cancellation.toLowerCase().includes("free")) {
                     countedCategories.freeCancellation = true;
