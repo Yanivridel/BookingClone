@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import MainNav from "@/components/MainNav";
 import { Button } from "@/components/ui/button";
 import DubaiImage from "../assets/images/Dubai.jpg";
+import { convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
 
 import { TrendingImages } from "@/utils/staticData.ts";
 
@@ -25,8 +26,12 @@ import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick
 import MainCarousel from "@/components/MainCarousel.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import CardWithLocationHome from "@/components/CardWithLocationHome.tsx";
-import { IProperty } from "@/types/propertyTypes.ts";
+import { IProperty, ISearchPropertiesReq } from "@/types/propertyTypes.ts";
 import { getPropertyByIdForCard } from "@/utils/api/propertyApi.ts";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { modifyUserArrays } from "@/utils/api/userApi.ts";
+import { addSearchEntry } from "@/store/slices/userSlices.ts";
 
 
 // Tailwind - render
@@ -72,7 +77,8 @@ function Home() {
     window.innerWidth < HomeMobileWidth
   );
   const interestedArr = currentUser.interested.slice().reverse();
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "he";
   const dateLanguage = isRtl ? "he-IL" : "en-US";
@@ -126,7 +132,98 @@ function Home() {
     fromDate: { month: fromMonth, day: fromDay },
     toDate: { month: toMonth, day: toDay },
   };
-  useEffect(() => {}, [dateLanguage]);
+  
+  const handleSearchClick = async (finalData: ISearchPropertiesReq) => {
+      const url = makeUrlForSearch(finalData);
+      navigate(url);
+      try {
+        const updatedUser = await modifyUserArrays("add", { search: finalData.primary});
+        dispatch(addSearchEntry(updatedUser.search));
+      } catch(err) {
+        console.log("React Client Error: ", err);
+      }
+    };
+
+    function mapUserSearches(
+      user: IUser,
+      t: TFunctionNonStrict<"translation", undefined>
+    ) {
+      if(!user.search.length)
+        return SkeletonCard(6);
+    
+      const searchArr = user.search.slice().reverse();
+      return searchArr.map((details) => {
+        let locationDetails = details.location;
+    let specific, broader = "";
+
+    if (locationDetails.addressLine) {
+      specific = locationDetails.addressLine;
+      broader = `${locationDetails.city}, ${locationDetails.region}, ${locationDetails.country}`;
+    } else if (locationDetails.city) {
+      specific = locationDetails.city;
+      broader = `${locationDetails.region}, ${locationDetails.country}`;
+    } else if (locationDetails.region) {
+      specific = locationDetails.region;
+      broader = `${locationDetails.country}`;
+    } else {
+      specific = locationDetails.country;
+    }
+
+    let formattedLocation = (
+      <div>
+        <b className="text-md">{specific}</b>
+        {broader && <div className="text-gray-500 text-xs">
+          {broader.length > 34 ? broader.slice(0, 34) + " ..." : broader}
+        </div>}
+      </div>
+    );
+
+        return <div
+          key={details._id}
+          className="flex-shrink-0 !flex gap-2 items-center cursor-pointer 
+            shadow-searchPopupsShadow p-4 rounded-xl h-[100px] w-[294px] mx-1 my-2"
+          onClick={() => handleSearchClick({ primary: details} as ISearchPropertiesReq)}
+          >
+          <img
+            className=" rounded-lg h-16 w-16"
+            src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
+            alt={details.location.country}
+          />
+          <div>
+            {formattedLocation}
+            <p className="text-gray-500 text-sm">
+              <span>
+                {details.date.fromDay &&
+                  new Date(details.date.fromDay).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+              </span>
+              <span>
+                {details && <span>-</span>}
+                {details.date.endDate &&
+                  new Date(details.date.endDate).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                {", "}
+              </span>
+              {(Number(details.options.adults) || 0) +
+                (Number(details.options.adults) || 0) <=
+              1 ? (
+                <span>{t("home.1 person")}</span>
+              ) : (
+                <span>
+                  {Number(details.options.adults) + Number(details.options.childrenAges?.length || 0)}{" "}
+                  {t("home.people")}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+        }
+      );
+    }
 
   return (
     <div>
@@ -582,63 +679,6 @@ function Home() {
 
 export default Home;
 
-function mapUserSearches(
-  user: IUser,
-  t: TFunctionNonStrict<"translation", undefined>
-) {
-  if(!user.search.length)
-    return SkeletonCard(6);
-
-  const searchArr = user.search.slice().reverse();
-  return searchArr.map((details) => (
-    <div
-      key={details._id}
-      className="flex-shrink-0 !flex gap-2 items-center 
-        shadow-searchPopupsShadow p-4 rounded-xl h-[100px] w-[294px] mx-1 my-2"
-      >
-      <img
-        className=" rounded-lg h-16 w-16"
-        src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
-        alt={details.location.country}
-      />
-      <div>
-        <b>{details.location.country + " " +
-          (details.location.region ? details.location.region : "") + " " +
-          (details.location.city ? details.location.city : "") + " " +
-          (details.location.addressLine ? details.location.addressLine : "")
-          } </b>
-        <p className="text-gray-500">
-          <span>
-            {details.date.fromDay &&
-              new Date(details.date.fromDay).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
-          </span>
-          <span>
-            {details && <span>-</span>}
-            {details.date.endDate &&
-              new Date(details.date.endDate).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
-            {", "}
-          </span>
-          {(Number(details.options.adults) || 0) +
-            (Number(details.options.adults) || 0) <=
-          1 ? (
-            <span>{t("home.1 person")}</span>
-          ) : (
-            <span>
-              {Number(details.options.adults) + Number(details.options.childrenAges?.length || 0)}{" "}
-              {t("home.people")}
-            </span>
-          )}
-        </p>
-      </div>
-    </div>
-  ));
-}
 
 function SkeletonCard(length = 1) {
   return (

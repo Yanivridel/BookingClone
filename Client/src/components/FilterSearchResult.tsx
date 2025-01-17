@@ -116,13 +116,15 @@ function FilterSearchResult({className, data, isFetching, isOnMap} : FilterSearc
                 : <></>
                 }
 
-                { !filters && [... Array(14)].map(_ => <>
+                { !filters && [... Array(14)].map((_,index) =>
+                    <div key={"skeleton-"+index}>
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <CardTitle className='border-b-2 my-5'></CardTitle>
-                </>)}
+                    </div>
+                )}
 
                 {/* Property Type */}
                 { filters?.type &&

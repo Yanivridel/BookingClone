@@ -18,10 +18,11 @@ import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
-import { convertMonthsToQueryString } from "@/utils/functions";
+import { convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
 import { modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addSearchEntry } from "@/store/slices/userSlices";
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
 
 // location initial data data
 const items: LocationRes[] = [
@@ -82,9 +83,9 @@ const items: LocationRes[] = [
   },
 ];
 
-export interface MonthYear {
+export interface MonthNameYear {
   month?: number;
-  monthName: string;
+  monthName?: string;
   year: number;
 }
 
@@ -110,7 +111,7 @@ function Search() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place
   const [openLocationDropDown, setOpenLocationDropDown] = useState(false);
-  const [locationInputValue, setLocationInputValue] = useState(searchParams.get("country") ?? "");
+  const [locationInputValue, setLocationInputValue] = useState("");
   const [locationSearchRes, setLocationSearchRes] =
     useState<LocationRes[]>(items); // for drop down initialization
   const [finalLocation, setFinalLocation] = useState<Location>({
@@ -125,7 +126,7 @@ function Search() {
   const [variant, setVariant] = useState<"default" | "disabled">("disabled");
 
   const [openDatesPopHover, setOpenDatesPopHover] = useState(false);
-  const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthYear[]>([]);
+  const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthNameYear[]>([]);
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(searchParams.get("startDate") || new Date()),
     to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)),
@@ -167,6 +168,52 @@ function Search() {
     })
   : []);
 
+  const generateLocationChain = () => {
+    const country = searchParams.get("country");
+    const region = searchParams.get("region");
+    const city = searchParams.get("city");
+    const addressLine = searchParams.get("addressLine");
+  
+    const locationParts: string[] = [];
+  
+    if (country) locationParts.push(country);
+    if (region) locationParts.push(region);
+    if (city) locationParts.push(city);
+    if (addressLine) locationParts.push(addressLine);
+  
+    return locationParts.join(", ");
+  };
+
+  // Changing searchParams
+  useEffect(() => {
+    setLocationInputValue(generateLocationChain());
+    setFinalLocation({
+      country: searchParams.get("country") ?? "Israel",
+      region: searchParams.get("region") ?? null,
+      city: searchParams.get("city") ?? null,
+      addressLine: searchParams.get("addressLine") ?? null,
+    });
+
+    setRangeDates({
+      from: new Date(searchParams.get("startDate") || new Date()),
+      to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)),
+    });
+
+    setAdultsCount(parseInt(searchParams.get("adults") || "1"));
+    setChildrenCount(
+      searchParams.get("childrenAges")
+        ? searchParams.get("childrenAges")!.split(",").length
+        : 0
+    );
+    setRoomsCount(Number(searchParams.get("rooms") ?? 1));
+    setIsPets(!!searchParams.get("isAnimalAllowed"));
+    setChildrenAges(
+      searchParams.get("childrenAges")
+        ? searchParams.get("childrenAges")!.split(",").map(age => parseInt(age.trim(), 10) || "")
+        : []
+    );
+  }, [searchParams]);
+
   const dispatch = useDispatch();
 
   const finalData = {
@@ -198,12 +245,12 @@ function Search() {
         isAnimalAllowed: isPets,
       },
     },
-  };
+  } as unknown as ISearchPropertiesReq;
 
   const { i18n } = useTranslation();
   const currentLocale = i18n.language === "he" ? he : enUS;
 
-  // * place input (includ drop down)
+  // * place input (include drop down)
   // trigger
   const handleFocus = () => {
     setOpenLocationDropDown(true);
@@ -234,7 +281,19 @@ function Search() {
     locationChain: string | null
   ) => {
     setLocationInputValue(() => [matchedIn, locationChain].join(", "));
-    setFinalLocation(element);
+    const locationToSet = {} as Location;
+    locationToSet["country"] = element.country;
+    if(matchedIn !== element.country) {
+      locationToSet["region"] = element.region;
+      if(matchedIn !== element.region) {
+        locationToSet["city"] = element.city;
+        if(matchedIn !== element.city) {
+          locationToSet["addressLine"] = element.addressLine;
+        }
+      }
+    }
+
+    setFinalLocation(locationToSet);
   };
 
   // * dates
@@ -269,7 +328,7 @@ function Search() {
   };
 
   // monthes and years
-  const handleClickMonthCard = (monthYear: MonthYear, index: number) => {
+  const handleClickMonthCard = (monthYear: MonthNameYear, index: number) => {
     let newClickedButtons = [];
     if (
       clickedMonthsCards.some(
@@ -319,60 +378,7 @@ function Search() {
 
   //  preferred days - monthes and day number
   const handleSubmit = async () => {
-    let url = "/searchresults?";
-
-    //  locations
-    if (finalData.primary.location.country) {
-      url += `country=${finalData.primary.location.country}&`;
-    }
-    if (finalData.primary.location.region) {
-      url += `region=${finalData.primary.location.region}&`;
-    }
-    if (finalData.primary.location.city) {
-      url += `city=${finalData.primary.location.city}&`;
-    }
-    if (finalData.primary.location.addressLine) {
-      url += `addressLine=${finalData.primary.location.addressLine}&`;
-    }
-
-    // dates
-    if (finalData.primary.date.startDate) {
-      url += `startDate=${finalData.primary.date.startDate}&`;
-    }
-    if (finalData.primary.date.endDate) {
-      url += `endDate=${finalData.primary.date.endDate}&`;
-    }
-    if (finalData.primary.date.isWeekend) {
-      url += `isWeekend=${finalData.primary.date.isWeekend}&`;
-    }
-    if (finalData.primary.date.length) {
-      url += `length=${finalData.primary.date.length}&`;
-    }
-    if (finalData.primary.date.fromDay) {
-      url += `fromDay=${finalData.primary.date.fromDay}&`;
-    }
-
-    // options
-    if (finalData.primary.options.adults) {
-      url += `adults=${finalData.primary.options.adults}&`;
-    }
-    if (finalData.primary.options.rooms) {
-      url += `rooms=${finalData.primary.options.rooms}&`;
-    }
-
-    if (finalData.primary.options.childrenAges.length > 0) {
-      url += `childrenAges=${finalData.primary.options.childrenAges.join(
-        ", "
-      )}&`;
-    }
-    if (finalData.primary.options.isAnimalAllowed) {
-      url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
-    }
-
-    if (finalData.primary.date.yearMonths.length > 0) {
-      const monthsQueryString = convertMonthsToQueryString(clickedMonthsCards);
-      url += `yearMonths=${monthsQueryString}&`;
-    }
+    const url = makeUrlForSearch(finalData);
     navigate(url);
     try {
       const updatedUser = await modifyUserArrays("add", { search: finalData.primary});

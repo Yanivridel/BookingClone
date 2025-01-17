@@ -38,10 +38,10 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
 
             <div className="border p-4 flex justify-center">
                 <div className=" flex-grow rounded-xl grid gap-3 p-3">
-                    <p className="font-bold text-lg flex items-center gap-2">
+                    <span className="font-bold text-lg flex items-center gap-2">
                         { searchParams.get("city") ? searchParams.get("country") + ", " + searchParams.get("city") + ": " : 
                         searchParams.get("country") ? searchParams.get("country") + ": " : "unknown"}
-                        {filters ? filters.overall_count : <Skeleton className="h-5 w-8 inline-block"/>} properties found</p>
+                        {filters ? filters.overall_count : <Skeleton className="h-5 w-8 inline-block"/>} properties found</span>
                     <div className="flex flex-wrap">
                         <Popover>
                             <PopoverTrigger>

@@ -5,7 +5,8 @@ import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer';
 import FilterSearchResult from './FilterSearchResult';
 import { IPage } from '@/pages/SearchResults';
 import CheckpointMap, { LatLng } from './CheckpointMap';
-import { DialogTitle } from '@radix-ui/react-dialog';
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 interface MobileSearchOptionsProps {
     data: IPage;
@@ -34,21 +35,21 @@ const MobileSearchOptions = ({ data, isFetching, center, markers} : MobileSearch
                 </DrawerContent>
             </Drawer>
 
-            <Drawer>
-                <DrawerTrigger asChild>
-                    <Button variant="ghost" className='flex-grow'>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="ghost" className="flex-grow">
                         <MapIcon />
                         Map
                     </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    <DialogTitle>Title goes here</DialogTitle>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="h-[85vh] pt-10">
+                    <DialogTitle></DialogTitle><DialogDescription></DialogDescription>
                     <div className="h-[80vh]">
-                    <CheckpointMap center={center} markers={markers}
-                    data={data} showFilter={false} isFull={true}/>
+                        <CheckpointMap center={center} markers={markers}
+                        data={data} showFilter={false} isFull={false}/>
                     </div>
-                </DrawerContent>
-            </Drawer>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 };

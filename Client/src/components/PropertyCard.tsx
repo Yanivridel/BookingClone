@@ -54,9 +54,8 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
 
     async function handleNavToProperty() {
         try {
-            navigate(`/property/${propertyData._id}`)
+            navigate(`/property/${propertyData._id}`, { state: propertyData.selectedRooms })
             const updatedUser = await modifyUserArrays("add", { interested: propertyData._id})
-            console.log("interestedArr", updatedUser.interested)
             dispatch(addInterest(updatedUser.interested))
         } catch(err) {
             console.log("React Client Error: ", err)
@@ -187,7 +186,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                         <SaveButton id={propertyData._id}/>
                     </div>
                 </div>
-                <div className='flex flex-col gap-2 '>
+                <div className='flex flex-col gap-2 max-w-[50%]'>
                     <CardTitle>
                     <span className='text-blue-600 text-xl hover:text-black cursor-pointer'
                     onClick={handleNavToProperty}
