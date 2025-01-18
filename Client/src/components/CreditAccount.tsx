@@ -3,8 +3,8 @@ import { Button } from './ui/button'
 
 function CreditAccount() {
   return (
-    <div className='border flex justify-between p-2 '>
-      <div className='border'>
+    <div className='p-2 bg-white rounded-lg '>
+      <div className=''>
         <div className='flex p-4 gap-16'>
             <p className='text-sm'>No Credits or vouchers yet</p>
             <p>0</p>
