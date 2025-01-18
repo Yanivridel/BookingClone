@@ -191,7 +191,7 @@ function SearchResults() {
           <div className='border h-[150px] max-w-[260px] rounded-lg mb-2'>
             <CheckpointMap center={center} 
             markers={coordinates.length > 0 ? coordinates : undefined} isFetching={isFetching}
-            data={data?.pages[0] as IPage} showFilter={true} isOpen={true}/>
+            data={data?.pages[0] as IPage} showFilter={true}/>
           </div>
           <FilterSearchResult data={data?.pages[0] as IPage} isFetching={isFetching}/>
           

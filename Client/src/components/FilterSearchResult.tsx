@@ -15,9 +15,9 @@ import MultiRangeSlider from './multiRangeSlider/MultiRangeSlider'
 import { IPage } from '@/pages/SearchResults'
 
 const distanceOptions = {
-    "Less than 1 km": 1,
-    "Less than 3 km": 3,
     "Less than 5 km": 5,
+    "Less than 10 km": 10,
+    "Less than 15 km": 15,
 }
 
 interface FilterSearchResultProps {

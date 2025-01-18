@@ -18,7 +18,8 @@ function PopularFacilities({
   return (
     <div>
       <div className="flex gap-3 flex-wrap">
-        {popularFacilities?.map((facility) => {
+        {popularFacilities && popularFacilities.length && 
+        popularFacilities?.map((facility) => {
           const path = popularFacilitiesIcons[facility];
           return (
             <div

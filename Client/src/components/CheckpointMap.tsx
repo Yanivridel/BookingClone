@@ -24,12 +24,11 @@ interface MapProps {
     isFetching?: boolean;
     showFilter?: boolean;
     isFull?: boolean;
-    isOpen?: boolean;
 }
 
 
 
-export default function CheckpointMap({ center, markers, className, data, isFetching, showFilter, isFull, isOpen }: MapProps) {
+export default function CheckpointMap({ center, markers, className, data, isFetching, showFilter, isFull }: MapProps) {
     const [isFullscreen, setIsFullscreen] = useState(isFull ?? false);
     const navigate = useNavigate();
     const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;

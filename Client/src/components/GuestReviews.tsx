@@ -3,7 +3,6 @@ import { Badge } from "./ui/badge";
 import { CardDescription, CardTitle } from "./ui/card";
 import { IProperty } from "@/types/propertyTypes";
 import { Progress } from "./ui/progress";
-import { Plus } from "./ui/Icons";
 import { IReview } from "@/types/reviewTypes";
 import MainCarousel from "./MainCarousel";
 import { useState } from "react";
@@ -12,6 +11,10 @@ import { cn } from "@/lib/utils";
 interface GuestReviewsProps {
   propertyData?: IProperty;
   propertyReviews?: IReview[];
+}
+
+const getColorByRating = (rating: number) => {
+  return "bg-red-700"
 }
 
 function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
@@ -57,8 +60,7 @@ function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
                 <Progress
                   value={propertyData?.rating.cleanliness * 10}
                   classNameIndicator={cn(
-                    "bg-[#013b94] rounded-full",
-                    progressColor
+                    `${getColorByRating(propertyData?.rating.cleanliness)} rounded-full`,
                   )}
                   className=" h-[8px]  bg-[#f5f5f5] "
                 ></Progress>
@@ -170,48 +172,6 @@ function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
           </div>
         </div>
       </div>
-      <MainCarousel>
-        <div className="flex flex-col gap-5">
-          <h1 className="font-bold">Select topics to read reviews:</h1>
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              className="rounded-full flex items-center justify-center gap-2"
-            >
-              <Plus />
-              Location
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full flex items-center justify-center gap-2"
-            >
-              <Plus />
-              Room
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full flex items-center justify-center gap-2"
-            >
-              <Plus />
-              Clean
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full flex items-center justify-center gap-2"
-            >
-              <Plus />
-              Bed
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full flex items-center justify-center gap-2"
-            >
-              <Plus />
-              Bathroom
-            </Button>
-          </div>
-        </div>
-      </MainCarousel>
     </div>
   );
 }

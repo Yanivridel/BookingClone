@@ -16,7 +16,7 @@ import { IProperty } from "@/types/propertyTypes";
 import { getPropertyById } from "@/utils/api/propertyApi";
 import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import ReviewsCard from "@/components/ReviewsCard";
 import PropertyTable from "@/components/PropertyTable";
@@ -31,17 +31,30 @@ import LocationCard from "@/components/LocationCard";
 import PropertyTitles from "@/components/PropertyTitles";
 import FaqComponent from "@/components/FaqComponent";
 import MainCarousel from "@/components/MainCarousel";
+import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick";
+import Slider from "react-slick";
+import { Plus } from "@/components/ui/Icons";
+import BreadcrumbCard from "@/components/Breadcrumb";
+import { cf } from "@/utils/functions";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
 function Property() {
   const { id } = useParams();
   const [propertyData, setPropertyData] = useState<IProperty | undefined>();
+  const [isMobile, setIsMobile] = useState<boolean>(
+    window.innerWidth < 1140
+  );
+  const navigate = useNavigate();
+  const location = useLocation();
+  const selectedRooms = location.state;
+  console.log("selectedRooms",selectedRooms)
 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === "he";
   const arr = [
     "Overview",
     "Info & prices",
@@ -51,6 +64,12 @@ function Property() {
     "Guest reviews(30,075)",
   ];
 
+  const settingsReviewsCarousel = {
+      infinite: false,
+      slidesToScroll: 1,
+      prevArrow: <SamplePrevArrow />,
+    };
+
   useEffect(() => {
     if (id) {
       getPropertyById(id).then((data) => {
@@ -76,15 +95,42 @@ function Property() {
       });
     }
   }, [id]);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile((prevIsMobile) => {
+        if (window.innerWidth < 1140 && !prevIsMobile) return true;
+        else if (window.innerWidth >= 1140 && prevIsMobile)
+          return false;
+        return prevIsMobile;
+      });
+    };
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  const searchUrl = "/searchresults?country=Israel";
+
+  const breadcrumbItems = [
+    { label: "Home", onClick: () => { navigate("/")}},
+    { label: cf(propertyData?.type || ""), onClick: () => { navigate(`${searchUrl}&type=${propertyData?.type}`)}},
+    { label: cf(propertyData?.title || "")},
+  ];
+
+  if(!propertyData)
+    return <h1>404 property was not found</h1>
 
   return (
     <div className="relative ">
       <div className="absolute top-0 w-full -z-10 h-[210px]  bg-[#013b94] search:h-[45px]"></div>
-      <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-10">
+      <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-2">
         <div className="absolute top-[150px] "></div>
         <Search></Search>
 
-        <BreadcrumbProperty />
+        <BreadcrumbCard items={breadcrumbItems}/>
         <MainCarousel>
           <NavProperty arr={arr} />
         </MainCarousel>
@@ -92,6 +138,7 @@ function Property() {
         <PropertyTitle propertyData={propertyData} segment={arr[0]} />
 
         <ImagesProperty
+          isRtl={isRtl}
           propertyData={propertyData}
           propertyReviews={propertyReviews}
         />
@@ -115,12 +162,6 @@ function Property() {
         {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
           <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
         )}
-        {propertyReviews && (
-          <GuestReviews
-            propertyData={propertyData}
-            propertyReviews={propertyReviews}
-          />
-        )}
         {/* <Button
           className="text-[13px] border-[1px]"
           variant={"negativeDefault"}
@@ -141,7 +182,7 @@ function Property() {
         </Button> */}
 
         {/* <QualityCard propertyData={propertyData} /> */}
-        {/* <p className="py-3 text-lg font-bold">Travellers are asking</p>
+        <p className="py-3 text-lg font-bold">Travellers are asking</p>
         <AsksComponents propertyData={propertyData} />
         <Button
           className="text-[13px] border-[1px]"
@@ -149,8 +190,86 @@ function Property() {
         >
           See other Questions <span>{propertyReviews?.length}</span>
         </Button>
-        <p className="py-3 text-lg font-bold">Guests who stayed here loved</p>
-        {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />}
+
+        {/* Reviews & Rating */}
+        {propertyReviews?.length && (
+          <div>
+            <GuestReviews
+            propertyData={propertyData}
+            propertyReviews={propertyReviews}
+            />
+            {/* Search reviews by */}
+            <MainCarousel>
+            <div className="flex flex-col gap-5">
+              <h1 className="font-bold">Select topics to read reviews:</h1>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <Plus />
+                  Location
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <Plus />
+                  Room
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <Plus />
+                  Clean
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <Plus />
+                  Bed
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-full flex items-center justify-center gap-2"
+                >
+                  <Plus />
+                  Bathroom
+                </Button>
+              </div>
+            </div>
+            </MainCarousel>
+            {/* Reviews Carousel */}
+            <h2 className="text-2xl font-bold py-4 ">
+              {t("property.reviewsHeader")}
+            </h2>
+            {isMobile || propertyReviews.length <= 3 ? (
+                <MainCarousel>
+                  { propertyReviews.map(rev =>
+                    <ReviewsCard size={2} className="min-w-[325px]" key={rev._id} review={rev} />
+                  )}
+                </MainCarousel>
+            ) : (
+              <Slider
+                key={isRtl ? "rtl" : "ltr"}
+                {...{
+                  ...settingsReviewsCarousel,
+                  slidesToShow: 3,
+                  initialSlide: isRtl ? propertyReviews.length - 3 : 0,
+                  nextArrow: <SampleNextArrow slidesToShow={3} />,
+                }}
+              >
+                { propertyReviews.map(rev =>
+                    <ReviewsCard size={2} className="mx-2 " key={rev._id} review={rev} />
+                )}
+              </Slider>
+            )}
+          </div>
+        )}
+
+
         <PropertyTitles />
         <LocationCard propertyData={propertyData} />
 
@@ -160,7 +279,7 @@ function Property() {
         </h2>
         <PopularFacilities
           popularFacilities={propertyData?.popularFacilities}
-        /> */}
+        />
         {/* {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />} */}
 
         {/* todo ridel carusel 5 km close by */}

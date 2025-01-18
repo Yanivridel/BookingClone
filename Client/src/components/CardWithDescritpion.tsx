@@ -2,7 +2,7 @@ import { Card, CardTitle, CardDescription } from "./ui/card";
 import RandomImage from "../assets/images/image_bottom_aboutus.jpg";
 import { cn } from "@/lib/utils";
 
-function CardWithDescription({ className }: { className: string }) {
+function CardWithDescription({ className }: { className?: string }) {
   return (
     <Card
       className={cn(

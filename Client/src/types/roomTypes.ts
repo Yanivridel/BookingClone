@@ -1,4 +1,4 @@
-import { EFacility } from "./propertyTypes";
+import { EFacility, EFeatures } from "./propertyTypes";
 
 export interface IRoom {
   _id: string;
@@ -21,10 +21,10 @@ export interface IRoom {
   ];
   baby: boolean; // default: false
   max_guests?: number; // virtual property: sofa + single + (queen + bunk + double)*2
-  facilities?: EFacility; // enum: EFacility
+  facilities?: EFacility[]; // enum: EFacility
   features: [
     {
-      category: string; // enum: EFeatures
+      category: EFeatures; // enum: EFeatures
       sub: string[];
     }
   ];

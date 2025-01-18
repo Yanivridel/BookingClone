@@ -226,7 +226,6 @@ function SaveButton({
               className="bg-white rounded-full h-[36px] w-[36px] flex items-center justify-center hover:bg-gray-100 transition-all cursor-pointer"
               onClick={handleLikeClick}
             >
-              <div>sdflajsl;dkfj</div>
               {isPending ? (
                 <Spinner />
               ) : isLiked ? (

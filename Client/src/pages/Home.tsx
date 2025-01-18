@@ -69,6 +69,92 @@ const uniqueArr = [
   "678772fc313a94ca77e3ba2d",
   "67877113313a94ca77e3b97b",
 ]
+const propertyTypesArr = [
+  {
+    title: "home.hotels",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550862.jpeg?k=3514aa4abb76a6d19df104cb307b78b841ac0676967f24f4b860d289d55d3964&o="
+  },
+  {
+    title: "home.Apartments",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595548591.jpeg?k=01741bc3aef1a5233dd33794dda397083092c0215b153915f27ea489468e57a2&o="
+  },
+  {
+    title: "home.Resorts",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595551044.jpeg?k=262826efe8e21a0868105c01bf7113ed94de28492ee370f4225f00d1de0c6c44&o="
+  },
+  {
+    title: "home.Villas",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/620168315.jpeg?k=300d8d8059c8c5426ea81f65a30a7f93af09d377d4d8570bda1bd1f0c8f0767f&o="
+  },
+  {
+    title: "home.Cabins",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595549239.jpeg?k=ad5273675c516cc1efc6cba2039877297b7ad2b5b3f54002c55ea6ebfb8bf949&o="
+  },
+  {
+    title: "home.Cottages",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550000.jpeg?k=71eeb3e0996d7f734e57a6fa426c718749a36df768ca5d2fb1dc65fcd7483c1d&o="
+  },
+  {
+    title: "home.ServicedApartments",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551195.jpeg?k=fe19403cca087623a33bf24c4154a636cd26d04c2aa948634fb05afa971e7767&o="
+  },
+  {
+    title: "home.VacationHomes",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550229.jpeg?k=2ae1f5975fa1f846ac707d3334eb604a7e8f817f640cbd790185b2691532476b&o="
+  },
+  {
+    title: "home.GuestHouses",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595550178.jpeg?k=1db9bffadd03a0f2a9f0a06ba6c7751b16465f2dd251738f229d7a57dca799ef&o="
+  },
+  {
+    title: "home.Hostels",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550415.jpeg?k=8967853a074040381dfa25a568e6c780e309b529e0c144995c5bbc9644721eca&o="
+  },
+  {
+    title: "home.Motels",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550975.jpeg?k=6d2c22368ec017e1f99a4811c8abb1cb2d7fd829c9ddd12a82ff1aa77ab7da19&o="
+  },
+  {
+    title: "home.B&Bs",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595549020.jpeg?k=f5df2d3dc0000073bef517b0cab9593036f3f1aafa2421df31a6538a8c56b834&o="
+  },
+  {
+    title: "home.Ryokans",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595551145.jpeg?k=52a1d8bd9bc1f2199bf8d95f5399377c521d3a6291013e3a36f4dbeecd337bd7&o="
+  },
+  {
+    title: "home.Riads",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595551127.jpeg?k=3ce17a8b06333670edd53b58e47ab30acebb737f3bd21ebc7ea2ea849be7dc3e&o="
+  },
+  {
+    title: "home.ResortVillages",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595550306.jpeg?k=00c1d9a10179cc21b1e7e2ad1429ac21a5e779f258cf4cf66ddce30d618c05c9&o="
+  },
+  {
+    title: "home.Homestays",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595550377.jpeg?k=ef93cbc1a3af0d6db84e27b6da280a4ef24dbcfeb065fcfeae4fe9c43dddd2da&o="
+  },
+  {
+    title: "home.Campgrounds",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595549938.jpeg?k=88e50f4acf09b4edc03ca94818723b3baca6eeaf49bf318edf8dc6690775c480&o="
+  },
+  {
+    title: "home.CountryHouses",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595550059.jpeg?k=323042e47ead9072a6ca4cd3386519f9c59faff1b74043d17b486dbd5f0d5d67&o="
+  },
+  {
+    title: "home.FarmStays",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595550098.jpeg?k=d1b5a6f6faa0c76496d57dd0d263a88c07ad220b3873e14fcd71c9d8a81c5c25&o="
+  },
+  {
+    title: "home.Boats",
+    img: "https://r-xx.bstatic.com/xdata/images/hotel/263x210/595549146.jpeg?k=ac87efa3e3faf75d3d5e24376940d48f3a0c46d73dee59fce17907166502552e&o="
+  },
+  {
+    title: "home.LuxuryTents",
+    img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550925.jpeg?k=c0db68290ad93f4dea18b95395397a874a8801159fb4d6308bd6164ebcd28a11&o="
+  },
+]
 
 function Home() {
   const HomeMobileWidth = 1140;
@@ -293,18 +379,6 @@ function Home() {
                     propertyId={propertyId}
                   />
                 ))}
-                {/* <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                /> */}
               </Slider>
             )}
           </div>
@@ -575,9 +649,10 @@ function Home() {
           </div>
           {isMobile || currentUser.search.length <= 3 ? (
                 <MainCarousel>
-                  <CardWithDescription className="" />
+                  <CardWithDescription/>
                   { inspirationArr.map(el =>
-                    <CardWithLocationHome title={el.title} description={el.desc} image={el.img} />
+                    <CardWithLocationHome key={el.title} title={el.title} description={el.desc} 
+                    image={el.img} className="min-w-[350px]"/>
                   )}
                 </MainCarousel>
             ) : (
@@ -600,6 +675,40 @@ function Home() {
               </Slider>
             )}
         </div>
+
+        {/* Property Type Carousel */}
+        { propertyTypesArr?.length &&
+        <div>
+        <div className="py-4">
+          <h2 className="text-2xl font-bold ">{t("home.propertyTypesHeader")}</h2>
+        </div>
+          {isMobile || currentUser.search.length <= 3 ? (
+                <MainCarousel>
+                  { propertyTypesArr.map(prop =>
+                    <CardWithLocationHome key={prop.title} title={t(prop.title)} 
+                    image={prop.img} className="min-w-[250px] max-h-[300px]" classNameImg="h-5/6"/>
+                  )}
+                </MainCarousel>
+            ) : (
+              <Slider
+                key={isRtl ? "rtl" : "ltr"}
+                {...{
+                  ...settingsSearch,
+                  slidesToShow: 4,
+                  initialSlide: isRtl
+                    ? propertyTypesArr.length - 4
+                    : 0,
+                  nextArrow: <SampleNextArrow slidesToShow={4} />,
+                }}
+              >
+                { propertyTypesArr.map(prop =>
+                    <CardWithLocationHome key={prop.title} title={t(prop.title)}
+                    image={prop.img} className="mx-1 max-h-[300px]" classNameImg="h-5/6"/>
+                  )}
+              </Slider>
+            )}
+        </div>
+        }
 
         {/* Top Unique Carousel */}
         { uniqueArr?.length &&

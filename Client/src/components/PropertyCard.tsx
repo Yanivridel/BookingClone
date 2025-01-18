@@ -75,6 +75,9 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     else
         nights = length
 
+
+
+        console.log("selectedRooms",selectedRooms )
     return (
         <div>
         {isGrid? 
@@ -89,7 +92,9 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
 
             {/* Title and Rating Section */}
             <CardContent className=''>
-                <CardTitle className='text-blue-600 text-lg font-bold hover:text-black cursor-pointer'>
+                <CardTitle className='text-blue-600 text-lg font-bold hover:text-black cursor-pointer'
+                onClick={handleNavToProperty}
+                >
                     {cf(propertyData.title)}
                 </CardTitle>
                 <div className='flex gap-1 p-1'>
@@ -173,7 +178,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                         <p className='text-red-600'><s>{price + " ₪"}</s></p>
                     </>}
                 </div>
-                <Button>{"<"} See availability</Button>
+                <Button onClick={handleNavToProperty}>{"<"} See availability</Button>
             </div>
         </Card>
         : 
@@ -286,7 +291,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                         </s></p>
                         </>}
                     </div>
-                    <Button>{"<"} See availability </Button>
+                    <Button onClick={handleNavToProperty}>{"<"} See availability </Button>
                 </div>
             </div>
         </Card>

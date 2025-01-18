@@ -7,6 +7,7 @@ import { Label } from "@radix-ui/react-label";
 import { Badge } from "./ui/badge";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "./ui/skeleton";
+import FilterBadges from "./FilterBadges";
 
 
 
@@ -20,17 +21,9 @@ interface SortComponentProps {
 function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isVisible, setIsVisible] = useState<boolean>(true);
-    const min = searchParams.get("min") || null;
-    const max = searchParams.get("max") || null;
 
     function HandleClick() {
         setIsVisible(false);
-    }
-
-    function handleRemoveSearchParams() {
-        searchParams.delete("min");
-        searchParams.delete("max");
-        setSearchParams(searchParams);
     }
 
     return (
@@ -45,7 +38,7 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                     <div className="flex flex-wrap">
                         <Popover>
                             <PopoverTrigger>
-                                <Badge variant="outline" className="flex ms-2 gap-2 rounded-full border-black p-2">
+                                <Badge variant="outline" className="flex ms-2 gap-2 rounded-full border-black p-2 mx-1">
                                     <UpDown className="w-4"></UpDown> Sort by: Our top picks 
                                     <SmallUpDown className="w-4"></SmallUpDown></Badge>
                             </PopoverTrigger>
@@ -62,16 +55,8 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                                 <div className="p-2 hover:bg-gray-200 cursor-pointer text-xs">Genius discounts first</div>
                             </PopoverContent>
                         </Popover>
-                        { (min || max) ?
-                        <Button variant="negativeDefault" className="rounded-3xl m-2"
-                        onClick={() => handleRemoveSearchParams()}
-                        >
-                            {`₪${Number(min) || 0} - ₪${Number(max) || 0} (per night)`}
-                            <XIcon/>
-                        </Button>
-                        :
-                        <></>
-                        }
+
+                        <FilterBadges />
                     </div>
                 </div>
                 {/* Change Grid-List Toggle */}
@@ -102,10 +87,10 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                 
             </div>
             {isVisible &&
-                <div className="border rounded-xl p-2 flex items-center">
-                    <div className="w-[90%] p-3 flex gap-2"><Information className="text-gray-600 w-6" /><p className="font-bold	">89% of places to stay are unavailable for your dates on our site.</p></div>
-                    <div className="w-[10%] p-3"><Button onClick={HandleClick} variant="outline" size="icon">X</Button></div>
-                </div>
+            <div className="border rounded-xl p-2 flex justify-between items-center">
+                <div className="w-[85%] p-3 flex gap-2"><Information className="text-gray-600 w-6" /><p className="font-bold	">89% of places to stay are unavailable for your dates on our site.</p></div>
+                <div className=" p-3 "><Button onClick={HandleClick} variant="outline" size="icon">X</Button></div>
+            </div>
             }
         </div>
     )
