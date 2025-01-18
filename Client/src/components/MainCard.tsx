@@ -14,6 +14,7 @@ import { getInterested, modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addInterest } from "@/store/slices/userSlices";
 import { CardXIcon } from "./ui/Icons";
+import { Skeleton } from "./ui/skeleton";
 
 interface mainCardProps {
   propertyId: string,
@@ -57,19 +58,22 @@ const MainCard = ({
     try {
       navigate(`/property/${propertyId}`)
       const updatedUser = await modifyUserArrays("add", { interested: propertyId})
-      console.log("interestedArr", updatedUser.interested)
       dispatch(addInterest(updatedUser.interested))
     } catch(err) {
       console.log("React Client Error: ", err)
     }
   }
 
-  return (<>
-    {propertyData && 
-      <Card className="flex flex-col w-[255px] h-[347px] sm:w-[274px] sm:h-[333px] rounded-lg cursor-pointer"
+  if(!propertyData)
+    return SkeletonCard();
+
+  return (
+      <Card className="flex flex-col min-w-[274px] min-h-[333px] w-[274px] h-[333px]
+      1024:min-w-none 1024-min-h-none rounded-lg cursor-pointer
+      shadow-[5px_5px_5px_rgba(0,0,0,0.05)]"
       onClick={handleCardClick}
       >
-      <div className="h-[65%] sm:max-h-none rounded-t-lg relative">
+      <div className="h-[65%] max-h-none rounded-t-lg relative">
         <img
           src={propertyData.images[0]}
           alt={propertyData.title}
@@ -129,7 +133,25 @@ const MainCard = ({
         </div>
       </div>
     </Card>
-    }</>
   );
 };
 export default MainCard;
+
+function SkeletonCard() {
+  return (
+      <Card className="flex flex-col p-4 gap-2
+      min-w-[274px] min-h-[333px] w-[274px] h-[333px]
+      1024:min-w-none 1024-min-h-none">
+      <Skeleton className=" w-full rounded-xl" />
+      <Skeleton className="h-4 w-full mb-5" />
+      <Skeleton className="h-4 w-5/6" />
+      <Skeleton className="h-4 w-5/6" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="h-4 w-2/3 mt-10" />
+      <Skeleton className="h-4 w-[40%]" />
+      <Skeleton className="h-4 w-5/6" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="h-4 w-2/3" />
+    </Card>
+  )
+}

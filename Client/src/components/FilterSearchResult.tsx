@@ -23,10 +23,11 @@ const distanceOptions = {
 interface FilterSearchResultProps {
     data?: IPage;
     isFetching?: boolean;
-    isOnMap?: boolean
+    isOnMap?: boolean;
+    className?: string;
 }
 
-function FilterSearchResult({data, isFetching, isOnMap} : FilterSearchResultProps) {
+function FilterSearchResult({className, data, isFetching, isOnMap} : FilterSearchResultProps) {
     let { filters, filteredProperties } = data || {};
 
     if(!isOnMap && !isFetching && !filteredProperties?.length) {
@@ -94,19 +95,16 @@ function FilterSearchResult({data, isFetching, isOnMap} : FilterSearchResultProp
         setSearchParams(searchParams);
     }
 
-    // console.log(min, max)
-    
-
     return (
-        <div className=' w-[260px] grid gap-4'>
-            <Card className='p-2'>
+        <div className={cn('w-[260px] grid gap-4', className)}>
+            <Card className='p-2 '>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
 
                 {/* Price Slider */} 
                 {  (min  && max) ? 
                 <div className='flex flex-col gap-2 border-b-2 p-2'> 
                     <CardTitle className='font-semibold mb-6'>Your budget (per night)</CardTitle>
-                    <img src={barGraph} className='-mb-2 w-[200px]'/>
+                    <img src={barGraph} className='-mb-2 w-[200px] mx-auto'/>
                     <div className='mb-3'>
                         <MultiRangeSlider
                             min={min}
@@ -118,13 +116,15 @@ function FilterSearchResult({data, isFetching, isOnMap} : FilterSearchResultProp
                 : <></>
                 }
 
-                { !filters && [... Array(14)].map(_ => <>
+                { !filters && [... Array(14)].map((_,index) =>
+                    <div key={"skeleton-"+index}>
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <Skeleton className={`w-[${getRandomWidth()}] h-2 m-2`} />
                     <CardTitle className='border-b-2 my-5'></CardTitle>
-                </>)}
+                    </div>
+                )}
 
                 {/* Property Type */}
                 { filters?.type &&

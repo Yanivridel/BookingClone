@@ -1,26 +1,43 @@
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from './ui/breadcrumb';
-function BreadcrumbCard() {
+
+interface BreadcrumbItem {
+  label?: string | null;
+  onClick?: () => void; // If no href, it means it's the current page
+}
+
+interface BreadcrumbProps {
+  items: BreadcrumbItem[];
+}
+
+function BreadcrumbCard({ items }: BreadcrumbProps) {
+  items = items.filter(item => item.label);
   return (
     <div>
-      <Breadcrumb className="p-3">
+      <Breadcrumb className="pb-2">
         <BreadcrumbList>
-          <BreadcrumbItem >
-            <BreadcrumbLink href="/" className=" text-blue-600 hover:underline hover:text-blue-600">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/docs/components" className=" text-blue-600 hover:underline hover:text-blue-600">Components</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
+          {items.map((item, index) => (
+            <React.Fragment key={index}>
+              <BreadcrumbItem>
+                {item.onClick ? (
+                  <BreadcrumbLink
+                    onClick={item.onClick}
+                    className="text-blue-600 hover:underline hover:text-blue-600 text-xs cursor-pointer"
+                  >
+                    {item.label}
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage className='text-xs'>{item.label}</BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {index < items.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
         </BreadcrumbList>
       </Breadcrumb>
     </div>
-  )
+  );
 }
 
 export default BreadcrumbCard

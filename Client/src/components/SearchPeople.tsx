@@ -19,8 +19,10 @@ interface SearchPeopleProps {
   setChildrenAges: React.Dispatch<
     React.SetStateAction<(number | typeof NaN | undefined | null | "")[]>
   >;
+  childrenAges: (number | "" | null | undefined)[];
   setRoomsCount: React.Dispatch<React.SetStateAction<number>>;
   setIsPets: React.Dispatch<React.SetStateAction<boolean>>;
+  isPets: boolean;
   setopenPepolePophover: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -28,9 +30,11 @@ function SearchPeople({
   adultsCount,
   childrenCount,
   roomsCount,
+  isPets,
   setIsPets,
   setAdultsCount,
   setChildrenCount,
+  childrenAges,
   setChildrenAges,
   setRoomsCount,
   setopenPepolePophover,
@@ -77,6 +81,7 @@ function SearchPeople({
             {[...Array(childrenCount)].map((_, index) => (
               <select
                 key={index + "select"}
+                value={childrenAges[index] as number}
                 onChange={(e) => handleChildrenAgeChange(e, index)}
                 className="focus:outline-none pe-3 py-2 rounded-md border-[1.5px] cursor-pointer text-searchGrayText border-[#868686] "
               >
@@ -108,7 +113,9 @@ function SearchPeople({
           className="cursor-pointer"
           dir="ltr"
           onClick={() => setIsPets((prev) => !prev)}
+          checked={isPets}
         />
+
       </div>
       <div className="text-xs">
         {t("SearchPeople.petsInfo")} <br />

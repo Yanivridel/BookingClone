@@ -1,6 +1,7 @@
 import BreadcrumbCard from "@/components/Breadcrumb";
 import CheckpointMap, { LatLng } from "@/components/CheckpointMap";
 import FilterSearchResult from "@/components/FilterSearchResult";
+import MobileSearchOptions from "@/components/MobileSearchOptions";
 import PropertyCard from "@/components/PropertyCard";
 import Search from "@/components/search";
 import SortComponent from "@/components/SortComponent";
@@ -9,22 +10,23 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import useInfiniteProperties from "@/hooks/useInfiniteProperties";
 import { IFilters, IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
+import { parseMonthsFromQueryString } from "@/utils/functions";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export interface IPage {
-  filters: IFilters;
+  filters?: IFilters;
   filteredProperties: IProperty[];
-  pageParam: number;
+  pageParam?: number;
 }
 
 
 function SearchResults() {
-  const [isGrid, setIsGrid] = useState(false)
-  const [filterDisplay, SetFilterDisplay] = useState(true)
+  const [isGrid, setIsGrid] = useState(false);
+  const [filterDisplay, SetFilterDisplay] = useState(window.innerWidth > 1024)
 
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
   // console.log(searchParams.get("childrenAges")?.split(", "));
   const type = searchParams.getAll("type")
   const rating = searchParams.getAll("rating").map(Number);
@@ -89,11 +91,11 @@ function SearchResults() {
     isFetchingNextPage
   } = useInfiniteProperties(searchBody, 5);
   
-  console.log("DATA", data);
+  // console.log("DATA", data);
 
   useEffect(() => {
     function checkScreenSize() {
-      if(window.innerWidth <= 768) {
+      if(window.innerWidth <= 1024) {
         SetFilterDisplay(false)
       } else {
         SetFilterDisplay(true)
@@ -125,37 +127,79 @@ function SearchResults() {
     };
   }, [hasNextPage, isFetchingNextPage]);
 
-  let properties = data?.pages[0].filteredProperties as IProperty[]
   const coordinates = useMemo(() => {
-    if (!properties) return [];
-    return properties.map(prop => ({
+    if (!data?.pages) return []; // Ensure pages exist
+    const allProperties = data.pages.flatMap(page => page.filteredProperties) as IProperty[];
+    
+    return allProperties.map(prop => ({
       lat: prop.location.coordinates?.coordinates[0],
       lng: prop.location.coordinates?.coordinates[1],
     } as LatLng));
-  }, [properties]);
+  }, [data?.pages]);
 
-  const center = useMemo(() => (
-    properties && properties.length ? coordinates[0] : { lat: 32.0717, lng: 34.7754 } as LatLng
-  ), [properties, coordinates]);
+  const center = useMemo(() => {
+    if (coordinates.length > 0) {
+      return coordinates[0]; // First coordinate as center
+    }
+    return { lat: 32.0717, lng: 34.7754 } as LatLng; // Default center if coordinates are empty
+  }, [coordinates]);
+
+  const breadcrumbItems = [
+    { label: "Home", onClick: () => { navigate("/")}},
+    { label: searchParams.get("country"), onClick: () => { 
+      const param =  searchParams.get("country") as string;
+      deleteLocationSearchParams(4);
+      searchParamsSetter("country", param)} },
+    { label: searchParams.get("region"), onClick: () => { 
+      const param =  searchParams.get("region") as string;
+      deleteLocationSearchParams(3);
+      searchParamsSetter("region", param)} },
+    { label: searchParams.get("city"), onClick: () => { 
+      const param =  searchParams.get("city") as string;
+      deleteLocationSearchParams(2);
+      searchParamsSetter("city", param)} },
+    { label: searchParams.get("addressLine"), onClick: () => { 
+      const param =  searchParams.get("addressLine") as string;
+      deleteLocationSearchParams(1);
+      searchParamsSetter("addressLine", param)} },
+    { label: "Search results" },
+  ];
+
+  const deleteLocationSearchParams = (length: number) => {
+    if(length >= 1) searchParams.delete("addressLine")
+    if(length >= 2) searchParams.delete("city")
+    if(length >= 3) searchParams.delete("region")
+    if(length >= 4) searchParams.delete("country")
+      setSearchParams(searchParams);
+  }
+  const searchParamsSetter = (key: string, val: string) => {
+    searchParams.set(key,val);
+    setSearchParams(searchParams);
+  } 
 
   return (
     <div className="max-w-[1100px] mx-auto">
       
       <Search />
-      <BreadcrumbCard />
+      <BreadcrumbCard items={breadcrumbItems} />
+      <div className={filterDisplay ? "hidden" : ""}>
+        <MobileSearchOptions data={data?.pages[0] as IPage} isFetching={isFetching}
+        center={center} markers={coordinates.length > 0 ? coordinates : undefined}/>
+      </div>
       <div className="flex">
         <div className={filterDisplay ? "w-1/4" : "hidden"}>  
           <div className='border h-[150px] max-w-[260px] rounded-lg mb-2'>
             <CheckpointMap center={center} 
-            markers={coordinates.length > 0 ? coordinates : undefined}
-            data={data?.pages[0] as IPage} showFilter={true} />
+            markers={coordinates.length > 0 ? coordinates : undefined} isFetching={isFetching}
+            data={data?.pages[0] as IPage} showFilter={true} isOpen={true}/>
           </div>
           <FilterSearchResult data={data?.pages[0] as IPage} isFetching={isFetching}/>
           
         </div>
         <div className="flex-1">
           <SortComponent filters={data?.pages[0].filters} isGrid={isGrid} setIsGrid={setIsGrid} />
-          <div className={isGrid ? " grid grid-cols-3 gap-2 p-2 " : " flex flex-col gap-2 p-2"}>
+          <div className={isGrid ? "grid grid1:grid-cols-2 sm:grid-cols-2 grid2:grid-cols-3 gap-2 p-2 justify-items-center " 
+            : " flex flex-col gap-2 p-2"}>
             { !data && isFetching && SkeletonCard(10) }
             { data && 
             data.pages.map((page:any) => {
@@ -205,15 +249,3 @@ function SkeletonCard(length?: number) {
     )}</>
   )
 }
-interface MonthYear {
-  month: number;
-  year: number;
-}
-const parseMonthsFromQueryString = (queryString: string): MonthYear[] => {
-  return queryString
-    .split(",")
-    .map(item => {
-      const [month, year] = item.split("_");
-      return { month: parseInt(month), year: parseInt(year) };
-    });
-};
