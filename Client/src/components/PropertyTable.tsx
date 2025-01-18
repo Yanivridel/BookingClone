@@ -30,7 +30,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
   >([]);
 
   return (
-    <div className="grid grid-col grid-cols-[repeat(20,_minmax(0,1fr))]   relative">
+    <div className="grid grid-col grid-cols-[repeat(20,_minmax(0,1fr))]  relative">
       {[...Array(headerRowsNumber)].map((_, i) => (
         <h2
           key={i}

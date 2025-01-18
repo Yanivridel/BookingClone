@@ -83,3 +83,7 @@
 .scrollContainer::-webkit-scrollbar {
   display: none;
 }
+
+.image-carousel li {
+  width: fit-content !important ;
+}

@@ -5,11 +5,35 @@ import QueenBad from "../assets/images/Screenshot 2025-01-15 at 22.24.04.png";
 import BunkBad from "../assets/images/bunk.png";
 import SofaBad from "../assets/images/sofa.png";
 import TweenSingleBad from "../assets/images/tweenSingle.png";
+import Slider from "react-slick";
+import { useTranslation } from "react-i18next";
+import { SampleNextArrow, SamplePrevArrow } from "./ui/carousel-slick";
 interface InnerRoomsDialogProps {
   room: IRoom;
 }
 
 function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
+  const { i18n } = useTranslation();
+  const isRtl = i18n.language === "he";
+
+  const settingsCarousel = {
+    customPaging: function (i: any) {
+      return (
+        <img
+          className="object-cover w-12 max-h-[48px] min-h-[48px] mt-7"
+          src={room.images[i]}
+          alt={`Thumbnail ${i + 1}`}
+          onError={(e) => e.currentTarget.closest('li')?.remove()}
+        />
+      );
+    },
+    dots: true,
+    dotsClass: "slick-dots slick-thumb image-carousel flex justify-center flex-wrap gap-y-10 bg-white",
+    infinite: true,
+    slidesToScroll: 1,
+    prevArrow: <SamplePrevArrow />,
+  };
+
   return (
     <div>
       <Dialog>
@@ -18,8 +42,8 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
             {room.title}
           </h3>
         </DialogTrigger>
-        <DialogContent className=" h-[100vh] w-[100vw] max-w-[100vw] rounded-2xl sm:rounded-2xl p-5 grid grid-cols-5  overflow-scroll">
-          <div className="col-span-2 flex flex-col gap-4">
+        <DialogContent className=" h-[70vh] w-[70vw] max-w-[100vw] rounded-2xl sm:rounded-2xl p-5 grid grid-cols-[40%_60%]">
+          <div className=" flex flex-col gap-4">
             <h3 className="text-xl font-bold  ">{room.title}</h3>
             <PopularFacilities
               iconsClassName={"fill-black w-4 h-4"}
@@ -102,11 +126,30 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
           </div>
 
           {/*  carousel */}
-          <div className="col-span-3">
-            {room.images.map((image) => (
-              <img className="" src={image} alt="" />
-            ))}
+          <div className="h-1/2">
+            <Slider
+              key={isRtl ? "rtl" : "ltr"}
+              {...{
+                ...settingsCarousel,
+                slidesToShow: 1,
+                initialSlide: isRtl ? room.images.length - 1 : 0,
+                // variableWidth: true,
+                nextArrow: <SampleNextArrow slidesToShow={1} />,
+              }}
+            >
+                {room.images.map((image, index) => (
+                  <div key={index} className="px-2 w-full h-[450px]">
+                    <img
+                      className="h-full w-full object-contain"
+                      src={image}
+                      alt={`Room Image ${index + 1}`}
+                      onError={(e) => e.currentTarget.closest('.slick-slide')?.remove()}
+                    />
+                  </div>
+                ))}
+            </Slider>
           </div>
+          
         </DialogContent>
       </Dialog>
     </div>

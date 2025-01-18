@@ -17,7 +17,7 @@ const badgeVariants = cva(
         outline: "text-foreground",
         deals: "bg-deals border-transparent text-primary-foreground shadow",
         rating:
-          "border-transparent rounded-lg bg-rating text-primary-foreground shadow hover:bg-primary/80 ![border-bottom-left-radius:0]",
+          "border-transparent rounded-lg bg-rating text-primary-foreground shadow hover:bg-primary/80 ![border-bottom-left-radius:0] w-7 flex justify-center items-center",
         gunies:
           "border-transparent rounded-md bg-guinesBlue text-primary-foreground shadow hover:none ",
       },

@@ -44,7 +44,12 @@ export const getAllReviewsForProperty = async (req: Request, res: Response): Pro
             return;
         }
 
-        const reviews = await reviewModel.find({ propertyId });
+        const reviews = await reviewModel.find({ propertyId })
+        .populate({
+            path: "userId",
+            select: "user_image fName location.country",
+            options: { virtuals: true },
+        });
 
         res.status(200).json({ 
             status: "success", 

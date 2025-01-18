@@ -379,18 +379,6 @@ function Home() {
                     propertyId={propertyId}
                   />
                 ))}
-                {/* <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                />
-                <MainCard
-                  is_heart={true}
-                  propertyId={currentUser.interested[0]}
-                /> */}
               </Slider>
             )}
           </div>
@@ -663,7 +651,7 @@ function Home() {
                 <MainCarousel>
                   <CardWithDescription/>
                   { inspirationArr.map(el =>
-                    <CardWithLocationHome title={el.title} description={el.desc} 
+                    <CardWithLocationHome key={el.title} title={el.title} description={el.desc} 
                     image={el.img} className="min-w-[350px]"/>
                   )}
                 </MainCarousel>

@@ -280,13 +280,13 @@ async function filterPropertiesPrimary(
     )/*: Promise<IProperty[]> */{
 
     const filteredProperties = await Promise.all(properties.map(async (property: IProperty) => {
-        // Check pet policy
+        // Check pet
         if (options.isAnimalAllowed && !property.houseRules.pets) return null;
 
-        // Step 1: Find all rooms for this property
+        // Find all rooms for this property
         const propertyRooms = await roomModel.find({ _id: { $in: property.rooms } });
 
-        // Step 2: Get availability for each room
+        // Get availability for each room
         const roomsWithAvailability = await Promise.all(propertyRooms.map(async (room) => {
             const availability = await getAvailability(
                 room, 
@@ -311,7 +311,6 @@ async function filterPropertiesPrimary(
                 availability?.startDate && 
                 availability?.availableRooms > 0
             )
-            // .sort((a, b) => a.maxGuests - b.maxGuests); // Sort by capacity for optimal distribution
 
         let targetGuests = options.adults! + options.children!;
         let targetRooms = options.rooms!;
@@ -621,6 +620,8 @@ function getAvailability(
                 }
             }
         }
+
+        console.log("bestResult", bestResult);
     
         return bestResult;
     }

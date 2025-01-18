@@ -11,6 +11,7 @@ export interface IUser {
     email: string;
     password?: string;
     phoneNumber?: string;
+    user_image?: string;
     birthday?: Date;
     country?: string;
     gender?: "male" | "female" | "other";

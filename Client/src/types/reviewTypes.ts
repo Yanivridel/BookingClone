@@ -1,7 +1,9 @@
+import { IUser } from "./userTypes";
+
 export interface IReview {
   _id?: string;
   propertyId: string; // ref: Property
-  userId: string; // ref: User
+  userId: string | IUser; // ref: User
   passenger_type: string; // enum: [family, couple, friends, single, business]
   language: string; // enum : ELanguage
   rating: number; // min:0, max:10

@@ -20,7 +20,12 @@ function PropertyDescription({ propertyData }: PropertyDescriptionProps) {
           <span className="font-bold">very accurate.</span>
         </p>
       </div>
-      <div className="text-xs">{propertyData.description}</div>
+      <div
+        className="text-xs"
+        dangerouslySetInnerHTML={{
+          __html: (propertyData.description || "").replace(/\\n/g, "<br>").replace(/\n/g, "<br>"),
+        }}
+      ></div>
       <br />
       <div className="text-xs">{propertyData.description}</div>
       <br />

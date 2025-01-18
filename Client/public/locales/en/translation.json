@@ -191,5 +191,9 @@
     "bunk": "bunk beds",
     "single": "single beds",
     "sofa": "sofa beds"
+  },
+  "property": {
+    "reviewsHeader": "Guests who stayed here loved"
+
   }
 }

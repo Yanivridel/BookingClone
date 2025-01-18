@@ -3,14 +3,12 @@ import { featuresIcons } from "@/utils/staticData";
 import { SmallIconVi } from "./ui/Icons";
 
 export interface PropertyFeaturesProps {
-  features:
-    | [
-        {
-          category: EFeatures;
-          sub: string[];
-        }
-      ]
-    | undefined;
+  features?:[
+    {
+      category: EFeatures;
+      sub: string[];
+    }
+  ];
 }
 
 function PropertyFeatures({ features }: PropertyFeaturesProps) {
