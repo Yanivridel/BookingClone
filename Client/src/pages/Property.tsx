@@ -31,7 +31,10 @@ import LocationCard from "@/components/LocationCard";
 import PropertyTitles from "@/components/PropertyTitles";
 import FaqComponent from "@/components/FaqComponent";
 import MainCarousel from "@/components/MainCarousel";
-import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick";
+import {
+  SampleNextArrow,
+  SamplePrevArrow,
+} from "@/components/ui/carousel-slick";
 import Slider from "react-slick";
 import { Plus } from "@/components/ui/Icons";
 import BreadcrumbCard from "@/components/Breadcrumb";
@@ -42,13 +45,11 @@ import { cf } from "@/utils/functions";
 function Property() {
   const { id } = useParams();
   const [propertyData, setPropertyData] = useState<IProperty | undefined>();
-  const [isMobile, setIsMobile] = useState<boolean>(
-    window.innerWidth < 1140
-  );
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1140);
   const navigate = useNavigate();
   const location = useLocation();
   const selectedRooms = location.state;
-  console.log("selectedRooms",selectedRooms)
+  console.log("selectedRooms", selectedRooms);
 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
@@ -65,10 +66,10 @@ function Property() {
   ];
 
   const settingsReviewsCarousel = {
-      infinite: false,
-      slidesToScroll: 1,
-      prevArrow: <SamplePrevArrow />,
-    };
+    infinite: false,
+    slidesToScroll: 1,
+    prevArrow: <SamplePrevArrow />,
+  };
 
   useEffect(() => {
     if (id) {
@@ -100,8 +101,7 @@ function Property() {
     const checkMobile = () => {
       setIsMobile((prevIsMobile) => {
         if (window.innerWidth < 1140 && !prevIsMobile) return true;
-        else if (window.innerWidth >= 1140 && prevIsMobile)
-          return false;
+        else if (window.innerWidth >= 1140 && prevIsMobile) return false;
         return prevIsMobile;
       });
     };
@@ -115,22 +115,35 @@ function Property() {
   const searchUrl = "/searchresults?country=Israel";
 
   const breadcrumbItems = [
-    { label: "Home", onClick: () => { navigate("/")}},
-    { label: cf(propertyData?.type || ""), onClick: () => { navigate(`${searchUrl}&type=${propertyData?.type}`)}},
-    { label: cf(propertyData?.title || "")},
+    {
+      label: "Home",
+      onClick: () => {
+        navigate("/");
+      },
+    },
+    {
+      label: cf(propertyData?.type || ""),
+      onClick: () => {
+        navigate(`${searchUrl}&type=${propertyData?.type}`);
+      },
+    },
+    { label: cf(propertyData?.title || "") },
   ];
 
-  if(!propertyData)
-    return <h1>404 property was not found</h1>
+  if (!propertyData) return <h1>404 property was not found</h1>;
 
   return (
     <div className="relative ">
       <div className="absolute top-0 w-full -z-10 h-[210px]  bg-[#013b94] search:h-[45px]"></div>
-      <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-2">
+      <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-5">
         <div className="absolute top-[150px] "></div>
         <Search></Search>
+        <PropertyTitles />
+        <LocationCard propertyData={propertyData} />
 
-        <BreadcrumbCard items={breadcrumbItems}/>
+        <QualityCard propertyData={propertyData} />
+
+        <BreadcrumbCard items={breadcrumbItems} />
         <MainCarousel>
           <NavProperty arr={arr} />
         </MainCarousel>
@@ -162,95 +175,75 @@ function Property() {
         {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
           <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
         )}
-        {/* <Button
-          className="text-[13px] border-[1px]"
-          variant={"negativeDefault"}
-        >
-          Read all reviews
-        </Button> */}
-        {/* {propertyReviews && (
-          <GuestReviews
-            propertyData={propertyData}
-            propertyReviews={propertyReviews}
-          />
-        )} */}
-        {/* <Button
-          className="text-[13px] border-[1px]"
-          variant={"negativeDefault"}
-        >
-          Read all reviews
-        </Button> */}
-
-        {/* <QualityCard propertyData={propertyData} /> */}
-        <p className="py-3 text-lg font-bold">Travellers are asking</p>
-        <AsksComponents propertyData={propertyData} />
-        <Button
-          className="text-[13px] border-[1px]"
-          variant={"negativeDefault"}
-        >
-          See other Questions <span>{propertyReviews?.length}</span>
-        </Button>
 
         {/* Reviews & Rating */}
         {propertyReviews?.length && (
           <div>
             <GuestReviews
-            propertyData={propertyData}
-            propertyReviews={propertyReviews}
+              propertyData={propertyData}
+              propertyReviews={propertyReviews}
             />
             {/* Search reviews by */}
             <MainCarousel>
-            <div className="flex flex-col gap-5">
-              <h1 className="font-bold">Select topics to read reviews:</h1>
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <Plus />
-                  Location
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <Plus />
-                  Room
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <Plus />
-                  Clean
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <Plus />
-                  Bed
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-full flex items-center justify-center gap-2"
-                >
-                  <Plus />
-                  Bathroom
-                </Button>
+              <div className="flex flex-col gap-5">
+                <h1 className="font-bold pt-4">
+                  Select topics to read reviews:
+                </h1>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className="border-[0.6px] border-black rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Plus />
+                    Location
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-[0.6px] border-black rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Plus />
+                    Room
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-[0.6px] border-black rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Plus />
+                    Clean
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-[0.6px] border-black rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Plus />
+                    Bed
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-[0.6px] border-black rounded-full flex items-center justify-center gap-2"
+                  >
+                    <Plus />
+                    Bathroom
+                  </Button>
+                </div>
               </div>
-            </div>
             </MainCarousel>
+
             {/* Reviews Carousel */}
-            <h2 className="text-2xl font-bold py-4 ">
+            <h2 className=" font-bold pt-4 pb-2 ">
               {t("property.reviewsHeader")}
             </h2>
             {isMobile || propertyReviews.length <= 3 ? (
-                <MainCarousel>
-                  { propertyReviews.map(rev =>
-                    <ReviewsCard size={2} className="min-w-[325px]" key={rev._id} review={rev} />
-                  )}
-                </MainCarousel>
+              <MainCarousel>
+                {propertyReviews.map((rev) => (
+                  <ReviewsCard
+                    size={2}
+                    className="min-w-[325px]"
+                    key={rev._id}
+                    review={rev}
+                  />
+                ))}
+              </MainCarousel>
             ) : (
               <Slider
                 key={isRtl ? "rtl" : "ltr"}
@@ -261,17 +254,40 @@ function Property() {
                   nextArrow: <SampleNextArrow slidesToShow={3} />,
                 }}
               >
-                { propertyReviews.map(rev =>
-                    <ReviewsCard size={2} className="mx-2 " key={rev._id} review={rev} />
-                )}
+                {propertyReviews.map((rev) => (
+                  <ReviewsCard
+                    size={2}
+                    className="mx-2 "
+                    key={rev._id}
+                    review={rev}
+                  />
+                ))}
               </Slider>
             )}
           </div>
         )}
+        <div>
+          <Button
+            className="text-[13px] border-[1px]"
+            variant={"negativeDefault"}
+          >
+            Read all reviews
+          </Button>
+        </div>
 
+        <div>
+          <p className="py-3 text-lg font-bold">Travellers are asking</p>
+          <AsksComponents propertyData={propertyData} />
+        </div>
 
-        <PropertyTitles />
-        <LocationCard propertyData={propertyData} />
+        <div>
+          <Button
+            className="text-[13px] border-[1px]"
+            variant={"negativeDefault"}
+          >
+            See other Questions <span>{propertyReviews?.length}</span>
+          </Button>
+        </div>
 
         <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
         <h2 className="py-3 text-lg font-bold ">
@@ -280,10 +296,11 @@ function Property() {
         <PopularFacilities
           popularFacilities={propertyData?.popularFacilities}
         />
+
         {/* {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />} */}
 
         {/* todo ridel carusel 5 km close by */}
-        {/* <PropertyFeatures features={propertyData?.features} />
+        <PropertyFeatures features={propertyData?.features} />
 
         <div className="flex flex-col gap-2 ">
           <h2 className="py-3 text-lg font-bold ">House Rules</h2>
@@ -300,8 +317,8 @@ function Property() {
             Need-to-know information for guests at this property
           </p>
           <FaqComponent propertyData={propertyData} />
-        </div> */}
-        {/* <div>
+        </div>
+        <div>
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
           doloribus, excepturi dolorum numquam iste expedita unde doloremque
           atque consequatur? Consectetur enim eos magnam rerum possimus
@@ -336,7 +353,7 @@ function Property() {
           similique dicta saepe numquam aliquam fugiat, nisi veritatis,
           asperiores nesciunt! Laudantium ex modi voluptatibus sit. Quod libero
           laudantium accusantium enim aliquid debitis ab nesciunt.
-        </div> */}
+        </div>
       </div>
     </div>
   );

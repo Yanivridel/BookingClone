@@ -32,57 +32,75 @@ function AsksComponents({ propertyData }: AsksComponentsProps) {
     <div className="flex  justify-between gap-2 ">
       <Card className="w-[300px]  p-2 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
-          {propertyData.fqa.map((item, index) => (
-            <div key={index} className="p-2 border-b">
-              <Sheet>
-                <SheetTrigger className="flex gap-2">
-                  <div>
-                    <Command className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm">{item.question}</p>
-                  </div>
-                  <div className="ml-8">
-                    <ArrowRight className="w-5 h-5" />
-                  </div>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Answer</SheetTitle>
-                    <SheetDescription>{item.answer}</SheetDescription>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-            </div>
-          ))}
+          {propertyData.fqa
+            .slice(0, propertyData.fqa.length / 2)
+            .map((item, index) => (
+              <div
+                key={index}
+                className={
+                  index !== Math.floor(propertyData.fqa.length / 2) - 1
+                    ? "border-b p-2 border-[#e7e7e7]"
+                    : "p-2"
+                }
+              >
+                <Sheet>
+                  <SheetTrigger className="flex gap-2">
+                    <div>
+                      <Command className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm">{item.question}</p>
+                    </div>
+                    <div className="ml-8">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Answer</SheetTitle>
+                      <SheetDescription>{item.answer}</SheetDescription>
+                    </SheetHeader>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            ))}
         </div>
       </Card>
 
       <Card className="w-[300px]  p-2 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
-          {propertyData.fqa.map((item, index) => (
-            <div key={index} className="p-2 border-b">
-              <Sheet>
-                <SheetTrigger className="flex gap-2">
-                  <div>
-                    <Command className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm">{item.question}</p>
-                  </div>
-                  <div className="ml-8">
-                    <ArrowRight className="w-5 h-5" />
-                  </div>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Answer</SheetTitle>
-                    <SheetDescription>{item.answer}</SheetDescription>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-            </div>
-          ))}
+          {propertyData.fqa
+            .slice(propertyData.fqa.length / 2, propertyData.fqa.length + 1)
+            .map((item, index) => (
+              <div
+                key={index}
+                className={
+                  index !== Math.floor(propertyData.fqa.length / 2)
+                    ? "border-b p-2 border-[#e7e7e7]"
+                    : "p-2"
+                }
+              >
+                <Sheet>
+                  <SheetTrigger className="flex gap-2">
+                    <div>
+                      <Command className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm">{item.question}</p>
+                    </div>
+                    <div className="ml-8">
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
+                  </SheetTrigger>
+                  <SheetContent>
+                    <SheetHeader>
+                      <SheetTitle>Answer</SheetTitle>
+                      <SheetDescription>{item.answer}</SheetDescription>
+                    </SheetHeader>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            ))}
         </div>
       </Card>
 
