@@ -48,43 +48,37 @@ function RewardCard() {
 
     ]
   return (
-    <div className='p-5 flex gap-5'>
+    <div className=' flex gap-5'>
         <div className='flex border-t-[1px] py-5 gap-2 relative'>
         <span className='rounded-full flex items-center gap-2 bg-yellow-500 absolute top-[-15px] p-1 px-2'><Unlock className='w-3 h-3 '/><span className='text-xs'>Level 1</span></span>
         {rewardsLevelOne.slice(0, 2).map((item, index) => { // בחר שני אובייקטים ראשונים עם slice
                 return (
-                    <Card className=''>
-                    <div key={index} className=' flex flex-col gap-5 p-5'>
+                    <div key={index} className=' flex flex-col p-3 gap-5 border w-[130px] h-[120px] rounded-lg '>
                         <img src={item.img} className='w-10 h-10' alt="Reward" />
-                        <p className='font-semibold'>{item.text}</p>
+                        <p className='font-semibold text-sm'>{item.text}</p>
                     </div>
-            </Card>
                 );
             })}
         </div>
         <div className='flex border-t-[1px] py-5 gap-2 relative'>
-        <span className='rounded-full flex items-center gap-2 bg-yellow-500 absolute top-[-15px] p-1 px-2'><Lock className='w-3 h-3 '/><span className='text-xs'>Level 2</span></span>
+        <span className='rounded-full flex items-center gap-2 border bg-white absolute top-[-15px] p-1 px-2'><Lock className='w-3 h-3 '/><span className='text-xs'>Level 2</span></span>
         {rewardsLevelOne.slice(2, 5).map((item, index) => { // בחר שני אובייקטים ראשונים עם slice
                 return (
-                    <Card className=''>
-                    <div key={index} className=' flex flex-col gap-5 p-5'>
+                    <div key={index} className=' flex flex-col p-2 gap-5 border w-[130px] h-[120px] rounded-lg grayscale bg-gray-200 '>
                         <img src={item.img} className='w-10 h-10' alt="Reward" />
-                        <p className='font-semibold'>{item.text}</p>
+                        <p className='font-semibold  text-sm'>{item.text}</p>
                     </div>
-            </Card>
                 );
             })}
         </div>
         <div className='flex border-t-[1px] py-5 gap-2 relative'>
-        <span className='rounded-full flex items-center gap-2 bg-yellow-500 absolute top-[-15px] p-1 px-2'><Unlock className='w-3 h-3 '/><span className='text-xs'>Level 3</span></span>
+        <span className='rounded-full flex items-center gap-2 border bg-white absolute top-[-15px] p-1 px-2'><Unlock className='w-3 h-3 '/><span className='text-xs'>Level 3</span></span>
         {rewardsLevelOne.slice(5, 7).map((item, index) => { // בחר שני אובייקטים ראשונים עם slice
                 return (
-                    <Card className=''>
-                    <div key={index} className=' flex flex-col gap-5 p-5'>
+                    <div key={index} className=' flex flex-col p-2 gap-5 border w-[130px] h-[120px] rounded-lg grayscale bg-gray-200'>
                         <img src={item.img} className='w-10 h-10' alt="Reward" />
-                        <p className='font-semibold'>{item.text}</p>
+                        <p className='font-semibold  text-sm'>{item.text}</p>
                     </div>
-            </Card>
                 );
             })}
         </div>
