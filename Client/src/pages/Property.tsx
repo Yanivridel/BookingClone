@@ -111,6 +111,7 @@ function Property() {
           />
         </div>
         <div className="border-[0.5px] border-softGray my-5"></div>
+
         {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
           <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
         )}

@@ -46,6 +46,7 @@ function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
       <div className="flex flex-col gap-5">
         <p className="font-bold">Categories:</p>
         <div className="flex justify-around gap-10 flex-wrap">
+          {/* <div className="w-1/3"> */}
           <div className="min-w-[270px] pr:min-w-[315px] pro:min-w-[270px] pro:flex-grow">
             {propertyData?.rating.cleanliness && (
               <div>
@@ -96,6 +97,7 @@ function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
               </div>
             )}
           </div>
+          {/* <div className="w-1/3"> */}
           <div className="min-w-[270px] pr:min-w-[315px] pro:min-w-[270px] pro:flex-grow">
             {propertyData?.rating.free_wifi && (
               <div>
@@ -131,6 +133,7 @@ function GuestReviews({ propertyData, propertyReviews }: GuestReviewsProps) {
               </div>
             )}
           </div>
+          {/* <div className="w-1/3"> */}
           <div className="min-w-[270px] pr:min-w-[315px] pro:min-w-[270px] pro:flex-grow">
             {propertyData?.rating.staff && (
               <div>
