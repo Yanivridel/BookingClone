@@ -18,6 +18,7 @@ import Property from "./pages/Property.tsx";
 import MyAccountPage from "./pages/MyAccountPage.tsx";
 
 import SavedLists from "./pages/SavedLists.tsx";
+import MySettings from "./pages/MySettings.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +65,10 @@ function App() {
         {
           element: <SavedLists />,
           path: "saved-lists/:listName",
+        },
+        {
+          element: <MySettings />,
+          path: "MySettings/:category",
         },
       ],
     },

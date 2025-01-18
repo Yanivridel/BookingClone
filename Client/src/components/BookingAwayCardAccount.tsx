@@ -4,8 +4,8 @@ import Stick from "../assets/images/GeniusAllBookingsStamp.png";
 
 function BookingAwayCardAccount() {
   return (
-    <div className="flex">
-      <div className=" p-5 flex flex-col gap-8 border rounded-lg">
+    <div className="flex bg-white rounded-lg">
+      <div className=" p-5 flex flex-col gap-8 rounded-lg">
         <div className=" flex gap-2">
           <div>
             <img src={Stick} alt="" className="w-10 h-10" />
