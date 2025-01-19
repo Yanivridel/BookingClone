@@ -21,7 +21,6 @@ interface PropertyNearByCardProps {
 function PropertyNearBy({ hotel_area_info }: PropertyNearByCardProps) {
   return (
     <div>
-      <h2 className="py-4 text-2xl font-bold"> {t("nearBy.header")}</h2>
       <div className=" grid sm:grid-cols-2 search:grid-cols-3 gap-3">
         {/* נריץ על כל המערך hotel_area_info */}
         {hotel_area_info?.map((area) => {

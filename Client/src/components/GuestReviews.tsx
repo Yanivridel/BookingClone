@@ -30,7 +30,7 @@ function GuestReviews({ propertyData }: GuestReviewsProps) {
           <p className="text-2xl font-bold py-4">Guest Reviews</p>
         </div>
         <div>
-          <Button className="text-xs">See availability</Button>
+          <Button className="text-sm">See availability</Button>
         </div>
       </div>
       <div className="flex gap-2 p-1">

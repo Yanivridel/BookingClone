@@ -29,8 +29,8 @@ function AsksComponents({ propertyData }: AsksComponentsProps) {
   }
 
   return (
-    <div className="flex  justify-between gap-2 ">
-      <Card className="w-[300px]  p-2 flex flex-col gap-2">
+    <div className="flex flex-wrap gap-4 ">
+      <Card className="basis-[300px]  p-2 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {propertyData.fqa
             .slice(0, propertyData.fqa.length / 2)
@@ -67,7 +67,7 @@ function AsksComponents({ propertyData }: AsksComponentsProps) {
         </div>
       </Card>
 
-      <Card className="w-[300px]  p-2 flex flex-col gap-2">
+      <Card className="basis-[300px]  p-2 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {propertyData.fqa
             .slice(propertyData.fqa.length / 2, propertyData.fqa.length + 1)
@@ -104,7 +104,7 @@ function AsksComponents({ propertyData }: AsksComponentsProps) {
         </div>
       </Card>
 
-      <Card className="w-[300px]  p-2 grid ">
+      <Card className="basis-[300px]  p-2 grid ">
         <div className=" flex items-end justify-center">
           <CardTitle className="text-xl">Still looking?</CardTitle>
         </div>

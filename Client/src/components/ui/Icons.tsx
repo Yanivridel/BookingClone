@@ -1031,3 +1031,11 @@ export const DownIcon = ({ className }: IconsProps) => {
     </svg>
   );
 };
+
+export const CribIcon = ({ className }: IconsProps) => {
+  return (
+    <svg className={className} viewBox="0 0 128 128" width="1em" height="1em">
+      <path d="M116 20a4 4 0 0 0-4 4v8H16v-8a4 4 0 0 0-8 0v80a4 4 0 0 0 8 0V88h96v16a4 4 0 0 0 8 0V24a4 4 0 0 0-4-4zM42 40h18v32H42zm26 32V40h18v32zM16 40h18v32H16zm96 32H94V40h18z"></path>
+    </svg>
+  );
+};

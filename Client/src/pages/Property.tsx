@@ -1,3 +1,4 @@
+import styles from "@/css/search.module.css";
 import AsksComponents from "@/components/AsksComponents";
 import BreadcrumbProperty from "@/components/BreadcrumbProperty";
 import GeniusCard from "@/components/GeniusCard";
@@ -139,9 +140,6 @@ function Property() {
         <div className="absolute top-[150px] "></div>
         <Search></Search>
         <PropertyTitles />
-        <LocationCard propertyData={propertyData} />
-
-        <QualityCard propertyData={propertyData} />
 
         <BreadcrumbCard items={breadcrumbItems} />
         <MainCarousel>
@@ -274,9 +272,10 @@ function Property() {
             Read all reviews
           </Button>
         </div>
+        <QualityCard propertyData={propertyData} />
 
         <div>
-          <p className="py-3 text-lg font-bold">Travellers are asking</p>
+          <p className="py-3 text-lg font-bold">Travelers are asking</p>
           <AsksComponents propertyData={propertyData} />
         </div>
 
@@ -288,11 +287,14 @@ function Property() {
             See other Questions <span>{propertyReviews?.length}</span>
           </Button>
         </div>
+        <h2 className="py-4 text-2xl font-bold"> {t("nearBy.header")}</h2>
+        <LocationCard propertyData={propertyData} />
 
         <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
         <h2 className="py-3 text-lg font-bold ">
           {t("popularFacilities.header")}
         </h2>
+
         <PopularFacilities
           popularFacilities={propertyData?.popularFacilities}
         />
@@ -303,12 +305,20 @@ function Property() {
         <PropertyFeatures features={propertyData?.features} />
 
         <div className="flex flex-col gap-2 ">
-          <h2 className="py-3 text-lg font-bold ">House Rules</h2>
-          <p className="text-gray-500 text-sm">
-            Aparthotel Stare Miasto takes special requests - add in the next
-            step!
-          </p>
-          <HouseRules propertyData={propertyData} />
+          <div className="flex justify-between">
+            <div className="py-3">
+              <h2 className=" text-2xl font-bold mb-2">House Rules</h2>
+              <p className="text-searchGrayText text-md">
+                Aparthotel Stare Miasto takes special requests - add in the next
+                step!
+              </p>
+            </div>
+
+            <Button className="text-sm">See availability</Button>
+          </div>
+          <div className={`overflow-scroll ${styles.scrollContainer}`}>
+            <HouseRules propertyData={propertyData} />
+          </div>
         </div>
 
         <div className="flex flex-col gap-3">

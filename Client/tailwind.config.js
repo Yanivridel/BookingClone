@@ -73,6 +73,8 @@ module.exports = {
         navBarRoundedButton: "#868686",
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
+        softGrayBorder: "#e7e7e7",
+
         redError: "#d3111e",
         IconsGreen: "#008235",
         hoverBgSoftBlue: "#234e9e",
@@ -108,7 +110,7 @@ module.exports = {
         grid1: "550px",
         grid2: "800px",
         filtersPopup: "1024",
-        "1024": "1024",
+        1024: "1024",
         search: "900px",
         TopHeader: "1022px",
         pro: "1010px",
