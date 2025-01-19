@@ -7,7 +7,6 @@ import "slick-carousel/slick/slick-theme.css";
 import Layout from "./pages/Layout.tsx";
 import SearchResults from "./pages/SearchResults.tsx";
 import Home from "./pages/Home.tsx";
-import UserSetting from "./pages/UserSetting.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import EmailCode from "./pages/EmailCode.tsx";
 import Account from "./pages/Account.tsx";
@@ -19,6 +18,7 @@ import MyAccountPage from "./pages/MyAccountPage.tsx";
 
 import SavedLists from "./pages/SavedLists.tsx";
 import MySettings from "./pages/MySettings.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,12 +36,12 @@ function App() {
           element: <SearchResults />,
         },
         {
-          path: "/usersetting",
-          element: <UserSetting />,
-        },
-        {
           path: "/property/:id",
           element: <Property />,
+        },
+        {
+          path: "*",
+          element: <NotFound />,
         },
       ],
     },
@@ -70,7 +70,15 @@ function App() {
           element: <MySettings />,
           path: "MySettings/:category",
         },
+        {
+          path: "*",
+          element: <NotFound />,
+        },
       ],
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
 
