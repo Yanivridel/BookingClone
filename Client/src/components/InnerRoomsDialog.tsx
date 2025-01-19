@@ -20,7 +20,7 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
     customPaging: function (i: any) {
       return (
         <img
-          className="object-cover w-12 max-h-[48px] min-h-[48px] mt-7"
+          className="object-cover w-12 max-h-[48px] min-h-[48px] mt-3"
           src={room.images[i]}
           alt={`Thumbnail ${i + 1}`}
           onError={(e) => e.currentTarget.closest('li')?.remove()}
@@ -28,7 +28,7 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
       );
     },
     dots: true,
-    dotsClass: "slick-dots slick-thumb image-carousel flex justify-center flex-wrap gap-y-10 bg-white",
+    dotsClass: "slick-dots slick-thumb image-carousel !flex !mt-10 flex-wrap justify-center !gap-y-10 bg-white",
     infinite: true,
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
@@ -37,14 +37,14 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
   return (
     <div>
       <Dialog>
-        <DialogTrigger className=" cursor-pointer " asChild>
+        <DialogTrigger className="cursor-pointer" asChild>
           <h3 className="text-primary cursor-pointer font-bold underline  hover:text-[#bc5b02]">
             {room.title}
           </h3>
         </DialogTrigger>
-        <DialogContent className=" h-[70vh] w-[70vw] max-w-[100vw] rounded-2xl sm:rounded-2xl p-5 grid grid-cols-[40%_60%]">
-          <div className=" flex flex-col gap-4">
-            <h3 className="text-xl font-bold  ">{room.title}</h3>
+        <DialogContent className="h-[70vh] w-[90vw] max-w-[1100px] max-h-[700px] rounded-2xl p-5 grid grid-cols-[40%_60%]">
+          <div className="flex flex-col gap-4 overflow-y-auto max-h-full">
+            <h3 className="text-xl font-bold">{room.title}</h3>
             <PopularFacilities
               iconsClassName={"fill-black w-4 h-4"}
               facilityTitleClassName={"text-[12px]"}
@@ -53,7 +53,7 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
             />
             {/* beds */}
             {room.rooms.map((innerRoom) => (
-              <div>
+              <div key={innerRoom.room_num}>
                 <span className="font-bold pe-1">{innerRoom.type}</span>
                 <span className="font-bold pe-1">{innerRoom.room_num}:</span>
                 <div className="flex flex-wrap">
@@ -67,47 +67,27 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
                           </span>
                           {bedType === "double" &&
                             Array.from({ length: count }).map((_, index) => (
-                              <img
-                                key={index}
-                                className="h-4 w-7"
-                                src={TweenSingleBad}
-                              />
+                              <img key={index} className="h-4 w-7" src={TweenSingleBad} />
                             ))}
 
                           {bedType === "bunk" &&
                             Array.from({ length: count }).map((_, index) => (
-                              <img
-                                key={index}
-                                className="h-6 w-6"
-                                src={BunkBad}
-                              />
+                              <img key={index} className="h-6 w-6" src={BunkBad} />
                             ))}
 
                           {bedType === "queen" &&
                             Array.from({ length: count }).map((_, index) => (
-                              <img
-                                key={index}
-                                className="h-5 w-10"
-                                src={QueenBad}
-                              />
+                              <img key={index} className="h-5 w-10" src={QueenBad} />
                             ))}
 
                           {bedType === "single" &&
                             Array.from({ length: count }).map((_, index) => (
-                              <img
-                                key={index}
-                                className="h-4 w-7"
-                                src={TweenSingleBad}
-                              />
+                              <img key={index} className="h-4 w-7" src={TweenSingleBad} />
                             ))}
 
                           {bedType === "sofa" &&
                             Array.from({ length: count }).map((_, index) => (
-                              <img
-                                key={index}
-                                className="h-5 w-8"
-                                src={SofaBad}
-                              />
+                              <img key={index} className="h-5 w-8" src={SofaBad} />
                             ))}
                         </div>
                       )
@@ -117,39 +97,36 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
             ))}
             {/* beds count */}
             <div className="flex">
-              <span className="font-bold pe-1">roomes:</span>
+              <span className="font-bold pe-1">rooms:</span>
               <span> {room.rooms.length}</span>
             </div>
             {/* description */}
-
             <p>{room.desc}</p>
           </div>
 
           {/*  carousel */}
-          <div className="h-1/2">
+          <div className="h-fit w-full">
             <Slider
               key={isRtl ? "rtl" : "ltr"}
               {...{
                 ...settingsCarousel,
                 slidesToShow: 1,
                 initialSlide: isRtl ? room.images.length - 1 : 0,
-                // variableWidth: true,
-                nextArrow: <SampleNextArrow slidesToShow={1} />,
+                nextArrow: <SampleNextArrow myClassName="left-1/2" slidesToShow={1} />,
               }}
             >
-                {room.images.map((image, index) => (
-                  <div key={index} className="px-2 w-full h-[450px]">
-                    <img
-                      className="h-full w-full object-contain"
-                      src={image}
-                      alt={`Room Image ${index + 1}`}
-                      onError={(e) => e.currentTarget.closest('.slick-slide')?.remove()}
-                    />
-                  </div>
-                ))}
+              {room.images.map((image, index) => (
+                <div key={index} className="px-2 w-full h-[350px]">
+                  <img
+                    className="h-fit w-full object-contain object-top"
+                    src={image}
+                    alt={`Room Image ${index + 1}`}
+                    onError={(e) => e.currentTarget.closest('.slick-slide')?.remove()}
+                  />
+                </div>
+              ))}
             </Slider>
           </div>
-          
         </DialogContent>
       </Dialog>
     </div>

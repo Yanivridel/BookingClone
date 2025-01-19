@@ -5,16 +5,14 @@ import OffersCard from "@/components/OffersCard";
 import Search from "@/components/search";
 import HomeHeader from "../components/HomeHeader.tsx";
 import { Card } from "@/components/ui/card";
-import MainNav from "@/components/MainNav";
 import { Button } from "@/components/ui/button";
 import DubaiImage from "../assets/images/Dubai.jpg";
-import { convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
+import { cf, convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
 
 import { TrendingImages } from "@/utils/staticData.ts";
 
 import { useTranslation } from "react-i18next";
 
-import { cn } from "@/lib/utils";
 import CardWithDescription from "@/components/CardWithDescritpion";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,6 +31,8 @@ import { useDispatch } from "react-redux";
 import { modifyUserArrays } from "@/utils/api/userApi.ts";
 import { addSearchEntry } from "@/store/slices/userSlices.ts";
 import kidsImg from './../assets/images/kids.jpeg'
+import { cn } from "@/lib/utils.ts";
+import LiveFooter from "@/components/LiveFooter.tsx";
 
 // Tailwind - render
 ("col-span-2");
@@ -55,7 +55,7 @@ const offersArr = [
     title: "Escape the Ordinary",
     desc: "Start your year with an adventure. Save up to 20% when you book and stay by 15 February 2025.",
     button: "Explore Early Bird Deals",
-    img: "https://q-xx.bstatic.com/xdata/images/xphoto/500x500/420460174.jpeg?k=025a88d04503e3d37a76d4d55e2ea599d500a6b541fbf01f9cdcbf99347c68a1&o="
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH3kMUn6mYeJxT6TLuOQ8_x1zdz5NxIMnJZw&s"
   }
 ]
 const inspirationArr = [
@@ -182,6 +182,172 @@ const propertyTypesArr = [
     img: "https://q-xx.bstatic.com/xdata/images/hotel/263x210/595550925.jpeg?k=c0db68290ad93f4dea18b95395397a874a8801159fb4d6308bd6164ebcd28a11&o="
   },
 ]
+const easyTripObj = {
+  outdoors : [
+    {
+      title: "Zikhron Ya'akov",
+      distance: "73 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034195.jpg?k=b3260ed45afde8b3f6f33db6ade0cf17e76a3dafa2153698e5a680580bcb408a&o="
+    },
+    {
+      title: "Arad",
+      distance: "84 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034315.jpg?k=9991ed396116b6d766dead284571c49fff8c2eb20d878a5597555acd739be153&o="
+    },
+    {
+      title: "Midreshet Ben Gurion",
+      distance: "120 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140052393.jpg?k=98669ffff507d191373b4abb0f31ae1808f2470b51225921bce257cfe2902e67&o="
+    },
+    {
+      title: "Kefar Weradim",
+      distance: "127 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140046060.jpg?k=edd093e4f0a3fe021efa00e949ff3af14bcefb06b228c067c98f0d345f675c11&o="
+    },
+    {
+      title: "Amirim",
+      distance: "128 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034317.jpg?k=b290864663693fea0d5ff14448a1394f8048df0367c2a1217a409752cc91a53b&o="
+    },
+    {
+      title: "Rosh Pinna",
+      distance: "135 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034218.jpg?k=bc6f0819c7c2cea70af1b20ade7d110afd25167c242f8bf8f283099ce1a30339&o="
+    },
+    {
+      title: "Had Nes",
+      distance: "136 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140046531.jpg?k=c5f2c5634a4d58f7880d572f58e578e5a87873dc2d7320672a8b358efc3289fa&o="
+    },
+    {
+      title: "Qasrîne",
+      distance: "145 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140015356.jpg?k=c8d9f8882557074cd6a18e6f57501640772cb9cd8bceb3ca59210516f070c3e3&o="
+    },
+    {
+      title: "Mitzpe Ramon",
+      distance: "146 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140051118.jpg?k=19e7e875f7b02759fd871a331ce3bab5663fc3e9c39008f60cef7282b5453260&o="
+    }
+  ],
+  beach: [
+    {
+      title: "Rishon LeẔiyyon",
+      distance: "4.2 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034219.jpg?k=660d61e5a83380c6da83559e7ed5fc89d38b122ddbe82d9939c50afb9ac2f633&o="
+    },
+    {
+      title: "Bat Yam",
+      distance: "11 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034310.jpg?k=665f9aabad6b08d1613a309c2ddc15656633de923f4e83b5414585a1a5f8107c&o="
+    },
+    {
+      title: "Tel Aviv",
+      distance: "17 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034205.jpg?k=ba18b085be5bab9bd27a82ccc79dbc91c2160912a15d9f45af7ef54d11f74d92&o="
+    },
+    {
+      title: "Ashdod",
+      distance: "20 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034313.jpg?k=95697f0fa7b280d24a7fd66e51859dd9d5f7e09ca2e29ed7fb33077d1d594f48&o="
+    },
+    {
+      title: "Herzliya",
+      distance: "27 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034268.jpg?k=018123373b35d93c45c8085f4ab4d8a369e6e166c4b03c72b9da3a6b44aca5b7&o="
+    },
+    {
+      title: "Ashkelon",
+      distance: "36 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034312.jpg?k=a3b79665fbd1a3d0bac1c73ab37706374dee36ed8a4d72f54096c1fcf7400f82&o="
+    },
+    {
+      title: "Netanya",
+      distance: "45 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034232.jpg?k=3a31fcfccbcbc8052c3b6f42b407e6e9b93bc449e31cff4bbad5ed3784f14824&o="
+    },
+    {
+      title: "Mikhmoret",
+      distance: "54 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034239.jpg?k=bc81d5029cdb2ee977e4e12b5317f5f12ea331f87b5d7c102aaca6857b4443c4&o="
+    },
+    {
+      title: "H̱adera",
+      distance: "58 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034274.jpg?k=13cc8c6d4687ac52522bc7a68dc820fb07b512ad2a72055c28bccd640d49a8f9&o="
+    },
+    {
+      title: "Caesarea",
+      distance: "66 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034214.jpg?k=711a0fd5530a7a370b3a3af67bd69e46c1ef714adee49c1fd0a96a04a8c777b3&o="
+    },
+    {
+      title: "Dor",
+      distance: "77 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034293.jpg?k=1d5e18dada82a31d981b6041333dbae348556871dd38ba4527f821c2d49cc31f&o="
+    },
+  ],
+  romance: [
+    {
+      title: "Ramat Gan",
+      distance: "16 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034222.jpg?k=2f64ed82713b2f01a652d5d7f2ac96d4a0b9d61e85f8f011de81c8665a2bf5fc&o="
+    },
+    {
+      title: "Beer Sheva",
+      distance: "75 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034308.jpg?k=7fa481044d119d17f5c01a00a5a799358eed64fd1c66848e1184042a773d9253&o="
+    },
+    {
+      title: "Haifa",
+      distance: "101 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034269.jpg?k=ecd2e266b1934d7baac592c499390b8fe525d20ffe3bec487a776591c87d4138&o="
+    },
+    {
+      title: "Yavneʼel",
+      distance: "109 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034202.jpg?k=6de0858122897f42014a65cc938284a7e0d6901210125a6c56bd73fd54e7ddc2&o="
+    },
+    {
+      title: "Livnim",
+      distance: "123 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140051705.jpg?k=216052d3233d8cec3eb0aaabf92348540e6c5676e1f6070be49f02dd61d636c9&o="
+    },
+    {
+      title: "Neot Golan",
+      distance: "127 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140051712.jpg?k=291c9cd28a8e1cc542650debb694d0837ccc8909db2d78325da448a1b2cce0ab&o="
+    },
+    {
+      title: "Ramot Naftali",
+      distance: "148 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034220.jpg?k=658f48467ccf13377bb98750d5c352e89ba89556aa5ea0b1d8a20bb969f32c93&o="
+    },
+  ],
+  city: [
+    {
+      title: "Jerusalem",
+      distance: "43 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140050084.jpg?k=5e92410af29416aaee6dfaa52249c26b57418d22fbb00373378632e49e8b1d6e&o="
+    },
+    {
+      title: "Nazareth",
+      distance: "99 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034235.jpg?k=14d3f60aba1a2b73280740fc55b8ebe841446d9f0f4f626575fd85fd88726bcb&o="
+    },
+    {
+      title: "Acre",
+      distance: "114 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034318.jpg?k=b957f73a8e01ba08a7fb4671ef4d90685e8a26462d132a0ea33b028f37eb735e&o="
+    },
+    {
+      title: "Safed",
+      distance: "133 km away",
+      img: "https://cf.bstatic.com/xdata/images/xphoto/300x240/140034196.jpg?k=154576a207c2245da5a62e2cca16d62b44e098f30f682ccc46227d1b2260a5ff&o="
+    },
+  ]
+
+} as any
 
 function Home() {
   const HomeMobileWidth = 1140;
@@ -195,6 +361,8 @@ function Home() {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "he";
   const dateLanguage = isRtl ? "he-IL" : "en-US";
+  const [easyTripCategory, setEasyTripCategory] = useState("outdoors");
+  const easyTripCategories = Object.keys(easyTripObj);
 
   const settingsSearch = {
     infinite: false,
@@ -202,7 +370,7 @@ function Home() {
     prevArrow: <SamplePrevArrow />,
   };
 
-  console.log("USER", currentUser);
+  // console.log("USER", currentUser);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -418,9 +586,8 @@ function Home() {
           </h3>
           {isMobile ? (
             <MainCarousel>
-              {[...Array(3)].map((_, index) => (
-                <OffersCard key={index} title="Go for a good time, not a long time" desc="Finish your year with a mini break. Save 15% or more when you book and stay by 7 January 2025."
-                button="Find Late Escape Deals" img="https://q-xx.bstatic.com/xdata/images/xphoto/500x500/420460173.jpeg?k=0654940492bab9993284109d6136f220e700bbb4d5a0a972c4b4de3bdc0d8204&o=" />
+              {offersArr.map((el) => (
+                <OffersCard className="min-w-[500px]" key={el.button} title={el.title} desc={el.desc} button={el.button} img={el.img}/>
               ))}
             </MainCarousel>
           ) : (
@@ -456,91 +623,78 @@ function Home() {
                 key={details.city}
                 details={details}
                 className={`col-span-${idx <= 1 ? 3 : 2}`}
+                onClick={() => navigate(`/searchresults?country=${details.city}`) }
               />
             ))}
           </div>
         </div>
 
-        {/* ELCHANAN DO WE REALLY NEED THIS ? */}
-        {/* <div className="py-4">
-          <h2 className="text-2xl font-bold ">
-            {t("home.recentCountryHeader")} {country}
+        {/* Easy Trip 4 Carousels */}
+        <div>
+          <h2 className="text-2xl font-bold mt-5">
+            {t("home.ClosePlacesHeader")}
           </h2>
           <h3 className="text-searchGrayText ">
-            {t("home.recentCountrySecondaryHeader")}
+            {t("home.ClosePlacesSecondaryHeader")}
           </h3>
+          {/* Category change */}
+          <div className="flex p-2">
+            {easyTripCategories.map((key:string) =>
+              <Button
+              variant="ghost"
+              className={`font-normal rounded-full p-4 text-lg ${
+                easyTripCategory === key
+                  ? "border-2 border-sky-600 text-sky-600 bg-accent"
+                  : ""
+              }`}
+              onClick={() => setEasyTripCategory(key)}
+            >
+              {cf(key)}
+            </Button>
+            )}
+          </div>
+          {/* Carousels */}
+          <div className="py-4">
+            {isMobile || easyTripObj[easyTripCategory].length <= 4 ? (
+              <MainCarousel>
+                {easyTripObj[easyTripCategory].map((item: any, index: number) => (
+                  <CardWithLocationHome
+                  key={index}
+                  title={item.title}
+                  image={item.img}
+                  description={item.distance}
+                  className="mx-2 max-h-[300px] min-w-[180px]"
+                  classNameImg="max-h-[185px]"
+                  onClick={() => navigate(`/searchresults?country=Israel&city=${item.title}`)}
+                />
+                ))}
+              </MainCarousel>
+            ) : (
+            <Slider 
+            key={easyTripCategory + (isRtl ? "rtl" : "ltr")}
+            {...{
+              ...settingsSearch,
+              slidesToShow: 5,
+              initialSlide: isRtl ? easyTripObj[easyTripCategory].length - 5 : 0,
+              // variableWidth: true,
+              nextArrow: <SampleNextArrow slidesToShow={5} />,
+            }}
+            >
+              {easyTripObj[easyTripCategory].map((item: any, index: number) => (
+                <CardWithLocationHome
+                  key={index}
+                  title={item.title}
+                  image={item.img}
+                  description={item.distance}
+                  className="mx-2 max-h-[300px] min-w-[180px]"
+                  classNameImg="max-h-[185px]"
+                  onClick={() => navigate(`/searchresults?country=Israel&city=${item.title}`)}
+                />
+              ))}
+            </Slider>
+            )}
+          </div>
         </div>
-        <Carousel>
-          <CarouselPrevious />
-          <CarouselContent>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselNext />
-        </Carousel> */}
-
-        {/* Missing Card Type ... ? */}
-        {/* <h2 className="text-2xl font-bold ">
-          {t("home.ClosePlacesHeader")} {country}
-        </h2>
-        <h3 className="text-searchGrayText ">
-          {t("home.ClosePlacesSecondaryHeader")}
-        </h3>
-        <MainNav className={"border-0"} />
-        <Carousel>
-          <CarouselPrevious />
-          <CarouselContent>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-            <CarouselItem className="pl-1 md:basis-1/2 lg:basis-1/3">
-              <Card className="h-40 w-40">
-                <img src={DubaiImage} alt="" />
-              </Card>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselNext />
-        </Carousel> */}
 
         {/* //! Travel more, spend less */}
         {/* <div>
@@ -552,117 +706,12 @@ function Home() {
               <Button variant={"simpleLink"}>{t("home.gunisesMoreInfo")}</Button>
             </div>
           </div>
-          <div
-            className={cn(
-              "w-full flex gap-2 overflow-scroll py-4",
-              styles.scrollContainer
-            )}
-          >
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
-            <Card>
-              <h2>baba</h2>
-              <p>babababa</p>
-            </Card>
+          <div>
+            <OffersCard className="justify-between"
+            key={"sign-in"} title="Sign in, save money" desc="Save 10% or more at participating properties – just look for the blue Genius label"
+              button="Sign in" img="https://t-cf.bstatic.com/design-assets/assets/v3.138.1/illustrations-traveller/GeniusGenericGiftBox.png" />
           </div>
         </div> */}
-
-        {/* //! Looking for the perfect stay? */}
-        {/* <div>
-          <div className="py-4">
-            <h2 className="text-2xl font-bold ">
-              {t("home.PerfectPlacesHeader")}
-            </h2>
-            <h3 className="text-searchGrayText ">
-              {t("home.PerfectPlacesSecondaryHeader")}
-            </h3>
-          </div>
-          <div
-            className={cn(
-              "w-full flex gap-2 overflow-scroll py-4",
-              styles.scrollContainer
-            )}
-          >
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-
-          </div>
-        </div> */}
-
-        {/* //! Deals for the weekend */}
-        {/* <div>
-          <div className="py-4">
-            <h2 className="text-2xl font-bold ">
-              {t("home.weekendDealsHeader")}
-            </h2>
-            <h3 className="text-searchGrayText ">
-              {t("home.weekendDealsSecondaryHeader") + " "}
-              {weedend.fromDate.month +
-                " " +
-                weedend.fromDate.day +
-                " - " +
-                weedend.toDate.month +
-                " " +
-                weedend.toDate.day}
-            </h3>
-          </div>
-          <div
-            className={cn(
-              "w-full flex gap-2 overflow-scroll py-4",
-              styles.scrollContainer
-            )}
-          >
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-            <MainCard propertyId={currentUser.interested[0]}/>
-
-          </div>
-        </div> */}
-
-        {/* //! Get inspiration for your next trip */}
 
         {/* Inspiration Carousel */}
         <div>
@@ -806,7 +855,8 @@ function Home() {
             )}
         </div>
         }
-        
+
+        <LiveFooter />
         
       </div>
     </div>

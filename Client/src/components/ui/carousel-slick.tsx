@@ -5,11 +5,12 @@ export function SampleNextArrow({
     currentSlide,
     slideCount,
     slidesToShow,
+    myClassName
   }: any) {
     const isDisabled = currentSlide >= slideCount - slidesToShow;
   
     return (
-      <div onClick={onClick}>
+      <div onClick={onClick} className={myClassName}>
         <svg
           className={`absolute top-1/3 -right-6 z-30 ring-1 ring-gray-100 bg-white rounded-full h-[36px] 
         w-[36px] hover:bg-gray-200 transition-all p-2 cursor-pointer 

@@ -9,12 +9,13 @@ interface ImageCardProps {
     image: string;
     flag: string;
   }
+  onClick?: () => void;
 }
 
-function ImageCard({ className, details }: ImageCardProps) {
+function ImageCard({ className, details, onClick }: ImageCardProps) {
   return (
     <div className={className}>
-      <Card className="rounded-lg overflow-hidden relative group w-full h-full flex-1">
+      <Card className="rounded-lg overflow-hidden relative group w-full h-full flex-1 cursor-pointer" onClick={onClick}>
         <div className="relative w-full h-0 pb-[75%]">
           <img
             src={details.image}
