@@ -2,6 +2,13 @@
 
   
   "MyAccount" : {
+    "PaymentInformation" : "מידע בנושא תשלום",
+    "ManageAccount" : "ניהול חשבון",
+    "Preferences" : "העדפות",
+    "TravelActivity" : "פעולות שקשורת לנסיעות",
+    "HelpAndSupport" : "עזרה ותמיכה",
+    "LegalAndPrivacy" : "מידע משפטי ופרטיות",
+    "ManageYourProperty" : "ניהול מקום האירוח שלכם",
     "Rewards" : "הטבות ו-Wallet",
     "Payment" : "אמצעי תשלום",
     "Personal" : "פרטים אישיים",
@@ -17,7 +24,28 @@
     "MyReviews" : "פתרון מחלוקות",
     "Privacy" : "ניהול מידע ופרטיות",
     "Content" : "הנחיות לגבי תוכן",
-    "Property" : "רשמו את מקום האירוח שלכם"
+    "Property" : "רשמו את מקום האירוח שלכם",
+    "GeniusRewards" : "יש לכם 2 הטבות של Genius",
+    "DiscountsTitle": "תיהנו מהטבות והנחות במקומות אירוח נבחרים ובהשכרות רכב נבחרות ברחבי העולם",
+    "LearnMore" : "מידע נוסף על ההטבות שלכם",
+    "Reward1Level1" : "חיסכון של 10% במקומות אירוח",
+    "Reward1Level2" : "חיסכון של 10% על רכבים להשכרה",
+    "Reward1Level3" : "חיסכון של 10%–15% במקומות אירוח",
+    "Reward1Level4" : "ארוחות בוקר בחינם",
+    "Reward1Level5" : "שדרוגי חדרים בחינם",
+    "Reward1Level6" : "חיסכון של 10%–20% במקומות אירוח",
+    "Reward1Level7" : "עדיפות בשירות לקוחות בהזמנת שהיות",
+    "Level1" : "שלב 1",
+    "Level2" : "שלב 2",
+    "Level3" : "שלב 3",
+    "You'reBookings" : "אתם במרחק של 5 הזמנות מרמה 2 של Genius",
+    "CheckProgress" : "לבדיקת ההתקדמות שלכם",
+    "NoCredits" : "אין לכם עדיין קרדיט או שוברים",
+    "MoreDetails" : "מידע נוסף",
+    "CompleteProfile" : "השלימו את הפרופיל שלכם",
+    "CompleteProfileInformation" : "מלאו את כל הפרטים בפרופיל ותוכלו להשתמש בהם בהזמנות הבאות שלכם",
+    "CompleteNow" : "להשלמת הפרופיל",
+    "NotCompleteNow" : "לא עכשיו "
   },
 
   "home": {

@@ -1,6 +1,13 @@
 {
 
   "MyAccount" : {
+    "PaymentInformation" : "Payment information",
+    "ManageAccount" : "Manage account",
+    "Preferences" : "Preferences",
+    "TravelActivity" : "Travel activity",
+    "HelpAndSupport" : "Help and support",
+    "LegalAndPrivacy" : "Legal and privacy",
+    "ManageYourProperty" : "Manage your property",
     "Rewards" : "Rewards & Wallet",
     "Payment" : "Payment Methods",
     "Personal" : "Personal details",
@@ -16,7 +23,30 @@
     "MyReviews" : "My reviews",
     "Privacy" : "Privacy and data management",
     "Content" : "Content",
-    "Property" : "List your property"
+    "Property" : "List your property",
+    "GeniusRewards" : "You have 2 Genius rewards",
+    "DiscountsTitle" : "Enjoy rewards and discounts on select stays and rental cars worldwide.",
+    "LearnMore" : "Learn more about your rewards",
+    "Reward1Level1" : "10% off stays",
+    "Reward1Level2" : "10% off rental cars",
+    "Reward1Level3" : "10-15% off stays",
+    "Reward1Level4" : "Free breakfasts",
+    "Reward1Level5" : "Free room upgrades",
+    "Reward1Level6" : "10-20% off stays",
+    "Reward1Level7" : "Priority support on stays",
+    "Level1" : "Level 1",
+    "Level2" : "Level 2",
+    "Level3" : "Level 3",
+    "You'reBookings" : "You're 5 bookings away from Genius Level 2",
+    "CheckProgress" : "Check your progress",
+    "NoCredits" : "No Credits or vouchers yet",
+    "MoreDetails" : "More details",
+    "CompleteProfile" : "Complete your profile",
+    "CompleteProfileInformation" : "Complete your profile and use this information for your next booking",
+    "CompleteNow" : "Complete now ",
+    "NotCompleteNow" : "Not now"
+
+
 
   },
 

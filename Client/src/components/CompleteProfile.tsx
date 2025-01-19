@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { PiCarProfile } from "react-icons/pi";
 import { IconGuest } from "./ui/Icons";
 import { Button } from "./ui/button";
+import { useTranslation } from "react-i18next";
 
 function CompleteProfile() {
   const [display, setDisplay] = useState(true)
+  const {t} = useTranslation()
 
   function handleClick() {
     setDisplay(false)
@@ -16,11 +18,11 @@ function CompleteProfile() {
     display && (
     <div className="p-6  flex bg-white rounded-lg">
       <div className=" w-[70%] flex flex-col gap-4">
-        <h1 className="font-bold">Complete your profile</h1>
-        <p className="text-sm">Complete your profile and use this information for your next booking</p>
+        <h1 className="font-bold">{t("MyAccount.CompleteProfile")}</h1>
+        <p className="text-sm">{t("MyAccount.CompleteProfileInformation")}</p>
         <div>
-            <Button>Complete now</Button>
-            <Button onClick={handleClick} variant="ghost" className='text-blue-600 hover:bg-accent hover:text-blue-600'>Not now</Button>
+            <Button>{t("MyAccount.CompleteNow")}</Button>
+            <Button onClick={handleClick} variant="ghost" className='text-blue-600 hover:bg-accent hover:text-blue-600'>{t("MyAccount.NotCompleteNow")}</Button>
             
 
         </div>
