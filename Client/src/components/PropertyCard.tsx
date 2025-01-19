@@ -54,7 +54,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
 
     async function handleNavToProperty() {
         try {
-            navigate(`/property/${propertyData._id}`, { state: propertyData.selectedRooms })
+            navigate(`/property/${propertyData._id}`, { state: { selectedRooms: propertyData.selectedRooms, adults, childrenAges } })
             const updatedUser = await modifyUserArrays("add", { interested: propertyData._id})
             dispatch(addInterest(updatedUser.interested))
         } catch(err) {
@@ -67,6 +67,8 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     const endDate = searchParams.get("endDate") ? new Date(searchParams.get("endDate") as string) : undefined;
     const isWeekend = Boolean(searchParams.get("isWeekend") as string);
     const length = Number(searchParams.get("length") || 1);
+    const adults = Number(searchParams.get("adults") || 1);
+    const childrenAges = searchParams.get("childrenAges") || [];
 
     if(startDate && endDate)
         nights = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));

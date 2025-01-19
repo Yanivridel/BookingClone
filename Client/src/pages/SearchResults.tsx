@@ -83,8 +83,6 @@ function SearchResults() {
     }
   } as ISearchPropertiesReq), [searchParams]);
 
-  console.log(searchBody)
-
   const {
     data,
     fetchNextPage,
