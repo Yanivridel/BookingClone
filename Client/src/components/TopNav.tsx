@@ -10,9 +10,16 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   BookingLogo,
+  BookingTripsIcon,
+  GeniusLoyaltyIcon,
   IconGuest,
   IconHamburger,
+  MyAccountIcon,
   Person,
+  ReviewsIcon,
+  RewardsWalletIcon,
+  SavedIcon,
+  SignoutIcon,
   XIcon,
 } from "./ui/Icons";
 import { useNavigate } from "react-router-dom";
@@ -87,7 +94,7 @@ function TopNav() {
             {currentUser._id ? (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="avatar" className="flex gap-3 py-6 ">
+                  <Button variant="avatar" className="flex gap-4 py-6 ">
                     <Avatar className="w-8 h-8 border-2 border-[#f8b830] pointer-events-none ">
                       <AvatarImage
                         src={
@@ -113,40 +120,40 @@ function TopNav() {
                 <PopoverContent className="p-4 w-56 shadow-md rounded-lg bg-white">
                   <ul className="space-y-2 text-sm text-gray-800">
                     <li
-                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                      className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
                       onClick={() => navigate("/account/MyAccountPage")}
                     >
-                      <Person className="h-5 w-5" />
+                      <MyAccountIcon className="h-5 w-5" />
                       My account
                     </li>
-                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                      <Person className="h-5 w-5" />
+                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <BookingTripsIcon className="h-5 w-5" />
                       Bookings & Trips
                     </li>
-                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                      <Person className="h-5 w-5" />
+                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <GeniusLoyaltyIcon className="h-5 w-5" />
                       Genius loyalty program
                     </li>
-                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                      <Person className="h-5 w-5" />
+                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <RewardsWalletIcon className="h-5 w-5" />
                       Rewards & Wallet
                     </li>
-                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                      <Person className="h-5 w-5" />
+                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <ReviewsIcon className="h-5 w-5" />
                       Reviews
                     </li>
                     <li
-                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                      className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
                       onClick={() => navigate("/account/saved-lists/select")}
                     >
-                      <Person className="h-5 w-5" />
+                      <SavedIcon className="h-5 w-5" />
                       Saved
                     </li>
                     <li
-                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer text-red-500"
+                      className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer text-red-500"
                       onClick={handleSignOut}
                     >
-                      <Person className="h-5 w-5" />
+                      <SignoutIcon className="h-5 w-5" />
                       Sign out
                     </li>
                   </ul>
