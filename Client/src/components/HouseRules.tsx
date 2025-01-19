@@ -24,7 +24,6 @@ interface propertyDataProps {
 }
 
 function HouseRules({ propertyData }: propertyDataProps) {
-  const acceptedPayments = propertyData?.houseRules.accepted_payments || [];
   const [isCashAllowd, setIsCashAllowd] = useState(false);
 
   const getPaymentImage = (paymentMethod: string) => {

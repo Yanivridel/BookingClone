@@ -111,11 +111,13 @@ module.exports = {
         grid2: "800px",
         filtersPopup: "1024",
         1024: "1024",
+        gr: "915px",
         search: "900px",
         TopHeader: "1022px",
-        pro: "1010px",
-        pr: "785",
+        pro: "1010px", // progress
+        pr: "785", // progress
         signInLayoutTop: "575px",
+        foo: "600px", // footer
       },
       boxShadow: {
         searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",

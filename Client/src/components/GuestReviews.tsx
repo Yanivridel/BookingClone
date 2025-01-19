@@ -1,4 +1,3 @@
-import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { CardDescription, CardTitle } from "./ui/card";
 import { IProperty } from "@/types/propertyTypes";
@@ -24,15 +23,7 @@ const getColorByRating = (rating: number) => {
 
 function GuestReviews({ propertyData }: GuestReviewsProps) {
   return (
-    <div className=" grid gap-5 p-2">
-      <div className="flex justify-between">
-        <div>
-          <p className="text-2xl font-bold py-4">Guest Reviews</p>
-        </div>
-        <div>
-          <Button className="text-sm">See availability</Button>
-        </div>
-      </div>
+    <div className="grid gap-5 p-2">
       <div className="flex gap-2 p-1">
         <div>
           <Badge variant="rating" className="cursor-pointer h-full">

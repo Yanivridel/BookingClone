@@ -1,6 +1,5 @@
 import styles from "@/css/search.module.css";
 import AsksComponents from "@/components/AsksComponents";
-import BreadcrumbProperty from "@/components/BreadcrumbProperty";
 import GeniusCard from "@/components/GeniusCard";
 import GuestReviews from "@/components/GuestReviews";
 import ImagesProperty from "@/components/ImagesProperty";
@@ -40,6 +39,7 @@ import Slider from "react-slick";
 import { Plus } from "@/components/ui/Icons";
 import BreadcrumbCard from "@/components/Breadcrumb";
 import { cf } from "@/utils/functions";
+import PropertyFinePrint from "./components/PropertyFinePrint";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -61,9 +61,9 @@ function Property() {
     "Overview",
     "Info & prices",
     "Facilities",
-    " House rules",
+    "House rules",
     "The fine print",
-    "Guest reviews(30,075)",
+    `Guest reviews (${propertyReviews?.length})`,
   ];
 
   const settingsReviewsCarousel = {
@@ -139,12 +139,10 @@ function Property() {
       <div className="px-10 max-w-[1100px] mx-auto flex flex-col gap-5">
         <div className="absolute top-[150px] "></div>
         <Search></Search>
-        <PropertyTitles />
 
         <BreadcrumbCard items={breadcrumbItems} />
-        <MainCarousel>
-          <NavProperty arr={arr} />
-        </MainCarousel>
+
+        <NavProperty arr={arr} />
 
         <PropertyTitle propertyData={propertyData} segment={arr[0]} />
 
@@ -168,15 +166,30 @@ function Property() {
             popularFacilities={propertyData?.popularFacilities}
           />
         </div>
-        <div className="border-[0.5px] border-softGray my-5"></div>
-
-        {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
-          <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
-        )}
-
+        <div
+          id="Info & prices"
+          className="border-[0.5px] border-softGray my-5"
+        ></div>
+        <MainCarousel>
+          {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
+            <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
+          )}
+        </MainCarousel>
         {/* Reviews & Rating */}
         {propertyReviews?.length && (
-          <div>
+          <div id={`Guest reviews (${propertyReviews?.length})`}>
+            <div className="flex justify-between">
+              <div>
+                <p className="text-2xl font-bold py-4">Guest Reviews</p>
+              </div>
+              <div>
+                <div className="py-3">
+                  <Button className="text-sm" asChild>
+                    <a href={"#Info & prices"}>See availability</a>
+                  </Button>
+                </div>
+              </div>
+            </div>
             <GuestReviews
               propertyData={propertyData}
               propertyReviews={propertyReviews}
@@ -272,10 +285,12 @@ function Property() {
             Read all reviews
           </Button>
         </div>
+
         <QualityCard propertyData={propertyData} />
 
         <div>
           <p className="py-3 text-lg font-bold">Travelers are asking</p>
+
           <AsksComponents propertyData={propertyData} />
         </div>
 
@@ -288,23 +303,50 @@ function Property() {
           </Button>
         </div>
         <h2 className="py-4 text-2xl font-bold"> {t("nearBy.header")}</h2>
+        <PropertyTitles />
         <LocationCard propertyData={propertyData} />
 
         <PropertyNearBy hotel_area_info={propertyData?.hotel_area_info} />
+
+        <div id="Facilities" className="flex justify-between">
+          <div className="py-3">
+            <h2 className=" text-2xl font-bold mb-2">
+              Facilities of {propertyData.title}
+            </h2>
+
+            {propertyData.total_rating && (
+              <p className="text-searchGrayText text-md">
+                {propertyData.total_rating >= 8
+                  ? "Great facilities! "
+                  : propertyData?.total_rating > 6 &&
+                    propertyData?.total_rating < 8
+                  ? "Nice facilities!"
+                  : ""}
+                <span>
+                  {" "}
+                  Review score, {propertyData.total_rating.toFixed(2)}
+                </span>
+              </p>
+            )}
+          </div>
+          <div className="py-3">
+            <Button className="text-sm" asChild>
+              <a href={"#Info & prices"}>See availability</a>
+            </Button>
+          </div>
+        </div>
+
         <h2 className="py-3 text-lg font-bold ">
           {t("popularFacilities.header")}
         </h2>
-
         <PopularFacilities
           popularFacilities={propertyData?.popularFacilities}
         />
 
-        {/* {propertyReviews && <ReviewsCard propertyReviews={propertyReviews} />} */}
-
         {/* todo ridel carusel 5 km close by */}
         <PropertyFeatures features={propertyData?.features} />
 
-        <div className="flex flex-col gap-2 ">
+        <div id={"House rules"} className="flex flex-col gap-2 ">
           <div className="flex justify-between">
             <div className="py-3">
               <h2 className=" text-2xl font-bold mb-2">House Rules</h2>
@@ -313,56 +355,33 @@ function Property() {
                 step!
               </p>
             </div>
-
-            <Button className="text-sm">See availability</Button>
+            <div className="py-3">
+              <Button className="text-sm" asChild>
+                <a href={"#Info & prices"}>See availability</a>
+              </Button>
+            </div>
           </div>
           <div className={`overflow-scroll ${styles.scrollContainer}`}>
             <HouseRules propertyData={propertyData} />
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h2 className="py-3 text-lg font-bold ">The fine print</h2>
-          <p className="text-gray-500 text-sm">
-            Need-to-know information for guests at this property
-          </p>
+        <div id="The fine print" className="flex flex-col gap-3">
+          <div className="flex justify-between">
+            <div className="py-3">
+              <h2 className=" text-2xl font-bold ">The fine print</h2>
+              <p className="text-searchGrayText text-md">
+                Need-to-know information for guests at this property
+              </p>
+            </div>
+            <div className="py-3">
+              <Button className="text-sm" asChild>
+                <a href={"#Info & prices"}>See availability</a>
+              </Button>
+            </div>
+          </div>
+          <PropertyFinePrint />
           <FaqComponent propertyData={propertyData} />
-        </div>
-        <div>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab
-          doloribus, excepturi dolorum numquam iste expedita unde doloremque
-          atque consequatur? Consectetur enim eos magnam rerum possimus
-          molestias dolores, soluta quia. Temporibus? Libero vero quibusdam
-          necessitatibus aspernatur eius, possimus, nihil quis provident dolores
-          eligendi id! Quaerat, laboriosam voluptatibus at explicabo unde iusto
-          qui nobis aperiam modi harum itaque eum. Recusandae, nemo libero!
-          Delectus odit maxime quaerat fuga. Itaque, vel ut. Deleniti distinctio
-          ut doloribus delectus ipsa eos provident tenetur dolores ullam nihil
-          explicabo, suscipit cumque nisi? Repellat natus perferendis cum rerum
-          reprehenderit! Rem nostrum nam natus sit quo doloribus quis dolores
-          eaque commodi ratione distinctio reprehenderit, eveniet nesciunt
-          perspiciatis a reiciendis. Obcaecati alias enim optio rem et
-          repudiandae itaque dicta, reiciendis illo? Ut reprehenderit nemo
-          ducimus modi reiciendis, maiores, ratione iste facilis culpa
-          dignissimos hic laudantium! Dolore, accusamus autem quo deleniti
-          facilis eveniet quasi eum alias rem non assumenda! Maxime, dolorem
-          modi? Iure sequi officiis itaque recusandae fugit, nostrum porro
-          labore tenetur corrupti in beatae, veritatis ex at illo non fugiat
-          voluptates similique ipsum voluptatem repellendus eius maiores.
-          Cumque, repellendus. Quae, quo. Ex reiciendis enim esse sequi
-          similique, nesciunt vitae ab ut. Voluptatem ipsam quas a modi ut
-          adipisci quasi. Dignissimos unde blanditiis neque porro voluptates
-          veniam similique molestiae beatae possimus quas! Voluptas
-          necessitatibus consequatur placeat illum accusamus veritatis, commodi
-          incidunt explicabo pariatur voluptatibus. Nostrum ipsam vero dicta,
-          itaque officia, ipsum cum similique exercitationem illum iste autem at
-          assumenda, recusandae et quis. Sed sint nihil assumenda, quo
-          necessitatibus tempore optio? Accusamus sint iure tenetur quis, hic
-          est doloremque tempora sed libero ipsam dicta nam corrupti et, nisi
-          enim veniam magnam nobis earum! Accusantium totam aut eius, quos ab
-          similique dicta saepe numquam aliquam fugiat, nisi veritatis,
-          asperiores nesciunt! Laudantium ex modi voluptatibus sit. Quod libero
-          laudantium accusantium enim aliquid debitis ab nesciunt.
         </div>
       </div>
     </div>

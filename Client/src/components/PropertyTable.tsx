@@ -30,7 +30,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
   >([]);
 
   return (
-    <div className="grid grid-col grid-cols-[repeat(20,_minmax(0,1fr))]  relative">
+    <div className="grid grid-col  min-w-[750px]  grid-cols-[repeat(20,_minmax(0,1fr))]  relative">
       {[...Array(headerRowsNumber)].map((_, i) => (
         <h2
           key={i}
@@ -59,7 +59,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
             ? ""
             : t(`propertyTable.THeader.${i}`)}
           {i === 5 && (
-            <div className="absolute top-[60px] left-2 right-2 flex flex-col text-black">
+            <div className="absolute top-[90px] gr:top-[70px] left-2 right-2 flex flex-col text-black">
               <Button>{t("order.beforeSelectRooms.button")}</Button>
 
               <div className="py-2 text-sm flex flex-col gap-2">
