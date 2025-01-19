@@ -40,6 +40,7 @@ import { Plus } from "@/components/ui/Icons";
 import BreadcrumbCard from "@/components/Breadcrumb";
 import { cf } from "@/utils/functions";
 import PropertyFinePrint from "./components/PropertyFinePrint";
+import RecommendedCard from "@/components/RecommendedCard";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -50,6 +51,7 @@ function Property() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedRooms = location.state;
+  console.log(selectedRooms);
 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
@@ -75,11 +77,11 @@ function Property() {
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
-        console.log(data);
+        // console.log(data);
       });
       getReviewsByPropertyId(id).then((data) => {
         setPropertyReviews(data);
-        console.log(data);
+        // console.log(data);
       });
     }
   }, [id]);
@@ -88,11 +90,11 @@ function Property() {
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
-        console.log(data);
+        // console.log(data);
       });
       getReviewsByPropertyId(id).then((data) => {
         setPropertyReviews(data);
-        console.log(data);
+        // console.log(data);
       });
     }
   }, [id]);
@@ -150,6 +152,9 @@ function Property() {
           propertyData={propertyData}
           propertyReviews={propertyReviews}
         />
+
+        <RecommendedCard />
+
         <div className="search:grid search:grid-cols-[5fr_2fr] mt-5">
           <PropertyDescription propertyData={propertyData} />
           <div className="hidden search:flex search:flex-col gap-4 search:justify-around items-center">
