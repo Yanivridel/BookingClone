@@ -14,7 +14,7 @@ function CompleteProfile() {
 
   return (
     display && (
-    <div className="p-4  flex bg-white rounded-lg">
+    <div className="p-6  flex bg-white rounded-lg">
       <div className=" w-[70%] flex flex-col gap-4">
         <h1 className="font-bold">Complete your profile</h1>
         <p className="text-sm">Complete your profile and use this information for your next booking</p>
@@ -26,7 +26,7 @@ function CompleteProfile() {
         </div>
       </div>
       <div className=" w-[30%] flex justify-end">
-        <div className="border p-9 bg-sky-100"><IconGuest className=" fill-blue-500 w-8 h-8" /></div>
+        <div className=" p-9 bg-sky-100"><IconGuest className=" fill-blue-500 w-8 h-8" /></div>
       </div>
     </div>
     )

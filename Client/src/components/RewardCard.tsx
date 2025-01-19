@@ -30,15 +30,15 @@ function RewardCard() {
          text: "Free breakfasts"
         },
         {
-         img : Reward1Level5, 
-         text: "Free room upgrades"
-        },
-        {
          img : Reward1Level6, 
          text: "Free room upgrades"
         },
         {
          img : Reward1Level1, 
+         text: "Free room upgrades"
+        },
+        {
+         img : Reward1Level7, 
          text: "10-20% off stays"
         },
         {

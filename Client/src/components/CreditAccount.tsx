@@ -5,7 +5,7 @@ function CreditAccount() {
   return (
     <div className='p-2 bg-white rounded-lg '>
       <div className=''>
-        <div className='flex p-4 gap-16'>
+        <div className='flex p-4 justify-between'>
             <p className='text-sm'>No Credits or vouchers yet</p>
             <p>0</p>
         </div>
