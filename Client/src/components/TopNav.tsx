@@ -8,7 +8,13 @@ import { MdOutlineAttractions } from "react-icons/md";
 import { MdOutlineLocalTaxi } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { BookingLogo, IconGuest, IconHamburger, Person, XIcon } from "./ui/Icons";
+import {
+  BookingLogo,
+  IconGuest,
+  IconHamburger,
+  Person,
+  XIcon,
+} from "./ui/Icons";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
@@ -28,7 +34,9 @@ import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { getInitials } from "@/utils/functions";
 
 function TopNav() {
-  const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
   const dispatch = useDispatch();
   const [activeButton, setActiveButton] = useState<string>("domestic");
   const { i18n } = useTranslation();
@@ -56,12 +64,14 @@ function TopNav() {
   }, [i18n.language]);
 
   const handleSignOut = () => {
-    navigate("/")
+    navigate("/");
     dispatch(unsetUser());
-  }
-  const initials = getInitials(`${currentUser.fName || ""} ${currentUser.lName || ""}`.trim());
+  };
+  const initials = getInitials(
+    `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
+  );
 
-  console.log(currentUser.user_image);
+  // console.log(currentUser.user_image);
   return (
     <div className="flex-col  bg-[#013b94] px-4 py-2">
       <div className="max-w-[1100px] m-auto">
@@ -70,87 +80,98 @@ function TopNav() {
             <BookingLogo className=" h-5 w-[98px]" />
           </div>
 
-
           <div className="flex gap-4 items-center">
             <div className="p-[13px] cursor-pointer">
               <Languages></Languages>
             </div>
-            { currentUser._id ? 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="avatar" className="flex gap-3 py-6 ">
-                <Avatar className="w-8 h-8 border-2 border-[#f8b830] pointer-events-none ">
-                  <AvatarImage
-                    src={currentUser.user_image ? currentUser.user_image : undefined} 
-                    alt="user" loading="lazy" />
-                  <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
-                    {initials || "User"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <h2 className="text-white">Account & Info</h2>
-                  <p className="text-[#f8b830]">Genius Level {currentUser.geniusLevel}</p>
-                </div>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="p-4 w-56 shadow-md rounded-lg bg-white">
-                <ul className="space-y-2 text-sm text-gray-800">
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
-                  onClick={() => navigate("/account/MyAccountPage")}>
-                    <Person className="h-5 w-5"/>
-                    My account
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                    <Person className="h-5 w-5"/>
-                    Bookings & Trips
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                    <Person className="h-5 w-5"/>
-                    Genius loyalty program
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                    <Person className="h-5 w-5"/>
-                    Rewards & Wallet
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
-                    <Person className="h-5 w-5"/>
-                    Reviews
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
-                  onClick={() => navigate("/account/saved-lists/select")}>
-                    <Person className="h-5 w-5"/>
-                    Saved
-                  </li>
-                  <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer text-red-500"
-                  onClick={handleSignOut}
-                  >
-                    <Person className="h-5 w-5"/>
-                    Sign out
-                  </li>
-                </ul>
-              </PopoverContent>
-            </Popover>
-            
-          
-            :
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="hover:bg-[#234e9e] p-[13px] rounded-[4px] cursor-pointer"
-                  onClick={() => navigate("/account/sign-in")}>
-                    <div className="relative ">
-                      <div className="absolute bg-[#d4111e] h-2 w-2 rounded-full border top-0 end-0"></div>
-                      <IconGuest className="h-6 w-6 fill-white" />
+            {currentUser._id ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="avatar" className="flex gap-3 py-6 ">
+                    <Avatar className="w-8 h-8 border-2 border-[#f8b830] pointer-events-none ">
+                      <AvatarImage
+                        src={
+                          currentUser.user_image
+                            ? currentUser.user_image
+                            : undefined
+                        }
+                        alt="user"
+                        loading="lazy"
+                      />
+                      <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
+                        {initials || "User"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <h2 className="text-white">Account & Info</h2>
+                      <p className="text-[#f8b830]">
+                        Genius Level {currentUser.geniusLevel}
+                      </p>
                     </div>
-
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="bg-black text-sm">
-                  <p>Sign in</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            }
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-4 w-56 shadow-md rounded-lg bg-white">
+                  <ul className="space-y-2 text-sm text-gray-800">
+                    <li
+                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                      onClick={() => navigate("/account/MyAccountPage")}
+                    >
+                      <Person className="h-5 w-5" />
+                      My account
+                    </li>
+                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <Person className="h-5 w-5" />
+                      Bookings & Trips
+                    </li>
+                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <Person className="h-5 w-5" />
+                      Genius loyalty program
+                    </li>
+                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <Person className="h-5 w-5" />
+                      Rewards & Wallet
+                    </li>
+                    <li className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                      <Person className="h-5 w-5" />
+                      Reviews
+                    </li>
+                    <li
+                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                      onClick={() => navigate("/account/saved-lists/select")}
+                    >
+                      <Person className="h-5 w-5" />
+                      Saved
+                    </li>
+                    <li
+                      className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded cursor-pointer text-red-500"
+                      onClick={handleSignOut}
+                    >
+                      <Person className="h-5 w-5" />
+                      Sign out
+                    </li>
+                  </ul>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="hover:bg-[#234e9e] p-[13px] rounded-[4px] cursor-pointer"
+                      onClick={() => navigate("/account/sign-in")}
+                    >
+                      <div className="relative ">
+                        <div className="absolute bg-[#d4111e] h-2 w-2 rounded-full border top-0 end-0"></div>
+                        <IconGuest className="h-6 w-6 fill-white" />
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black text-sm">
+                    <p>Sign in</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
         </div>
 

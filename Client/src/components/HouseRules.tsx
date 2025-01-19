@@ -108,8 +108,8 @@ function HouseRules({ propertyData }: propertyDataProps) {
                 </h1>
                 <div className="border-x-[1px] border-t-[1px] border-softGrayBorder rounded-md">
                   {propertyData?.houseRules.children_beds?.bed_policy?.map(
-                    (item) => (
-                      <div key={item.age.start} className="">
+                    (item, i) => (
+                      <div key={item.age.start + i} className="">
                         <div className="px-2 py-1 grid grid-cols-2">
                           <p>Age</p>
 
@@ -233,11 +233,11 @@ function HouseRules({ propertyData }: propertyDataProps) {
             <div>Card accepted at this property</div>
           </div>
           <div className=" w-[70%] flex items-center text-sm">
-            <p className="flex gap-1 ">
+            <div className="flex gap-1 ">
               {propertyData?.houseRules.accepted_payments.map((payment) => {
                 payment === "Cash" && setIsCashAllowd(true);
                 return (
-                  <div>
+                  <div key={payment}>
                     {getPaymentImage(payment) !== undefined && (
                       <img
                         onError={(e) => e.currentTarget.remove()}
@@ -259,7 +259,7 @@ function HouseRules({ propertyData }: propertyDataProps) {
                   Cash is not accepted
                 </span>
               )}
-            </p>
+            </div>
           </div>
         </div>
       </div>

@@ -12,7 +12,6 @@ function LocationCard({ propertyData }: LocationCardProps) {
   function handleClick() {
     setIsDisplay(false);
   }
-  console.log(isDisplay);
 
   return (
     <div>

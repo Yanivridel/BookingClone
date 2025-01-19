@@ -23,7 +23,7 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
           className="object-cover w-12 max-h-[48px] min-h-[48px] mt-3"
           src={room.images[i]}
           alt={`Thumbnail ${i + 1}`}
-          onError={(e) => e.currentTarget.closest('li')?.remove()}
+          onError={(e) => e.currentTarget.closest("li")?.remove()}
         />
       );
     },

@@ -26,7 +26,6 @@ function RoomTypeDescription({ room }: RoomTypeDescription) {
     },
     { bunk: 0, double: 0, queen: 0, single: 0, sofa: 0 } // ערכים התחליים
   );
-  console.log("baba");
 
   return (
     <div>
