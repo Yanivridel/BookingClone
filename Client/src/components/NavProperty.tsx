@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
+import MainCarousel from "./MainCarousel";
 
 interface NavPropertyProps {
   arr: string[];
@@ -13,7 +14,7 @@ function NavProperty({ arr }: NavPropertyProps) {
   };
 
   return (
-    <div className="flex">
+    <MainCarousel className="gap-0 ">
       {arr.map((buttonName) => (
         <Button
           className="flex-grow font-normal"
@@ -29,7 +30,7 @@ function NavProperty({ arr }: NavPropertyProps) {
           <a href={`#${buttonName}`}>{buttonName}</a>
         </Button>
       ))}
-    </div>
+    </MainCarousel>
   );
 }
 

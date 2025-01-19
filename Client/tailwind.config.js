@@ -73,6 +73,8 @@ module.exports = {
         navBarRoundedButton: "#868686",
         softBlue: "#f2f6fe",
         softGray: "#d9d9d9",
+        softGrayBorder: "#e7e7e7",
+
         redError: "#d3111e",
         IconsGreen: "#008235",
         hoverBgSoftBlue: "#234e9e",
@@ -108,12 +110,14 @@ module.exports = {
         grid1: "550px",
         grid2: "800px",
         filtersPopup: "1024",
-        "1024": "1024",
+        1024: "1024",
+        gr: "915px",
         search: "900px",
         TopHeader: "1022px",
-        pro: "1010px",
-        pr: "785",
+        pro: "1010px", // progress
+        pr: "785", // progress
         signInLayoutTop: "575px",
+        foo: "600px", // footer
       },
       boxShadow: {
         searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",
