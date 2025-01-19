@@ -550,8 +550,6 @@ function Home() {
         </div>
         }
 
-        <LiveFooter />
-        
       </div>
     </div>
   );

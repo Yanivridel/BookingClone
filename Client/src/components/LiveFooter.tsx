@@ -1,5 +1,6 @@
 import Slider from 'react-slick';
 import { Card } from './ui/card';
+import { useNavigate } from 'react-router-dom';
 
 const findArr = [
     "apartments",
@@ -11,6 +12,7 @@ const findArr = [
 ]
 
 const LiveFooter = () => {
+    const navigate = useNavigate();
     const settings = {
         infinite: true,
         slidesToShow: 1,
@@ -23,7 +25,7 @@ const LiveFooter = () => {
     }
 
     return (
-        <Card className="my-6 relative p-6 bg-white border rounded-lg shadow-lg overflow-hidden">
+        <Card className="my-6 relative p-6 bg-white border rounded-lg shadow-lg overflow-hidden max-w-[1100px] mx-auto">
             {/* Background circles */}
             <div className="absolute top-2/3 left-1/6 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[100px] bg-yellow-500 rounded-full"></div>
             <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500 rounded-full"></div>
@@ -44,7 +46,8 @@ const LiveFooter = () => {
                     </span>
                 </h2>
                 <p className="text-white mb-4 text-2xl font-bold">for your next trip</p>
-                <button className="px-4 py-2 w-[200px] bg-white text-blue-500 font-semibold rounded-lg">
+                <button onClick={() => navigate("/searchresults?country=Israel")}
+                className="px-4 py-2 w-[200px] bg-white text-blue-500 font-semibold rounded-lg">
                     Discover homes
                 </button>
                 </div>

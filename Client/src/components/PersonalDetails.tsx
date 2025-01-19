@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import KidsImage from "../assets/images/kids.jpeg";
 import { Button } from "./ui/button";
 import {
@@ -9,7 +9,35 @@ import {
 } from "./ui/accordion";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
+
 function PersonalDetails() {
+  const refs = {
+    firstName: useRef(null),
+    lastName: useRef(null),
+    displayName: useRef(null),
+    email: useRef(null),
+    nationality: useRef(null),
+    month: useRef(null),
+    day: useRef(null),
+    year: useRef(null),
+    gender: useRef(null),
+    country: useRef(null),
+    city: useRef(null),
+    postal: useRef(null),
+    address: useRef(null),
+    passportExpireDay: useRef(null),
+    passportExpireMonth: useRef(null),
+    passportExpireYear: useRef(null),
+    passportFirstName: useRef(null),
+    passportLastName: useRef(null),
+    passportNumber: useRef(null),
+  } as any;
+
+  const handleSave = (key: string) => {
+    const value = refs[key].current?.value || "";
+    console.log(`${key}:`, value);
+  };
+
   return (
     <div className="grid grid-cols-1 max-w-[1100px]">
       <div className="border-b-2 flex justify-between ">
@@ -38,6 +66,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold ">First name("s") *</p>
                 <input
+                  ref={refs.firstName}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -45,6 +74,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Last name("s") *</p>
                 <input
+                ref={refs.lastName}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -57,7 +87,7 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button onClick={() => handleSave("firstName")}>Save</Button>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -68,6 +98,7 @@ function PersonalDetails() {
             <div className="flex flex-col gap-1">
               <p className="font-semibold">Display name *</p>
               <input
+                ref={refs.displayName}
                 type="text"
                 className="p-2 rounded-lg border-black border"
               />
@@ -96,6 +127,7 @@ function PersonalDetails() {
             <div className="flex flex-col gap-1">
               <p className="font-semibold">Email address*</p>
               <input
+                ref={refs.email}
                 type="text"
                 className="p-2 rounded-lg border-black border"
               />
@@ -130,6 +162,7 @@ function PersonalDetails() {
                   <option value="volvo">Country</option>
                 </select>
                 <input
+                  ref={refs.nationality}
                   placeholder="+972 |"
                   type="text"
                   className="p-2 rounded-lg border-black border"
@@ -154,15 +187,36 @@ function PersonalDetails() {
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Date of birth*</p>
               <div className="grid grid-cols-3 gap-2">
-                <input
-                  type="text"
-                  className="p-2 rounded-lg border-black border"
-                />
-                <select className="border rounded-lg p-2" aria-placeholder="ss">
-                  <option value="volvo">Select your </option>
+                <select ref={refs.month} className="border rounded-lg p-2" aria-placeholder="Select Month">
+                  <option value="" disabled selected>
+                    Select Month
+                  </option>
+                  <option value="january">January</option>
+                  <option value="february">February</option>
+                  <option value="march">March</option>
+                  <option value="april">April</option>
+                  <option value="may">May</option>
+                  <option value="june">June</option>
+                  <option value="july">July</option>
+                  <option value="august">August</option>
+                  <option value="september">September</option>
+                  <option value="october">October</option>
+                  <option value="november">November</option>
+                  <option value="december">December</option>
                 </select>
                 <input
-                  type="text"
+                  ref={refs.day}
+                  type="number"
+                  placeholder="DD"
+                  max={2}
+                  className="p-2 rounded-lg border-black border"
+                />
+                
+                <input
+                  ref={refs.year}
+                  type="number"
+                  placeholder="YYYY"
+                  max={4}
                   className="p-2 rounded-lg border-black border"
                 />
               </div>
@@ -238,6 +292,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Address</p>
                 <input
+                  ref={refs.address}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -246,6 +301,7 @@ function PersonalDetails() {
                 <div className="flex flex-col gap-1">
                   <p className="font-semibold">Town/city</p>
                   <input
+                    ref={refs.city}
                     type="text"
                     className="p-2 rounded-lg border-black border"
                   />
@@ -253,6 +309,7 @@ function PersonalDetails() {
                 <div className="flex flex-col gap-1">
                   <p className="font-semibold">Postcode</p>
                   <input
+                    ref={refs.postal}
                     type="text"
                     className="p-2 rounded-lg border-black border"
                   />
@@ -278,6 +335,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">First name(s) *</p>
                 <input
+                  ref={refs.passportFirstName}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -285,6 +343,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Last name(s) *</p>
                 <input
+                  ref={refs.passportLastName}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -300,6 +359,7 @@ function PersonalDetails() {
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Passport number *</p>
                 <input
+                  ref={refs.passportNumber}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -308,15 +368,31 @@ function PersonalDetails() {
             <div className="grid grid-cols-1">
               <p className="font-semibold">Expiry date *</p>
               <div className="grid grid-cols-3">
-                <input
-                  placeholder="DD"
-                  type="text"
-                  className="p-2 rounded-lg border-black border"
-                />
-                <select className="border rounded-lg p-2" aria-placeholder="MM">
-                  <option value="volvo">Select your </option>
+              <select ref={refs.passportExpireMonth} className="border rounded-lg p-2" aria-placeholder="Select Month">
+                  <option value="" disabled selected>
+                    Select Month
+                  </option>
+                  <option value="january">January</option>
+                  <option value="february">February</option>
+                  <option value="march">March</option>
+                  <option value="april">April</option>
+                  <option value="may">May</option>
+                  <option value="june">June</option>
+                  <option value="july">July</option>
+                  <option value="august">August</option>
+                  <option value="september">September</option>
+                  <option value="october">October</option>
+                  <option value="november">November</option>
+                  <option value="december">December</option>
                 </select>
                 <input
+                  ref={refs.passportExpireDay}
+                  placeholder="DD"
+                  type="number"
+                  className="p-2 rounded-lg border-black border"
+                />
+                <input
+                  ref={refs.passportExpireYear}
                   placeholder="YYYY"
                   type="text"
                   className="p-2 rounded-lg border-black border"
