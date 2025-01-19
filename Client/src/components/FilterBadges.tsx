@@ -105,7 +105,6 @@ const FilterBadges = () => {
 
     const handleRemoveFilter = (param: string, value?: string) => {
         const updatedParams = new URLSearchParams(searchParams);
-        console.log(param);
         if (value) {
             const values = updatedParams.getAll(param);
             updatedParams.delete(param);
@@ -167,7 +166,7 @@ const FilterBadges = () => {
         {/* Render grouped filters */}
         {Object.entries(activeGroupedFilters).map(([category, { values, formatFn, param }]) => (
             <Popover key={category}>
-            <PopoverTrigger className="cursor-pointer">
+            <PopoverTrigger className="cursor-pointer" asChild>
                 <Button 
                 variant="negativeDefault"
                 className="flex items-center gap-2 rounded-full m-1"

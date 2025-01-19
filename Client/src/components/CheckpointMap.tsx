@@ -45,6 +45,12 @@ export default function CheckpointMap({ center, markers, className, data, isFetc
     }, [center])
 
     useEffect(() => {
+        if (!isFetching) {
+            setLoading(false);
+        }
+    }, [isFetching])
+
+    useEffect(() => {
         const handleEscKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isFullscreen) {
                 setIsFullscreen(false);

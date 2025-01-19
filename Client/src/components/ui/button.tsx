@@ -34,6 +34,8 @@ const buttonVariants = cva(
         negativeDefault:
           "bg-white border-[1.5px] border-buttonBlue text-buttonBlue hover:bg-softBlue py-[18px] rounded-lg",
         iconHover: "w-10 h-10 hover:bg-[#e3e3e3] rounded-lg",
+        avatar: "hover:bg-[#324f9d]",
+
       },
       size: {
         default: "h-9 px-4 py-2",

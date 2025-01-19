@@ -79,6 +79,8 @@ export interface IUser {
 export interface UserState {
     _id: string;
     username: string;
+    fName: string,
+    lName: string,
     email: string;
     password: string;
     user_image: string;

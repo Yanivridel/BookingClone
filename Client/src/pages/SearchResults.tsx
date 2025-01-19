@@ -40,7 +40,7 @@ function SearchResults() {
   if(distance === Infinity) 
     distance = null;
 
-  const searchBody = {
+  const searchBody = useMemo(() => ({
     primary: {
       location: {
         country: searchParams.get("country") ?? "Israel",
@@ -81,7 +81,9 @@ function SearchResults() {
         max: searchParams.get("max") ? +searchParams.get("max")! : undefined,
       }
     }
-  } as ISearchPropertiesReq;
+  } as ISearchPropertiesReq), [searchParams]);
+
+  console.log(searchBody)
 
   const {
     data,

@@ -168,7 +168,6 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         const limit = req.query.limit ? parseInt(req.query.limit) : 15;
         const skip = (page - 1) * limit;
 
-
         // Default parameters
         let isBaby = false, children = 0;
         adults ??= 1
@@ -178,6 +177,11 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         if(childrenAges){
             isBaby = childrenAges.some((age: number) => typeof age === "number" && age <= 3);
             children = (childrenAges.filter((age: number) => typeof age === "number" && age > 3)).length;
+        }
+
+        if(!startDate && !endDate && !length && !isWeekend && !fromDay && !yearMonths){
+            startDate =  new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+            endDate = new Date(new Date(new Date().setDate(new Date().getDate() + 5)).setHours(0, 0, 0, 0)).toISOString();
         }
 
         const cacheKey = JSON.stringify({
@@ -225,15 +229,16 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
 
+        let secondFiltered = filteredProperties;
         if(req.body?.secondary)
-            filteredProperties = filterPropertiesSecondary(filteredProperties, req.body);
+            secondFiltered = filterPropertiesSecondary(filteredProperties, req.body);
 
-        const paginatedProperties = filteredProperties.slice(skip, skip + limit);
+        const paginatedProperties = secondFiltered.slice(skip, skip + limit);
         
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
 
         process.nextTick(async () => {
-            const filterCount = await getFiltersFromProperties(filteredProperties);
+            const filterCount = await getFiltersFromProperties(secondFiltered);
             console.log(" ")
             res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
             res.end();
@@ -431,12 +436,6 @@ function getAvailability(
     room: IRoom,
     { startDate, endDate, length, isWeekend, fromDay, yearMonths }: IFilterPropertiesDate
 ) {
-    if (!startDate && !endDate && (!yearMonths || !isWeekend || !length)) {
-        startDate = new Date();
-        endDate = new Date();
-        endDate.setDate(endDate.getDate() + 5);
-    }
-    
     // If startDate and endDate are provided
     if (startDate && endDate) {
         let minAvailable = room.overall_count;
@@ -620,8 +619,6 @@ function getAvailability(
                 }
             }
         }
-
-        console.log("bestResult", bestResult);
     
         return bestResult;
     }
@@ -675,11 +672,12 @@ function getFiltersFromProperties(properties: IProperty[]) {
 
         // Min Max Prices
         const selectedRooms = (property.rooms as unknown as IRoom[])
-        .filter(room => property.selectedRooms?.some(selected => selected.id === room._id))
+        .filter(room => property.selectedRooms?.some(selected => selected.id === room._id.toString()))
         .map(room => {
-            const selected = property.selectedRooms?.find(selected => selected.id === room._id);
+            const selected = property.selectedRooms?.find(selected => selected.id === room._id.toString());
             return { ...room, ...selected };
         }) as unknown as TSelectedRoom[];
+
         const discountedPrice = selectedRooms.reduce((total, currRoom) => {
             const offer = currRoom.offers?.[0];
             const discount = offer?.discount?.percentage || 0;

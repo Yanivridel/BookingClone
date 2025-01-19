@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+// Google Auth imports
+import session from 'express-session';
+import passport from 'passport';
 
 dotenv.config();
 
@@ -30,15 +33,33 @@ if (process.env.DB_URI) {
 connectRedis();
 
 // Server Check
-app.get('/', (req: Request, res: Response): void => {
+app.get('/test', (req: Request, res: Response): void => {
     res.status(200).send({ message: "Server is alive !" });
 });
 
+app.use(session({ 
+    secret: 'secret',
+    resave: false, 
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // true in production
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Passport middleware at app level
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routes
+import googleAuth from './auth/googleAuth'
 import userRoutes from './routes/userRoutes'
 import propertyRoutes from './routes/propertyRoutes'
 import roomRoutes from './routes/roomRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+
+app.use(googleAuth);
 
 app.use('/api/users', userRoutes);
 

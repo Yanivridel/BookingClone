@@ -46,6 +46,7 @@ function SaveButton({
   iconEmptyClassName,
   iconFullClassNam,
 }: SavedButtonProps) {
+
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
@@ -122,7 +123,7 @@ function SaveButton({
     mutate({ action: "delete", listName: listName });
   };
 
-  if (currentUser.savedLists.length < 1) return null;
+  if(!currentUser._id) return null;
 
   if (is_X) {
     return (

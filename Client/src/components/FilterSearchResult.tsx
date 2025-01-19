@@ -95,8 +95,9 @@ function FilterSearchResult({className, data, isFetching, isOnMap} : FilterSearc
         setSearchParams(searchParams);
     }
 
+
     return (
-        <div className={cn('w-[260px] grid gap-4', className)}>
+        <div className={cn('w-[260px] grid gap-4 ', className)}>
             <Card className='p-2 '>
                 <CardTitle className='border-b-2 p-2'>Filter by:</CardTitle>
 

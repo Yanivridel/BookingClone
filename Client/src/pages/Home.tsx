@@ -32,12 +32,32 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { modifyUserArrays } from "@/utils/api/userApi.ts";
 import { addSearchEntry } from "@/store/slices/userSlices.ts";
-
+import kidsImg from './../assets/images/kids.jpeg'
 
 // Tailwind - render
 ("col-span-2");
 ("col-span-3");
 
+const offersArr = [
+  {
+    title:"Go for a good time, not a long time",
+    desc:"Finish your year with a mini break. Save 15% or more when you book and stay by 7 January 2025.",
+    button:"Find Late Escape Deals",
+    img:"https://q-xx.bstatic.com/xdata/images/xphoto/500x500/420460173.jpeg?k=0654940492bab9993284109d6136f220e700bbb4d5a0a972c4b4de3bdc0d8204&o=" 
+  },
+  {
+    title:"Save on stays worldwide",
+    desc:"Start your year with an adventure, saving 15% or more with Early 2025 Deals.",
+    button:"Save 15% or more",
+    img:kidsImg 
+  },
+  {
+    title: "Escape the Ordinary",
+    desc: "Start your year with an adventure. Save up to 20% when you book and stay by 15 February 2025.",
+    button: "Explore Early Bird Deals",
+    img: "https://q-xx.bstatic.com/xdata/images/xphoto/500x500/420460174.jpeg?k=025a88d04503e3d37a76d4d55e2ea599d500a6b541fbf01f9cdcbf99347c68a1&o="
+  }
+]
 const inspirationArr = [
   {
     title: "The 6 best Orlando hotels for families",
@@ -61,13 +81,20 @@ const inspirationArr = [
   },
 ]
 const uniqueArr = [
-  "67875a41f4b0ac0f7dcfb87a",
-  "67810bb5824440db4b93a785",
+  "677ebec78be19680bdc0aa7f",
   "678109aa824440db4b93a708",
-  "6787767f313a94ca77e3bb5f",
-  "67877447313a94ca77e3ba9e",
-  "678772fc313a94ca77e3ba2d",
+  "67810bb5824440db4b93a785",
+  "67875a41f4b0ac0f7dcfb87a",
+  "67876104f4b0ac0f7dcfb914",
+  "67876453313a94ca77e39afc",
+]
+const HomeArr = [
+  "67876637313a94ca77e39b87",
+  "678768f9313a94ca77e39c7f",
   "67877113313a94ca77e3b97b",
+  "678772fc313a94ca77e3ba2d",
+  "67877447313a94ca77e3ba9e",
+  "6787767f313a94ca77e3bb5f",
 ]
 const propertyTypesArr = [
   {
@@ -230,16 +257,15 @@ function Home() {
       }
     };
 
-    function mapUserSearches(
-      user: IUser,
-      t: TFunctionNonStrict<"translation", undefined>
-    ) {
-      if(!user.search.length)
-        return SkeletonCard(6);
-    
-      const searchArr = user.search.slice().reverse();
-      return searchArr.map((details) => {
-        let locationDetails = details.location;
+  function mapUserSearches(
+    user: IUser,
+  ) {
+    if(!user.search.length)
+      return SkeletonCard(6);
+  
+    const searchArr = user.search.slice().reverse();
+    return searchArr.map((details) => {
+      let locationDetails = details.location;
     let specific, broader = "";
 
     if (locationDetails.addressLine) {
@@ -264,52 +290,52 @@ function Home() {
       </div>
     );
 
-        return <div
-          key={details._id}
-          className="flex-shrink-0 !flex gap-2 items-center cursor-pointer 
-            shadow-searchPopupsShadow p-4 rounded-xl h-[100px] w-[294px] mx-1 my-2"
-          onClick={() => handleSearchClick({ primary: details} as ISearchPropertiesReq)}
-          >
-          <img
-            className=" rounded-lg h-16 w-16"
-            src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
-            alt={details.location.country}
-          />
-          <div>
-            {formattedLocation}
-            <p className="text-gray-500 text-sm">
+      return <div
+        key={details._id}
+        className="flex-shrink-0 !flex gap-2 items-center cursor-pointer 
+          shadow-searchPopupsShadow p-4 rounded-xl h-[100px] max-w-[294px] mx-1 my-2"
+        onClick={() => handleSearchClick({ primary: details} as ISearchPropertiesReq)}
+        >
+        <img
+          className=" rounded-lg h-16 w-16"
+          src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
+          alt={details.location.country}
+        />
+        <div>
+          {formattedLocation}
+          <p className="text-gray-500 text-sm">
+            <span>
+              {details.date.fromDay &&
+                new Date(details.date.fromDay).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+            </span>
+            <span>
+              {details && <span>-</span>}
+              {details.date.endDate &&
+                new Date(details.date.endDate).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              {", "}
+            </span>
+            {(Number(details.options.adults) || 0) +
+              (Number(details.options.adults) || 0) <=
+            1 ? (
+              <span>{t("home.1 person")}</span>
+            ) : (
               <span>
-                {details.date.fromDay &&
-                  new Date(details.date.fromDay).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                {Number(details.options.adults) + Number(details.options.childrenAges?.length || 0)}{" "}
+                {t("home.people")}
               </span>
-              <span>
-                {details && <span>-</span>}
-                {details.date.endDate &&
-                  new Date(details.date.endDate).toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                {", "}
-              </span>
-              {(Number(details.options.adults) || 0) +
-                (Number(details.options.adults) || 0) <=
-              1 ? (
-                <span>{t("home.1 person")}</span>
-              ) : (
-                <span>
-                  {Number(details.options.adults) + Number(details.options.childrenAges?.length || 0)}{" "}
-                  {t("home.people")}
-                </span>
-              )}
-            </p>
-          </div>
+            )}
+          </p>
         </div>
-        }
-      );
-    }
+      </div>
+      }
+    );
+  }
 
   return (
     <div>
@@ -326,7 +352,7 @@ function Home() {
             </h2>
             {isMobile || currentUser.search.length <= 3 ? (
                 <MainCarousel>
-                  {mapUserSearches(currentUser, t)}
+                  {mapUserSearches(currentUser)}
                 </MainCarousel>
             ) : (
               <Slider
@@ -338,7 +364,7 @@ function Home() {
                   nextArrow: <SampleNextArrow slidesToShow={3.5} />,
                 }}
               >
-                {mapUserSearches(currentUser, t)}
+                {mapUserSearches(currentUser)}
               </Slider>
             )}
           </div>
@@ -393,7 +419,8 @@ function Home() {
           {isMobile ? (
             <MainCarousel>
               {[...Array(3)].map((_, index) => (
-                <OffersCard key={index} />
+                <OffersCard key={index} title="Go for a good time, not a long time" desc="Finish your year with a mini break. Save 15% or more when you book and stay by 7 January 2025."
+                button="Find Late Escape Deals" img="https://q-xx.bstatic.com/xdata/images/xphoto/500x500/420460173.jpeg?k=0654940492bab9993284109d6136f220e700bbb4d5a0a972c4b4de3bdc0d8204&o=" />
               ))}
             </MainCarousel>
           ) : (
@@ -409,8 +436,8 @@ function Home() {
                 nextArrow: <SampleNextArrow slidesToShow={2} />,
               }}
             >
-              {[...Array(3)].map((_, index) => (
-                <OffersCard key={index} />
+              {offersArr.map((el) => (
+                <OffersCard key={el.button} title={el.title} desc={el.desc} button={el.button} img={el.img}/>
               ))}
             </Slider>
           )}
@@ -647,7 +674,7 @@ function Home() {
               {t("home.inspirationButton")}
             </Button>
           </div>
-          {isMobile || currentUser.search.length <= 3 ? (
+          {isMobile || inspirationArr.length <= 3 ? (
                 <MainCarousel>
                   <CardWithDescription/>
                   { inspirationArr.map(el =>
@@ -682,10 +709,10 @@ function Home() {
         <div className="py-4">
           <h2 className="text-2xl font-bold ">{t("home.propertyTypesHeader")}</h2>
         </div>
-          {isMobile || currentUser.search.length <= 3 ? (
+          {isMobile || propertyTypesArr.length <= 3 ? (
                 <MainCarousel>
                   { propertyTypesArr.map(prop =>
-                    <CardWithLocationHome key={prop.title} title={t(prop.title)} 
+                    <CardWithLocationHome key={prop.title} title={t(prop.title)} onClick={() => navigate(`/searchresults?country=Israel&type=${prop.title.split('.')[1].toLowerCase().replace(/s$/, '')}`)}
                     image={prop.img} className="min-w-[250px] max-h-[300px]" classNameImg="h-5/6"/>
                   )}
                 </MainCarousel>
@@ -702,7 +729,7 @@ function Home() {
                 }}
               >
                 { propertyTypesArr.map(prop =>
-                    <CardWithLocationHome key={prop.title} title={t(prop.title)}
+                    <CardWithLocationHome key={prop.title} title={t(prop.title)} onClick={() => navigate(`/searchresults?country=Israel&type=${prop.title.split('.')[1].toLowerCase().replace(/s$/, '')}`)}
                     image={prop.img} className="mx-1 max-h-[300px]" classNameImg="h-5/6"/>
                   )}
               </Slider>
@@ -719,7 +746,7 @@ function Home() {
             {t("home.uniqueSecondaryHeader")}
           </h3>
         </div>
-          {isMobile || currentUser.search.length <= 3 ? (
+          {isMobile || uniqueArr.length <= 3 ? (
                 <MainCarousel>
                   { uniqueArr.map(propertyId =>
                     <MainCard key={propertyId} propertyId={propertyId} is_heart={true}/>
@@ -746,7 +773,7 @@ function Home() {
         }
       
         {/* Homes Carousel */}
-        { uniqueArr?.length &&
+        { HomeArr?.length &&
         <div>
         <div className="py-4 flex justify-between">
           <h2 className="text-2xl font-bold ">
@@ -754,9 +781,9 @@ function Home() {
           </h2>
           <Button variant={"simpleLink"}>{t("home.lovedHomesButton")}</Button>
         </div>
-          {isMobile || currentUser.search.length <= 3 ? (
+          {isMobile || HomeArr.length <= 3 ? (
                 <MainCarousel>
-                  { uniqueArr.map(propertyId =>
+                  { HomeArr.map(propertyId =>
                     <MainCard key={propertyId} propertyId={propertyId} is_heart={true}/>
                   )}
                 </MainCarousel>
@@ -767,12 +794,12 @@ function Home() {
                   ...settingsSearch,
                   slidesToShow: 3.8,
                   initialSlide: isRtl
-                    ? uniqueArr.length - 3.8
+                    ? HomeArr.length - 3.8
                     : 0,
                   nextArrow: <SampleNextArrow slidesToShow={3.8} />,
                 }}
               >
-                { uniqueArr.map(propertyId =>
+                { HomeArr.map(propertyId =>
                     <MainCard key={propertyId} propertyId={propertyId} is_heart={true} />
                 )}
               </Slider>

@@ -14,13 +14,15 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { sendEmailCode } from "@/utils/api/userApi";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "@/utils/utilsFunctions";
+import { GoogleLogin } from '@react-oauth/google';
+import axios from "axios";
 
 function SignIn({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [error, setError] = useState("");
-  const [isSubmitAllrady, setisSubmitAllrady] = useState(false);
+  const [isSubmitAlready, setIsSubmitAlready] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
   const [isValid, setIsValid] = useState<RegExpMatchArray | null>(null);
   const [fetchingColor, setFetchingColor] = useState("");
@@ -29,7 +31,7 @@ function SignIn({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setIsValid(() => validateEmail(e.target.value));
-    if (!isSubmitAllrady) return;
+    if (!isSubmitAlready) return;
 
     isValid
       ? setError("")
@@ -46,11 +48,10 @@ function SignIn({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setisSubmitAllrady(true);
+    setIsSubmitAlready(true);
     const formData = new FormData(e.currentTarget);
 
     const email = String(formData.get("email"));
-    // console.log(isValid);
 
     if (!email || !isValid) {
       setError("Make sure the email address you entered is correct.");
@@ -68,10 +69,26 @@ function SignIn({
       });
   }
 
+  // Google login handler
+  // const handleGoogleLogin = async (response: any) => {
+  //   // Use the token obtained after login to authenticate on your backend
+  //   try {
+  //     const { data } = await axios.get("http://localhost:3000/auth/google")
+  //     console.log("DATA", data)
+  //   }
+  //   catch (err) {
+  //     console.error('Error during authentication:', err);
+  //     setError("Google login failed. Please try again."); 
+  //   }
+  // };
+  const handleGoogleLogin = () => {
+    // Instead of making an axios request, redirect to the auth URL
+    window.location.href = 'http://localhost:3000/api/auth/google';
+  };
+
   return (
-    <div className="flex flex-col min-h-screen items-center">
+    <div className="flex flex-col min-h-screen items-center p-2">
       <div className="">
-        {/* <TopNav></TopNav> */}
       </div>
       <div
         className={cn(
@@ -138,15 +155,7 @@ function SignIn({
               </span>
             </div>
             <div className="flex justify-center ">
-              <div className="flex gap-6">
-                <Card className="cursor-pointer shadow-none  rounded-md border hover:border-primary">
-                  <IconGoogle
-                    className={cn(
-                      "h-6 w-6 m-6",
-                      fetchingColor && "fill-slate-400"
-                    )}
-                  ></IconGoogle>
-                </Card>
+              <div className="flex gap-6 ">
                 <Card className="cursor-pointer shadow-none rounded-md border hover:border-primary">
                   <IconApple
                     className={cn(
@@ -165,6 +174,12 @@ function SignIn({
                 </Card>
               </div>
             </div>
+
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => setError("Google login failed")}
+            />
+
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"></div>
           </div>
         </form>
