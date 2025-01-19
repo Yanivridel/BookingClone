@@ -6,6 +6,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: UserState = {
     _id: "",
     username: "",
+    fName: "",
+    lName: "",
     email: "",
     password: "",
     user_image: "",
@@ -26,6 +28,8 @@ const userSlice = createSlice({
 
             if (typeof payload._id === "string") state._id = payload._id;
             if (typeof payload.username === "string") state.username = payload.username;
+            if (typeof payload.fName === "string") state.fName = payload.fName;
+            if (typeof payload.lName === "string") state.lName = payload.lName;
             if (typeof payload.email === "string") state.email = payload.email;
             if (typeof payload.password === "string") state.password = payload.password;
             if (typeof payload.user_image === "string") state.user_image = payload.user_image;

@@ -71,26 +71,25 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
     if(startDate && endDate)
         nights = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24));
     else if(isWeekend)
-        nights = 5;
+        nights = 2;
     else
         nights = length
 
-
-
-        console.log("selectedRooms",selectedRooms )
     return (
         <div>
         {isGrid? 
-        <Card className='max-w-[260px] flex flex-col gap-3 '>
+        <Card className='max-w-[260px] flex flex-col gap-3 h-full'>
             {/* Image Section */}
-            <div className='h-[30%] relative'>
-                <img src={propertyData?.images[0]} alt="Property" className='w-full h-[240px] object-cover rounded-xl' />
+            <div className='h-[250px] relative'>
+                <img src={propertyData?.images[0]} alt="Property" className='w-full h-[250px] object-cover rounded-xl' />
                 <div className="absolute top-2 right-2">
                     <SaveButton id={propertyData._id} />
                 </div>
             </div>
 
             {/* Title and Rating Section */}
+            <div className='flex h-full flex-col justify-between'>
+                <div>
             <CardContent className=''>
                 <CardTitle className='text-blue-600 text-lg font-bold hover:text-black cursor-pointer'
                 onClick={handleNavToProperty}
@@ -156,7 +155,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                     </div>
                 ))}
             </div>
-
+            </div>
 
             {/* Availability and Price Section */}
             <div dir={isRtl ? "ltr" : "rtl"} className='grid gap-1 p-4'>
@@ -179,6 +178,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                     </>}
                 </div>
                 <Button onClick={handleNavToProperty}>{"<"} See availability</Button>
+            </div>
             </div>
         </Card>
         : 
@@ -272,7 +272,7 @@ function PropertyCard({propertyData, isGrid}:PropertyCardProp) {
                             new Date(propertyData.selectedRooms[0].available.startDate).
                             toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })
                             + " - " +
-                            new Date(new Date(propertyData.selectedRooms[0].available.startDate).setDate(new Date(propertyData.selectedRooms[0].available.startDate).getDate() + nights + 1))
+                            new Date(new Date(propertyData.selectedRooms[0].available.startDate).setDate(new Date(propertyData.selectedRooms[0].available.startDate).getDate() + nights))
                             .toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short' })
                             }
                             </p>

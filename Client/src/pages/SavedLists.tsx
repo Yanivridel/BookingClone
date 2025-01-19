@@ -24,9 +24,9 @@ function SavedLists() {
     const currentUser = useSelector((state: RootState) => state.currentUser) as unknown as IUser;
     const selectedList = currentUser.savedLists.find(list => list.name === listName);
     const navigate = useNavigate();
+    
     const [editName, setEditName] = useState("");
     const [ properties, setProperties] = useState<IProperty[] | null>(null);
-    // const [coordinates, setCoordinates] = useState<LatLng[]>([]);
 
     const [isMobile, setIsMobile] = useState<boolean>(
         window.innerWidth < 1140
@@ -98,9 +98,6 @@ function SavedLists() {
         e.stopPropagation(); 
     }
 
-    if(!selectedList)
-        return null;
-
     return (
         <div className="max-w-[1100px] mx-auto">
             {/* List Selection */}
@@ -124,7 +121,7 @@ function SavedLists() {
                 </div>
                 <PopoverContent 
                 onBlur={() => console.log("clicked")}
-                className="w-[360px] rounded-xl shadow-lg bg-white mt-2 ml-2 z-10">
+                className="w-[360px] rounded-xl shadow-lg bg-white mt-2 ml-2 z-[150]">
                 { currentUser.savedLists.map(list => 
                         <div
                         // onBlur={() => setEditName("")}
@@ -174,7 +171,7 @@ function SavedLists() {
             </div>
             <hr />
             {/* No Saved Properties */}
-            { selectedList.properties.length <= 0 &&
+            { (!selectedList || selectedList.properties.length <= 0) &&
             <div className="flex flex-col justify-center p-4">
                 <picture >
                     <img className="mx-auto w-fit" src="https://t-cf.bstatic.com/design-assets/assets/v3.138.1/illustrations-traveller/WishlistEmptyList.png" alt="" role="presentation" loading="lazy"/>
@@ -195,7 +192,7 @@ function SavedLists() {
             </div>
             }
             {/* List Details */}
-            { selectedList.properties.length > 0 &&
+            { selectedList && selectedList.properties.length > 0 &&
             <div className="p-4 flex flex-wrap justify-between">
                 <div>
                     <h1 className="font-bold text-xl mb-2">{listName}</h1>
@@ -219,7 +216,7 @@ function SavedLists() {
             }
             <hr />
             {/* List Carousel */}
-            {isMobile || selectedList.properties.length <= 3 ? (
+            {selectedList && (isMobile || selectedList.properties.length <= 3) ? (
             <div
                 className={cn(
                 "w-full flex gap-2 overflow-scroll p-4",
@@ -237,6 +234,8 @@ function SavedLists() {
                 
             </div>
             ) : (
+            <>
+            { selectedList && 
             <Slider className=" p-4"
             key={isRtl ? "rtl" : "ltr"}
             {...{
@@ -257,7 +256,8 @@ function SavedLists() {
                 />
             ))}
             </Slider>
-            )}
+            }
+            </>)}
         </div>
     )
 }

@@ -12,7 +12,7 @@ function EmailCode({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [error, setError] = useState("");
+  const [isError, setIsError] = useState("");
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
   const [input3, setInput3] = useState("");
@@ -61,6 +61,7 @@ function EmailCode({
     setInput: React.Dispatch<React.SetStateAction<string>>,
     index: number
   ) => {
+    setIsError("");
     const value = e.target.value;
     setInput(value.slice(-1).toUpperCase());
 
@@ -82,7 +83,7 @@ function EmailCode({
       })
       .catch((err) => {
         console.log(err);
-        setError("Something went wrong - try again later!");
+        setIsError("Something went wrong - try again later!");
       });
   };
 
@@ -109,14 +110,31 @@ function EmailCode({
       })
       .catch((err) => {
         console.log(err);
-        setError("error");
+        setIsError("Incorrect or expired code. Please try again.");
       });
   }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = e.clipboardData.getData("text").toUpperCase().trim();
+  
+    if (pastedData.length === 6) {
+      setInput1(pastedData[0]);
+      setInput2(pastedData[1]);
+      setInput3(pastedData[2]);
+      setInput4(pastedData[3]);
+      setInput5(pastedData[4]);
+      setInput6(pastedData[5]);
+  
+      const lastInput = inputRefs[5].current;
+      if (lastInput) {
+        lastInput.focus();
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen items-center">
       <div className="">
-        {/* <TopNav></TopNav> */}
       </div>
       <div
         className={cn(
@@ -139,7 +157,7 @@ function EmailCode({
               </h1>
               <div className="text-center text-sm">
                 We sent a verification code to
-                <b>{email}</b>. Enter this code to continue.
+                <b> {email}</b>. Enter this code to continue.
               </div>
             </div>
             <div className="flex gap-4 text-sm font-normal">
@@ -147,17 +165,20 @@ function EmailCode({
                 ref={inputRefs[0]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input1}
                 onChange={(e) => handleChange(e, setInput1, 0)}
+                onPaste={handlePaste}
               />
               <input
                 ref={inputRefs[1]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input2}
@@ -167,7 +188,8 @@ function EmailCode({
                 ref={inputRefs[2]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input3}
@@ -177,7 +199,8 @@ function EmailCode({
                 ref={inputRefs[3]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input4}
@@ -187,7 +210,8 @@ function EmailCode({
                 ref={inputRefs[4]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input5}
@@ -197,13 +221,15 @@ function EmailCode({
                 ref={inputRefs[5]}
                 className={cn(
                   "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
-                  isSuccess && "border-green-600"
+                  isSuccess && "border-green-600",
+                  isError && "border-red-600"
                 )}
                 type="text"
                 value={input6}
                 onChange={(e) => handleChange(e, setInput6, 5)}
               />
             </div>
+            { isError && <p className="text-red-600 mx-auto">{isError}</p>}
             <Button variant={variant} className="h-12">
               Verify email
             </Button>

@@ -1,7 +1,6 @@
 import { MonthNameYear } from "@/components/search";
 import { ISearchPropertiesReq } from "@/types/propertyTypes";
 
-const corsProxyUrl = "https://api.allorigins.win/get?url="; // Replace with another CORS proxy URL
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 // Capitalize each first letter in the str
@@ -148,4 +147,33 @@ export const makeUrlForSearch =(finalData: ISearchPropertiesReq) => {
   return url;
 }
 
+export function stringToColor(string: string) {
+  let i, hash = 0, color = '#';
+  for (i = 0; i < string.length; i += 1)
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+  }
+  return color;
+}
+export function getInitials(name: string) {
+  if (!name) return ""; // Handle empty input
+
+  return name
+    .split(" ") // Split the name by spaces
+    .map(word => word.charAt(0).toUpperCase()) // Take the first letter of each word and uppercase it
+    .join(""); // Join the initials into a single string
+}
+function isLight(color: string) {
+  // Convert hex to RGB
+  const rgb = parseInt(color.slice(1), 16); // Remove the '#' and parse the color
+  const r = (rgb >> 16) & 0xff;
+  const g = (rgb >>  8) & 0xff;
+  const b = (rgb >>  0) & 0xff;
+
+  // Calculate luminance
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 127; // Returns true for light colors, false for dark
+}
 
