@@ -33,6 +33,7 @@ import { addSearchEntry } from "@/store/slices/userSlices.ts";
 import kidsImg from './../assets/images/kids.jpeg'
 import { cn } from "@/lib/utils.ts";
 import LiveFooter from "@/components/LiveFooter.tsx";
+import { BeachIcon, CityIcon, OutdoorsIcon, SavedIcon } from "@/components/ui/Icons.tsx";
 
 // Tailwind - render
 ("col-span-2");
@@ -649,6 +650,10 @@ function Home() {
               }`}
               onClick={() => setEasyTripCategory(key)}
             >
+              {key === "beach" && <BeachIcon/>}
+              {key === "outdoors" && <OutdoorsIcon/>}
+              {key === "romance" && <SavedIcon/>}
+              {key === "city" && <CityIcon/>}
               {cf(key)}
             </Button>
             )}
