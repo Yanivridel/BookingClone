@@ -7,8 +7,11 @@ import MainCardAccount from '@/components/MainCardAccount'
 import { Coins, Payment, Person, Persons, Unlock,Lock, Volume, Email, Bag, Heart, Command, Question, Safety, Hands, ViBorder, Note, HousePlus } from '@/components/ui/Icons'
 import { title } from 'process'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 function MyAccountPage() {
+
+  const {t} = useTranslation()
 
   const arr = [ 
     {
@@ -16,12 +19,12 @@ function MyAccountPage() {
       list: [
         {
           icon : Coins,
-          title: "Rewards & Wallet",
+          title: t("MyAccount.Rewards"),
           link: "",
         },
         {
           icon : Payment,
-          title: "Payment Methods",
+          title: t("MyAccount.Payment"),
           link: "",
         }
       ]
@@ -31,17 +34,17 @@ function MyAccountPage() {
       list: [
         {
           icon : Person ,
-          title: "Personal details",
+          title: t("MyAccount.Personal"),
           link: "",
         },
         {
           icon : Lock ,
-          title: "Security settings",
+          title: t("MyAccount.Security"),
           link: "",
         },
         {
           icon : Persons,
-          title: "Other travellers",
+          title: t("MyAccount.Travellers"),
           link: "",
         }
       ]
@@ -51,12 +54,12 @@ function MyAccountPage() {
       list: [
         {
           icon : Volume  ,
-          title: "Customisation preferences",
+          title: t("MyAccount.Customisation"),
           link: "",
         },
         {
           icon : Email  ,
-          title: "Email preferences",
+          title: t("MyAccount.Email"),
           link: "",
         }
       ]
@@ -66,17 +69,17 @@ function MyAccountPage() {
       list: [
         {
           icon : Bag ,
-          title: "Trips and bookings",
+          title: t("MyAccount.Trips"),
           link: "",
         },
         {
           icon : Heart  ,
-          title: "Saved lists",
+          title: t("MyAccount.Saved"),
           link: "",
         },
         {
           icon : Command ,
-          title: "My reviews",
+          title: t("MyAccount.reviews"),
           link: "",
         }
       ]
@@ -86,17 +89,17 @@ function MyAccountPage() {
       list: [
         {
           icon : Question  ,
-          title: "Contact Customer service",
+          title: t("MyAccount.Contact"),
           link: "",
         },
         {
           icon : Safety   ,
-          title: "Safety resource centre",
+          title: t("MyAccount.Safety"),
           link: "",
         },
         {
           icon : Hands  ,
-          title: "My reviews",
+          title: t("MyAccount.MyReviews"),
           link: "Dispute resolution",
         }
       ]
@@ -106,12 +109,12 @@ function MyAccountPage() {
       list: [
         {
           icon : ViBorder  ,
-          title: "Privacy and data management",
+          title: t("MyAccount.Privacy"),
           link: "",
         },
         {
           icon : Note   ,
-          title: "Content guidelines",
+          title: t("MyAccount.Content"),
           link: "",
         }
       ]
@@ -121,7 +124,7 @@ function MyAccountPage() {
       list: [
         {
           icon : HousePlus  ,
-          title: "List your property",
+          title: t("MyAccount.Property"),
           link: "",
         },
         
@@ -132,7 +135,7 @@ function MyAccountPage() {
   return (
     <div className='max-w-[1100px] mx-auto flex flex-col gap-3'>
       <div className="absolute top-0 w-full -z-10 h-[700px]  bg-[#013b94]"></div>
-      <div className='flex flex-col flex-wrap gap-2 md:grid md:grid-cols-[70%_30%] gap-2'>
+      <div className='flex flex-col flex-wrap gap-3 md:grid md:grid-cols-[70%_30%] gap-2'>
         <GeniusRewardAccount />
         <div className='flex flex-col justify-between gap-2'>
         <BookingAwayCardAccount />

@@ -1,4 +1,25 @@
 {
+
+  "MyAccount" : {
+    "Rewards" : "Rewards & Wallet",
+    "Payment" : "Payment Methods",
+    "Personal" : "Personal details",
+    "Security" : "Security settings",
+    "Travellers" : "Other travellers",
+    "Customisation" : "Customisation preferences",
+    "Email" : "Email preferences",
+    "Trips" : "Trips and bookings",
+    "Saved" : "Saved lists",
+    "reviews" : "My reviews",
+    "Contact": "Contact Customer service",
+    "Safety" : "Safety resource centre",
+    "MyReviews" : "My reviews",
+    "Privacy" : "Privacy and data management",
+    "Content" : "Content",
+    "Property" : "List your property"
+
+  },
+
   "home": {
     "recentSearchHeader": "Your recent searches",
     "interestedInHeader": "Still interested in these properties?",
