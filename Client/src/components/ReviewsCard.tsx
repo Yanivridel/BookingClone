@@ -12,6 +12,10 @@ interface propertyReviewsProps {
 }
 
 function ReviewsCard({ review, className, size }: propertyReviewsProps) {
+  if (!review?.userId || typeof review.userId === "string") {
+    return null;
+  }
+
   return (
     <Card
       key={review._id}
@@ -26,8 +30,9 @@ function ReviewsCard({ review, className, size }: propertyReviewsProps) {
             <Avatar className={size === 1 ? "w-6 h-6" : "w-8 h-8"}>
               <AvatarImage
                 src={
-                  typeof review.userId !== "string"
-                    ? review.userId.user_image
+                  typeof review.userId !== "string" &&
+                  review?.userId?.user_image
+                    ? review?.userId?.user_image
                     : "https://www.pngitem.com/pimgs/m/575-5759580_anonymous-avatar-image-png-transparent-png.png"
                 }
               />
@@ -44,7 +49,7 @@ function ReviewsCard({ review, className, size }: propertyReviewsProps) {
           <div>
             <div>
               <b className={size === 1 ? "text-sm" : "text-lg"}>
-                {(review.userId as IUser).fName || "Anonymous"}
+                {review.userId.fName || "Anonymous"}
               </b>
             </div>
             <div className="flex items-center gap-1">
