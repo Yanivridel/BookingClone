@@ -46,11 +46,12 @@ function SelectOffer({
       onChange={handleChange}
       className="border-[1px] border-black rounded-md text-sm px-2 min-w-12 bg-inherit"
       value={value}
-      defaultValue={0}
       id={offerId}
     >
       {[...Array(overall_count + 1)].map((_, i) => (
-        <option value={i}>{i}</option>
+        <option key={i} value={i}>
+          {i}
+        </option>
       ))}
     </select>
   );

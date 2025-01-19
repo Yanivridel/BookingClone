@@ -23,12 +23,13 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
           className="object-cover w-12 max-h-[48px] min-h-[48px] mt-7"
           src={room.images[i]}
           alt={`Thumbnail ${i + 1}`}
-          onError={(e) => e.currentTarget.closest('li')?.remove()}
+          onError={(e) => e.currentTarget.closest("li")?.remove()}
         />
       );
     },
     dots: true,
-    dotsClass: "slick-dots slick-thumb image-carousel flex justify-center flex-wrap gap-y-10 bg-white",
+    dotsClass:
+      "slick-dots slick-thumb image-carousel flex justify-center flex-wrap gap-y-10 bg-white",
     infinite: true,
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
@@ -53,7 +54,7 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
             />
             {/* beds */}
             {room.rooms.map((innerRoom) => (
-              <div>
+              <div key={innerRoom.type}>
                 <span className="font-bold pe-1">{innerRoom.type}</span>
                 <span className="font-bold pe-1">{innerRoom.room_num}:</span>
                 <div className="flex flex-wrap">
@@ -137,19 +138,20 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
                 nextArrow: <SampleNextArrow slidesToShow={1} />,
               }}
             >
-                {room.images.map((image, index) => (
-                  <div key={index} className="px-2 w-full h-[450px]">
-                    <img
-                      className="h-full w-full object-contain"
-                      src={image}
-                      alt={`Room Image ${index + 1}`}
-                      onError={(e) => e.currentTarget.closest('.slick-slide')?.remove()}
-                    />
-                  </div>
-                ))}
+              {room.images.map((image, index) => (
+                <div key={index} className="px-2 w-full h-[450px]">
+                  <img
+                    className="h-full w-full object-contain"
+                    src={image}
+                    alt={`Room Image ${index + 1}`}
+                    onError={(e) =>
+                      e.currentTarget.closest(".slick-slide")?.remove()
+                    }
+                  />
+                </div>
+              ))}
             </Slider>
           </div>
-          
         </DialogContent>
       </Dialog>
     </div>

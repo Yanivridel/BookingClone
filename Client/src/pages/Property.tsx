@@ -50,7 +50,6 @@ function Property() {
   const navigate = useNavigate();
   const location = useLocation();
   const selectedRooms = location.state;
-  console.log("selectedRooms", selectedRooms);
 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
@@ -380,7 +379,7 @@ function Property() {
               </Button>
             </div>
           </div>
-          <PropertyFinePrint />
+          <PropertyFinePrint fine_print={propertyData.fine_print} />
           <FaqComponent propertyData={propertyData} />
         </div>
       </div>

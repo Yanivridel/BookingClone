@@ -17,6 +17,7 @@ function NavProperty({ arr }: NavPropertyProps) {
     <MainCarousel className="gap-0 ">
       {arr.map((buttonName) => (
         <Button
+          key={buttonName}
           className="flex-grow font-normal"
           variant={
             activeNavButton === buttonName

@@ -28,7 +28,7 @@ function MealsOffer({ meals }: MealsOfferProps) {
               : "Dinner";
 
           return (
-            <div className="text-deals  fill-deals flex gap-2">
+            <div key={meal.type} className="text-deals  fill-deals flex gap-2">
               <CofeeCup className="h-4 w-4  shrink-0" />
               <div>
                 <span className="font-bold">good {mealType}</span>
