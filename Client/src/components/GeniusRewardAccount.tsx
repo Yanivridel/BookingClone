@@ -10,7 +10,7 @@ function GeniusRewardAccount() {
     
   return (
     <div>
-      <div className='border rounded-lg p-2 flex flex-col bg-white'>
+      <div className='border rounded-lg p- flex flex-col bg-white'>
         <div className=''>
             <h1 className='font-bold'>You have 2 Genius rewards</h1>
             <span className='text-sm text-gray-500'>Enjoy rewards and discounts on select stays and rental cars worldwide.</span>

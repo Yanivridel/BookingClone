@@ -16,14 +16,14 @@ function MySettings() {
   return (
     <div className='flex gap-16 max-w-[1100px] mx-auto p-5'>
         <div>
-            <SettingsNavigate setPage = {setPage} />
+            <SettingsNavigate setPage = {setPage} category = {category} />
         </div>
         <div>
             {page === "Personal details" &&<PersonalDetails />}
             {page === "Security settings" &&<SecuritySettings />}
             {page === "Other travellers" &&<OtherTravellers />}
             {page === "Customisation preferences" &&<CustomisationPreferences />} 
-            {page === "Payment methods" &&<PaymentMethods/>}
+            {page === "Payment Methods" &&<PaymentMethods/>}
             {page === "Privacy and data management" &&<PrivecyAndManagment />}
         </div>
 

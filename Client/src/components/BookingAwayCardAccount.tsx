@@ -11,7 +11,7 @@ function BookingAwayCardAccount() {
             <img src={Stick} alt="" className="w-10 h-10" />
           </div>
           <div>
-            <h1 className="font-bold text-base">
+            <h1 className="font-bold text-sm mt-2">
               You're 5 bookings away from Genius Level 2
             </h1>
           </div>

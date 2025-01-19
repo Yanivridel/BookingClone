@@ -3,15 +3,15 @@ import { IconGuest, Lock, Persons, Volume, Payment, ViBorder } from '@/component
 
 interface SettingsNavigateProps {
     setPage : React.Dispatch<React.SetStateAction<string>>
+    category : string | undefined
 }
 
-function SettingsNavigate({setPage}: SettingsNavigateProps ) {
-  const [colorLine, setColorLine] = useState<string>("Personal details");
+function SettingsNavigate({setPage, category}: SettingsNavigateProps ) {
+  const [colorLine, setColorLine] = useState<string>(category || "Personal details");
 
-  // פונקציה לעדכון הסטייט
   function handleClick(title: string) {
     setPage(title)
-    setColorLine(title);  // עדכון הסטייט
+    setColorLine(title);  
   }
 
   const arr = [
@@ -31,12 +31,12 @@ function SettingsNavigate({setPage}: SettingsNavigateProps ) {
           className="border rounded-lg flex justify-center items-center gap-2 p-2 pr-40 cursor-pointer"
           onClick={() => handleClick(item.title)}
         >
-          <div className="rounded-full p-3 flex items-center bg-accent">
+          <div className="rounded-full p-3.5 flex items-center bg-accent">
             <div>
-              <item.icon className="w-5 h-5 text-sky-600" />
+              <item.icon className={`w-5 h-5 ${colorLine === item.title ? "fill-sky-600" : "fill-black"}`} />
             </div>
           </div>
-          <div>
+          <div className="w-32 text-sm font-base">
             <p className={colorLine === item.title ? "text-sky-600" : "text-black"}>
                 {item.title}
             </p>

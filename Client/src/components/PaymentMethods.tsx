@@ -1,6 +1,8 @@
 import React from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { Button } from './ui/button'
+import { Payment } from './ui/Icons'
+import Visa from '../assets/images/Visa Payment Card.png'
 
 function PaymentMethods() {
   return (
@@ -33,15 +35,32 @@ function PaymentMethods() {
         </div>
         </div>
           <AccordionContent className="flex flex-col gap-10">
-            <div className=" grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-1">
-                <p>Currency</p>
-              <select className="border rounded-lg w-40 border-blue-500 text-blue-600 p-2 font-semibold">
-                  <option value="volvo">Card</option>
-                </select>
+            <div className=" grid grid-cols-1 gap-2">
+              <div className='flex gap-2'>
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
+                <img src={Visa} alt="" className='h-8 w-8' />
               </div>
-              
+              <div className="flex flex-col gap-1">
+                <p>Cardholder's name *</p>
+              <input type="text" className='border border-black p-2 rounded-lg'/>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p>Card number *</p>
+              <input type="text" className='border border-black p-2 rounded-lg' />
+              </div> 
+              <div className="flex flex-col gap-1">
+                <p>Expiration date *</p>
+              <input type="date" className='border border-black p-2 rounded-lg' />
+              </div> 
             </div>
+            <div></div>
             <div className=" flex justify-between">
               <Button
                 variant="ghost"

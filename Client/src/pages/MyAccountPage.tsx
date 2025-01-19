@@ -134,15 +134,16 @@ function MyAccountPage() {
       <div className="absolute top-0 w-full -z-10 h-[700px]  bg-[#013b94]"></div>
       <div className='flex flex-col flex-wrap gap-2 md:grid md:grid-cols-[70%_30%] gap-2'>
         <GeniusRewardAccount />
-        <div className='flex flex-col justify-between'>
+        <div className='flex flex-col justify-between gap-2'>
         <BookingAwayCardAccount />
         <CreditAccount />
         </div>
       </div>
+      <div className='flex flex-col gap-2'>
       <CompleteProfile />
       <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
         {arr.map(item =>  <MainCardAccount key={item.title} item = {item}/>)}
-        
+        </div>
       </div>
     </div>
   )
