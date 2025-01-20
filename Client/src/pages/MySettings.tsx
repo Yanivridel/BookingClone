@@ -23,7 +23,7 @@ function MySettings() {
             {page === "Security settings" &&<SecuritySettings />}
             {page === "Other travellers" &&<OtherTravellers />}
             {page === "Customisation preferences" &&<CustomisationPreferences />} 
-            {page === "Payment Methods" &&<PaymentMethods/>}
+            {page === "Payment methods" &&<PaymentMethods/>}
             {page === "Privacy and data management" &&<PrivecyAndManagment />}
         </div>
 

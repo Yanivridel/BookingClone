@@ -845,7 +845,6 @@ function countOccurrences(arr: string[], availableRooms: any): { id: string; cou
     }));
 }
 
-
 export const getAutocompleteLocations = async (req: Request, res: Response): Promise<void> => {
     const lowerSearchText = req.params.searchText.toLowerCase();
     

@@ -99,11 +99,6 @@ function Home() {
   const toMonth = sunday.toLocaleDateString(dateLanguage, monthOptions);
   const toDay = sunday.toLocaleDateString(dateLanguage, dayOptions);
 
-  const weedend = {
-    fromDate: { month: fromMonth, day: fromDay },
-    toDate: { month: toMonth, day: toDay },
-  };
-  
   const handleSearchClick = async (finalData: ISearchPropertiesReq) => {
       const url = makeUrlForSearch(finalData);
       navigate(url);
