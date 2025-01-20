@@ -58,7 +58,6 @@ function InnerRoomsDialog({ room }: InnerRoomsDialogProps) {
                 (acc, [_key, bed]) => (acc += bed),
                 0
               );
-              console.log(bedsCount);
 
               return (
                 <div key={innerRoom.room_num}>

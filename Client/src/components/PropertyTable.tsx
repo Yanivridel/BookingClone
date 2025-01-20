@@ -85,29 +85,22 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
       ))}
 
       {rooms?.map((room) => (
-        <>
+        <React.Fragment key={room._id}>
           {/* room Description */}
           {/* 5 */}
           <div
-            key={room._id}
             className={`border-e-[1px] border-b-[3px] border-[#5bbaff] col-span-5 `}
           >
             <RoomTypeDescription room={room} />
           </div>
           {/* 10 */}
-          <div
-            key={room._id + "grid"}
-            className="grid grid-cols-11 col-span-11"
-          >
-            {room.offers.map((offer) => {
+          <div className="grid grid-cols-11 col-span-11">
+            {room.offers.map((offer, i) => {
               return (
-                <React.Fragment key={offer._id}>
+                <React.Fragment key={offer._id + room._id + "-" + i}>
                   {/* offers group */}
                   {/* 2 */}
-                  <div
-                    key={room._id + offer._id + "groups"}
-                    className="border-[1px] border-[#5bbaff] col-span-2"
-                  >
+                  <div className="border-[1px] border-[#5bbaff] col-span-2">
                     <OffersGroups
                       group_adults={offer.group_adults}
                       group_children={offer.group_children}
@@ -117,10 +110,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
 
                   {/* payment */}
                   {/* 3 */}
-                  <div
-                    key={room._id + offer._id + "payment"}
-                    className="border-[1px] border-[#5bbaff] flex flex-col gap-2 col-span-3 p-1"
-                  >
+                  <div className="border-[1px] border-[#5bbaff] flex flex-col gap-2 col-span-3 p-1">
                     <OffersPayment
                       discount={offer.discount}
                       price_per_night={offer.price_per_night}
@@ -132,7 +122,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                   {/* choices */}
                   {/* 4 */}
                   <div
-                    key={room._id + offer._id + "Meals"}
+                    // key={room._id + offer._id + "Meals"}
                     className="border-[1px] border-[#5bbaff] flex flex-col col-span-4 text-xs"
                   >
                     <div className="list-outside 	p-4 flex flex-col gap-2 ">
@@ -179,10 +169,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
                   </div>
                   {/* select offer */}
                   {/* 2 */}
-                  <div
-                    key={room._id + offer._id + "Select"}
-                    className="border-[1px] border-[#5bbaff] flex flex-col col-span-2 "
-                  >
+                  <div className="border-[1px] border-[#5bbaff] flex flex-col col-span-2 ">
                     <div className="p-1 flex">
                       <SelectOffer
                         overall_count={room.overall_count}
@@ -196,7 +183,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
             })}
           </div>
           <div className="border grid col-span-4 border-none relative p-2"></div>
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

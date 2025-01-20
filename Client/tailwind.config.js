@@ -121,6 +121,8 @@ module.exports = {
       },
       boxShadow: {
         searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",
+        cardShadow: "0px 2px 8px 0px rgba(26, 26, 26, .16)",
+        cardShadowTwo: "0px 2px 16px 0px",
       },
     },
   },
