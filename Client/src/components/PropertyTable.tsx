@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils.ts";
 
 import OffersGroups from "./OffersGroups.tsx";
 import OffersPayment from "./OffersPayment.tsx";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import SelectOffer from "./SelectOffer.tsx";
 import { SmallIconVi } from "./ui/Icons.tsx";
@@ -99,7 +99,7 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
             key={room._id + "grid"}
             className="grid grid-cols-11 col-span-11"
           >
-            {room.offers.map((offer, i) => {
+            {room.offers.map((offer) => {
               return (
                 <React.Fragment key={offer._id}>
                   {/* offers group */}

@@ -12,7 +12,7 @@ import PropertyHighlight from "@/components/PropertyHighlight";
 import PropertyNearBy from "@/components/PropertyNearBy";
 import PropertyTitle from "@/components/PropertyTitle";
 import QualityCard from "@/components/QualityCard";
-import { IProperty } from "@/types/propertyTypes";
+import { IProperty, RecommendedData } from "@/types/propertyTypes";
 import { getPropertyById } from "@/utils/api/propertyApi";
 import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
 import { useEffect, useState } from "react";
@@ -50,8 +50,7 @@ function Property() {
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1140);
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedRooms = location.state;
-  console.log(selectedRooms);
+  const recommendedData: RecommendedData = location.state;
 
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
@@ -153,7 +152,12 @@ function Property() {
           propertyReviews={propertyReviews}
         />
 
-        <RecommendedCard />
+        {recommendedData && propertyData && (
+          <RecommendedCard
+            recommendedData={recommendedData}
+            propertyData={propertyData}
+          />
+        )}
 
         <div className="search:grid search:grid-cols-[5fr_2fr] mt-5">
           <PropertyDescription propertyData={propertyData} />
