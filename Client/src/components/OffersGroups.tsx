@@ -21,7 +21,7 @@ function OffersGroups({
   return (
     <div>
       <div className=" flex flex-wrap py-2  px-1">
-        {/* adults conditions  max icons - 4*/}
+        {/* adults conditions  max icons - 4 */}
         {group_adults < 5 ? (
           <>
             {Array.from({ length: group_adults }).map((_, i) => (

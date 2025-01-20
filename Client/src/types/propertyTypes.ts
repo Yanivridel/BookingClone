@@ -105,7 +105,7 @@ export interface IProperty {
 
 export interface ISearchPropertiesReq {
   primary: {
-    _id?: string,
+    _id?: string;
     location: IFilterPropertiesLocation;
     date: IFilterPropertiesDate;
     options: IFilterPropertiesOptions;
@@ -170,8 +170,8 @@ export interface IFilters {
   onlinePayment: number;
   region: { [key: string]: number };
   price: {
-      min: number;
-      max: number;
+    min: number;
+    max: number;
   };
   doubleBeds: number;
   singleBeds: number;
@@ -293,3 +293,16 @@ export type EFeatures =
   | "Food & Drink"
   | "Internet"
   | "Parking";
+
+export interface RecommendedData {
+  adults?: number;
+  childrenAges?: string;
+  selectedRooms: {
+    id: string;
+    count: number;
+    available: {
+      startDate: string;
+      availableRooms: string;
+    };
+  }[];
+}
