@@ -7,7 +7,7 @@ function CreditAccount() {
   const {t} = useTranslation();
 
   return (
-    <div className='p-2 bg-white rounded-lg '>
+    <div className='p-2 bg-white rounded-lg h-full'>
       <div className=''>
         <div className='flex p-4 justify-between'>
             <p className='text-sm'>{t("MyAccount.NoCredits")}</p>

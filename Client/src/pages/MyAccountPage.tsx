@@ -132,9 +132,9 @@ function MyAccountPage() {
     },
     
   ]
-  return (
-    <div className='max-w-[1100px] mx-auto flex flex-col gap-3 '>
+  return (<>
       <div className="absolute top-0 w-full -z-10 h-[700px]  bg-[#013b94]"></div>
+      <div className='max-w-[1100px] mx-auto flex flex-col gap-3 '>
       <div className='flex flex-col flex-wrap gap-3 md:grid md:grid-cols-[70%_30%] gap-2'>
         <GeniusRewardAccount />
         <div className='flex flex-col justify-between gap-2'>
@@ -148,7 +148,7 @@ function MyAccountPage() {
         {arr.map(item =>  <MainCardAccount key={item.title} item = {item}/>)}
         </div>
       </div>
-    </div>
+    </div></>
   )
 }
 
