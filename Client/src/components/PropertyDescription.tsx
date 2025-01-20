@@ -21,18 +21,11 @@ function PropertyDescription({ propertyData }: PropertyDescriptionProps) {
         </p>
       </div>
       <div
-        className="text-xs"
+        className="text-sm"
         dangerouslySetInnerHTML={{
           __html: (propertyData.description || "").replace(/\\n/g, "<br>").replace(/\n/g, "<br>"),
         }}
       ></div>
-      <br />
-      <div className="text-xs">{propertyData.description}</div>
-      <br />
-      <div className="text-xs">{propertyData.description}</div>
-      <br />
-      <div className="text-xs">{propertyData.description}</div>
-      <br />
     </div>
   );
 }

@@ -183,7 +183,7 @@ function TopNav() {
         </div>
 
         <div className={cn(" flex  overflow-scroll  ", styles.scrollContainer)}>
-          <button
+          {/* <button
             className="mr-2 px-4 py-2 bg-blue-500 text-white rounded fixed left-1 bottom-2 z-50"
             onClick={() => changeLanguage("en")}
           >
@@ -194,7 +194,7 @@ function TopNav() {
             onClick={() => changeLanguage("he")}
           >
             עברית
-          </button>
+          </button> */}
 
           <Button
             variant="ghostTopNav"

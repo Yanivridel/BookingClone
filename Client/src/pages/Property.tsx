@@ -131,7 +131,8 @@ function Property() {
     { label: cf(propertyData?.title || "") },
   ];
 
-  if (!propertyData) return <h1>404 property was not found</h1>;
+  if (!propertyData) 
+    return null;
 
   return (
     <div className="relative ">
