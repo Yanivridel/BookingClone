@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils.ts";
 
 import OffersGroups from "./OffersGroups.tsx";
 import OffersPayment from "./OffersPayment.tsx";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import SelectOffer from "./SelectOffer.tsx";
 import { SmallIconVi } from "./ui/Icons.tsx";
@@ -30,18 +30,18 @@ function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
   >([]);
 
   return (
-    <div className="grid grid-col  min-w-[750px]  grid-cols-[repeat(20,_minmax(0,1fr))]  relative">
+    <div className="grid grid-col min-w-[750px] grid-cols-[repeat(20,_minmax(0,1fr))] relative">
       {[...Array(headerRowsNumber)].map((_, i) => (
         <h2
           key={t(`propertyTable.THeader.${i}`)}
           className={cn(
-            "border-e-[1px] border-b-[1px] align-text-top text-start  py-2 px-2 border-[#5bbaff] bg-[#4b76b2] text-white text-sm font-bold  sticky top-0 z-10",
+            "border-e-[1px] border-b-[1px] align-text-top text-start  py-2 px-2 border-[#5bbaff] bg-[#4b76b2] text-white text-sm font-bold sticky tab:sticky top-0 z-10",
             i === 0
-              ? "col-span-5"
+              ? "col-span-5   tab:left-auto" // w-[187px]
               : i === 1
-              ? "col-span-2"
+              ? "col-span-2  tab:left-auto" // w-[76px] left-[187px]
               : i === 2
-              ? "col-span-3 bg-[#013b94]"
+              ? "col-span-3 bg-[#013b94]" // w-[113px] left-[262px]
               : i === 3
               ? "col-span-4"
               : i === 5
