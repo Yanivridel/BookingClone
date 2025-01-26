@@ -118,6 +118,7 @@ module.exports = {
         pr: "785", // progress
         signInLayoutTop: "575px",
         foo: "600px", // footer
+        tab: "750px",
       },
       boxShadow: {
         searchPopupsShadow: "0 2px 8px rgba(26, 26, 26, 0.34)",

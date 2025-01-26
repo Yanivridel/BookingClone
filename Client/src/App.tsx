@@ -19,6 +19,7 @@ import MyAccountPage from "./pages/MyAccountPage.tsx";
 import SavedLists from "./pages/SavedLists.tsx";
 import MySettings from "./pages/MySettings.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Booking from "./pages/Booking.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,10 @@ function App() {
         {
           element: <MySettings />,
           path: "MySettings/:category",
+        },
+        {
+          element: <Booking />,
+          path: "booking",
         },
         {
           path: "*",

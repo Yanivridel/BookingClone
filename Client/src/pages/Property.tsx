@@ -39,8 +39,8 @@ import Slider from "react-slick";
 import { Plus } from "@/components/ui/Icons";
 import BreadcrumbCard from "@/components/Breadcrumb";
 import { cf } from "@/utils/functions";
-import PropertyFinePrint from "./components/PropertyFinePrint";
 import RecommendedCard from "@/components/RecommendedCard";
+import PropertyFinePrint from "@/components/PropertyFinePrint";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -71,6 +71,7 @@ function Property() {
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
   };
+  console.log(propertyReviews?.length);
 
   useEffect(() => {
     if (id) {
@@ -179,13 +180,15 @@ function Property() {
           id="Info & prices"
           className="border-[0.5px] border-softGray my-5"
         ></div>
-        <MainCarousel>
+        <div
+          className={` tab:overflow-x-visible min-h-[500px] overflow-x-scroll , ${styles.scrollContainer}`}
+        >
           {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
             <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
           )}
-        </MainCarousel>
+        </div>
         {/* Reviews & Rating */}
-        {propertyReviews?.length && (
+        {propertyReviews && propertyReviews?.length > 0 && (
           <div id={`Guest reviews (${propertyReviews?.length})`}>
             <div className="flex justify-between">
               <div>
@@ -284,16 +287,16 @@ function Property() {
                 ))}
               </Slider>
             )}
+            <div>
+              <Button
+                className="text-[13px] border-[1px]"
+                variant={"negativeDefault"}
+              >
+                Read all reviews
+              </Button>
+            </div>
           </div>
         )}
-        <div>
-          <Button
-            className="text-[13px] border-[1px]"
-            variant={"negativeDefault"}
-          >
-            Read all reviews
-          </Button>
-        </div>
 
         <QualityCard propertyData={propertyData} />
 

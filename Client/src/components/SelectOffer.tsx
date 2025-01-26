@@ -44,7 +44,7 @@ function SelectOffer({
   return (
     <select
       onChange={handleChange}
-      className="border-[1px] border-black rounded-md text-sm px-2 min-w-12 bg-inherit"
+      className="border-[1px] border-black rounded-md text-sm px-2 min-w-12 bg-inherit cursor-pointer"
       value={value}
       id={offerId}
     >
