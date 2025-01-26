@@ -19,6 +19,7 @@ import MyAccountPage from "./pages/MyAccountPage.tsx";
 import SavedLists from "./pages/SavedLists.tsx";
 import MySettings from "./pages/MySettings.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Testing from "./pages/Testing.tsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,6 +39,10 @@ function App() {
         {
           path: "/property/:id",
           element: <Property />,
+        },
+        {
+          path: '/test',
+          element: <Testing />
         },
         {
           path: "*",

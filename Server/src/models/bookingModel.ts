@@ -1,19 +1,64 @@
-// import mongoose from 'mongoose'
+import { Schema, model, Types } from "mongoose";
+import { IBooking } from "src/types/bookingTypes";
 
-// import { IBooking } from 'src/types/bookingTypes';
+const BookingSchema = new Schema<IBooking>(
+    {
+        propertyId: { type: Schema.Types.ObjectId, ref: "Property", required: true },
+        rooms: [{
+            roomId: { type: Schema.Types.ObjectId, ref: "Room", required: true },
+            count: { type: Number, required: true },
+        }],
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
 
-// const bookingSchema = new mongoose.Schema<IBooking>({
-//     property: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
-//     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-//     checkIn: { type: Date, required: true },
-//     checkOut: { type: Date, required: true },
-//     guests: { type: Number, required: true },
-//     totalPrice: { type: Number, required: true },
-//     status: { type: String, required: true, enum: ["pending", "confirmed", "cancelled"] },
-//     createdAt: { type: Date, default: Date.now },
-// });
+        reserver: {
+            fName: { type: String, required: true },
+            lName: { type: String, required: true },
+            email: { type: String, required: true },
+            country: { type: String, required: true },
+            phoneNumber: { type: String, required: true },
+        },
 
-// // Create the Booking model
-// const Booking = mongoose.model<IBooking>("Booking", bookingSchema);
+        is_paperless: { type: Boolean, default: false },
+        for_work: {
+            company_name: { type: String },
+            vat_number: { type: Number },
+        },
 
-// export default Booking;
+        rooms_details: [{
+            roomId: [{ type: Schema.Types.ObjectId, ref: "Room", required: true }],
+            fullName: { type: String, required: true },
+            email: { type: String },
+        }],
+
+        add_to_stay: {
+            taxi: { type: Boolean, default: false },
+            car_rent: { type: Boolean, default: false },
+            shuttle: { type: Boolean, default: false },
+        },
+
+        special_req: {
+            text: { type: String },
+            close_rooms: { type: Boolean, default: false },
+        },
+
+        children_beds: [{
+            room_id: { type: Types.ObjectId, ref: "Room", required: true },
+            baby: { type: Number },
+            extra: { type: Number },
+        }],
+
+        checkIn: { type: Date, required: true },
+        checkOut: { type: Date, required: true },
+        guests: { type: Number, required: true },
+        status: {
+            type: String,
+            enum: ["on going", "confirmed", "cancelled", "checked-in", "completed"],
+            required: true,
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+
+export const bookingModel = model<IBooking>("Booking", BookingSchema);

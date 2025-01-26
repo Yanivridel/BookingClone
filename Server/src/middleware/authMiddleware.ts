@@ -1,6 +1,5 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { userModel } from './../models/userModel';
 
 import { AuthenticatedRequestOptional } from 'src/types/expressTypes';
 

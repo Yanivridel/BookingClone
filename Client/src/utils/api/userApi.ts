@@ -52,7 +52,6 @@ export const signinUser = async (email: string, code: string) => {
 // * Done
 export const editProfile = async (userProperties : TPartialUser ) => {
     try {
-
         const { data } = await axios.patch(`${API_URL}/api/users/edit-profile`, 
             userProperties, 
             {
