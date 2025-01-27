@@ -55,3 +55,15 @@ export interface IBooking extends Document {
 }
 
 export type TPartialBooking = Partial<IBooking> 
+
+type ReplaceObjectIdWithString<T> = {
+    [K in keyof T]: T[K] extends Types.ObjectId
+        ? string
+        : T[K] extends Types.ObjectId[]
+        ? string[]
+        : T[K] extends object
+        ? ReplaceObjectIdWithString<T[K]>
+        : T[K];
+};
+
+export type TBookingStringified = ReplaceObjectIdWithString<IBooking>;

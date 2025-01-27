@@ -1,5 +1,7 @@
 import { Schema, model, Types } from "mongoose";
-import { IBooking } from "src/types/bookingTypes";
+import { IAvailableRoomsProps, unTakeAvailableRooms } from "src/controllers/bookingController";
+import { IBooking, TBookingStringified } from "src/types/bookingTypes";
+import cron from 'node-cron';
 
 const BookingSchema = new Schema<IBooking>(
     {
@@ -25,7 +27,7 @@ const BookingSchema = new Schema<IBooking>(
         },
 
         rooms_details: [{
-            roomId: [{ type: Schema.Types.ObjectId, ref: "Room", required: true }],
+            roomId: { type: Schema.Types.ObjectId, ref: "Room", required: true },
             fullName: { type: String, required: true },
             email: { type: String },
         }],
@@ -60,5 +62,25 @@ const BookingSchema = new Schema<IBooking>(
         timestamps: true
     }
 );
+
+// Runs every minute
+cron.schedule('* * * * *', async () => {
+    try {
+        const expiringBookings = await bookingModel.find({
+            createdAt: {
+                $lt: new Date(Date.now() - 15 * 60 * 1000) // 15 minute expired
+            },
+            status: "on going"
+        }) as TBookingStringified[];
+
+        for (const booking of expiringBookings) {
+            const { rooms, checkIn, checkOut } = booking;
+            await unTakeAvailableRooms({ rooms, checkIn, checkOut } as IAvailableRoomsProps);
+            console.log(`Handled expiration for booking: ${booking._id}`);
+        }
+    } catch (error) {
+        console.error('Error handling expired bookings:', error);
+    }
+});
 
 export const bookingModel = model<IBooking>("Booking", BookingSchema);

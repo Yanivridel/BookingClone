@@ -3,6 +3,7 @@ import { createPaymentIntent } from "./../utils/stripe";
 import { paymentModel } from "src/models/paymentModel";
 import { IPayment } from "src/types/paymentTypes";
 import { AuthenticatedRequest } from "src/types/expressTypes";
+import { bookingModel } from "src/models/bookingModel";
 
 export const createPayment = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -33,7 +34,7 @@ export const createPayment = async (req: Request, res: Response): Promise<void> 
 
 export const savePayment = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { amount, currency, transactionId, paymentMethod } = req.body;
+        const { amount, currency, transactionId, paymentMethod, bookingId } = req.body;
         const authenticatedReq = req as AuthenticatedRequest;
         const { userId } = authenticatedReq;
 
@@ -42,8 +43,21 @@ export const savePayment = async (req: Request, res: Response): Promise<void> =>
             return;
         }
 
+        const booking = await bookingModel.findById(bookingId);
+
+        if (!booking) {
+            res.status(404).json({ status: "Error", message: "Booking not found" });
+            return;
+        }
+
+        if (booking.status !== "on going") {
+            res.status(400).json({ status: "Error", message: "Booking is not in 'on going' status" });
+            return;
+        }
+
         const newPayment: IPayment = new paymentModel({
             userId,
+            bookingId,
             transactionId,
             amount,
             currency,
@@ -52,6 +66,9 @@ export const savePayment = async (req: Request, res: Response): Promise<void> =>
         });
 
         await newPayment.save();
+
+        booking.status = "confirmed";
+        await booking.save();
 
         res.status(201).send({
             status: "success",

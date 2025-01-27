@@ -11,7 +11,5 @@ router.post("/create", authenticateToken, createPayment);
 
 router.post("/save", authenticateToken, savePayment);
 
-// router.get("/:id", getAllReviewsForProperty);
-
 
 export default router;
