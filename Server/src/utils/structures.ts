@@ -196,107 +196,6 @@ export enum ECountry {
     Zambia = "Zambia",
     Zimbabwe = "Zimbabwe",
 }
-
-export enum EAccommodationType {
-    Hotel = "hotel",
-    Apartment = "apartment",
-    Resort = "resort",
-    Villa = "villa",
-    Cabin = "cabin",
-    Cottage = "cottage",
-    GlampingSite = "glamping site",
-    ServicedApartment = "serviced apartment",
-    VacationHome = "vacation home",
-    GuestHouse = "guest house",
-    Hostels = "hostels",
-    Motel = "motel",
-    BnB = "b&b",
-    Ryokan = "ryokan",
-    Riad = "riad",
-    ResortVillage = "resort village",
-    Homestay = "homestay",
-    Campground = "campground",
-    CountryHouse = "country house",
-    FarmStay = "farm stay",
-    Boat = "boat",
-    LuxuryTent = "luxury tent",
-    SelfCateringAccommodation = "self-catering accommodation",
-    TinyHouse = "tiny house",
-}
-
-export enum ECoinType {
-    USD = "USD", // United States Dollar
-    EUR = "EUR", // Euro
-    GBP = "GBP", // British Pound
-    JPY = "JPY", // Japanese Yen
-    AUD = "AUD", // Australian Dollar
-    CAD = "CAD", // Canadian Dollar
-    CHF = "CHF", // Swiss Franc
-    CNY = "CNY", // Chinese Yuan
-    HKD = "HKD", // Hong Kong Dollar
-    NZD = "NZD", // New Zealand Dollar
-    SEK = "SEK", // Swedish Krona
-    KRW = "KRW", // South Korean Won
-    SGD = "SGD", // Singapore Dollar
-    NOK = "NOK", // Norwegian Krone
-    MXN = "MXN", // Mexican Peso
-    INR = "INR", // Indian Rupee
-    RUB = "RUB", // Russian Ruble
-    ZAR = "ZAR", // South African Rand
-    TRY = "TRY", // Turkish Lira
-    BRL = "BRL", // Brazilian Real
-    TWD = "TWD", // New Taiwan Dollar
-    DKK = "DKK", // Danish Krone
-    PLN = "PLN", // Polish Zloty
-    THB = "THB", // Thai Baht
-    IDR = "IDR", // Indonesian Rupiah
-    HUF = "HUF", // Hungarian Forint
-    CZK = "CZK", // Czech Koruna
-    ILS = "ILS", // Israeli New Shekel
-    PHP = "PHP", // Philippine Peso
-    AED = "AED", // United Arab Emirates Dirham
-    SAR = "SAR", // Saudi Riyal
-    MYR = "MYR", // Malaysian Ringgit
-    BGN = "BGN", // Bulgarian Lev
-    RON = "RON", // Romanian Leu
-    ARS = "ARS", // Argentine Peso
-    CLP = "CLP", // Chilean Peso
-    COP = "COP", // Colombian Peso
-    VND = "VND", // Vietnamese Dong
-    NGN = "NGN", // Nigerian Naira
-    PKR = "PKR", // Pakistani Rupee
-    EGP = "EGP", // Egyptian Pound
-    QAR = "QAR", // Qatari Riyal
-    KWD = "KWD", // Kuwaiti Dinar
-    BHD = "BHD", // Bahraini Dinar
-    OMR = "OMR", // Omani Rial
-    JOD = "JOD", // Jordanian Dinar
-    MAD = "MAD", // Moroccan Dirham
-    LKR = "LKR", // Sri Lankan Rupee
-    BDT = "BDT", // Bangladeshi Taka
-    UAH = "UAH", // Ukrainian Hryvnia
-    GHS = "GHS", // Ghanaian Cedi
-    KES = "KES", // Kenyan Shilling
-    UGX = "UGX", // Ugandan Shilling
-    TZS = "TZS", // Tanzanian Shilling
-    XAF = "XAF", // Central African CFA Franc
-    XOF = "XOF", // West African CFA Franc
-    ZMW = "ZMW", // Zambian Kwacha
-    ETB = "ETB", // Ethiopian Birr
-    BOB = "BOB", // Bolivian Boliviano
-    PEN = "PEN", // Peruvian Sol
-    ISK = "ISK", // Icelandic Krona
-    JMD = "JMD", // Jamaican Dollar
-    GYD = "GYD", // Guyanese Dollar
-    BSD = "BSD", // Bahamian Dollar
-    FJD = "FJD", // Fijian Dollar
-    XCD = "XCD", // East Caribbean Dollar
-    KYD = "KYD", // Cayman Islands Dollar
-    ANG = "ANG", // Netherlands Antillean Guilder
-    AWG = "AWG", // Aruban Florin
-    MVR = "MVR", // Maldivian Rufiyaa
-}
-
 export enum ELanguage {
     EN = "English",
     ES = "Spanish",
@@ -385,6 +284,34 @@ export enum ELanguage {
     SH = "Serbo-Croatian",
 }
 
+
+
+export enum EAccommodationType {
+    Hotel = "hotel",
+    Apartment = "apartment",
+    Resort = "resort",
+    Villa = "villa",
+    Cabin = "cabin",
+    Cottage = "cottage",
+    GlampingSite = "glamping site",
+    ServicedApartment = "serviced apartment",
+    VacationHome = "vacation home",
+    GuestHouse = "guest house",
+    Hostels = "hostels",
+    Motel = "motel",
+    BnB = "b&b",
+    Ryokan = "ryokan",
+    Riad = "riad",
+    ResortVillage = "resort village",
+    Homestay = "homestay",
+    Campground = "campground",
+    CountryHouse = "country house",
+    FarmStay = "farm stay",
+    Boat = "boat",
+    LuxuryTent = "luxury tent",
+    SelfCateringAccommodation = "self-catering accommodation",
+    TinyHouse = "tiny house",
+}
 export enum EFacility {
     FreeParking =  "Free parking",
     WIFI = "Free WiFi",
@@ -440,7 +367,6 @@ export enum EFacility {
     allTimeReception = "24-hour reception desk",
     AnimalsAllows = "Animals Allowed",
 }
-
 export enum EPropertyHighlight {
     LOCATION = "Location",
     WELLNESS = "Wellness",
@@ -471,7 +397,6 @@ export enum EPropertyHighlight {
     KIDS_FRIENDLY = "Kids-friendly",
     QUIET_ENVIRONMENT = "Quiet environment"
 }
-
 export enum EHotelAreaInfo {
     PUBLIC_TRANSIT = 'Public transit',
     CLOSEST_AIRPORTS = 'Closest Airports',
@@ -480,7 +405,6 @@ export enum EHotelAreaInfo {
     WHAT_IS_NEARBY = "What's nearby",
     TOP_ATTRACTIONS = 'Top attractions',
 }
-
 export enum EFeatures {
     ACCESSIBILITY = 'Accessibility',
     OUTDOOR_SWIMMING_POOL = 'Outdoor swimming pool',
@@ -506,16 +430,90 @@ export enum EFeatures {
     PARKING = 'Parking'
 }
 
+
+
 export enum EPaymentMethods {
-    CREDIT_CARD = 'Credit Card',
-    DEBIT_CARD = 'Debit Card',
-    MasterCard = "MasterCard",
-    PAYPAL = 'PayPal',
-    BANK_TRANSFER = 'Bank Transfer',
-    CASH = 'Cash',
-    APPLE_PAY = 'Apple Pay',
-    GOOGLE_PAY = 'Google Pay',
-    CRYPTOCURRENCY = 'Cryptocurrency',
-    Visa = 'Visa',
-    OTHER = 'Other'
+    CREDIT_CARD = 'credit card',
+    DEBIT_CARD = 'debit card',
+    MasterCard = "masterCard",
+    PAYPAL = 'payPal',
+    BANK_TRANSFER = 'bank transfer',
+    CASH = 'cash',
+    APPLE_PAY = 'apple pay',
+    GOOGLE_PAY = 'google Pay',
+    CRYPTOCURRENCY = 'cCryptocurrency',
+    Visa = 'visa',
+    OTHER = 'other'
+}
+export enum ECoinType {
+    USD = "USD", // United States Dollar
+    EUR = "EUR", // Euro
+    GBP = "GBP", // British Pound
+    JPY = "JPY", // Japanese Yen
+    AUD = "AUD", // Australian Dollar
+    CAD = "CAD", // Canadian Dollar
+    CHF = "CHF", // Swiss Franc
+    CNY = "CNY", // Chinese Yuan
+    HKD = "HKD", // Hong Kong Dollar
+    NZD = "NZD", // New Zealand Dollar
+    SEK = "SEK", // Swedish Krona
+    KRW = "KRW", // South Korean Won
+    SGD = "SGD", // Singapore Dollar
+    NOK = "NOK", // Norwegian Krone
+    MXN = "MXN", // Mexican Peso
+    INR = "INR", // Indian Rupee
+    RUB = "RUB", // Russian Ruble
+    ZAR = "ZAR", // South African Rand
+    TRY = "TRY", // Turkish Lira
+    BRL = "BRL", // Brazilian Real
+    TWD = "TWD", // New Taiwan Dollar
+    DKK = "DKK", // Danish Krone
+    PLN = "PLN", // Polish Zloty
+    THB = "THB", // Thai Baht
+    IDR = "IDR", // Indonesian Rupiah
+    HUF = "HUF", // Hungarian Forint
+    CZK = "CZK", // Czech Koruna
+    ILS = "ILS", // Israeli New Shekel
+    PHP = "PHP", // Philippine Peso
+    AED = "AED", // United Arab Emirates Dirham
+    SAR = "SAR", // Saudi Riyal
+    MYR = "MYR", // Malaysian Ringgit
+    BGN = "BGN", // Bulgarian Lev
+    RON = "RON", // Romanian Leu
+    ARS = "ARS", // Argentine Peso
+    CLP = "CLP", // Chilean Peso
+    COP = "COP", // Colombian Peso
+    VND = "VND", // Vietnamese Dong
+    NGN = "NGN", // Nigerian Naira
+    PKR = "PKR", // Pakistani Rupee
+    EGP = "EGP", // Egyptian Pound
+    QAR = "QAR", // Qatari Riyal
+    KWD = "KWD", // Kuwaiti Dinar
+    BHD = "BHD", // Bahraini Dinar
+    OMR = "OMR", // Omani Rial
+    JOD = "JOD", // Jordanian Dinar
+    MAD = "MAD", // Moroccan Dirham
+    LKR = "LKR", // Sri Lankan Rupee
+    BDT = "BDT", // Bangladeshi Taka
+    UAH = "UAH", // Ukrainian Hryvnia
+    GHS = "GHS", // Ghanaian Cedi
+    KES = "KES", // Kenyan Shilling
+    UGX = "UGX", // Ugandan Shilling
+    TZS = "TZS", // Tanzanian Shilling
+    XAF = "XAF", // Central African CFA Franc
+    XOF = "XOF", // West African CFA Franc
+    ZMW = "ZMW", // Zambian Kwacha
+    ETB = "ETB", // Ethiopian Birr
+    BOB = "BOB", // Bolivian Boliviano
+    PEN = "PEN", // Peruvian Sol
+    ISK = "ISK", // Icelandic Krona
+    JMD = "JMD", // Jamaican Dollar
+    GYD = "GYD", // Guyanese Dollar
+    BSD = "BSD", // Bahamian Dollar
+    FJD = "FJD", // Fijian Dollar
+    XCD = "XCD", // East Caribbean Dollar
+    KYD = "KYD", // Cayman Islands Dollar
+    ANG = "ANG", // Netherlands Antillean Guilder
+    AWG = "AWG", // Aruban Florin
+    MVR = "MVR", // Maldivian Rufiyaa
 }

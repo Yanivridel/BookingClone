@@ -195,7 +195,8 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         res.flushHeaders();
 
         // * Get Cache / Fetch New
-        let filteredProperties: IProperty[] = await getCache(cacheKey);
+        // let filteredProperties: IProperty[] = await getCache(cacheKey);
+        let filteredProperties;
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
         if (!filteredProperties) {
             const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
@@ -222,9 +223,9 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
 
-            setTimeout(() => {
-                setCache(cacheKey, filteredProperties);
-            }, 1000) // in 1 sec
+            // setTimeout(() => {
+            //     setCache(cacheKey, filteredProperties);
+            // }, 1000) // in 1 sec
         }
 
         console.log("isCached:", isCached); //! Dev Mode - Remove Later !//

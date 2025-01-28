@@ -9,6 +9,7 @@ import passport from 'passport';
 dotenv.config();
 
 import { connectRedis } from './utils/redisClient';
+import './utils/stripe'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -58,6 +59,8 @@ import userRoutes from './routes/userRoutes'
 import propertyRoutes from './routes/propertyRoutes'
 import roomRoutes from './routes/roomRoutes'
 import reviewRoutes from './routes/reviewRoutes'
+import paymentRoutes from './routes/paymentRoutes'
+import bookingRoutes from './routes/bookingRoutes'
 
 app.use(googleAuth);
 
@@ -68,6 +71,10 @@ app.use('/api/property', propertyRoutes);
 app.use('/api/room', roomRoutes);
 
 app.use('/api/review', reviewRoutes);
+
+app.use("/api/payment", paymentRoutes);
+
+app.use("/api/booking", bookingRoutes);
 
 
 app.listen(PORT, () => {

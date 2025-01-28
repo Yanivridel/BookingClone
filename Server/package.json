@@ -30,6 +30,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@types/stripe": "^8.0.417",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -46,6 +47,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "redis": "^4.7.0",
+    "stripe": "^17.5.0",
     "tsconfig-paths": "^4.2.0"
   }
 }
