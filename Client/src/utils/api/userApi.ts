@@ -50,10 +50,10 @@ export const signinUser = async (email: string, code: string) => {
     }
 };
 // * Done
-export const editProfile = async (userProperties : TPartialUser ) => {
+export const editProfile = async (fieldsToUpdate : TPartialUser ) => {
     try {
         const { data } = await axios.patch(`${API_URL}/api/users/edit-profile`, 
-            userProperties, 
+            fieldsToUpdate, 
             {
                 headers: {
                     Authorization: `Bearer ${getCookie("token")}`
