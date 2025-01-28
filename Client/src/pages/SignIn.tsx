@@ -2,20 +2,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import TopNav from "@/components/TopNav";
-import {
-  IconApple,
-  IconError,
-  IconFacebook,
-  IconGoogle,
-} from "@/components/ui/Icons";
+import { IconApple, IconError, IconFacebook } from "@/components/ui/Icons";
 import { Card } from "@/components/ui/card";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { sendEmailCode } from "@/utils/api/userApi";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "@/utils/utilsFunctions";
-import { GoogleLogin } from '@react-oauth/google';
-import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google";
 
 function SignIn({
   className,
@@ -78,18 +71,17 @@ function SignIn({
   //   }
   //   catch (err) {
   //     console.error('Error during authentication:', err);
-  //     setError("Google login failed. Please try again."); 
+  //     setError("Google login failed. Please try again.");
   //   }
   // };
   const handleGoogleLogin = () => {
     // Instead of making an axios request, redirect to the auth URL
-    window.location.href = 'http://localhost:3000/api/auth/google';
+    window.location.href = "http://localhost:3000/api/auth/google";
   };
 
   return (
     <div className="flex flex-col min-h-screen items-center p-2">
-      <div className="">
-      </div>
+      <div className=""></div>
       <div
         className={cn(
           "flex flex-col items-center gap-6 flex-grow signInLayoutTop:pt-14 max-w-[369px]",

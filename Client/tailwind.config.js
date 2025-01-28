@@ -107,6 +107,7 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
       screens: {
+        xs: "300px",
         grid1: "550px",
         grid2: "800px",
         filtersPopup: "1024",
