@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import KidsImage from "../assets/images/kids.jpeg";
 import { Button } from "./ui/button";
 import {
   Accordion,
@@ -9,6 +8,11 @@ import {
 } from "./ui/accordion";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { getInitials } from "@/utils/functions";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
+import { IUser } from "@/types/userTypes";
 
 function PersonalDetails() {
   const refs = {
@@ -32,11 +36,24 @@ function PersonalDetails() {
     passportLastName: useRef(null),
     passportNumber: useRef(null),
   } as any;
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
+  const initials = getInitials(
+    `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
+  );
 
   const handleSave = (key: string) => {
+    switch (key) {
+      case "name":
+        console.log(refs["firstname"]);
+        console.log();
+    }
     const value = refs[key].current?.value || "";
     console.log(`${key}:`, value);
   };
+
+  
 
   return (
     <div className="grid grid-cols-1 max-w-[1100px]">
@@ -48,13 +65,20 @@ function PersonalDetails() {
           </p>
         </div>
         <div className="p-2 max-w-[100px] max-h-[100px]">
-          <div className="border border-yellow-400 rounded-full relative w-full h-full">
-            <img
-              src={KidsImage}
-              className="w-full h-full object-cover rounded-full"
-              alt=""
-            />
-          </div>
+          <Avatar className="w-full h-full border-2 border-[#f8b830] pointer-events-none ">
+              <AvatarImage
+                src={
+                  currentUser.user_image
+                    ? currentUser.user_image
+                    : undefined
+                }
+                alt="user"
+                loading="lazy"
+              />
+              <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
+                {initials || "User"}
+              </AvatarFallback>
+            </Avatar>
         </div>
       </div>
       <Accordion type="single" collapsible className="w-full p-4">
@@ -87,7 +111,7 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button onClick={() => handleSave("firstName")}>Save</Button>
+              <Button onClick={() => handleSave("name")}>Save</Button>
             </div>
           </AccordionContent>
         </AccordionItem>

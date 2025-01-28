@@ -31,7 +31,7 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
-connectRedis();
+// connectRedis();
 
 // Server Check
 app.get('/test', (req: Request, res: Response): void => {
