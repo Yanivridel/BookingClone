@@ -152,6 +152,7 @@ interface IEditProfileBody {
     username?: string;
     password?: string;
     phoneNumber?: string;
+    email?: string;
     birthday?: Date;
     gender?: string; // can be "male", "female", or "other"
     user_image?: string;
@@ -187,7 +188,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
 
         const { 
             fName, lName, username, password, phoneNumber, birthday, gender, user_image, location,
-            passport, creditCard, coinType, language, notifications, geniusLevel
+            passport, creditCard, coinType, language, notifications, geniusLevel, email
         } = req.body;
 
         const fieldsToUpdate: IEditProfileBody = {};
@@ -195,6 +196,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         if (fName) fieldsToUpdate.fName = fName;
         if (lName) fieldsToUpdate.lName = lName;
         if (username) fieldsToUpdate.username = username;
+        if (email) fieldsToUpdate.email = email;
         if (password) fieldsToUpdate.password = password;
         if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
         if (birthday) fieldsToUpdate.birthday = birthday;
@@ -244,7 +246,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
             data: updatedUser,
         });
     } catch (error) {
-        console.log(error); // Log for debugging
+        console.log(error); // dev
         if (error instanceof MongoError  && error.code === 11000) {
             res.status(409).json({
                 status: "error",
