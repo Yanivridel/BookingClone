@@ -1,12 +1,17 @@
 import { RootState } from "@/store";
 import { IUser } from "@/types/userTypes";
 import { useSelector } from "react-redux";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getInitialsLowerCase } from "@/utils/functions";
 
 function UserCard() {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
+
+  const initials = getInitialsLowerCase(
+    `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
+  );
 
   return (
     <div className="m-3 border-[1px] border-softGrayBorder flex xs:items-center gap-3 p-4 rounded-[8px] flex-col xs:flex-row">
@@ -16,6 +21,9 @@ function UserCard() {
           alt="user"
           loading="lazy"
         />
+        <AvatarFallback className="text-white w-full h-full flex items-center justify-center bg-slate-600">
+          {initials || ""}
+        </AvatarFallback>
       </Avatar>
       <div className="text-sm">
         <div className="font-bold">You are signed in</div>

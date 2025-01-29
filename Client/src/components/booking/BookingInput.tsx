@@ -1,54 +1,87 @@
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { IconError } from "../ui/Icons";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { IconError, IconSeccess } from "../ui/Icons";
+import { ForwardedRef, forwardRef, MutableRefObject, useState } from "react";
 
 interface BookingInputProps {
+  isSeccess?: boolean;
+  isIconSeccess?: boolean;
+  seccessMessage?: string;
+  onBlurHandler: () => void;
+  labalText: string;
+  error: string;
   isRequired: boolean;
-  errorMessage: string;
-  placeholder: string;
+  areRequiredAsterisk?: boolean;
+  placeholder?: string;
   name: string;
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  type: string;
+
+  defaultValue: string;
 }
 
-function BookingInput({
-  errorMessage,
-  placeholder,
-  name,
-  value,
-  setValue,
-  isRequired,
-}: BookingInputProps) {
+const BookingInput = forwardRef(function BookingInput(
+  {
+    error,
+    areRequiredAsterisk = false,
+    isSeccess = false,
+    seccessMessage,
+    isIconSeccess = false,
+    onBlurHandler,
+    name,
+    defaultValue,
+    placeholder = "",
+    isRequired,
+    labalText,
+    type,
+  }: BookingInputProps,
+  ref: ForwardedRef<HTMLInputElement>
+) {
   const [isFocus, setIsFocus] = useState<boolean>();
-  const [isError, setIsError] = useState<boolean>(false);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
+
   return (
     <div>
-      <div className="grid gap-2">
-        <Label htmlFor={name}>Email address</Label>
+      <div className="grid gap-1 ">
+        <div>
+          <Label className="text-sm" htmlFor={name}>
+            {labalText}
+          </Label>
+          {areRequiredAsterisk && (
+            <span className="text-redError ms-1 text-sm">*</span>
+          )}
+        </div>
         <div className="relative">
           <Input
-            className={isError ? "border-redError focus:border-0" : ""}
-            onChange={(e) => handleChange(e)}
+            className={
+              error
+                ? "border-redError focus:border-0 text-sm"
+                : "border-black border-[1px] focus:border-0 text-sm"
+            }
             onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
-            type="text"
+            onBlur={() => {
+              setIsFocus(false);
+              onBlurHandler();
+            }}
+            ref={ref}
+            type={type}
             name={name}
-            value={value}
+            defaultValue={defaultValue}
             placeholder={placeholder}
             required={isRequired}
           />
-          {isError && !isFocus && (
+          {error && !isFocus && (
             <IconError className="h-5 w-5 fill-redError absolute top-2 end-2 " />
           )}
+          {!isFocus && !error && isIconSeccess && isSeccess && (
+            <IconSeccess className="h-5 w-5 fill-IconsGreen absolute top-2 end-2 bg-white" />
+          )}
         </div>
-        {isError && <div className="text-redError text-sm">{errorMessage}</div>}
+        {isSeccess && !error && (
+          <div className="text-IconsGreen text-xs">{seccessMessage}</div>
+        )}
+        {error && <div className="text-redError text-sm">{error}</div>}
       </div>
     </div>
   );
-}
-
+});
+BookingInput.displayName = "BookingInput";
 export default BookingInput;

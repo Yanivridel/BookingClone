@@ -40,7 +40,7 @@ export function getRandomInt(min: number, max: number) {
 export function scrollToTop() {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: "smooth",
   });
 }
 
@@ -80,16 +80,16 @@ export const convertMonthsToQueryString = (months: MonthNameYear[]) => {
     .join(","); // מחבר את כל הערכים בפסיקים
 };
 
-export const parseMonthsFromQueryString = (queryString: string): MonthNameYear[] => {
-  return queryString
-    .split(",")
-    .map(item => {
-      const [month, year] = item.split("_");
-      return { month: parseInt(month), year: parseInt(year) };
-    });
+export const parseMonthsFromQueryString = (
+  queryString: string
+): MonthNameYear[] => {
+  return queryString.split(",").map((item) => {
+    const [month, year] = item.split("_");
+    return { month: parseInt(month), year: parseInt(year) };
+  });
 };
 
-export const makeUrlForSearch =(finalData: ISearchPropertiesReq) => {
+export const makeUrlForSearch = (finalData: ISearchPropertiesReq) => {
   let url = "/searchresults?";
 
   //  locations
@@ -132,28 +132,30 @@ export const makeUrlForSearch =(finalData: ISearchPropertiesReq) => {
   }
 
   if (finalData.primary.options.childrenAges?.length) {
-    url += `childrenAges=${finalData.primary.options.childrenAges.join(
-      ", "
-    )}&`;
+    url += `childrenAges=${finalData.primary.options.childrenAges.join(", ")}&`;
   }
   if (finalData.primary.options.isAnimalAllowed) {
     url += `isAnimalAllowed=${finalData.primary.options.isAnimalAllowed}&`;
   }
 
   if (finalData.primary.date.yearMonths?.length) {
-    const monthsQueryString = convertMonthsToQueryString(finalData.primary.date.yearMonths);
+    const monthsQueryString = convertMonthsToQueryString(
+      finalData.primary.date.yearMonths
+    );
     url += `yearMonths=${monthsQueryString}&`;
   }
   return url;
-}
+};
 
 export function stringToColor(string: string) {
-  let i, hash = 0, color = '#';
+  let i,
+    hash = 0,
+    color = "#";
   for (i = 0; i < string.length; i += 1)
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
   for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
   }
   return color;
 }
@@ -162,18 +164,27 @@ export function getInitials(name: string) {
 
   return name
     .split(" ") // Split the name by spaces
-    .map(word => word.charAt(0).toUpperCase()) // Take the first letter of each word and uppercase it
+    .map((word) => word.charAt(0).toUpperCase()) // Take the first letter of each word and uppercase it
     .join(""); // Join the initials into a single string
 }
+
+export function getInitialsLowerCase(name: string) {
+  if (!name) return ""; // Handle empty input
+
+  return name
+    .split(" ") // Split the name by spaces
+    .map((word) => word.charAt(0).toLowerCase()) // Take the first letter of each word and uppercase it
+    .join(""); // Join the initials into a single string
+}
+
 function isLight(color: string) {
   // Convert hex to RGB
   const rgb = parseInt(color.slice(1), 16); // Remove the '#' and parse the color
   const r = (rgb >> 16) & 0xff;
-  const g = (rgb >>  8) & 0xff;
-  const b = (rgb >>  0) & 0xff;
+  const g = (rgb >> 8) & 0xff;
+  const b = (rgb >> 0) & 0xff;
 
   // Calculate luminance
   const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
   return luminance > 127; // Returns true for light colors, false for dark
 }
-

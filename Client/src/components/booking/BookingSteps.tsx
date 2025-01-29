@@ -5,7 +5,7 @@ function BookingSteps() {
   const { t } = useTranslation();
   return (
     <div className="border-y-[1px] border-softGrayBorder mt-4 pt-2 signInLayoutTop:border-none">
-      <div className="flex flex-grow gap-2 text-xs font-bold   mx-4">
+      <div className="flex flex-grow gap-2 text-xs font-bold   ">
         <div className="flex flex-grow gap-2 items-center">
           <div className="rounded-full bg-buttonBlue w-[22px] h-[22px] relative">
             <ViIcon className="h-4 w-4 stroke-white stroke-[3px] fill-white absolute -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2  " />
@@ -35,7 +35,7 @@ function BookingSteps() {
           </div>
         </div>
       </div>
-      <div className="signInLayoutTop:hidden flex justify-between mx-4 my-2 text-sm">
+      <div className="signInLayoutTop:hidden flex justify-between  my-2 text-sm">
         <div className=" text-[13px] font-bold gap-4">
           {t("booking.bookingSteps.details")}
         </div>

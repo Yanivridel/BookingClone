@@ -9,11 +9,13 @@ function Booking() {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
+  // console.log(currentUser);
 
   return (
-    <div className="">
+    <div className="px-4">
       <BookingSteps />
-      <UserCard />
+
+      {currentUser.email && <UserCard />}
       <BookingDetails />
     </div>
   );
