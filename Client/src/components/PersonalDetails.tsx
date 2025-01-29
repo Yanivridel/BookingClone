@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Accordion,
@@ -13,14 +13,25 @@ import { getInitials } from "@/utils/functions";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { IUser } from "@/types/userTypes";
+import { editProfile } from "@/utils/api/userApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/slices/userSlices";
+import { Spinner } from "./ui/Icons";
+import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { countryCodes } from "@/utils/staticData";
+
 
 function PersonalDetails() {
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
   const refs = {
     firstName: useRef(null),
     lastName: useRef(null),
-    displayName: useRef(null),
+    username: useRef(null),
     email: useRef(null),
-    nationality: useRef(null),
+    phoneNumber: useRef(null),
     month: useRef(null),
     day: useRef(null),
     year: useRef(null),
@@ -36,35 +47,84 @@ function PersonalDetails() {
     passportLastName: useRef(null),
     passportNumber: useRef(null),
   } as any;
-  const currentUser = useSelector(
-    (state: RootState) => state.currentUser
-  ) as unknown as IUser;
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState({ code: "+972", label: "🇮🇱 Israel" });
+  const dispatch = useDispatch();
   const initials = getInitials(
     `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
   );
+  const { toast } = useToast()
 
-  const handleSave = (key: string) => {
+  const handleSave = async (key: string) => {
+    setIsLoading(true);
+    const fieldsToUpdate: any = {};
     switch (key) {
+      // Complicated Keys
       case "name":
-        console.log(refs["firstname"]);
-        console.log();
+        fieldsToUpdate["fName"] = refs["firstName"].current.value;
+        fieldsToUpdate["lName"] = refs["lastName"].current.value;
+        break;
+      case "phoneNumber":
+        fieldsToUpdate[key] = selectedCountry.code + refs[key].current.value
+        break;
+      case "birthday":
+        const birthday = fieldsToUpdate["year"] + '-' + fieldsToUpdate["day"] + '-' + fieldsToUpdate["month"]
+        // fieldsToUpdate["birthday"] = new Date(, , );
+        break;
+      // Single Keys:
+      case "username": case "email": 
+        fieldsToUpdate[key] = refs[key].current.value
+        break;
+      default:
+        break;
     }
-    const value = refs[key].current?.value || "";
-    console.log(`${key}:`, value);
+
+    try {
+      console.log(fieldsToUpdate);
+      const user = await editProfile(fieldsToUpdate);
+      if (user) dispatch(setUser(user));
+
+      toast({
+        variant: "success",
+        title: "Success",
+        description: "Fields Updated Successfully"
+      })
+
+    } catch(err) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please Try Again Later..."
+      })
+      
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  
+  const handleDayInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.currentTarget.value.replace(/\D/g, '');
+    if (Number(value) > 31) value = "31";
+    e.currentTarget.value = value;
+  };
+  const handleYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.currentTarget.value.replace(/\D/g, '');
+    if (Number(value) > new Date().getFullYear()) value = new Date().getFullYear().toString();
+    if (value.length === 4 && Number(value) < 1900) value = "1900";
+    e.currentTarget.value = value;
+  };
+
 
   return (
     <div className="grid grid-cols-1 max-w-[1100px]">
-      <div className="border-b-2 flex justify-between ">
-        <div className=" flex flex-col gap-2">
+      <div className="border-b-2 flex justify-between">
+        <div className=" flex flex-col gap-2 mb-2">
           <h1 className="font-bold text-4xl">Personal details</h1>
           <p className="text-gray-500">
             Update your information and find out how it's used.
           </p>
         </div>
-        <div className="p-2 max-w-[100px] max-h-[100px]">
+        <div className="p-2 min-w-[75px] h-[75px]">
           <Avatar className="w-full h-full border-2 border-[#f8b830] pointer-events-none ">
               <AvatarImage
                 src={
@@ -82,6 +142,7 @@ function PersonalDetails() {
         </div>
       </div>
       <Accordion type="single" collapsible className="w-full p-4">
+        {/* Full Name */}
         <AccordionItem value="item-1" className="p-2">
           <AccordionTrigger>Name</AccordionTrigger>
           <p className="text-gray-500 text-sm">Let us know what to call you</p>
@@ -91,15 +152,19 @@ function PersonalDetails() {
                 <p className="font-semibold ">First name("s") *</p>
                 <input
                   ref={refs.firstName}
+                  defaultValue={currentUser.fName}
                   type="text"
+                  maxLength={10}
                   className="p-2 rounded-lg border-black border"
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Last name("s") *</p>
                 <input
-                ref={refs.lastName}
+                  ref={refs.lastName}
+                  defaultValue={currentUser.lName}
                   type="text"
+                  maxLength={10}
                   className="p-2 rounded-lg border-black border"
                 />
               </div>
@@ -111,10 +176,13 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button onClick={() => handleSave("name")}>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Username */}
         <AccordionItem value="item-2" className="p-2">
           <AccordionTrigger>Display name</AccordionTrigger>
           <p className="text-gray-500 text-sm">Choose a display name</p>
@@ -122,8 +190,10 @@ function PersonalDetails() {
             <div className="flex flex-col gap-1">
               <p className="font-semibold">Display name *</p>
               <input
-                ref={refs.displayName}
+                ref={refs.username}
+                defaultValue={currentUser.username}
                 type="text"
+                maxLength={15}
                 className="p-2 rounded-lg border-black border"
               />
             </div>
@@ -134,14 +204,17 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("username")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Email */}
         <AccordionItem value="item-3" className="p-2">
           <AccordionTrigger>Email address</AccordionTrigger>
           <p>
-            talkal153@gmail.com <Badge variant="deals">Verity</Badge>
+            {currentUser.email} <Badge variant="deals">Verified</Badge>
           </p>
           <p className="text-gray-500 text-sm">
             This is the email address you use to sign in. It’s also where we
@@ -167,10 +240,13 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("email")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Phone Number */}
         <AccordionItem value="item-4" className="p-2">
           <AccordionTrigger>Phone number</AccordionTrigger>
           <p className="text-gray-500 text-sm">Add your phone number</p>
@@ -182,15 +258,36 @@ function PersonalDetails() {
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Phone number</p>
               <div className="flex gap-2">
-                <select className="border rounded-lg">
-                  <option value="volvo">Country</option>
-                </select>
+              <Select onValueChange={(val) => setSelectedCountry(countryCodes.find(c => c.code === val)!)}>
+                <SelectTrigger className="w-48 border rounded-lg p-2 ms-3">
+                  <SelectValue placeholder={selectedCountry.label}>{selectedCountry.label}</SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {countryCodes.map((country) => (
+                    <SelectItem 
+                    className={`cursor-pointer ${selectedCountry.label === country.label ? "bg-blue-500 focus:bg-blue-500" : ""}`}
+                    key={country.code+country.label} value={country.code}>
+                      {country.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="relative">
                 <input
-                  ref={refs.nationality}
-                  placeholder="+972 |"
-                  type="text"
-                  className="p-2 rounded-lg border-black border"
+                  ref={refs.phoneNumber}
+                  type="tel"
+                  maxLength={10}
+                  className={`p-2 rounded-lg border-black border`}
+                  style={{ paddingLeft: `${
+                    selectedCountry.code.length <= 2 ? 35 : 
+                    selectedCountry.code.length <= 4 ?
+                    selectedCountry.code.length * 14: 65}px` }}
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '');
+                  }}
                 />
+                <p className="absolute top-1/2 left-2 -translate-y-1/2">{selectedCountry.code + " |"}</p>
+              </div>
               </div>
             </div>
             <div className="flex justify-between">
@@ -200,11 +297,14 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("phoneNumber")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-4" className="p-2">
+        {/* Birthday */}
+        <AccordionItem value="item-5" className="p-2">
           <AccordionTrigger>Date of birth</AccordionTrigger>
           <p className="text-gray-500 text-sm">Select the country/region you're from</p>
           <AccordionContent className="flex flex-col gap-10">
@@ -215,33 +315,37 @@ function PersonalDetails() {
                   <option value="" disabled selected>
                     Select Month
                   </option>
-                  <option value="january">January</option>
-                  <option value="february">February</option>
-                  <option value="march">March</option>
-                  <option value="april">April</option>
-                  <option value="may">May</option>
-                  <option value="june">June</option>
-                  <option value="july">July</option>
-                  <option value="august">August</option>
-                  <option value="september">September</option>
-                  <option value="october">October</option>
-                  <option value="november">November</option>
-                  <option value="december">December</option>
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
                 </select>
                 <input
                   ref={refs.day}
-                  type="number"
+                  type="tel"
                   placeholder="DD"
-                  max={2}
+                  maxLength={2}
+                  min={1}
                   className="p-2 rounded-lg border-black border"
+                  onInput={handleDayInput}
                 />
-                
                 <input
                   ref={refs.year}
-                  type="number"
+                  type="tel"
                   placeholder="YYYY"
-                  max={4}
+                  maxLength={4}
+                  min={1900}
+                  max={Number(new Date().getFullYear)}
                   className="p-2 rounded-lg border-black border"
+                  onInput={handleYearInput}
                 />
               </div>
             </div>
@@ -252,11 +356,14 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("birthday")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-5" className="p-2">
+
+        <AccordionItem value="item-6" className="p-2">
           <AccordionTrigger>Nationality</AccordionTrigger>
           <p className="text-gray-500 text-sm">Select the country/region you're from</p>
           <AccordionContent className="flex flex-col gap-10">
@@ -275,11 +382,13 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-6" className="p-2">
+        <AccordionItem value="item-7" className="p-2">
           <AccordionTrigger>Gender</AccordionTrigger>
           <p className="text-gray-500 text-sm">Select your gender</p>
           <AccordionContent className="flex flex-col gap-10">
@@ -298,11 +407,13 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-7" className="p-2">
+        <AccordionItem value="item-8" className="p-2">
           <AccordionTrigger>Address</AccordionTrigger>
           <p className="text-gray-500 text-sm">Add your address</p>
           <AccordionContent className="flex flex-col gap-10">
@@ -347,11 +458,13 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-8" className="p-4">
+        <AccordionItem value="item-9" className="p-4">
           <AccordionTrigger>Passport details</AccordionTrigger>
           <p className="text-gray-500 text-sm">Not provided</p>
           <AccordionContent className="flex flex-col gap-5">
@@ -443,7 +556,9 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button>Save</Button>
+              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+                {isLoading ? <Spinner /> : "Save"}
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>

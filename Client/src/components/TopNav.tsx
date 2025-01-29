@@ -78,7 +78,6 @@ function TopNav() {
     `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
   );
 
-  // console.log(currentUser.user_image);
   return (
     <div className="flex-col  bg-[#013b94] px-4 py-2">
       <div className="max-w-[1100px] m-auto">
@@ -110,7 +109,12 @@ function TopNav() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <h2 className="text-white">Account & Info</h2>
+                      <h2 className="text-white">
+                        {currentUser.fName || currentUser.lName ? 
+                        currentUser.fName + " " + currentUser.lName
+                        :
+                        "Account & Info"}
+                      </h2>
                       <p className="text-[#f8b830]">
                         Genius Level {currentUser.geniusLevel}
                       </p>

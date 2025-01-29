@@ -89,3 +89,13 @@ html {
 .image-carousel li {
   width: fit-content !important ;
 }
+
+/* Toaster */
+#toast-root {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  min-width: 400px;
+}
