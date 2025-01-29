@@ -153,7 +153,7 @@ interface IEditProfileBody {
     password?: string;
     phoneNumber?: string;
     email?: string;
-    birthday?: Date;
+    birthday?: string | Date;
     gender?: string; // can be "male", "female", or "other"
     user_image?: string;
     location?: ILocation;
@@ -199,7 +199,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
         if (email) fieldsToUpdate.email = email;
         if (password) fieldsToUpdate.password = password;
         if (phoneNumber) fieldsToUpdate.phoneNumber = phoneNumber;
-        if (birthday) fieldsToUpdate.birthday = birthday;
+        if (birthday) fieldsToUpdate.birthday = new Date(birthday);
         if (gender) fieldsToUpdate.gender = gender;
         if (user_image) fieldsToUpdate.user_image = user_image;
         if (passport) fieldsToUpdate.passport = passport;
