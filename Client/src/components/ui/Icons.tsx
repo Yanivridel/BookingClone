@@ -1331,7 +1331,7 @@ export const CityIcon = ({ className }: IconsProps) => {
   );
 };
 
-export const IconSeccess = ({ className }: IconsProps) => {
+export const IconSuccess = ({ className }: IconsProps) => {
   return (
     <svg
       className={className}

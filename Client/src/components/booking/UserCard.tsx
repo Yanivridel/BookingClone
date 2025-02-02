@@ -14,7 +14,7 @@ function UserCard() {
   );
 
   return (
-    <div className="m-3 border-[1px] border-softGrayBorder flex xs:items-center gap-3 p-4 rounded-[8px] flex-col xs:flex-row">
+    <div className="mt-3 border-[1px] border-softGrayBorder flex xs:items-center gap-3 p-4 rounded-[8px] flex-col xs:flex-row">
       <Avatar className=" border-2 border-[#f8b830] pointer-events-none h-[44px] w-[44px]">
         <AvatarImage
           src={currentUser.user_image ? currentUser.user_image : undefined}

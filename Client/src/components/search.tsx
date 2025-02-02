@@ -18,7 +18,10 @@ import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
-import { convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
+import {
+  convertMonthsToQueryString,
+  makeUrlForSearch,
+} from "@/utils/functions";
 import { modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addSearchEntry } from "@/store/slices/userSlices";
@@ -126,7 +129,9 @@ function Search() {
   const [variant, setVariant] = useState<"default" | "disabled">("disabled");
 
   const [openDatesPopHover, setOpenDatesPopHover] = useState(false);
-  const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthNameYear[]>([]);
+  const [clickedMonthsCards, setClickedMonthsCards] = useState<MonthNameYear[]>(
+    []
+  );
   const [rangeDates, setRangeDates] = React.useState<DateRange | undefined>({
     from: new Date(searchParams.get("startDate") || new Date()),
     to: new Date(searchParams.get("endDate") || addDays(new Date(), 6)),
@@ -147,40 +152,43 @@ function Search() {
     parseInt(searchParams.get("adults") || "1")
   );
   const [childrenCount, setChildrenCount] = useState(
-    searchParams.get("childrenAges") ? 
-      (
-      searchParams.get("childrenAges")!.length <= 2 ? 1 
-      :
-      searchParams.get("childrenAges")?.split(",")?.length ?? 0
-      )
-    :
-    0
-    );
-  const [roomsCount, setRoomsCount] = useState(Number(searchParams.get("rooms") ?? 1));
+    searchParams.get("childrenAges")
+      ? searchParams.get("childrenAges")!.length <= 2
+        ? 1
+        : searchParams.get("childrenAges")?.split(",")?.length ?? 0
+      : 0
+  );
+  const [roomsCount, setRoomsCount] = useState(
+    Number(searchParams.get("rooms") ?? 1)
+  );
   const [isPets, setIsPets] = useState(!!searchParams.get("isAnimalAllowed"));
   const [childrenAges, setChildrenAges] = useState<
     (number | typeof NaN | undefined | null | "")[]
-
-  >( searchParams.get("childrenAges") ?
-      searchParams.get("childrenAges")!.split(",").map(age => {
-      const num = parseInt(age.trim(), 10);
-      return isNaN(num) ? "" : num;
-    })
-  : []);
+  >(
+    searchParams.get("childrenAges")
+      ? searchParams
+          .get("childrenAges")!
+          .split(",")
+          .map((age) => {
+            const num = parseInt(age.trim(), 10);
+            return isNaN(num) ? "" : num;
+          })
+      : []
+  );
 
   const generateLocationChain = () => {
     const country = searchParams.get("country");
     const region = searchParams.get("region");
     const city = searchParams.get("city");
     const addressLine = searchParams.get("addressLine");
-  
+
     const locationParts: string[] = [];
-  
+
     if (country) locationParts.push(country);
     if (region) locationParts.push(region);
     if (city) locationParts.push(city);
     if (addressLine) locationParts.push(addressLine);
-  
+
     return locationParts.join(", ");
   };
 
@@ -209,7 +217,10 @@ function Search() {
     setIsPets(!!searchParams.get("isAnimalAllowed"));
     setChildrenAges(
       searchParams.get("childrenAges")
-        ? searchParams.get("childrenAges")!.split(",").map(age => parseInt(age.trim(), 10) || "")
+        ? searchParams
+            .get("childrenAges")!
+            .split(",")
+            .map((age) => parseInt(age.trim(), 10) || "")
         : []
     );
   }, [searchParams]);
@@ -283,11 +294,11 @@ function Search() {
     setLocationInputValue(() => [matchedIn, locationChain].join(", "));
     const locationToSet = {} as Location;
     locationToSet["country"] = element.country;
-    if(matchedIn !== element.country) {
+    if (matchedIn !== element.country) {
       locationToSet["region"] = element.region;
-      if(matchedIn !== element.region) {
+      if (matchedIn !== element.region) {
         locationToSet["city"] = element.city;
-        if(matchedIn !== element.city) {
+        if (matchedIn !== element.city) {
           locationToSet["addressLine"] = element.addressLine;
         }
       }
@@ -337,7 +348,7 @@ function Search() {
           clickedMonth.year === monthYear.year
       )
     ) {
-      //button clicked allrady - remove:
+      // button clicked allredy - remove:
       newClickedButtons = clickedMonthsCards.filter((element) => {
         return element.monthName !== monthYear.monthName;
       });
@@ -352,7 +363,7 @@ function Search() {
     setClickedMonthsCards(newClickedButtons);
   };
 
-  //  preferred days - monthes and day number
+  //  preferred days - months and day number
   const handleRadioGroup = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -371,19 +382,21 @@ function Search() {
     setFromDay(e.target.value);
   };
 
-  //hebrew formt
+  //hebrew format
   const formattedHebrew = "EEE, dd MMMM";
   // english format
   const formattedEnglish = "EEE, MMM dd";
 
-  //  preferred days - monthes and day number
+  //  preferred days - months and day number
   const handleSubmit = async () => {
     const url = makeUrlForSearch(finalData);
     navigate(url);
     try {
-      const updatedUser = await modifyUserArrays("add", { search: finalData.primary});
+      const updatedUser = await modifyUserArrays("add", {
+        search: finalData.primary,
+      });
       dispatch(addSearchEntry(updatedUser.search));
-    } catch(err) {
+    } catch (err) {
       console.log("React Client Error: ", err);
     }
   };
@@ -443,9 +456,8 @@ function Search() {
                       : element.matchedIn === "addressLine"
                       ? `${element.location.city}, ${element.location.region}, ${element.location.country} `
                       : null;
-                  if(locationDropdownMap[header+subHeader]) 
-                    return null;
-                  locationDropdownMap[header+subHeader] = 1;
+                  if (locationDropdownMap[header + subHeader]) return null;
+                  locationDropdownMap[header + subHeader] = 1;
 
                   return (
                     Object.values(locationDropdownMap).length < 5 && (

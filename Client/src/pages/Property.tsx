@@ -132,8 +132,7 @@ function Property() {
     { label: cf(propertyData?.title || "") },
   ];
 
-  if (!propertyData) 
-    return null;
+  if (!propertyData) return null;
 
   return (
     <div className="relative ">

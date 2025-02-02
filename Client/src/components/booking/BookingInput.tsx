@@ -1,38 +1,39 @@
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { IconError, IconSeccess } from "../ui/Icons";
-import { ForwardedRef, forwardRef, MutableRefObject, useState } from "react";
+import { IconError, IconSuccess } from "../ui/Icons";
+import { ForwardedRef, forwardRef, useState } from "react";
 
 interface BookingInputProps {
-  isSeccess?: boolean;
-  isIconSeccess?: boolean;
-  seccessMessage?: string;
+  isSuccess?: boolean;
+  isIconSuccess?: boolean;
+  successMessage?: string;
   onBlurHandler: () => void;
-  labalText: string;
-  error: string;
+  labelText: string;
+  error?: string;
   isRequired: boolean;
   areRequiredAsterisk?: boolean;
   placeholder?: string;
   name: string;
   type: string;
-
-  defaultValue: string;
+  optional?: string;
+  defaultValue?: string;
 }
 
 const BookingInput = forwardRef(function BookingInput(
   {
     error,
     areRequiredAsterisk = false,
-    isSeccess = false,
-    seccessMessage,
-    isIconSeccess = false,
+    isSuccess = false,
+    successMessage,
+    isIconSuccess = false,
     onBlurHandler,
     name,
     defaultValue,
     placeholder = "",
     isRequired,
-    labalText,
+    labelText: labelText,
     type,
+    optional,
   }: BookingInputProps,
   ref: ForwardedRef<HTMLInputElement>
 ) {
@@ -43,7 +44,10 @@ const BookingInput = forwardRef(function BookingInput(
       <div className="grid gap-1 ">
         <div>
           <Label className="text-sm" htmlFor={name}>
-            {labalText}
+            {labelText}
+            {optional && (
+              <span className="text-[#595959] font-normal">{optional}</span>
+            )}
           </Label>
           {areRequiredAsterisk && (
             <span className="text-redError ms-1 text-sm">*</span>
@@ -71,17 +75,18 @@ const BookingInput = forwardRef(function BookingInput(
           {error && !isFocus && (
             <IconError className="h-5 w-5 fill-redError absolute top-2 end-2 " />
           )}
-          {!isFocus && !error && isIconSeccess && isSeccess && (
-            <IconSeccess className="h-5 w-5 fill-IconsGreen absolute top-2 end-2 bg-white" />
+          {!isFocus && !error && isIconSuccess && isSuccess && (
+            <IconSuccess className="h-5 w-5 fill-IconsGreen absolute top-2 end-2 bg-white" />
           )}
         </div>
-        {isSeccess && !error && (
-          <div className="text-IconsGreen text-xs">{seccessMessage}</div>
+        {isSuccess && !error && (
+          <div className="text-IconsGreen text-xs">{successMessage}</div>
         )}
         {error && <div className="text-redError text-sm">{error}</div>}
       </div>
     </div>
   );
 });
+
 BookingInput.displayName = "BookingInput";
 export default BookingInput;
