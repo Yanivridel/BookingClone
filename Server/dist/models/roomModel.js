@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoomModel = void 0;
+exports.roomModel = void 0;
 const mongoose_1 = require("mongoose");
-const structures_1 = require("src/utils/structures");
+const node_cron_1 = __importDefault(require("node-cron")); // Import the node-cron library
+const structures_1 = require("../utils/structures");
 const RoomSchema = new mongoose_1.Schema({
-    //property_id: { type: Schema.Types.ObjectId, ref: "Property", required: true },
     title: { type: String, required: true },
     type: {
         type: String,
@@ -25,29 +28,21 @@ const RoomSchema = new mongoose_1.Schema({
             }
         }],
     baby: { type: Boolean, default: false },
-    facilities: { type: [String], enum: Object.values(structures_1.EFacility), default: [],
-        validate: {
-            validator: (v) => Object.values(structures_1.EFacility).includes(v),
-            message: props => `${props.value} is not a valid Facility!`
-        }
-    },
+    facilities: [{ type: String, enum: structures_1.EFacility }],
     features: [{
-            category: { type: String, enum: Object.values(structures_1.EFeatures), required: true,
-                validate: {
-                    validator: (v) => Object.values(structures_1.EFeatures).includes(v),
-                    message: props => `${props.value} is not a valid Feature!`
-                }
-            },
+            category: { type: String, enum: structures_1.EFeatures, required: true },
             sub: { type: [String], default: [] }
         }],
-    available: [{
-            date: { type: Date, required: true },
-            count: { type: Number, min: 0, required: true }
-        }],
+    available: {
+        type: [{
+                date: { type: Date, required: true },
+                count: { type: Number, min: 0, required: true }
+            }],
+        default: []
+    },
     offers: [{
             price_per_night: { type: Number, required: true },
             discount: {
-                type: { type: String, required: true },
                 percentage: { type: Number, required: true },
                 expires: { type: Date, required: true }
             },
@@ -58,7 +53,7 @@ const RoomSchema = new mongoose_1.Schema({
             meals: [{
                     type: {
                         type: String,
-                        enum: ["morning", "noon", "afternoon", "evening"],
+                        enum: ["morning", "noon", "afternoon", "evening", "self-service", "all-inclusive", "morning and evening"],
                         required: true
                     },
                     rating: { type: Number, min: 0, max: 10, required: true },
@@ -77,8 +72,26 @@ RoomSchema.set('toJSON', { virtuals: true });
 RoomSchema.set('toObject', { virtuals: true });
 // Virtual Property: max_guests
 RoomSchema.virtual("max_guests").get(function () {
-    return this.rooms.beds.sofa + this.rooms.beds.single +
-        (this.rooms.beds.queen + this.rooms.beds.bunk + this.rooms.beds.double) * 2;
+    return this.rooms.reduce((total, room) => {
+        return total +
+            room.beds.sofa +
+            room.beds.single +
+            (room.beds.queen + room.beds.bunk + room.beds.double) * 2;
+    }, 0);
 });
-exports.RoomModel = (0, mongoose_1.model)("Room", RoomSchema);
+// Once a day (midnight), cleanup the old booked rooms data
+node_cron_1.default.schedule('0 0 * * *', async () => {
+    try {
+        const rooms = await exports.roomModel.find({});
+        for (const room of rooms) {
+            room.set({ available: room.available.filter(availability => availability.date >= new Date()) });
+            await room.save();
+        }
+        console.log('Daily cleanup of past available dates completed.');
+    }
+    catch (error) {
+        console.error('Error cleaning up past available dates:', error);
+    }
+});
+exports.roomModel = (0, mongoose_1.model)("Room", RoomSchema);
 //# sourceMappingURL=roomModel.js.map

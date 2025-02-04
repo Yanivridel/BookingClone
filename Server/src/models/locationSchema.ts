@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { ICoordinates, ILocation } from "src/types/propertyTypes";
+import { ICoordinates, ILocation } from "../types/propertyTypes";
 
 
 const CoordinatesSchema = new Schema<ICoordinates>({

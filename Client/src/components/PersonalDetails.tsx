@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Accordion,
@@ -9,7 +9,7 @@ import {
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { getInitials } from "@/utils/functions";
+import { getCurrentCountry, getInitials } from "@/utils/functions";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { IUser } from "@/types/userTypes";
@@ -36,10 +36,9 @@ function PersonalDetails() {
     day: useRef(null),
     year: useRef(null),
     gender: useRef(null),
-    country: useRef(null),
     city: useRef(null),
-    postal: useRef(null),
-    address: useRef(null),
+    zipCode: useRef(null),
+    addressLine: useRef(null),
     passportExpireDay: useRef(null),
     passportExpireMonth: useRef(null),
     passportExpireYear: useRef(null),
@@ -48,12 +47,27 @@ function PersonalDetails() {
     passportNumber: useRef(null),
   } as any;
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState({ code: "+972", label: "🇮🇱 Israel" });
+  const [selectedCountry, setSelectedCountry] = useState({ code: "+1", label: "🇺🇸 United States" });
   const dispatch = useDispatch();
   const initials = getInitials(
     `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
   );
   const { toast } = useToast()
+
+  useEffect(() => {
+    getCurrentCountry()
+      .then(countryName => {
+        if (!countryName) return; 
+  
+        const foundCountry = countryCodes.find(el => 
+          el.label.toLowerCase().includes(countryName.toLowerCase())
+        );
+  
+        if (foundCountry) {
+          setSelectedCountry(foundCountry);
+        }
+      });
+  }, []);
 
   const handleSave = async (key: string) => {
     setIsLoading(true);
@@ -67,12 +81,34 @@ function PersonalDetails() {
       case "phoneNumber":
         fieldsToUpdate[key] = selectedCountry.code + refs[key].current.value
         break;
-      case "birthday":
-        const birthday = fieldsToUpdate["year"] + '-' + fieldsToUpdate["day"] + '-' + fieldsToUpdate["month"]
-        // fieldsToUpdate["birthday"] = new Date(, , );
+      case "country":
+        fieldsToUpdate["location"] = { country: selectedCountry.label.split(" ")[1] };
         break;
+      case "birthday":
+        const birthday = refs["year"].current.value + '-' + refs["month"].current.value
+          + '-' + refs["day"].current.value + 'T00:00:00Z';
+        fieldsToUpdate["birthday"] = birthday;
+        break;
+      case "address":
+        const location: any = { country: selectedCountry.label.split(" ")[1] };
+        if(refs["city"].current.value) location["city"] = refs["city"].current.value
+        if(refs["addressLine"].current.value) location["addressLine"] = refs["addressLine"].current.value
+        if(refs["zipCode"].current.value) location["zipCode"] = refs["zipCode"].current.value
+        fieldsToUpdate["location"] = location;
+        break;
+      case "passport":
+        const passport: any = { country: selectedCountry.label.split(" ")[1] };
+        if(refs["passportFirstName"].current.value) passport["fName"] = refs["passportFirstName"].current.value
+        if(refs["passportLastName"].current.value) passport["lName"] = refs["passportLastName"].current.value
+        if(refs["passportNumber"].current.value) passport["number"] = refs["passportNumber"].current.value
+        const date = refs["passportExpireYear"].current.value + '-' + refs["passportExpireMonth"].current.value
+        + '-' + refs["passportExpireDay"].current.value + 'T00:00:00Z';
+        if(date) passport["expires"] = date
+        fieldsToUpdate["passport"] = passport;
+        break;
+
       // Single Keys:
-      case "username": case "email": 
+      case "username": case "email": case "gender":
         fieldsToUpdate[key] = refs[key].current.value
         break;
       default:
@@ -102,18 +138,22 @@ function PersonalDetails() {
     }
   };
 
-  const handleDayInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDayInput = (e: React.FormEvent<HTMLInputElement>) => {
     let value = e.currentTarget.value.replace(/\D/g, '');
     if (Number(value) > 31) value = "31";
     e.currentTarget.value = value;
   };
-  const handleYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleYearInput = (e: React.FormEvent<HTMLInputElement>, isPassport: boolean) => {
     let value = e.currentTarget.value.replace(/\D/g, '');
-    if (Number(value) > new Date().getFullYear()) value = new Date().getFullYear().toString();
-    if (value.length === 4 && Number(value) < 1900) value = "1900";
+    if(isPassport) {
+      if (value.length === 4 && Number(value) < Number(new Date().getFullYear())) value = String(new Date().getFullYear());
+      if (Number(value) > Number(new Date(new Date().getFullYear() + 10))) value = String((new Date(new Date().getFullYear() + 10, 11, 31)).getFullYear());
+    } else {
+      if (value.length === 4 && Number(value) < 1900) value = "1900";
+      if (Number(value) > new Date().getFullYear()) value = new Date().getFullYear().toString();
+    }
     e.currentTarget.value = value;
   };
-
 
   return (
     <div className="grid grid-cols-1 max-w-[1100px]">
@@ -170,12 +210,11 @@ function PersonalDetails() {
               </div>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
+              </AccordionTrigger>
               <Button disabled={isLoading} onClick={() => handleSave("name")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
@@ -198,12 +237,11 @@ function PersonalDetails() {
               />
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
+              </AccordionTrigger>
               <Button disabled={isLoading} onClick={() => handleSave("username")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
@@ -234,12 +272,11 @@ function PersonalDetails() {
               </p>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
+              </AccordionTrigger>
               <Button disabled={isLoading} onClick={() => handleSave("email")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
@@ -291,12 +328,11 @@ function PersonalDetails() {
               </div>
             </div>
             <div className="flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
+              </AccordionTrigger>
               <Button disabled={isLoading} onClick={() => handleSave("phoneNumber")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
@@ -345,24 +381,23 @@ function PersonalDetails() {
                   min={1900}
                   max={Number(new Date().getFullYear)}
                   className="p-2 rounded-lg border-black border"
-                  onInput={handleYearInput}
+                  onInput={(e) => handleYearInput(e, false)}
                 />
               </div>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
+              </AccordionTrigger>
               <Button disabled={isLoading} onClick={() => handleSave("birthday")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-
+        {/* Country */}
         <AccordionItem value="item-6" className="p-2">
           <AccordionTrigger>Nationality</AccordionTrigger>
           <p className="text-gray-500 text-sm">Select the country/region you're from</p>
@@ -370,24 +405,35 @@ function PersonalDetails() {
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Nationality *</p>
               <div className="flex gap-2">
-                <select className="border rounded-lg p-2">
-                  <option value="volvo">Country</option>
-                </select>
+                <Select onValueChange={(val) => setSelectedCountry(countryCodes.find(c => c.label === val)!)}>
+                  <SelectTrigger className="border rounded-lg p-2 ms-3 w-5/6">
+                    <SelectValue placeholder={selectedCountry.label}>{selectedCountry.label}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((country) => (
+                      <SelectItem
+                      className={`cursor-pointer ${selectedCountry.label === country.label ? "bg-blue-500 focus:bg-blue-500" : ""}`}
+                      key={country.code+country.label} value={country.label}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+              </AccordionTrigger>
+              <Button disabled={isLoading} onClick={() => handleSave("country")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Gender */}
         <AccordionItem value="item-7" className="p-2">
           <AccordionTrigger>Gender</AccordionTrigger>
           <p className="text-gray-500 text-sm">Select your gender</p>
@@ -395,39 +441,56 @@ function PersonalDetails() {
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Gender*</p>
               <div className="flex gap-2">
-                <select className="border rounded-lg p-2" aria-placeholder="ss">
-                  <option value="volvo">Select your gender</option>
+              <select ref={refs.gender} className="border rounded-lg p-2 w-5/6" aria-placeholder="Select Gender">
+                  <option value="other" disabled selected>
+                    Select your gender
+                  </option>
+                  <option value="male">I'm a man</option>
+                  <option value="female">I'm a woman</option>
+                  <option value="non-binary">I'm non-binary</option>
+                  <option value="other">I prefer not to say</option>
                 </select>
               </div>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+              </AccordionTrigger>
+              <Button disabled={isLoading} onClick={() => handleSave("gender")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Address */}
         <AccordionItem value="item-8" className="p-2">
           <AccordionTrigger>Address</AccordionTrigger>
           <p className="text-gray-500 text-sm">Add your address</p>
           <AccordionContent className="flex flex-col gap-10">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 p-2">
               <p className="font-semibold">Country/region</p>
               <div className="flex gap-2">
-                <select className="border rounded-lg p-2" aria-placeholder="ss">
-                  <option value="volvo">Select your Country</option>
-                </select>
+                <Select onValueChange={(val) => setSelectedCountry(countryCodes.find(c => c.label === val)!)}>
+                  <SelectTrigger className="border rounded-lg p-2 w-full">
+                    <SelectValue placeholder={selectedCountry.label}>{selectedCountry.label}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((country) => (
+                      <SelectItem
+                      className={`cursor-pointer ${selectedCountry.label === country.label ? "bg-blue-500 focus:bg-blue-500" : ""}`}
+                      key={country.code+country.label} value={country.label}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Address</p>
                 <input
-                  ref={refs.address}
+                  ref={refs.addressLine}
                   type="text"
                   className="p-2 rounded-lg border-black border"
                 />
@@ -442,9 +505,9 @@ function PersonalDetails() {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="font-semibold">Postcode</p>
+                  <p className="font-semibold">Zip code</p>
                   <input
-                    ref={refs.postal}
+                    ref={refs.zipCode}
                     type="text"
                     className="p-2 rounded-lg border-black border"
                   />
@@ -452,22 +515,25 @@ function PersonalDetails() {
               </div>
             </div>
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+              </AccordionTrigger>
+              <Button disabled={isLoading} onClick={() => handleSave("address")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
+        {/* Passport */}
         <AccordionItem value="item-9" className="p-4">
           <AccordionTrigger>Passport details</AccordionTrigger>
-          <p className="text-gray-500 text-sm">Not provided</p>
-          <AccordionContent className="flex flex-col gap-5">
+          <p className="text-gray-500 text-sm">
+            Save your passport details for use when booking your next stay, flight, or attraction.
+          </p>
+          <AccordionContent className="flex flex-col gap-5 p-2">
+            {/* name */}
             <div className=" grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">First name(s) *</p>
@@ -485,13 +551,28 @@ function PersonalDetails() {
                   className="p-2 rounded-lg border-black border"
                 />
               </div>
+              <p className="text-gray-500 text-xs col-span-2">
+              Enter the name exactly as it's written on the passport or other official travel document.
+              </p>
             </div>
+            {/* country  + num */}
             <div className=" grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Issuing country *</p>
-                <select className="border rounded-lg p-2" aria-placeholder="ss">
-                  <option value="volvo">Select your gender</option>
-                </select>
+                <Select onValueChange={(val) => setSelectedCountry(countryCodes.find(c => c.label === val)!)}>
+                  <SelectTrigger className="border rounded-lg p-2 w-full">
+                    <SelectValue placeholder={selectedCountry.label}>{selectedCountry.label}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((country) => (
+                      <SelectItem
+                      className={`cursor-pointer ${selectedCountry.label === country.label ? "bg-blue-500 focus:bg-blue-500" : ""}`}
+                      key={country.code+country.label} value={country.label}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col gap-1">
                 <p className="font-semibold">Passport number *</p>
@@ -502,40 +583,52 @@ function PersonalDetails() {
                 />
               </div>
             </div>
+            {/* expire date */}
             <div className="grid grid-cols-1">
               <p className="font-semibold">Expiry date *</p>
-              <div className="grid grid-cols-3">
-              <select ref={refs.passportExpireMonth} className="border rounded-lg p-2" aria-placeholder="Select Month">
+              <div className="grid grid-cols-3 gap-2">
+                <select ref={refs.passportExpireMonth} className="border rounded-lg p-2" aria-placeholder="Select Month">
                   <option value="" disabled selected>
                     Select Month
                   </option>
-                  <option value="january">January</option>
-                  <option value="february">February</option>
-                  <option value="march">March</option>
-                  <option value="april">April</option>
-                  <option value="may">May</option>
-                  <option value="june">June</option>
-                  <option value="july">July</option>
-                  <option value="august">August</option>
-                  <option value="september">September</option>
-                  <option value="october">October</option>
-                  <option value="november">November</option>
-                  <option value="december">December</option>
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
                 </select>
                 <input
                   ref={refs.passportExpireDay}
+                  type="tel"
                   placeholder="DD"
-                  type="number"
+                  maxLength={2}
+                  min={1}
                   className="p-2 rounded-lg border-black border"
+                  onInput={handleDayInput}
                 />
                 <input
                   ref={refs.passportExpireYear}
+                  type="tel"
                   placeholder="YYYY"
-                  type="text"
+                  maxLength={4}
+                  min={Number(new Date().getFullYear())}
+                  max={Number(new Date(new Date().getFullYear() + 10))}
                   className="p-2 rounded-lg border-black border"
+                  onInput={(e) => handleYearInput(e, true)}
                 />
               </div>
             </div>
+            <p className="text-gray-500 text-xs col-span-3 -mt-2">
+                We’ll store this data safely and remove it after two years of inactivity.
+            </p>
+            {/* concent */}
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" className="rounded-lg" />
               <label
@@ -549,14 +642,14 @@ function PersonalDetails() {
                 </span>
               </label>
             </div>
+            {/* buttons */}
             <div className=" flex justify-between">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:bg-sky-100 hover:text-blue-600"
+              <AccordionTrigger value=""
+                className="[&>svg]:hidden text-blue-600 hover:bg-sky-100 hover:text-blue-600 p-2"
               >
                 Cancel
-              </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("name")}>
+              </AccordionTrigger>
+              <Button disabled={isLoading} onClick={() => handleSave("passport")}>
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>

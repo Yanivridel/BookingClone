@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
 // utils imports
-import { IProperty, TPartialProperty } from 'src/types/propertyTypes';
-import { propertyModel } from './../models/propertyModel';
-import { getCoordinatesByLocation } from 'src/utils/maps';
-import { roomModel } from 'src/models/roomModel';
-import { IRoom, TSelectedRoom } from 'src/types/roomTypes';
-import { getCache, setCache } from 'src/utils/redisClient';
-import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from 'src/types/userTypes'; 
+import { IProperty, TPartialProperty } from '../types/propertyTypes';
+import { propertyModel } from '../models/propertyModel';
+import { getCoordinatesByLocation } from '../utils/maps';
+import { roomModel } from '../models/roomModel';
+import { IRoom, TSelectedRoom } from '../types/roomTypes';
+import { getCache, setCache } from '../utils/redisClient';
+import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from '../types/userTypes'; 
 //* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {

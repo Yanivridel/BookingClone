@@ -72,7 +72,6 @@ function Home() {
       });
     };
 
-
     window.addEventListener("resize", checkMobile);
 
     return () => {

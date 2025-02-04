@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { createPaymentIntent } from "./../utils/stripe";
-import { paymentModel } from "src/models/paymentModel";
-import { IPayment } from "src/types/paymentTypes";
-import { AuthenticatedRequest } from "src/types/expressTypes";
-import { bookingModel } from "src/models/bookingModel";
+import { createPaymentIntent } from "../utils/stripe";
+import { paymentModel } from "../models/paymentModel";
+import { IPayment } from "../types/paymentTypes";
+import { AuthenticatedRequest } from "../types/expressTypes";
+import { bookingModel } from "../models/bookingModel";
 
 export const createPayment = async (req: Request, res: Response): Promise<void> => {
     try {

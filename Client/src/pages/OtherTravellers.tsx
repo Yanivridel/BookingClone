@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { Plus } from '@/components/ui/Icons'
-import React from 'react'
 
 function OtherTravellers() {
   return (

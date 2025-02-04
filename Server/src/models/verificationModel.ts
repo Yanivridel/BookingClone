@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IVerification } from "src/types/verificationTypes";
+import { IVerification } from "../types/verificationTypes";
 
 const verificationSchema = new Schema<IVerification>({
     email: { type: String, required: true, unique: true },

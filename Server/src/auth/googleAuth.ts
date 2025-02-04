@@ -3,9 +3,9 @@ import express, { Request, Response } from 'express';
 import passport from 'passport';
 import session from 'express-session';
 import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20';
-import { userModel } from 'src/models/userModel';
+import { userModel } from '../models/userModel';
 import jwt from 'jsonwebtoken';
-import { IUser } from 'src/types/userTypes';
+import { IUser } from '../types/userTypes';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 

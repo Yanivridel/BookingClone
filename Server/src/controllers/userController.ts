@@ -5,11 +5,10 @@ import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
 
 // utils imports
-// import { hashPassword, comparePassword } from "../utils/auth";
-import { generateVerificationCode, verifyVerificationCode } from './../utils/auth';
-import { AuthenticatedRequest } from 'src/types/expressTypes';
-import { getCoordinatesByLocation } from './../utils/maps';
-import { ILocation, ICoordinates } from 'src/types/propertyTypes';
+import { generateVerificationCode, verifyVerificationCode } from '../utils/auth';
+import { AuthenticatedRequest } from '../types/expressTypes';
+import { getCoordinatesByLocation } from '../utils/maps';
+import { ILocation, ICoordinates } from '../types/propertyTypes';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 

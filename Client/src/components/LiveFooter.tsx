@@ -25,7 +25,8 @@ const LiveFooter = () => {
   };
 
   return (
-    <Card className="my-6 relative p-6 bg-white border rounded-lg shadow-lg overflow-hidden max-w-[1100px] mx-auto">
+    <div className="max-w-[1100px] mx-auto">
+    <Card className="my-6 relative p-6 bg-white border rounded-lg shadow-lg overflow-hidden  mx-2">
       {/* Background circles */}
       <div className="absolute top-2/3 left-1/6 -translate-x-1/2 -translate-y-1/2 w-[100px] h-[100px] bg-yellow-500 rounded-full"></div>
       <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500 rounded-full"></div>
@@ -67,6 +68,7 @@ const LiveFooter = () => {
         />
       </div>
     </Card>
+    </div>
   );
 };
 

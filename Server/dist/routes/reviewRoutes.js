@@ -8,7 +8,6 @@ const reviewController_1 = require("../controllers/reviewController");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post("/create", authMiddleware_1.authenticateToken, reviewController_1.createReview);
-// router.get('/', authenticateToken, getReviewsByUser);
-// router.get("/:id", getReivewsByProperty);
+router.get("/:id", reviewController_1.getAllReviewsForProperty);
 exports.default = router;
 //# sourceMappingURL=reviewRoutes.js.map

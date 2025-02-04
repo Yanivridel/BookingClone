@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { AuthenticatedRequestOptional } from 'src/types/expressTypes';
+import { AuthenticatedRequestOptional } from '../types/expressTypes';
 
 export const authenticateToken = async (req: AuthenticatedRequestOptional, res: Response, next: NextFunction): Promise<void> => {
     const token = req.headers.authorization?.split(' ')[1];

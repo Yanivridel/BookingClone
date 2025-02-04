@@ -62,7 +62,7 @@ export const editProfile = async (fieldsToUpdate : TPartialUser ) => {
         return data.data;
     } 
     catch (error) {
-        console.error('Add recipe error:', error);
+        console.error('Edit profile error:', error);
         throw error;
     }
 }

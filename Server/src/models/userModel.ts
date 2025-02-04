@@ -1,7 +1,7 @@
 import { Schema, model, Types } from "mongoose";
 
-import { ECoinType, ELanguage } from "./../utils/structures";
-import { IUser } from "src/types/userTypes";
+import { ECoinType, ELanguage } from "../utils/structures";
+import { IUser } from "../types/userTypes";
 import { LocationSchema } from "./locationSchema";
 
 const UserSchema = new Schema<IUser>(
@@ -13,7 +13,7 @@ const UserSchema = new Schema<IUser>(
         password: { type: String },
         phoneNumber: { type: String, unique: true, sparse: true }, // allow null none unique
         birthday: { type: Date },
-        gender: { type: String, enum: ["male", "female", "other"] },
+        gender: { type: String, enum: ["male", "female", "non-binary", "other"] },
         user_image: { type: String }, 
         location: { type: LocationSchema },
         passport: {
@@ -30,14 +30,14 @@ const UserSchema = new Schema<IUser>(
         },
         coinType: { type: String, enum: Object.values(ECoinType), default: ECoinType.USD,
             validate: {
-                validator: (v) => Object.values(ECoinType).includes(v),
-                message: props => `${props.value} is not a valid coin type!`
+                validator: (v: any) => Object.values(ECoinType).includes(v),
+                message: (props: any) => `${props.value} is not a valid coin type!`
             }
         },
         language: { type: String, enum: Object.values(ELanguage), default: ELanguage.EN,
             validate: {
-                validator: (v) => Object.values(ELanguage).includes(v),
-                message: props => `${props.value} is not a valid language!`
+                validator: (v: any) => Object.values(ELanguage).includes(v),
+                message: (props:any) => `${props.value} is not a valid language!`
             }
         },
         notifications: {

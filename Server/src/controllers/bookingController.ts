@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import { bookingModel } from "src/models/bookingModel";
-import { roomModel } from "src/models/roomModel";
-import { TBookingStringified } from "src/types/bookingTypes";
-import { AuthenticatedRequest } from "src/types/expressTypes";
+import { bookingModel } from "../models/bookingModel";
+import { roomModel } from "../models/roomModel";
+import { TBookingStringified } from "../types/bookingTypes";
+import { AuthenticatedRequest } from "../types/expressTypes";
 
 
 export const createBooking = async (req: Request<{},{},TBookingStringified>, res: Response): Promise<void> => {
