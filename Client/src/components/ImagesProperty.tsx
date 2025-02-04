@@ -1,19 +1,14 @@
 import { IProperty } from "@/types/propertyTypes";
 import styles from "@/css/search.module.css";
 import { Card, CardDescription, CardTitle } from "./ui/card";
-import KidsImage from "../assets/images/kids.jpeg";
 import { Badge } from "./ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
 import { IReview } from "@/types/reviewTypes";
 import { cn } from "@/lib/utils";
 import { SampleNextArrow, SamplePrevArrow } from "./ui/carousel-slick";
-import MainCarousel from "./MainCarousel";
 import ReviewsCard from "./ReviewsCard";
 import Slider from "react-slick";
 import { getDescByRating } from "@/utils/functions";
 import CheckpointMap, { LatLng } from "./CheckpointMap";
-import { data } from "react-router-dom";
 
 interface ImagePropertyProps {
   propertyData: IProperty;

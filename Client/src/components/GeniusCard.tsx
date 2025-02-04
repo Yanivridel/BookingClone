@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, CardTitle } from './ui/card'
 import { GeniusLogo, YellowVi } from './ui/Icons'
 

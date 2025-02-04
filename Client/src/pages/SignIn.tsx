@@ -2,12 +2,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import TopNav from "@/components/TopNav";
 import {
   IconApple,
   IconError,
   IconFacebook,
-  IconGoogle,
 } from "@/components/ui/Icons";
 import { Card } from "@/components/ui/card";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -15,7 +13,6 @@ import { sendEmailCode } from "@/utils/api/userApi";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "@/utils/utilsFunctions";
 import { GoogleLogin } from '@react-oauth/google';
-import axios from "axios";
 
 function SignIn({
   className,

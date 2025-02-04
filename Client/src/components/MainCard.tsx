@@ -1,19 +1,17 @@
-import { Card, CardContent, CardDescription, CardTitle } from "./ui/card";
+import { Card, CardDescription, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import Image from "../assets/images/hotel.jpg";
 import GeniusImage from "../assets/images/Genius.png";
 import ThumbsUp from "../assets/images/thumps.png";
 import SaveButton from "./SaveButton";
 import { useEffect, useState } from "react";
 import { IProperty } from "@/types/propertyTypes";
 import { getPropertyByIdForCard } from "@/utils/api/propertyApi";
-import { getDescByRating, getRandomInt } from "@/utils/functions";
+import { getDescByRating } from "@/utils/functions";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { getInterested, modifyUserArrays } from "@/utils/api/userApi";
+import { modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addInterest } from "@/store/slices/userSlices";
-import { CardXIcon } from "./ui/Icons";
 import { Skeleton } from "./ui/skeleton";
 
 interface mainCardProps {

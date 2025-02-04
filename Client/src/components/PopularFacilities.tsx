@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { EFacility } from "@/types/propertyTypes";
 import { popularFacilitiesIcons } from "@/utils/staticData";
-import { useTranslation } from "react-i18next";
 
 interface PopularFacilitiesProps {
   popularFacilities: EFacility[] | undefined;

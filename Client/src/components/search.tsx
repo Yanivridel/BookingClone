@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import SearchPeople from "./SearchPeople";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getAutocompleteLocations } from "@/utils/api/propertyApi";
-import { convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
+import { makeUrlForSearch } from "@/utils/functions";
 import { modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addSearchEntry } from "@/store/slices/userSlices";

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { FiltersIcon, MapIcon } from './ui/Icons';
 import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer';

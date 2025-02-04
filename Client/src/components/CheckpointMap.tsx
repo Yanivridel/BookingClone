@@ -7,7 +7,6 @@ import { IPage } from '@/pages/SearchResults';
 import { useNavigate } from 'react-router-dom';
 import { IProperty } from '@/types/propertyTypes';
 import { cn } from '@/lib/utils';
-import PropertyCard from './PropertyCard';
 
 export interface LatLng {
     lat: number;

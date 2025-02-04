@@ -1,14 +1,10 @@
-import React from "react";
 import { Badge } from "./ui/badge";
 import {
   Card,
   CardContent,
-  CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "./ui/card";
-import KidsImage from "../assets/images/kids.jpeg";
 import { Stars, Vi } from "./ui/Icons";
 import ThumbsUp from "../assets/images/thumps.png";
 import Genius from "../assets/images/Genius.png";

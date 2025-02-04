@@ -1,9 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Button } from "./ui/button"
-import { Information, SmallUpDown, UpDown, XIcon } from "./ui/Icons"
-import { Switch } from "./ui/switch"
+import { Information, SmallUpDown, UpDown } from "./ui/Icons"
 import { Dispatch, SetStateAction, useState } from "react";
-import { Label } from "@radix-ui/react-label";
 import { Badge } from "./ui/badge";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "./ui/skeleton";

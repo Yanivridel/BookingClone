@@ -1,5 +1,4 @@
 import { CofeeCup } from "./ui/Icons";
-import { useTranslation } from "react-i18next";
 
 interface MealsOfferProps {
   meals: [
@@ -12,7 +11,6 @@ interface MealsOfferProps {
 }
 
 function MealsOffer({ meals }: MealsOfferProps) {
-  const { t } = useTranslation();
 
   return (
     <div className="flex flex-col gap-2">
