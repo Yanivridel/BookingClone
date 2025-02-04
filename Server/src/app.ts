@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware Configuration
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:5173", "https://booking-clone-client.vercel.app"],
+    origin: "*",
     credentials: true
 }));
 
