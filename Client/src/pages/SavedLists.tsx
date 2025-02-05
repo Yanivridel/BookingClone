@@ -31,7 +31,7 @@ function SavedLists() {
     const [isMobile, setIsMobile] = useState<boolean>(
         window.innerWidth < 1140
     );
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const isRtl = i18n.language === "he";
 
     const settingsCarousel = {
@@ -184,7 +184,7 @@ function SavedLists() {
                             <li>3. You'll find everything you've saved here</li>
                         </ol>
                 </div>
-                <Button className="w-fit mx-auto mt-5 w-[220px] h-[50px] font-bold text-lg"
+                <Button className="mx-auto mt-5 w-[220px] h-[50px] font-bold text-lg"
                 onClick={() => navigate("/")}
                 >
                     Start Searching

@@ -3,7 +3,6 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { IReview } from "@/types/reviewTypes";
 import { cn } from "@/lib/utils";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { IUser } from "@/types/userTypes";
 
 interface propertyReviewsProps {
   review: IReview;

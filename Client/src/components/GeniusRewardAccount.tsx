@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from './ui/button'
 import RewardCard from './RewardCard'
 import MainCarousel from './MainCarousel'

@@ -1,7 +1,7 @@
 import PersonalDetails from '@/components/PersonalDetails'
 import SecuritySettings from '@/components/SecuritySettings'
 import SettingsNavigate from '@/components/SettingsNavigate'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import OtherTravellers from './OtherTravellers'
 import CustomisationPreferences from '@/components/CustomisationPreferences'

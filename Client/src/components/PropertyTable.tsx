@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils.ts";
 
 import OffersGroups from "./OffersGroups.tsx";
 import OffersPayment from "./OffersPayment.tsx";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import SelectOffer from "./SelectOffer.tsx";
 import { SmallIconVi } from "./ui/Icons.tsx";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import IconHeartRed, { CardXIcon, IconHeart, Spinner } from "./ui/Icons";
 import {
   Tooltip,

@@ -4,7 +4,7 @@ import { Card } from './ui/card'
 interface HouseRulesItemProps{
     rule : string,
     title : string,
-    Icon : JSX.Element
+    Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
 function HouseRulesItem({rule, Icon, title} : HouseRulesItemProps) {
