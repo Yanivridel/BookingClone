@@ -36,15 +36,33 @@ export const sendEmailCode = async (email: string, isLogin: boolean) => {
     }
 };
 // * Done
+// export const signinUser = async (email: string, code: string) => {
+//     try {
+//         const { data } = await axios.post(`${API_URL}/api/users/signin`, {
+//             email,
+//             code
+//         }, { withCredentials: true });
+//         return data.data;
+//     } 
+//     catch (error) {
+//         console.error('Signup error:', error);
+//         throw error;
+//     }
+// };
 export const signinUser = async (email: string, code: string) => {
     try {
-        const { data } = await axios.post(`${API_URL}/api/users/signin`, {
-            email,
-            code
-        }, { withCredentials: true });
+        const { data } = await axios.post(
+            `${API_URL}/api/users/signin`, 
+            { email, code },
+            { 
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
         return data.data;
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Signup error:', error);
         throw error;
     }

@@ -16,11 +16,26 @@ const PORT = process.env.PORT || 3000;
 
 
 // Middleware Configuration
-app.use(express.json());
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app/'
+];
+
 app.use(cors({
-    origin: "*",
+    origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+    } else {
+        callback(new Error('Not allowed by Booking CORS'));
+    }
+    },
     credentials: true
 }));
+app.use(express.json());
+// app.use(cors({
+//     origin: "*",
+//     credentials: true
+// }));
 
 // Database Connection
 if (process.env.DB_URI) {

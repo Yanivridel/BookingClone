@@ -67,20 +67,9 @@ function SignIn({
   }
 
   // Google login handler
-  // const handleGoogleLogin = async (response: any) => {
-  //   // Use the token obtained after login to authenticate on your backend
-  //   try {
-  //     const { data } = await axios.get("http://localhost:3000/auth/google")
-  //     console.log("DATA", data)
-  //   }
-  //   catch (err) {
-  //     console.error('Error during authentication:', err);
-  //     setError("Google login failed. Please try again."); 
-  //   }
-  // };
   const handleGoogleLogin = () => {
-    // Instead of making an axios request, redirect to the auth URL
-    window.location.href = 'http://localhost:3000/api/auth/google';
+    const API_URL = import.meta.env.VITE_NODE_ENV === "production" ? import.meta.env.VITE_API_URL_CLOUD : import.meta.env.VITE_API_URL_LOCAL;
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   return (

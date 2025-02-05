@@ -1,14 +1,15 @@
 // Google Auth imports
 import express, { Request, Response } from 'express';
 import passport from 'passport';
-import session from 'express-session';
 import { Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20';
 import { userModel } from '../models/userModel';
 import jwt from 'jsonwebtoken';
 import { IUser } from '../types/userTypes';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
-
+const isProduction = process.env.NodeEnv === "production";
+const CLIENT_URL = isProduction ? process.env.CLIENT_URL_CLOUD : process.env.CLIENT_URL_LOCAL;
+const SERVER_URL = isProduction ? process.env.SERVER_URL_CLOUD : process.env.SERVER_URL_LOCAL;
 
 declare module 'express-session' {
     interface SessionData {
@@ -34,7 +35,7 @@ passport.use(
     {
         clientID: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        callbackURL: 'http://localhost:3000/api/auth/google/callback',
+        callbackURL: `${SERVER_URL}/api/auth/google/callback`,
     },
     async (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback) => {
         try {
@@ -108,7 +109,7 @@ router.get(
         maxAge: Number(process.env.COOKIE_EXPIRATION),
         });
 
-        res.redirect(`http://localhost:5173`);
+        res.redirect(`${CLIENT_URL}`);
     }
 );
 

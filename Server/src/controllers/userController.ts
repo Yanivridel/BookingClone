@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { MongoError, ObjectId } from 'mongodb'; 
 import { userModel } from "../models/userModel";
 import jwt from 'jsonwebtoken';
@@ -8,9 +8,10 @@ import jwt from 'jsonwebtoken';
 import { generateVerificationCode, verifyVerificationCode } from '../utils/auth';
 import { AuthenticatedRequest } from '../types/expressTypes';
 import { getCoordinatesByLocation } from '../utils/maps';
-import { ILocation, ICoordinates } from '../types/propertyTypes';
+import { ILocation } from '../types/propertyTypes';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
+const isProduction = process.env.NodeEnv === "production";
 
 // Send Email Code - Done
 interface ISendEmailCodeBody {
@@ -85,11 +86,18 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
             );
 
         // Set the JWT as a cookie in the response.
+        // res.cookie("token", token, {
+        // httpOnly: false, // process.env.NodeEnv === 'production'
+        // secure: true, // process.env.NodeEnv === 'production'
+        // sameSite: "lax",
+        // maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
+        // });
         res.cookie("token", token, {
-        httpOnly: false, // process.env.NodeEnv === 'production'
-        secure: true, // process.env.NodeEnv === 'production'
-        sameSite: "lax",
-        maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
+            httpOnly: true,  // Should generally be true for security
+            secure: isProduction, // true in production, false in development
+            sameSite: isProduction ? 'strict' : 'lax',
+            maxAge: Number(process.env.COOKIE_EXPIRATION),
+            domain: isProduction ? '.yourproductionsite.com' : 'localhost'
         });
 
         res.status(201).send({

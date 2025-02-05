@@ -1,4 +1,4 @@
-import { loadStripe, Stripe } from "@stripe/stripe-js";
+// import { loadStripe, Stripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { getCookie } from "../cookies";
 
