@@ -18,19 +18,31 @@ const PORT = process.env.PORT || 3000;
 // Middleware Configuration
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app/'
+    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app'
 ];
 
 app.use(cors({
     origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-    } else {
-        callback(new Error('Not allowed by Booking CORS'));
-    }
+        // If no origin (like server-to-server requests), allow
+        console.log('Received origin:', origin); // dev
+        if (!origin) {
+            return callback(null, true);
+        }
+        
+        // Check if the origin is in the allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by Booking CORS'));
+        }
     },
-    credentials: true
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
+app.options('*', cors());
+
 app.use(express.json());
 // app.use(cors({
 //     origin: "*",
