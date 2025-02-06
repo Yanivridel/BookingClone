@@ -18,7 +18,8 @@ const PORT = process.env.PORT || 3000;
 // Middleware Configuration
 const allowedOrigins = [
     'http://localhost:5173',
-    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app'
+    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app',
+    'https://booking-clone-client.vercel.app'
 ];
 
 app.use(cors({
@@ -28,6 +29,8 @@ app.use(cors({
         if (!origin) {
             return callback(null, true);
         }
+        console.log("Allowed: ", allowedOrigins)
+        console.log("status: ", allowedOrigins.indexOf(origin) !== -1)
         
         // Check if the origin is in the allowed list
         if (allowedOrigins.indexOf(origin) !== -1) {
