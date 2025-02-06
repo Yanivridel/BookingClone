@@ -71,7 +71,7 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
-console.log("tesasdtsasdd")
+console.log("tesasdd")
 
 
 // Passport middleware at app level
