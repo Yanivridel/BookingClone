@@ -70,7 +70,7 @@ function SignIn({
   const handleGoogleLogin = () => {
     const API_URL = import.meta.env.VITE_NODE_ENV === "production" ? import.meta.env.VITE_API_URL_CLOUD : import.meta.env.VITE_API_URL_LOCAL;
     window.location.href = `${API_URL}/api/auth/google`;
-    console.log("teasdasst1asd")
+    console.log("teasdasst1asdasd")
   };
 
   return (
