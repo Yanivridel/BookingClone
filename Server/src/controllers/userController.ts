@@ -95,10 +95,11 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         res.cookie("token", token, {
             httpOnly: true,  // Should generally be true for security
             secure: isProduction, // true in production, false in development
-            sameSite: isProduction ? 'lax' : 'lax',
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
             domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
+        console.log("token", token);
 
         res.status(201).send({
             status: "success",
