@@ -25,13 +25,10 @@ const allowedOrigins = [
 app.use(cors({
     origin: function(origin, callback) {
         // If no origin (like server-to-server requests), allow
-        console.log('Received origin:', origin); // dev
         if (!origin) {
             return callback(null, true);
         }
-        console.log("Allowed: ", allowedOrigins)
-        console.log("status: ", allowedOrigins.indexOf(origin) !== -1)
-        
+
         // Check if the origin is in the allowed list
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -39,7 +36,7 @@ app.use(cors({
             callback(new Error('Not allowed by Booking CORS'));
         }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
     optionsSuccessStatus: 200
@@ -47,10 +44,6 @@ app.use(cors({
 app.options('*', cors());
 
 app.use(express.json());
-// app.use(cors({
-//     origin: "*",
-//     credentials: true
-// }));
 
 // Database Connection
 if (process.env.DB_URI) {
@@ -73,7 +66,7 @@ app.use(session({
     resave: false, 
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // true in production
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
