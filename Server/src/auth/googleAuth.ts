@@ -107,7 +107,7 @@ router.get(
             secure: isProduction, // true in production, false in development
             sameSite: isProduction ? 'strict' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
-            domain: isProduction ? process.env.CLIENT_URL_CLOUD : 'localhost'
+            domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
 
         res.redirect(`${CLIENT_URL}`);

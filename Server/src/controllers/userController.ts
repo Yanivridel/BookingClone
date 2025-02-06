@@ -97,7 +97,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
             secure: isProduction, // true in production, false in development
             sameSite: isProduction ? 'strict' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
-            domain: isProduction ? process.env.CLIENT_URL_CLOUD : 'localhost'
+            domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
 
         res.status(201).send({
