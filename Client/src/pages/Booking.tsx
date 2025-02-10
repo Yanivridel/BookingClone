@@ -8,20 +8,19 @@ import BookingRooms from "@/components/booking/BookingRooms";
 import { createBooking } from "@/utils/api/bookingApi";
 import { TBookingDetails } from "@/types/bookingTypes";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Booking() {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
 
-  // console.log(currentUser);
-
   const fNameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const phoneNumberRef = useRef<HTMLInputElement | null>(null);
   const companyNameRef = useRef<HTMLInputElement | null>(null);
   const VATNumberRef = useRef<HTMLInputElement | null>(null);
+  console.log(currentUser);
   const [lName, setLName] = useState<string>(
     currentUser.lName ? currentUser.lName : ""
   );
@@ -29,6 +28,11 @@ function Booking() {
   const [isForMe, setIsForMe] = useState(true);
 
   const [selectedCountry, setSelectedCountry] = useState({
+    code: "+972",
+    label: "🇮🇱 Israel",
+  });
+
+  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState({
     code: "+972",
     label: "🇮🇱 Israel",
   });
@@ -51,17 +55,21 @@ function Booking() {
       ],
 
       // * from current user
+      // ! Done
       userId: currentUser?._id || "",
 
       //  * from booking page
+      // ! Done
       reserver: {
         fName: fNameRef.current?.value || "",
         lName: lName,
         email: emailRef.current?.value || "",
-        country: selectedCountry.code,
-        phoneNumber: phoneNumberRef.current?.value || "",
+        country: selectedCountry.label.split(" ")[1],
+        phoneNumber: phoneNumberRef.current?.value
+          ? selectedPhoneCountry.code + phoneNumberRef.current.value
+          : "",
       },
-
+      // ! Done
       is_paperless: isPaperless,
       for_work: {
         company_name: companyNameRef.current?.value || "",
@@ -105,6 +113,14 @@ function Booking() {
       console.log(error);
     }
   };
+
+  // update lName because "currentUser" updated after lName  initialized
+  useEffect(() => {
+    if (currentUser.lName) {
+      setLName(currentUser.lName);
+    }
+  }, [currentUser]);
+
   return (
     <div className="px-4">
       <BookingSteps />
@@ -123,6 +139,8 @@ function Booking() {
         setIsForMe={setIsForMe}
         setIsPaperless={setIsPaperless}
         setShouldUpdateAccount={setShouldUpdateAccount}
+        selectedPhoneCountry={selectedPhoneCountry}
+        setSelectedPhoneCountry={setSelectedPhoneCountry}
       />
       <BookingRooms roomName="Standard Double Room" />
       <Button onClick={bookingSubmit}></Button>

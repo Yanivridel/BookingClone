@@ -18,9 +18,14 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/userSlices";
 import { Spinner } from "./ui/Icons";
 import { useToast } from "@/hooks/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { countryCodes } from "@/utils/staticData";
-
 
 function PersonalDetails() {
   const currentUser = useSelector(
@@ -48,12 +53,15 @@ function PersonalDetails() {
     passportNumber: useRef(null),
   } as any;
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState({ code: "+972", label: "🇮🇱 Israel" });
+  const [selectedCountry, setSelectedCountry] = useState({
+    code: "+972",
+    label: "🇮🇱 Israel",
+  });
   const dispatch = useDispatch();
   const initials = getInitials(
     `${currentUser.fName || ""} ${currentUser.lName || ""}`.trim()
   );
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const handleSave = async (key: string) => {
     setIsLoading(true);
@@ -65,15 +73,21 @@ function PersonalDetails() {
         fieldsToUpdate["lName"] = refs["lastName"].current.value;
         break;
       case "phoneNumber":
-        fieldsToUpdate[key] = selectedCountry.code + refs[key].current.value
+        fieldsToUpdate[key] = selectedCountry.code + refs[key].current.value;
         break;
       case "birthday":
-        const birthday = fieldsToUpdate["year"] + '-' + fieldsToUpdate["day"] + '-' + fieldsToUpdate["month"]
+        const birthday =
+          fieldsToUpdate["year"] +
+          "-" +
+          fieldsToUpdate["day"] +
+          "-" +
+          fieldsToUpdate["month"];
         // fieldsToUpdate["birthday"] = new Date(, , );
         break;
       // Single Keys:
-      case "username": case "email": 
-        fieldsToUpdate[key] = refs[key].current.value
+      case "username":
+      case "email":
+        fieldsToUpdate[key] = refs[key].current.value;
         break;
       default:
         break;
@@ -87,33 +101,31 @@ function PersonalDetails() {
       toast({
         variant: "success",
         title: "Success",
-        description: "Fields Updated Successfully"
-      })
-
-    } catch(err) {
+        description: "Fields Updated Successfully",
+      });
+    } catch (err) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "Please Try Again Later..."
-      })
-      
+        description: "Please Try Again Later...",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDayInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.currentTarget.value.replace(/\D/g, '');
+    let value = e.currentTarget.value.replace(/\D/g, "");
     if (Number(value) > 31) value = "31";
     e.currentTarget.value = value;
   };
   const handleYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.currentTarget.value.replace(/\D/g, '');
-    if (Number(value) > new Date().getFullYear()) value = new Date().getFullYear().toString();
+    let value = e.currentTarget.value.replace(/\D/g, "");
+    if (Number(value) > new Date().getFullYear())
+      value = new Date().getFullYear().toString();
     if (value.length === 4 && Number(value) < 1900) value = "1900";
     e.currentTarget.value = value;
   };
-
 
   return (
     <div className="grid grid-cols-1 max-w-[1100px]">
@@ -126,19 +138,15 @@ function PersonalDetails() {
         </div>
         <div className="p-2 min-w-[75px] h-[75px]">
           <Avatar className="w-full h-full border-2 border-[#f8b830] pointer-events-none ">
-              <AvatarImage
-                src={
-                  currentUser.user_image
-                    ? currentUser.user_image
-                    : undefined
-                }
-                alt="user"
-                loading="lazy"
-              />
-              <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
-                {initials || "User"}
-              </AvatarFallback>
-            </Avatar>
+            <AvatarImage
+              src={currentUser.user_image ? currentUser.user_image : undefined}
+              alt="user"
+              loading="lazy"
+            />
+            <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
+              {initials || "User"}
+            </AvatarFallback>
+          </Avatar>
         </div>
       </div>
       <Accordion type="single" collapsible className="w-full p-4">
@@ -204,7 +212,10 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("username")}>
+              <Button
+                disabled={isLoading}
+                onClick={() => handleSave("username")}
+              >
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
@@ -258,36 +269,60 @@ function PersonalDetails() {
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Phone number</p>
               <div className="flex gap-2">
-              <Select onValueChange={(val) => setSelectedCountry(countryCodes.find(c => c.code === val)!)}>
-                <SelectTrigger className="w-48 border rounded-lg p-2 ms-3">
-                  <SelectValue placeholder={selectedCountry.label}>{selectedCountry.label}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {countryCodes.map((country) => (
-                    <SelectItem 
-                    className={`cursor-pointer ${selectedCountry.label === country.label ? "bg-blue-500 focus:bg-blue-500" : ""}`}
-                    key={country.code+country.label} value={country.code}>
-                      {country.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="relative">
-                <input
-                  ref={refs.phoneNumber}
-                  type="tel"
-                  maxLength={10}
-                  className={`p-2 rounded-lg border-black border`}
-                  style={{ paddingLeft: `${
-                    selectedCountry.code.length <= 2 ? 35 : 
-                    selectedCountry.code.length <= 4 ?
-                    selectedCountry.code.length * 14: 65}px` }}
-                  onInput={(e) => {
-                    e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '');
-                  }}
-                />
-                <p className="absolute top-1/2 left-2 -translate-y-1/2">{selectedCountry.code + " |"}</p>
-              </div>
+                <Select
+                  onValueChange={(val) =>
+                    setSelectedCountry(
+                      countryCodes.find((c) => c.code === val)!
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-48 border rounded-lg p-2 ms-3">
+                    <SelectValue placeholder={selectedCountry.label}>
+                      {selectedCountry.label}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((country) => (
+                      <SelectItem
+                        className={`cursor-pointer ${
+                          selectedCountry.label === country.label
+                            ? "bg-blue-500 focus:bg-blue-500"
+                            : ""
+                        }`}
+                        key={country.code + country.label}
+                        value={country.code}
+                      >
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="relative">
+                  <input
+                    ref={refs.phoneNumber}
+                    type="tel"
+                    maxLength={10}
+                    className={`p-2 rounded-lg border-black border`}
+                    style={{
+                      paddingLeft: `${
+                        selectedCountry.code.length <= 2
+                          ? 35
+                          : selectedCountry.code.length <= 4
+                          ? selectedCountry.code.length * 14
+                          : 65
+                      }px`,
+                    }}
+                    onInput={(e) => {
+                      e.currentTarget.value = e.currentTarget.value.replace(
+                        /\D/g,
+                        ""
+                      );
+                    }}
+                  />
+                  <p className="absolute top-1/2 left-2 -translate-y-1/2">
+                    {selectedCountry.code + " |"}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex justify-between">
@@ -297,7 +332,10 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("phoneNumber")}>
+              <Button
+                disabled={isLoading}
+                onClick={() => handleSave("phoneNumber")}
+              >
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
@@ -306,12 +344,18 @@ function PersonalDetails() {
         {/* Birthday */}
         <AccordionItem value="item-5" className="p-2">
           <AccordionTrigger>Date of birth</AccordionTrigger>
-          <p className="text-gray-500 text-sm">Select the country/region you're from</p>
+          <p className="text-gray-500 text-sm">
+            Select the country/region you're from
+          </p>
           <AccordionContent className="flex flex-col gap-10">
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Date of birth*</p>
               <div className="grid grid-cols-3 gap-2">
-                <select ref={refs.month} className="border rounded-lg p-2" aria-placeholder="Select Month">
+                <select
+                  ref={refs.month}
+                  className="border rounded-lg p-2"
+                  aria-placeholder="Select Month"
+                >
                   <option value="" disabled selected>
                     Select Month
                   </option>
@@ -356,16 +400,20 @@ function PersonalDetails() {
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} onClick={() => handleSave("birthday")}>
+              <Button
+                disabled={isLoading}
+                onClick={() => handleSave("birthday")}
+              >
                 {isLoading ? <Spinner /> : "Save"}
               </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
-
         <AccordionItem value="item-6" className="p-2">
           <AccordionTrigger>Nationality</AccordionTrigger>
-          <p className="text-gray-500 text-sm">Select the country/region you're from</p>
+          <p className="text-gray-500 text-sm">
+            Select the country/region you're from
+          </p>
           <AccordionContent className="flex flex-col gap-10">
             <div className="flex flex-col gap-2">
               <p className="font-semibold">Nationality *</p>
@@ -505,7 +553,11 @@ function PersonalDetails() {
             <div className="grid grid-cols-1">
               <p className="font-semibold">Expiry date *</p>
               <div className="grid grid-cols-3">
-              <select ref={refs.passportExpireMonth} className="border rounded-lg p-2" aria-placeholder="Select Month">
+                <select
+                  ref={refs.passportExpireMonth}
+                  className="border rounded-lg p-2"
+                  aria-placeholder="Select Month"
+                >
                   <option value="" disabled selected>
                     Select Month
                   </option>

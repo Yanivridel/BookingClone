@@ -42,6 +42,17 @@ interface BookingDetailsProps {
     }>
   >;
 
+  selectedPhoneCountry: {
+    code: string;
+    label: string;
+  };
+  setSelectedPhoneCountry: Dispatch<
+    SetStateAction<{
+      code: string;
+      label: string;
+    }>
+  >;
+
   isForMe: boolean;
   setIsForMe: Dispatch<SetStateAction<boolean>>;
   setIsPaperless: Dispatch<SetStateAction<boolean>>;
@@ -62,29 +73,27 @@ function BookingDetails({
   setIsForMe,
   setIsPaperless,
   setShouldUpdateAccount,
+  selectedPhoneCountry,
+  setSelectedPhoneCountry,
 }: BookingDetailsProps) {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
 
-  const [selectedPhoneCountry, setSelectedPhoneCountry] = useState({
-    code: "+972",
-    label: "🇮🇱 Israel",
-  });
-
   const [isEmailSuccess, setIsEmailSuccess] = useState(false);
   const [isFNameSuccess, setIsFNameSuccess] = useState(false);
   const [isLNameSuccess, setIsLNameSuccess] = useState(false);
-  // ! need to check when  country  success and handle it
   const [isCountrySuccess, setIsCountrySuccess] = useState(false);
   const [isCompanyNameSuccess, setIsCompanyNameSuccess] = useState(false);
   const [isVATNumberSuccess, setIsVATNumberSuccess] = useState(false);
+  const [isPhoneNumberSuccess, setIsPhoneNumberSuccess] = useState(false);
 
   const [emailError, setEmailError] = useState("");
   const [fNameError, setFNameError] = useState("");
   const [lNameError, setLNameError] = useState("");
-  // ! need to check if country can be error
-  const [countryError, setCountryError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+
+  const [isPhoneNumberFocus, setIsPhoneNumberFocus] = useState(false);
 
   const [isForWork, setIsForWork] = useState(false);
 
@@ -224,27 +233,23 @@ function BookingDetails({
               <span className="text-redError ms-1 text-sm">*</span>
             </div>
             <Select
-              onValueChange={(val) =>
-                setSelectedCountry(countryCodes.find((c) => c.label === val)!)
-              }
+              onValueChange={(val) => {
+                setSelectedCountry(countryCodes.find((c) => c.label === val)!);
+                setIsCountrySuccess(true);
+              }}
             >
               <SelectTrigger
                 name="country"
-                className={cn(
-                  "relative",
-                  countryError
-                    ? "border-redError focus:border-0 text-sm"
-                    : "border-black border-[1px] focus:border-0 text-sm"
-                )}
+                className={
+                  "relative border-black border-[1px] focus:border-0 text-sm"
+                }
               >
                 <div>
                   <SelectValue placeholder={selectedCountry.label}>
                     {selectedCountry.label}
                   </SelectValue>
-                  {countryError && (
-                    <IconError className="h-5 w-5 fill-redError absolute top-2 end-2 " />
-                  )}
-                  {!countryError && isCountrySuccess && (
+
+                  {isCountrySuccess && (
                     <IconSuccess className="h-5 w-5 fill-IconsGreen absolute top-2 end-8 bg-white" />
                   )}
                 </div>
@@ -319,15 +324,41 @@ function BookingDetails({
                   ""
                 );
               }}
+              onFocus={() => setIsPhoneNumberFocus(true)}
+              onBlur={(e) => {
+                setIsPhoneNumberFocus(false);
+                if (
+                  e.currentTarget.value.length > 7 &&
+                  e.currentTarget.value.length < 14
+                ) {
+                  setIsPhoneNumberSuccess(true);
+                  setPhoneNumberError("");
+                } else {
+                  setIsPhoneNumberSuccess(false);
+                  setPhoneNumberError("Enter a valid phone number");
+                }
+              }}
             />
             <p className="absolute top-1/2 text-sm  left-2 -translate-y-1/2">
               {selectedPhoneCountry.code + " |"}
             </p>
+            {phoneNumberError && !isPhoneNumberFocus && (
+              <IconError className="h-5 w-5 fill-redError absolute top-2 end-2 " />
+            )}
+            {!isPhoneNumberFocus &&
+              !phoneNumberError &&
+              isPhoneNumberSuccess && (
+                <IconSuccess className="h-5 w-5 fill-IconsGreen absolute top-2 end-2 bg-white" />
+              )}
           </div>
         </div>
-        <span className="text-xs">
-          Needed by the property to validate your booking
-        </span>
+        {!phoneNumberError ? (
+          <span className="text-xs">
+            Needed by the property to validate your booking
+          </span>
+        ) : (
+          <div className="text-redError text-sm">{phoneNumberError}</div>
+        )}
       </div>
 
       {/* checkbox 1 - paperless */}

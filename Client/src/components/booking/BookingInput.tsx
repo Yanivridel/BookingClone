@@ -14,7 +14,7 @@ interface BookingInputProps {
   isSuccess?: boolean;
   isIconSuccess?: boolean;
   successMessage?: string;
-  onBlurHandler: () => void;
+  onBlurHandler?: () => void;
   labelText: string;
   error?: string;
   isRequired: boolean;
@@ -83,7 +83,7 @@ const BookingInput = forwardRef(function BookingInput(
             onFocus={() => setIsFocus(true)}
             onBlur={() => {
               setIsFocus(false);
-              onBlurHandler();
+              onBlurHandler && onBlurHandler();
             }}
             onChange={(e) => onValueChange(e)}
             ref={ref}
@@ -92,7 +92,7 @@ const BookingInput = forwardRef(function BookingInput(
             defaultValue={defaultValue}
             placeholder={placeholder}
             required={isRequired}
-            value={state}
+            {...(state !== undefined && { value: state })}
             maxLength={maxLength}
           />
           {error && !isFocus && (
