@@ -106,7 +106,7 @@ export interface LocationRes {
 
 function Search() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // * place

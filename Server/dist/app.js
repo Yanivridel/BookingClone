@@ -10,16 +10,40 @@ const mongoose_1 = __importDefault(require("mongoose"));
 // Google Auth imports
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
+const redisClient_1 = require("./utils/redisClient");
 require("./utils/stripe");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 // Middleware Configuration
-app.use(express_1.default.json());
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app',
+    'https://booking-clone-client.vercel.app'
+];
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
-    credentials: true
+    origin: function (origin, callback) {
+        // If no origin (like server-to-server requests), allow
+        if (!origin) {
+            return callback(null, true);
+        }
+        // Check if the origin is in the allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by Booking CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
+app.options('*', (0, cors_1.default)());
+app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)());
 // Database Connection
 if (process.env.DB_URI) {
     mongoose_1.default.connect(process.env.DB_URI)
@@ -29,7 +53,8 @@ if (process.env.DB_URI) {
 else {
     console.error("DB_URI environment variable is not defined");
 }
-// connectRedis();
+if (process.env.USE_CACHE !== "false")
+    (0, redisClient_1.connectRedis)();
 // Server Check
 app.get('/test', (req, res) => {
     res.status(200).send({ message: "Server is alive !" });
@@ -39,7 +64,7 @@ app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // true in production
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }

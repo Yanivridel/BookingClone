@@ -109,9 +109,6 @@ router.get(
             maxAge: Number(process.env.COOKIE_EXPIRATION),
         });
 
-
-        console.log("isProduction", isProduction)
-        console.log("CLIENT_URL", CLIENT_URL)
         res.redirect(CLIENT_URL!);
     }
 );

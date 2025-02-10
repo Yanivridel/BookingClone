@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserById = exports.getSavedLists = exports.getInterested = exports.getSearches = exports.modifyUserArrays = exports.editProfile = exports.getSelf = exports.signinUser = exports.sendEmailCode = void 0;
+exports.deleteUserById = exports.getSavedLists = exports.getInterested = exports.getSearches = exports.modifyUserArrays = exports.editProfile = exports.getSelf = exports.logout = exports.signinUser = exports.sendEmailCode = void 0;
 const mongoose_1 = require("mongoose");
 const mongodb_1 = require("mongodb");
 const userModel_1 = require("../models/userModel");
@@ -12,6 +12,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const auth_1 = require("../utils/auth");
 const maps_1 = require("../utils/maps");
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION };
+const isProduction = process.env.NodeEnv === "production";
 const sendEmailCode = async (req, res) => {
     const { email } = req.body;
     let isLogin = false;
@@ -63,10 +64,10 @@ const signinUser = async (req, res) => {
         }, jwtSecretKey, JTW_EXPIRATION);
         // Set the JWT as a cookie in the response.
         res.cookie("token", token, {
-            httpOnly: false, // process.env.NodeEnv === 'production'
-            secure: true, // process.env.NodeEnv === 'production'
-            sameSite: "lax",
-            maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            maxAge: Number(process.env.COOKIE_EXPIRATION),
         });
         res.status(201).send({
             status: "success",
@@ -93,15 +94,25 @@ const signinUser = async (req, res) => {
     }
 };
 exports.signinUser = signinUser;
+const logout = (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    });
+    res.status(200).json({ status: "success", message: "Logged out successfully" });
+};
+exports.logout = logout;
 // Get Self Token - Done
 const getSelf = async (req, res) => {
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY;
-        if (!req.headers.authorization) {
-            res.status(400).send({ status: "error", message: "Missing required authorization token" });
+        const token = req.cookies?.token;
+        if (!token) {
+            res.status(400).json({ status: "error", message: "Missing required authorization token" });
             return;
         }
-        const token = req.headers.authorization.split(' ')[1];
+        // const token = req.headers.authorization.split(' ')[1];
         const decoded = jsonwebtoken_1.default.verify(token, jwtSecretKey);
         const user = await userModel_1.userModel.findById(decoded.userId);
         res.status(200).json({

@@ -40,7 +40,7 @@ function PropertyCard({ propertyData, isGrid }: PropertyCardProp) {
     }) as unknown as TSelectedRoom[];
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const { i18n } = useTranslation();
   const isRtl = i18n.language === "he";
 

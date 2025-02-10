@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware Configuration
 const allowedOrigins = [
     'http://localhost:5173',
+    'http://localhost:4173',
     'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app',
     'https://booking-clone-client.vercel.app'
 ];
@@ -26,7 +27,6 @@ const allowedOrigins = [
 app.use(cors({
     origin: function(origin, callback) {
         // If no origin (like server-to-server requests), allow
-        console.log("RECEIVED ORIGIN", origin)
         if (!origin) {
             return callback(null, true);
         }

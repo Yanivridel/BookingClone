@@ -9,6 +9,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post('/send-code', userController_1.sendEmailCode);
 router.post("/signin", userController_1.signinUser);
+router.post("/logout", userController_1.logout);
 router.get('/get-self', userController_1.getSelf);
 router.patch('/edit-profile', authMiddleware_1.authenticateToken, userController_1.editProfile);
 router.patch('/modify-arrays', authMiddleware_1.authenticateToken, userController_1.modifyUserArrays);

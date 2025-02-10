@@ -1,4 +1,4 @@
-import { ISearchPropertiesReq, TPartialProperty } from "@/types/propertyTypes";
+import { ISearchPropertiesReq } from "@/types/propertyTypes";
 import axios from "axios";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";

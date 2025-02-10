@@ -4,6 +4,7 @@ exports.getAutocompleteLocations = exports.getSearchProperties = exports.getProp
 const propertyModel_1 = require("../models/propertyModel");
 const maps_1 = require("../utils/maps");
 const roomModel_1 = require("../models/roomModel");
+const redisClient_1 = require("../utils/redisClient");
 //* Done - Create
 const createProperty = async (req, res) => {
     try {
@@ -146,8 +147,10 @@ const getSearchProperties = async (req, res) => {
         res.setHeader('Transfer-Encoding', 'chunked');
         res.flushHeaders();
         // * Get Cache / Fetch New
-        // let filteredProperties: IProperty[] = await getCache(cacheKey);
         let filteredProperties;
+        if (process.env.USE_CACHE !== "false") {
+            filteredProperties = await (0, redisClient_1.getCache)(cacheKey);
+        }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
         if (!filteredProperties) {
             const coordinates = await getPropertyCoordinates(country, region, city, addressLine);
@@ -167,11 +170,13 @@ const getSearchProperties = async (req, res) => {
             }
             filteredProperties = await filterPropertiesPrimary(properties, { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
             { adults, children, rooms, isBaby, isAnimalAllowed });
-            // setTimeout(() => {
-            //     setCache(cacheKey, filteredProperties);
-            // }, 1000) // in 1 sec
+            setTimeout(() => {
+                if (process.env.USE_CACHE !== "false") {
+                    (0, redisClient_1.setCache)(cacheKey, filteredProperties);
+                }
+            }, 1000); // in 1 sec
         }
-        console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
+        //console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
         let secondFiltered = filteredProperties;
         if (req.body?.secondary)
             secondFiltered = filterPropertiesSecondary(filteredProperties, req.body);

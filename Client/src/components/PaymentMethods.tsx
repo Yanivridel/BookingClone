@@ -16,6 +16,7 @@ import { useRef, useState } from "react";
 function PaymentMethods() {
   const stripe = useStripe();
   const elements = useElements();
+  //@ts-ignore ridel fix
   const [cardData, setCardData] = useState<any>(null);
   const nameRef = useRef(null);
   const cardOptions = {

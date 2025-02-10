@@ -10,11 +10,14 @@ const passport_google_oauth20_1 = require("passport-google-oauth20");
 const userModel_1 = require("../models/userModel");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION };
+const isProduction = process.env.NodeEnv === "production";
+const CLIENT_URL = isProduction ? process.env.CLIENT_URL_CLOUD : process.env.CLIENT_URL_LOCAL;
+const SERVER_URL = isProduction ? process.env.SERVER_URL_CLOUD : process.env.SERVER_URL_LOCAL;
 const router = express_1.default.Router();
 passport_1.default.use(new passport_google_oauth20_1.Strategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/api/auth/google/callback',
+    callbackURL: `${SERVER_URL}/api/auth/google/callback`,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         // Find or create user by email
@@ -60,12 +63,12 @@ router.get("/api/auth/google/callback", passport_1.default.authenticate("google"
         userId: user._id,
     }, jwtSecretKey, JTW_EXPIRATION);
     res.cookie("token", token, {
-        httpOnly: false, // process.env.NodeEnv === 'production'
-        secure: true, // process.env.NodeEnv === 'production'
-        sameSite: "lax",
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: Number(process.env.COOKIE_EXPIRATION),
     });
-    res.redirect(`http://localhost:5173`);
+    res.redirect(CLIENT_URL);
 });
 exports.default = router;
 //# sourceMappingURL=googleAuth.js.map

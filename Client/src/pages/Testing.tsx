@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"; 
 import { getPaymentMethod, makePayment, savePayment } from "@/utils/api/bookingApi";
 
@@ -6,8 +6,10 @@ const Testing = () => {
     const [clientSecret, setClientSecret] = useState<string>("");
     const [paymentStatus, setPaymentStatus] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("");
-    const [amount, setAmount] = useState<number>(1000); // Set the amount here
-    const [currency, setCurrency] = useState<string>("USD"); // Set the currency here
+    // @ts-ignore ridel fix
+    const [amount, setAmount] = useState<number>(1000);
+    // @ts-ignore ridel fix
+    const [currency, setCurrency] = useState<string>("USD");
     const stripe = useStripe();
     const elements = useElements();
 

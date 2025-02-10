@@ -22,6 +22,7 @@ type PropertyRoomsTableProps = {
 
 function PropertyTable({ rooms, nightsNum }: PropertyRoomsTableProps) {
   const { t } = useTranslation();
+  //@ts-ignore elchy fix
   const [offersRoomSelected, setOffersRoomSelected] = useState<
     {
       offerId: string;

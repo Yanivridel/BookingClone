@@ -1,19 +1,34 @@
-FROM node:18-alpine
+# Use Node.js 18 Alpine as the base image
+FROM node:18-alpine AS builder
 
-# Set the working directory inside the 'server' folder
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json (if present) into the container's working directory
-COPY ./package*.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install Node.js dependencies
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application files from the 'server' folder into the container
-COPY ./. .
+# Copy the entire project
+COPY . .
+
+# Build the TypeScript project
+RUN npm run build
+
+# --- Production Stage ---
+FROM node:18-alpine AS production
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy only the necessary files from the builder stage
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
 
 # Expose the port (use 8080 for Cloud Run)
 EXPOSE 8080
 
-# Start the Node.js app (assuming your start script is defined in package.json)
-CMD [ "npm", "start" ]
+# Run the built JavaScript files
+CMD ["node", "dist/app.js"]

@@ -17,7 +17,7 @@ interface SortComponentProps {
 }
 
 function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, _] = useSearchParams();
     const [isVisible, setIsVisible] = useState<boolean>(true);
 
     function HandleClick() {
