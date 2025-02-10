@@ -94,7 +94,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         // maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
         // });
         res.cookie("token", token, {
-            httpOnly: isProduction,
+            httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
@@ -138,12 +138,18 @@ export const getSelf = async (req: Request, res: Response): Promise<void> => {
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
     
-        if(!req.headers.authorization) {
-            res.status(400).send({status: "error", message: "Missing required authorization token"});
+        // if(!req.headers.authorization) {
+        //     res.status(400).send({status: "error", message: "Missing required authorization token"});
+        //     return;
+        // }
+        const token = req.cookies?.token;
+        
+        if (!token) {
+            res.status(400).json({ status: "error", message: "Missing required authorization token" });
             return;
         }
     
-        const token = req.headers.authorization.split(' ')[1];
+        // const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, jwtSecretKey) as { userId: string };
     
         const user = await userModel.findById(decoded.userId);

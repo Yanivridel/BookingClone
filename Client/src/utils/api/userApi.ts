@@ -8,15 +8,15 @@ const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.e
 // * Done
 export const getSelf = async () => {
     try {
-        const token = Cookies.get("token");
-        console.log("COOKIES", token);
-        if(!token) return null;
+        // const token = Cookies.get("token");
+        // console.log("COOKIES", token);
+        // if(!token) return null;
 
         const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
-            // withCredentials: true,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
+            // headers: {
+            //     Authorization: `Bearer ${token}`,
+            // },
         });
         return data.data;
     } catch (error) {
