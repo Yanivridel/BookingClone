@@ -86,11 +86,18 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         );
 
         // Set the JWT as a cookie in the response.
+        // res.cookie("token", token, {
+        // httpOnly: false, // process.env.NodeEnv === 'production'
+        // secure: true, // process.env.NodeEnv === 'production'
+        // sameSite: "lax",
+        // maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
+        // });
         res.cookie("token", token, {
-        httpOnly: false, // process.env.NodeEnv === 'production'
-        secure: true, // process.env.NodeEnv === 'production'
-        sameSite: "lax",
-        maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
+            httpOnly: false,  // Should generally be true for security
+            secure: isProduction, // true in production, false in development
+            sameSite: isProduction ? 'strict' : 'lax',
+            maxAge: Number(process.env.COOKIE_EXPIRATION),
+            // domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
         // res.cookie("token", token, {
         //     httpOnly: true,  // Should generally be true for security

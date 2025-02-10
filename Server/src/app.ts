@@ -25,6 +25,7 @@ const allowedOrigins = [
 app.use(cors({
     origin: function(origin, callback) {
         // If no origin (like server-to-server requests), allow
+        console.log("RECEIVED ORIGIN", origin)
         if (!origin) {
             return callback(null, true);
         }
@@ -64,7 +65,7 @@ app.get('/test', (req: Request, res: Response): void => {
 
 app.use(session({ 
     secret: 'secret',
-    resave: false, 
+    resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
