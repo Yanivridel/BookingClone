@@ -94,7 +94,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         // maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
         // });
         res.cookie("token", token, {
-            httpOnly: false,  // Should generally be true for security
+            httpOnly: isProduction,  // Should generally be true for security
             secure: isProduction, // true in production, false in development
             sameSite: isProduction ? 'strict' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
