@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IUser, TPartialUser } from '@/types/userTypes';
+import { TPartialUser } from '@/types/userTypes';
 import Cookies from "js-cookie";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
