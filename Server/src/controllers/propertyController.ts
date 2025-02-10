@@ -195,8 +195,9 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         res.flushHeaders();
 
         // * Get Cache / Fetch New
-        // let filteredProperties: IProperty[] = await getCache(cacheKey);
         let filteredProperties;
+        if(process.env.USE_CACHE !== "false")
+            filteredProperties = await getCache(cacheKey) as IProperty[];
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
         if (!filteredProperties) {
             const coordinates = await getPropertyCoordinates(country,region,city,addressLine);

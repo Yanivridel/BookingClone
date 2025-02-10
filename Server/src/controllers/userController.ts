@@ -99,7 +99,7 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
             maxAge: Number(process.env.COOKIE_EXPIRATION),
             domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
-        console.log("token", token);
+        // console.log("token", token);
 
         res.status(201).send({
             status: "success",

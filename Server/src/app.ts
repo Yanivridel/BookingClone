@@ -54,7 +54,8 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
-// connectRedis();
+if(process.env.USE_CACHE !== "false")
+    connectRedis();
 
 // Server Check
 app.get('/test', (req: Request, res: Response): void => {
@@ -71,7 +72,6 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
-console.log("tesasdtsasdd")
 
 
 // Passport middleware at app level
