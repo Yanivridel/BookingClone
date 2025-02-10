@@ -196,8 +196,9 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         // * Get Cache / Fetch New
         let filteredProperties;
-        if(process.env.USE_CACHE !== "false")
+        if(process.env.USE_CACHE !== "false"){
             filteredProperties = await getCache(cacheKey) as IProperty[];
+        }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
         if (!filteredProperties) {
             const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
@@ -224,12 +225,14 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
 
-            // setTimeout(() => {
-            //     setCache(cacheKey, filteredProperties);
-            // }, 1000) // in 1 sec
+            setTimeout(() => {
+                if(process.env.USE_CACHE !== "false") {
+                    setCache(cacheKey, filteredProperties!);
+                }
+            }, 1000) // in 1 sec
         }
 
-        console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
+        //console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
 
         let secondFiltered = filteredProperties;
         if(req.body?.secondary)

@@ -307,6 +307,7 @@ function Home() {
           </h3>
           {/* Category change */}
           <div className="flex p-2">
+            <MainCarousel>
             {easyTripCategories.map((key:string) =>
               <Button
               variant="ghost"
@@ -324,6 +325,7 @@ function Home() {
               {cf(key)}
             </Button>
             )}
+            </MainCarousel>
           </div>
           {/* Carousels */}
           <div className="py-4">
