@@ -13,6 +13,7 @@ export const getSelf = async () => {
         if(!token) return null;
 
         const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
+            // withCredentials: true,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

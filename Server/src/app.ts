@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 // Google Auth imports
 import session from 'express-session';
 import passport from 'passport';
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use(cors({
 app.options('*', cors());
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Database Connection
 if (process.env.DB_URI) {

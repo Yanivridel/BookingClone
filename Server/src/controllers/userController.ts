@@ -10,6 +10,7 @@ import { AuthenticatedRequest } from '../types/expressTypes';
 import { getCoordinatesByLocation } from '../utils/maps';
 import { ILocation } from '../types/propertyTypes';
 
+
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 const isProduction = process.env.NodeEnv === "production";
 
