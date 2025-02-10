@@ -310,6 +310,7 @@ function Home() {
             <MainCarousel>
             {easyTripCategories.map((key:string) =>
               <Button
+              key={key}
               variant="ghost"
               className={`font-normal rounded-full p-4 text-lg ${
                 easyTripCategory === key
@@ -412,13 +413,12 @@ function Home() {
                   ...settingsSearch,
                   slidesToShow: 2,
                   initialSlide: isRtl ? 5 - 2 : 0,
-                  // variableWidth: true,
                   nextArrow: <SampleNextArrow slidesToShow={2} />,
                 }}
               >
                 <CardWithDescription className="" />
                 { inspirationArr.map(el =>
-                  <div className="px-2">
+                  <div key={el.title} className="px-2">
                     <CardWithLocationHome title={el.title} description={el.desc} image={el.img} />
                   </div>
                 )}

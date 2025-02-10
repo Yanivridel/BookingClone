@@ -8,15 +8,8 @@ const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.e
 // * Done
 export const getSelf = async () => {
     try {
-        // const token = Cookies.get("token");
-        // console.log("COOKIES", token);
-        // if(!token) return null;
-
         const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
             withCredentials: true,
-            // headers: {
-            //     Authorization: `Bearer ${token}`,
-            // },
         });
         return data.data;
     } catch (error) {
@@ -69,9 +62,7 @@ export const editProfile = async (fieldsToUpdate : TPartialUser ) => {
         const { data } = await axios.patch(`${API_URL}/api/users/edit-profile`, 
             fieldsToUpdate, 
             {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get("token")}`
-                }
+                withCredentials: true,
             });
         return data.data;
     } 
@@ -90,9 +81,7 @@ export const modifyUserArrays = async (action: string, userArrays : any ) => {
             }
             ,
             {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get("token")}`
-                }
+                withCredentials: true,
             });
         return data.data;
     } 
@@ -104,11 +93,8 @@ export const modifyUserArrays = async (action: string, userArrays : any ) => {
 // * Done
 export const getSearch = async () => {
     try {
-        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/search`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
         });
         return data.data;
     } catch (error) {
@@ -119,11 +105,8 @@ export const getSearch = async () => {
 // * Done
 export const getInterested = async () => {
     try {
-        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/interested`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
         });
         return data.data;
     } catch (error) {
@@ -134,11 +117,8 @@ export const getInterested = async () => {
 // * Done
 export const getSavedLists = async () => {
     try {
-        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/saved-lists`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
         });
         return data.data;
     } catch (error) {
@@ -149,11 +129,8 @@ export const getSavedLists = async () => {
 //! NOT YET FINISHED - COME BACK LATER
 export const deleteUser = async () => {
     try {
-        const token = Cookies.get("token");
         const { data } = await axios.delete(`${API_URL}/api/users/delete-account`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
         });
         return data.data;
     } catch (error) {
