@@ -87,27 +87,12 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         );
 
         // Set the JWT as a cookie in the response.
-        // res.cookie("token", token, {
-        // httpOnly: false, // process.env.NodeEnv === 'production'
-        // secure: true, // process.env.NodeEnv === 'production'
-        // sameSite: "lax",
-        // maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
-        // });
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
-            // domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
-        // res.cookie("token", token, {
-        //     httpOnly: true,  // Should generally be true for security
-        //     secure: isProduction, // true in production, false in development
-        //     sameSite: isProduction ? 'none' : 'lax',
-        //     maxAge: Number(process.env.COOKIE_EXPIRATION),
-        //     domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
-        // });
-        // console.log("token", token);
 
         res.status(201).send({
             status: "success",
@@ -132,16 +117,20 @@ export const signinUser = async (req: Request<{}, {}, IEmailCodeBody>, res: Resp
         }
     }
 }
+export const logout = (req: Request, res: Response): void => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    });
 
+    res.status(200).json({ status: "success", message: "Logged out successfully" });
+};
 // Get Self Token - Done
 export const getSelf = async (req: Request, res: Response): Promise<void> => {
     try {
         const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
     
-        // if(!req.headers.authorization) {
-        //     res.status(400).send({status: "error", message: "Missing required authorization token"});
-        //     return;
-        // }
         const token = req.cookies?.token;
         
         if (!token) {

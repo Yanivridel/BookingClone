@@ -103,23 +103,16 @@ router.get(
         );
 
         res.cookie("token", token, {
-            httpOnly: false,  // Should generally be true for security
-            secure: isProduction, // true in production, false in development
-            sameSite: isProduction ? 'strict' : 'lax',
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: Number(process.env.COOKIE_EXPIRATION),
-            // domain: isProduction ? 'booking-clone-client.vercel.app' : 'localhost'
         });
 
-        // res.cookie("token", token, {
-        //     httpOnly: false, // process.env.NodeEnv === 'production'
-        //     secure: true, // process.env.NodeEnv === 'production'
-        //     sameSite: "lax",
-        //     maxAge: Number(process.env.COOKIE_EXPIRATION), // Cookie lifespan of 1 hour
-        // });
 
         console.log("isProduction", isProduction)
         console.log("CLIENT_URL", CLIENT_URL)
-        res.redirect(`${CLIENT_URL}`);
+        res.redirect(CLIENT_URL!);
     }
 );
 

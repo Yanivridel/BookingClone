@@ -38,19 +38,6 @@ export const sendEmailCode = async (email: string, isLogin: boolean) => {
     }
 };
 // * Done
-// export const signinUser = async (email: string, code: string) => {
-//     try {
-//         const { data } = await axios.post(`${API_URL}/api/users/signin`, {
-//             email,
-//             code
-//         }, { withCredentials: true });
-//         return data.data;
-//     } 
-//     catch (error) {
-//         console.error('Signup error:', error);
-//         throw error;
-//     }
-// };
 export const signinUser = async (email: string, code: string) => {
     try {
         const { data } = await axios.post(
@@ -67,6 +54,13 @@ export const signinUser = async (email: string, code: string) => {
     } catch (error) {
         console.error('Signup error:', error);
         throw error;
+    }
+};
+export const logoutUser = async () => {
+    try {
+        await axios.post(`${API_URL}/api/users/logout`, {}, { withCredentials: true });
+    } catch (error) {
+        console.error("Logout error:", error);
     }
 };
 // * Done

@@ -9,6 +9,7 @@ import {
     getInterested,
     getSavedLists,
     deleteUserById,
+    logout,
 } from '../controllers/userController';
 import { authenticateToken } from "../middleware/authMiddleware";
 
@@ -17,6 +18,8 @@ const router = express.Router();
 router.post('/send-code', sendEmailCode);
 
 router.post("/signin", signinUser);
+
+router.post("/logout", logout);
 
 router.get('/get-self', getSelf);
 

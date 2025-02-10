@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { AuthenticatedRequestOptional } from '../types/expressTypes';
 
 export const authenticateToken = async (req: AuthenticatedRequestOptional, res: Response, next: NextFunction): Promise<void> => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.cookies?.token;
 
     if (!token) {
         res.status(401).json({ 
