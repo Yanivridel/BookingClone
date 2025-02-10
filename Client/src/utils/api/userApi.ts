@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { IUser, TPartialUser } from '@/types/userTypes';
-import { getCookie } from './../cookies';
+import Cookies from "js-cookie";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.env.VITE_API_URL_LOCAL;
@@ -8,7 +8,8 @@ const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.e
 // * Done
 export const getSelf = async () => {
     try {
-        const token = getCookie("token");
+        const token = Cookies.get("token");
+        console.log("COOKIES", token);
         if(!token) return null;
 
         const { data } = await axios.get(`${API_URL}/api/users/get-self`, {
@@ -74,7 +75,7 @@ export const editProfile = async (fieldsToUpdate : TPartialUser ) => {
             fieldsToUpdate, 
             {
                 headers: {
-                    Authorization: `Bearer ${getCookie("token")}`
+                    Authorization: `Bearer ${Cookies.get("token")}`
                 }
             });
         return data.data;
@@ -95,7 +96,7 @@ export const modifyUserArrays = async (action: string, userArrays : any ) => {
             ,
             {
                 headers: {
-                    Authorization: `Bearer ${getCookie("token")}`
+                    Authorization: `Bearer ${Cookies.get("token")}`
                 }
             });
         return data.data;
@@ -108,7 +109,7 @@ export const modifyUserArrays = async (action: string, userArrays : any ) => {
 // * Done
 export const getSearch = async () => {
     try {
-        const token = getCookie("token");
+        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/search`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -123,7 +124,7 @@ export const getSearch = async () => {
 // * Done
 export const getInterested = async () => {
     try {
-        const token = getCookie("token");
+        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/interested`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -138,7 +139,7 @@ export const getInterested = async () => {
 // * Done
 export const getSavedLists = async () => {
     try {
-        const token = getCookie("token");
+        const token = Cookies.get("token");
         const { data } = await axios.get(`${API_URL}/api/users/saved-lists`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -153,7 +154,7 @@ export const getSavedLists = async () => {
 //! NOT YET FINISHED - COME BACK LATER
 export const deleteUser = async () => {
     try {
-        const token = getCookie("token");
+        const token = Cookies.get("token");
         const { data } = await axios.delete(`${API_URL}/api/users/delete-account`, {
             headers: {
                 Authorization: `Bearer ${token}`,
