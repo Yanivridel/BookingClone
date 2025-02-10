@@ -1,6 +1,7 @@
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { getCookie } from "../cookies";
+import { TBookingDetails } from "@/types/bookingTypes";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const API_URL = isProduction
@@ -72,5 +73,23 @@ export async function getPaymentMethod(paymentId: string) {
   } catch (err) {
     console.log("Error fetching payment method: " + err);
     return null;
+  }
+}
+
+export async function createBooking(bookingDetails: TBookingDetails) {
+  try {
+    const { data } = await axios.post(
+      `${API_URL}/api/booking/create`,
+      bookingDetails,
+      {
+        headers: {
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error("Payment error:", error);
+    return error;
   }
 }

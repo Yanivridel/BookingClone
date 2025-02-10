@@ -105,15 +105,14 @@ function TopNav() {
                         loading="lazy"
                       />
                       <AvatarFallback className="text-white w-full h-full flex items-center justify-center">
-                        {initials || "User"}
+                        {initials || "u"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                       <h2 className="text-white">
-                        {currentUser.fName || currentUser.lName ? 
-                        currentUser.fName + " " + currentUser.lName
-                        :
-                        "Account & Info"}
+                        {currentUser.fName || currentUser.lName
+                          ? currentUser.fName + " " + currentUser.lName
+                          : "Account & Info"}
                       </h2>
                       <p className="text-[#f8b830]">
                         Genius Level {currentUser.geniusLevel}

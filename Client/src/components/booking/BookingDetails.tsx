@@ -2,7 +2,7 @@ import { RootState } from "@/store";
 import { IUser } from "@/types/userTypes";
 import { useSelector } from "react-redux";
 
-import { useRef, useState } from "react";
+import { Dispatch, MutableRefObject, SetStateAction, useState } from "react";
 import BookingInput from "./BookingInput";
 import { validateEmail } from "@/utils/utilsFunctions";
 import { Checkbox } from "../ui/checkbox";
@@ -20,23 +20,57 @@ import { IconError, IconSuccess } from "../ui/Icons";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { useTranslation } from "react-i18next";
 
-function BookingDetails() {
+interface BookingDetailsProps {
+  fNameRef: MutableRefObject<HTMLInputElement | null>;
+  emailRef: MutableRefObject<HTMLInputElement | null>;
+  phoneNumberRef: MutableRefObject<HTMLInputElement | null>;
+  companyNameRef: MutableRefObject<HTMLInputElement | null>;
+  VATNumberRef: MutableRefObject<HTMLInputElement | null>;
+
+  lName: string;
+  setLName: Dispatch<SetStateAction<string>>;
+
+  selectedCountry: {
+    code: string;
+    label: string;
+  };
+
+  setSelectedCountry: Dispatch<
+    SetStateAction<{
+      code: string;
+      label: string;
+    }>
+  >;
+
+  isForMe: boolean;
+  setIsForMe: Dispatch<SetStateAction<boolean>>;
+  setIsPaperless: Dispatch<SetStateAction<boolean>>;
+  setShouldUpdateAccount: Dispatch<SetStateAction<boolean>>;
+}
+
+function BookingDetails({
+  fNameRef,
+  emailRef,
+  phoneNumberRef,
+  companyNameRef,
+  VATNumberRef,
+  selectedCountry,
+  setSelectedCountry,
+  lName,
+  setLName,
+  isForMe,
+  setIsForMe,
+  setIsPaperless,
+  setShouldUpdateAccount,
+}: BookingDetailsProps) {
+  const currentUser = useSelector(
+    (state: RootState) => state.currentUser
+  ) as unknown as IUser;
+
   const [selectedPhoneCountry, setSelectedPhoneCountry] = useState({
     code: "+972",
     label: "🇮🇱 Israel",
   });
-
-  const [selectedCountry, setSelectedCountry] = useState({
-    code: "+972",
-    label: "🇮🇱 Israel",
-  });
-
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const fNameRef = useRef<HTMLInputElement | null>(null);
-  const lNameRef = useRef<HTMLInputElement | null>(null);
-  const phoneNumberRef = useRef<HTMLInputElement | null>(null);
-  const companyNameRef = useRef<HTMLInputElement | null>(null);
-  const VATNumberRef = useRef<HTMLInputElement | null>(null);
 
   const [isEmailSuccess, setIsEmailSuccess] = useState(false);
   const [isFNameSuccess, setIsFNameSuccess] = useState(false);
@@ -45,7 +79,6 @@ function BookingDetails() {
   const [isCountrySuccess, setIsCountrySuccess] = useState(false);
   const [isCompanyNameSuccess, setIsCompanyNameSuccess] = useState(false);
   const [isVATNumberSuccess, setIsVATNumberSuccess] = useState(false);
-  const [isForMe, setIsForMe] = useState(false);
 
   const [emailError, setEmailError] = useState("");
   const [fNameError, setFNameError] = useState("");
@@ -56,10 +89,6 @@ function BookingDetails() {
   const [isForWork, setIsForWork] = useState(false);
 
   const { i18n } = useTranslation();
-
-  const currentUser = useSelector(
-    (state: RootState) => state.currentUser
-  ) as unknown as IUser;
 
   // * email
   const onEmailBlur = () => {
@@ -88,7 +117,7 @@ function BookingDetails() {
   };
 
   const onLNameBlur = () => {
-    if (lNameRef.current?.value.length === 0) {
+    if (!lName) {
       setIsLNameSuccess(false);
       setLNameError("Enter your last name");
     } else {
@@ -130,10 +159,10 @@ function BookingDetails() {
             isIconSuccess={true}
             isSuccess={isLNameSuccess}
             onBlurHandler={onLNameBlur}
-            ref={lNameRef}
             name="lName"
-            defaultValue={currentUser.lName ? currentUser.lName : ""}
             type="text"
+            state={lName}
+            setState={setLName}
             isRequired={true}
             error={lNameError}
             labelText="Last name"
@@ -162,9 +191,9 @@ function BookingDetails() {
               isIconSuccess={true}
               isSuccess={isLNameSuccess}
               onBlurHandler={onLNameBlur}
-              ref={lNameRef}
               name="lName"
-              defaultValue={currentUser.lName ? currentUser.lName : ""}
+              state={lName}
+              setState={setLName}
               type="text"
               isRequired={true}
               error={lNameError}
@@ -301,13 +330,17 @@ function BookingDetails() {
         </span>
       </div>
 
-      {/* checkbox 1 */}
+      {/* checkbox 1 - paperless */}
       <div className="py-4 flex gap-2">
-        <Checkbox id="paperlessConfirmation" className="rounded-md h-5 w-5" />
+        <Checkbox
+          onClick={(_) => setIsPaperless((prev) => !prev)}
+          id="paperlessConfirmation"
+          className="rounded-md h-5 w-5"
+        />
         <div className="flex flex-col ">
           <Label
             htmlFor="paperlessConfirmation"
-            className="text-sm font-normal "
+            className="text-sm font-normal"
           >
             Yes, I want free paperless confirmation (recommended)
           </Label>
@@ -316,9 +349,13 @@ function BookingDetails() {
           </span>
         </div>
       </div>
-      {/* checkbox 2 */}
+      {/* checkbox 2 - Update account */}
       <div className="pb-4 flex gap-2 border-b-[1px]">
-        <Checkbox id="shouldUpdateAccount" className="rounded-md h-5 w-5" />
+        <Checkbox
+          onClick={(_) => setShouldUpdateAccount((prev) => !prev)}
+          id="shouldUpdateAccount"
+          className="rounded-md h-5 w-5"
+        />
         <div className="flex flex-col ">
           <Label htmlFor="shouldUpdateAccount" className="text-sm font-normal ">
             Update my account to include these new details
@@ -423,7 +460,7 @@ function BookingDetails() {
               labelText="VAT Number"
               isRequired={false}
               name={"VATNumber"}
-              type="string"
+              type="number"
               ref={VATNumberRef}
               optional="(optional)"
             />

@@ -1,7 +1,14 @@
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { IconError, IconSuccess } from "../ui/Icons";
-import { ForwardedRef, forwardRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  ForwardedRef,
+  forwardRef,
+  SetStateAction,
+  useState,
+} from "react";
 
 interface BookingInputProps {
   isSuccess?: boolean;
@@ -17,8 +24,12 @@ interface BookingInputProps {
   type: string;
   optional?: string;
   defaultValue?: string;
+  state?: string;
+  setState?: Dispatch<SetStateAction<string>>;
+  maxLength?: number;
 }
 
+//  ! if state - no default value , if ref - no value
 const BookingInput = forwardRef(function BookingInput(
   {
     error,
@@ -34,10 +45,19 @@ const BookingInput = forwardRef(function BookingInput(
     labelText: labelText,
     type,
     optional,
+    state,
+    setState,
+    maxLength,
   }: BookingInputProps,
-  ref: ForwardedRef<HTMLInputElement>
+  ref?: ForwardedRef<HTMLInputElement>
 ) {
   const [isFocus, setIsFocus] = useState<boolean>();
+
+  const onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (state !== undefined && setState !== undefined) {
+      setState((_) => e.target.value);
+    }
+  };
 
   return (
     <div>
@@ -65,12 +85,15 @@ const BookingInput = forwardRef(function BookingInput(
               setIsFocus(false);
               onBlurHandler();
             }}
+            onChange={(e) => onValueChange(e)}
             ref={ref}
             type={type}
             name={name}
             defaultValue={defaultValue}
             placeholder={placeholder}
             required={isRequired}
+            value={state}
+            maxLength={maxLength}
           />
           {error && !isFocus && (
             <IconError className="h-5 w-5 fill-redError absolute top-2 end-2 " />
