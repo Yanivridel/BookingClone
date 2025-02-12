@@ -132,8 +132,8 @@ function SearchResults() {
     const allProperties = data.pages.flatMap(page => page.filteredProperties) as IProperty[];
     
     return allProperties.map(prop => ({
-      lat: prop.location.coordinates?.coordinates[0],
-      lng: prop.location.coordinates?.coordinates[1],
+      lng: prop.location.coordinates?.coordinates[0],
+      lat: prop.location.coordinates?.coordinates[1],
     } as LatLng));
   }, [data?.pages]);
 

@@ -29,8 +29,8 @@ function ImagesProperty({ propertyData, propertyReviews, isRtl }: ImagePropertyP
 
   const coordinates = propertyData.location.coordinates?.coordinates as number[];
   const center = {
-    lat: coordinates[0] || 31.9642563,
-    lng: coordinates[1] || 34.8043575,
+    lng: coordinates[0] || 34.8043575,
+    lat: coordinates[1] || 31.9642563,
   } as LatLng
   
 

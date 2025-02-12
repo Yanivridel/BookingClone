@@ -72,21 +72,11 @@ function SavedLists() {
         fetchProperties();
     }, [selectedList]);
 
-    // useEffect(() => {
-    //     if (properties) {
-    //         const newCoordinates = properties.map(prop => ({
-    //             lat: prop.location.coordinates?.coordinates[0],
-    //             lng: prop.location.coordinates?.coordinates[1],
-    //         })) as LatLng[];
-    //         setCoordinates(newCoordinates );
-    //     }
-    // }, [properties]);
-
     const coordinates = useMemo(() => {
         if (!properties) return [];
         return properties.map(prop => ({
-        lat: prop.location.coordinates?.coordinates[0],
-        lng: prop.location.coordinates?.coordinates[1],
+            lng: prop.location.coordinates?.coordinates[0],
+            lat: prop.location.coordinates?.coordinates[1],
         } as LatLng));
     }, [properties]);
     
