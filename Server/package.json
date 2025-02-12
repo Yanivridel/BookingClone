@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cmd /c \"tests\\.venv\\Scripts\\activate && pytest --alluredir=allure-results && allure serve allure-results || allure serve allure-results\"",
     "start": "node dist/app.js",
-    "start dev": "npx ts-node -r tsconfig-paths/register src/app.ts",
+    "start_dev": "npx ts-node -r tsconfig-paths/register src/app.ts",
     "dev": "npx ts-node-dev -r tsconfig-paths/register src/app.ts --respawn --transpileOnly",
     "build": "tsc"
   },
@@ -14,6 +14,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
@@ -29,7 +30,7 @@
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@types/stripe": "^8.0.417",

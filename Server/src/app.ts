@@ -104,7 +104,6 @@ app.use("/api/payment", paymentRoutes);
 
 app.use("/api/booking", bookingRoutes);
 
-
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

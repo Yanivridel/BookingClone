@@ -9,6 +9,9 @@ import { generateVerificationCode, verifyVerificationCode } from '../utils/auth'
 import { AuthenticatedRequest } from '../types/expressTypes';
 import { getCoordinatesByLocation } from '../utils/maps';
 import { ILocation } from '../types/propertyTypes';
+import { reviewModel } from 'models/reviewModel';
+import { bookingModel } from 'models/bookingModel';
+import { paymentModel } from 'models/paymentModel';
 
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
@@ -231,6 +234,7 @@ export const editProfile = async (req: Request<{},{}, IEditProfileBody>, res: Re
                 res.status(400).json({status: "error", message: 'Invalid location provided' });
                 return;
             }
+
             fieldsToUpdate.location.coordinates = {
                 type: "Point",
                 coordinates
@@ -508,7 +512,6 @@ export const getSavedLists = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-//! Delete Account - COME BACK LATER FIX RECURSIVE DELETE TO OTHER MODELS
 export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
     try {
         const authenticatedReq = req as AuthenticatedRequest;
@@ -522,9 +525,9 @@ export const deleteUserById = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        // Delete associated data - complete later
-        // await bookingModel.deleteMany({ userId });
-        // await reviewModel.deleteMany({ userId });
+        await bookingModel.deleteMany({ userId });
+        await paymentModel.deleteMany({ userId });
+        await reviewModel.deleteMany({ userId });
 
         res.status(200).json({  status: "success", message: 'User account deleted successfully' });
     } catch (error) {
