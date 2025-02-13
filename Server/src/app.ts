@@ -13,7 +13,7 @@ import { connectRedis } from './utils/redisClient';
 import './utils/stripe'
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 
 // Middleware Configuration
