@@ -57,7 +57,7 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
-if(process.env.USE_CACHE !== "false")
+if(process.env.USE_CACHE === "true")
     connectRedis();
 
 // Server Check

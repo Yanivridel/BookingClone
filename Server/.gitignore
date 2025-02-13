@@ -5,3 +5,6 @@
 dist
 
 /tests/.venv
+/tests/test_api/config.py
+
+allure-results

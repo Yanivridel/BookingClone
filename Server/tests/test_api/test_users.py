@@ -3,9 +3,10 @@ import requests
 import pymongo
 import allure
 from pymongo import MongoClient
+from config import connection_string
 
 BASE_URL = "http://localhost:3000/"
-client = MongoClient("mongodb+srv://booking-clone:wAXkf1pjMWI2KogM@bookingcluster.d3jvc.mongodb.net/booking?retryWrites=true&w=majority&appName=BookingClone")
+client = MongoClient(connection_string)
 db = client.booking
 user_token = None
 user_not_found_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FjNjI2NDFiODJlMTk4ODgyOGIwZDIiLCJpYXQiOjE3MzkzNTgyMzksImV4cCI6MTczOTk2MzAzOX0.uj5V-nuXHviUllSPsYRUHPWeFShFGGFJ44uMfV6O5k8"
