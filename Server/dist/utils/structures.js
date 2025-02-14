@@ -510,16 +510,16 @@ var EFeatures;
 })(EFeatures || (exports.EFeatures = EFeatures = {}));
 var EPaymentMethods;
 (function (EPaymentMethods) {
-    EPaymentMethods["CREDIT_CARD"] = "credit card";
-    EPaymentMethods["DEBIT_CARD"] = "debit card";
-    EPaymentMethods["MasterCard"] = "masterCard";
-    EPaymentMethods["PAYPAL"] = "payPal";
-    EPaymentMethods["BANK_TRANSFER"] = "bank transfer";
-    EPaymentMethods["CASH"] = "cash";
-    EPaymentMethods["APPLE_PAY"] = "apple pay";
-    EPaymentMethods["GOOGLE_PAY"] = "google Pay";
-    EPaymentMethods["CRYPTOCURRENCY"] = "cCryptocurrency";
-    EPaymentMethods["Visa"] = "visa";
-    EPaymentMethods["OTHER"] = "other";
+    EPaymentMethods["CREDIT_CARD"] = "Credit Card";
+    EPaymentMethods["DEBIT_CARD"] = "Debit Card";
+    EPaymentMethods["MasterCard"] = "MasterCard";
+    EPaymentMethods["PAYPAL"] = "PayPal";
+    EPaymentMethods["BANK_TRANSFER"] = "Bank Transfer";
+    EPaymentMethods["CASH"] = "Cash";
+    EPaymentMethods["APPLE_PAY"] = "Apple Pay";
+    EPaymentMethods["GOOGLE_PAY"] = "Google Pay";
+    EPaymentMethods["CRYPTOCURRENCY"] = "Cryptocurrency";
+    EPaymentMethods["Visa"] = "Visa";
+    EPaymentMethods["OTHER"] = "Other";
 })(EPaymentMethods || (exports.EPaymentMethods = EPaymentMethods = {}));
 //# sourceMappingURL=structures.js.map

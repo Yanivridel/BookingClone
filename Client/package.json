@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:run": "cd tests && call venv\\Scripts\\activate && pytest --capture=no --log-cli-level=INFO --html=report.html --self-contained-html",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

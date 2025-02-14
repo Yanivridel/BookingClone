@@ -11,6 +11,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // utils imports
 const auth_1 = require("../utils/auth");
 const maps_1 = require("../utils/maps");
+const reviewModel_1 = require("../models/reviewModel");
+const bookingModel_1 = require("../models/bookingModel");
+const paymentModel_1 = require("../models/paymentModel");
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION };
 const isProduction = process.env.NodeEnv === "production";
 const sendEmailCode = async (req, res) => {
@@ -427,9 +430,9 @@ const deleteUserById = async (req, res) => {
             res.status(404).json({ status: "error", message: 'User not found' });
             return;
         }
-        // Delete associated data - complete later
-        // await bookingModel.deleteMany({ userId });
-        // await reviewModel.deleteMany({ userId });
+        await bookingModel_1.bookingModel.deleteMany({ userId });
+        await paymentModel_1.paymentModel.deleteMany({ userId });
+        await reviewModel_1.reviewModel.deleteMany({ userId });
         res.status(200).json({ status: "success", message: 'User account deleted successfully' });
     }
     catch (error) {

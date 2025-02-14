@@ -9,9 +9,9 @@ import { generateVerificationCode, verifyVerificationCode } from '../utils/auth'
 import { AuthenticatedRequest } from '../types/expressTypes';
 import { getCoordinatesByLocation } from '../utils/maps';
 import { ILocation } from '../types/propertyTypes';
-import { reviewModel } from 'models/reviewModel';
-import { bookingModel } from 'models/bookingModel';
-import { paymentModel } from 'models/paymentModel';
+import { reviewModel } from '../models/reviewModel';
+import { bookingModel } from '../models/bookingModel';
+import { paymentModel } from '../models/paymentModel';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 const isProduction = process.env.NodeEnv === "production";

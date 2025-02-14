@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware Configuration
 const allowedOrigins = [
     'http://localhost:5173',
+    'http://localhost:4173',
     'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app',
     'https://booking-clone-client.vercel.app'
 ];

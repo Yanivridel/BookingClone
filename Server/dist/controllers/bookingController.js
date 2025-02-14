@@ -67,7 +67,13 @@ exports.createBooking = createBooking;
 // * Done
 const takeUnTakeRooms = async (req, res) => {
     const { checkIn, checkOut, rooms, action } = req.body;
+    if (!checkIn || !checkOut || !rooms || !action || !["take", "untake"].includes(action)) {
+        res.status(400).json({ status: "Error", message: "Missing required parameters" });
+        return;
+    }
     try {
+        if (new Date(checkIn) > new Date(checkOut))
+            throw new Error("Checkin cannot be greater than checkout");
         if (action === "take")
             await (0, exports.takeAvailableRooms)({ rooms, checkIn, checkOut });
         else
