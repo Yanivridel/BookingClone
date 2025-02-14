@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cmd /c \"tests\\.venv\\Scripts\\activate && pytest --alluredir=allure-results && allure serve allure-results || allure serve allure-results\"",
     "start": "node dist/app.js",
-    "start dev": "npx ts-node -r tsconfig-paths/register src/app.ts",
+    "start_dev": "npx ts-node -r tsconfig-paths/register src/app.ts",
     "dev": "npx ts-node-dev -r tsconfig-paths/register src/app.ts --respawn --transpileOnly",
     "build": "tsc"
   },

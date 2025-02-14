@@ -504,16 +504,16 @@ export enum EFeatures {
 
 
 export enum EPaymentMethods {
-    CREDIT_CARD = 'credit card',
-    DEBIT_CARD = 'debit card',
-    MasterCard = "masterCard",
-    PAYPAL = 'payPal',
-    BANK_TRANSFER = 'bank transfer',
-    CASH = 'cash',
-    APPLE_PAY = 'apple pay',
-    GOOGLE_PAY = 'google Pay',
-    CRYPTOCURRENCY = 'cCryptocurrency',
-    Visa = 'visa',
-    OTHER = 'other'
+    CREDIT_CARD = 'Credit Card',
+    DEBIT_CARD = 'Debit Card',
+    MasterCard = "MasterCard",
+    PAYPAL = 'PayPal',
+    BANK_TRANSFER = 'Bank Transfer',
+    CASH = 'Cash',
+    APPLE_PAY = 'Apple Pay',
+    GOOGLE_PAY = 'Google Pay',
+    CRYPTOCURRENCY = 'Cryptocurrency',
+    Visa = 'Visa',
+    OTHER = 'Other'
 }
 

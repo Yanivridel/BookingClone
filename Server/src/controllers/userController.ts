@@ -9,7 +9,9 @@ import { generateVerificationCode, verifyVerificationCode } from '../utils/auth'
 import { AuthenticatedRequest } from '../types/expressTypes';
 import { getCoordinatesByLocation } from '../utils/maps';
 import { ILocation } from '../types/propertyTypes';
-
+import { reviewModel } from 'models/reviewModel';
+import { bookingModel } from 'models/bookingModel';
+import { paymentModel } from 'models/paymentModel';
 
 const JTW_EXPIRATION = { expiresIn: process.env.JTW_EXPIRATION};
 const isProduction = process.env.NodeEnv === "production";
@@ -522,9 +524,9 @@ export const deleteUserById = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        // Delete associated data - complete later
-        // await bookingModel.deleteMany({ userId });
-        // await reviewModel.deleteMany({ userId });
+        await bookingModel.deleteMany({ userId });
+        await paymentModel.deleteMany({ userId });
+        await reviewModel.deleteMany({ userId });
 
         res.status(200).json({  status: "success", message: 'User account deleted successfully' });
     } catch (error) {

@@ -72,7 +72,15 @@ export const createBooking = async (req: Request<{},{},TBookingStringified>, res
 export const takeUnTakeRooms = async (req: Request, res: Response): Promise<void> => {
     const { checkIn, checkOut, rooms, action } = req.body;
 
+    if (!checkIn || !checkOut || !rooms || !action || !["take","untake"].includes(action)) {
+        res.status(400).json({ status: "Error", message: "Missing required parameters" });
+        return;
+    }
+
     try {
+        if(new Date(checkIn) > new Date(checkOut))
+            throw new Error("Checkin cannot be greater than checkout")
+        
         if(action === "take")
             await takeAvailableRooms({rooms, checkIn, checkOut} as IAvailableRoomsProps)
         else
