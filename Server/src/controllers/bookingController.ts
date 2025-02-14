@@ -80,7 +80,7 @@ export const takeUnTakeRooms = async (req: Request, res: Response): Promise<void
     try {
         if(new Date(checkIn) > new Date(checkOut))
             throw new Error("Checkin cannot be greater than checkout")
-        
+
         if(action === "take")
             await takeAvailableRooms({rooms, checkIn, checkOut} as IAvailableRoomsProps)
         else
