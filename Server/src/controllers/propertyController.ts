@@ -196,7 +196,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         // * Get Cache / Fetch New
         let filteredProperties;
-        if(process.env.USE_CACHE === "true"){
+        if(process.env.USE_CACHE !== "false"){
             filteredProperties = await getCache(cacheKey) as IProperty[];
         }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
@@ -226,7 +226,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             );
 
             setTimeout(() => {
-                if(process.env.USE_CACHE === "true") {
+                if(process.env.USE_CACHE !== "false") {
                     setCache(cacheKey, filteredProperties!);
                 }
             }, 1000) // in 1 sec

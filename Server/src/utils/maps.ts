@@ -9,9 +9,9 @@ export async function getCoordinatesByLocation(location: string) {
         const data = response.data;
 
         if (data.status === 'OK') {
-            const lat = parseFloat(data.results[0].geometry.location.lat);
-            const lng = parseFloat(data.results[0].geometry.location.lng);
-            return [lng, lat];
+            const lat = data.results[0].geometry.location.lat;
+            const lng = data.results[0].geometry.location.lng;
+            return [lat, lng];
         } else {
             console.error('Geocoding failed:', data.status);
             return null;

@@ -13,7 +13,7 @@ import { connectRedis } from './utils/redisClient';
 import './utils/stripe'
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 
 // Middleware Configuration
@@ -57,7 +57,7 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
-if(process.env.USE_CACHE === "true")
+if(process.env.USE_CACHE !== "false")
     connectRedis();
 
 // Server Check
@@ -103,6 +103,7 @@ app.use('/api/review', reviewRoutes);
 app.use("/api/payment", paymentRoutes);
 
 app.use("/api/booking", bookingRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
