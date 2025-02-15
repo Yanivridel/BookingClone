@@ -1,5 +1,7 @@
 interface BookingRoomsProps {
   roomName: string;
+  cancellation: string;
+  prepayment: string;
 }
 
 function BookingRooms({ roomName }: BookingRoomsProps) {

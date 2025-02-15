@@ -71,7 +71,6 @@ function Property() {
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
   };
-  console.log(propertyReviews?.length);
 
   useEffect(() => {
     if (id) {
@@ -133,6 +132,7 @@ function Property() {
   ];
 
   if (!propertyData) return null;
+  // console.log(propertyData);
 
   return (
     <div className="relative ">
@@ -183,7 +183,7 @@ function Property() {
           className={` tab:overflow-x-visible min-h-[500px] overflow-x-scroll , ${styles.scrollContainer}`}
         >
           {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
-            <PropertyTable nightsNum={4} rooms={propertyData?.rooms} />
+            <PropertyTable propertyData={propertyData} nightsNum={4} />
           )}
         </div>
         {/* Reviews & Rating */}
@@ -354,7 +354,6 @@ function Property() {
           popularFacilities={propertyData?.popularFacilities}
         />
 
-        {/* todo ridel carusel 5 km close by */}
         <PropertyFeatures features={propertyData?.features} />
 
         <div id={"House rules"} className="flex flex-col gap-2 ">

@@ -9,6 +9,7 @@ import { createBooking } from "@/utils/api/bookingApi";
 import { TBookingDetails } from "@/types/bookingTypes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 function Booking() {
   const currentUser = useSelector(
@@ -39,6 +40,8 @@ function Booking() {
 
   const [isPaperless, setIsPaperless] = useState(false);
   const [shouldUpdateAccount, setShouldUpdateAccount] = useState(false);
+  const bookingInfo = useLocation();
+  console.log(bookingInfo.state);
 
   const bookingSubmit = async () => {
     const bookingDetails: TBookingDetails = {
@@ -113,7 +116,8 @@ function Booking() {
       console.log(error);
     }
   };
-
+  console.log(window.history);
+  console.log(window.history.state.usr);
   // update lName because "currentUser" updated after lName  initialized
   useEffect(() => {
     if (currentUser.lName) {
@@ -142,7 +146,7 @@ function Booking() {
         selectedPhoneCountry={selectedPhoneCountry}
         setSelectedPhoneCountry={setSelectedPhoneCountry}
       />
-      <BookingRooms roomName="Standard Double Room" />
+      {/* <BookingRooms roomName="Standard Double Room" /> */}
       <Button onClick={bookingSubmit}></Button>
     </div>
   );
