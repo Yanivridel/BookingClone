@@ -1,6 +1,5 @@
 import { IHotelAreaInfoCategoty } from "@/types/propertyTypes";
 import { hotelAreaInfo } from "@/utils/staticData";
-import { t } from "i18next";
 
 interface PropertyNearByCardProps {
   hotel_area_info:

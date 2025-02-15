@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { IReview } from 'src/types/reviewTypes';
-import { ELanguage } from 'src/utils/structures';
+import { IReview } from '../types/reviewTypes';
+import { ELanguage } from '../utils/structures';
 
 const ReviewSchema = new Schema<IReview>(
     {

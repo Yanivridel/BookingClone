@@ -1035,3 +1035,145 @@ export const countryCodes = [
   { code: "+260", label: "🇿🇲 Zambia" },
   { code: "+263", label: "🇿🇼 Zimbabwe" }
 ];
+export const coinTypes = [
+  { label: "🇺🇸", currency: "USD" }, // United States Dollar
+  { label: "🇪🇺", currency: "EUR" }, // Euro
+  { label: "🇬🇧", currency: "GBP" }, // British Pound
+  { label: "🇯🇵", currency: "JPY" }, // Japanese Yen
+  { label: "🇦🇺", currency: "AUD" }, // Australian Dollar
+  { label: "🇨🇦", currency: "CAD" }, // Canadian Dollar
+  { label: "🇨🇭", currency: "CHF" }, // Swiss Franc
+  { label: "🇨🇳", currency: "CNY" }, // Chinese Yuan
+  { label: "🇭🇰", currency: "HKD" }, // Hong Kong Dollar
+  { label: "🇳🇿", currency: "NZD" }, // New Zealand Dollar
+  { label: "🇸🇪", currency: "SEK" }, // Swedish Krona
+  { label: "🇰🇷", currency: "KRW" }, // South Korean Won
+  { label: "🇸🇬", currency: "SGD" }, // Singapore Dollar
+  { label: "🇳🇴", currency: "NOK" }, // Norwegian Krone
+  { label: "🇲🇽", currency: "MXN" }, // Mexican Peso
+  { label: "🇮🇳", currency: "INR" }, // Indian Rupee
+  { label: "🇷🇺", currency: "RUB" }, // Russian Ruble
+  { label: "🇿🇦", currency: "ZAR" }, // South African Rand
+  { label: "🇹🇷", currency: "TRY" }, // Turkish Lira
+  { label: "🇧🇷", currency: "BRL" }, // Brazilian Real
+  { label: "🇹🇼", currency: "TWD" }, // New Taiwan Dollar
+  { label: "🇩🇰", currency: "DKK" }, // Danish Krone
+  { label: "🇵🇱", currency: "PLN" }, // Polish Zloty
+  { label: "🇹🇭", currency: "THB" }, // Thai Baht
+  { label: "🇮🇩", currency: "IDR" }, // Indonesian Rupiah
+  { label: "🇭🇺", currency: "HUF" }, // Hungarian Forint
+  { label: "🇨🇿", currency: "CZK" }, // Czech Koruna
+  { label: "🇮🇱", currency: "ILS" }, // Israeli New Shekel
+  { label: "🇵🇭", currency: "PHP" }, // Philippine Peso
+  { label: "🇦🇪", currency: "AED" }, // United Arab Emirates Dirham
+  { label: "🇸🇦", currency: "SAR" }, // Saudi Riyal
+  { label: "🇲🇾", currency: "MYR" }, // Malaysian Ringgit
+  { label: "🇧🇬", currency: "BGN" }, // Bulgarian Lev
+  { label: "🇷🇴", currency: "RON" }, // Romanian Leu
+  { label: "🇦🇷", currency: "ARS" }, // Argentine Peso
+  { label: "🇨🇱", currency: "CLP" }, // Chilean Peso
+  { label: "🇨🇴", currency: "COP" }, // Colombian Peso
+  { label: "🇻🇳", currency: "VND" }, // Vietnamese Dong
+  { label: "🇳🇬", currency: "NGN" }, // Nigerian Naira
+  { label: "🇵🇰", currency: "PKR" }, // Pakistani Rupee
+  { label: "🇪🇬", currency: "EGP" }, // Egyptian Pound
+  { label: "🇶🇦", currency: "QAR" }, // Qatari Riyal
+  { label: "🇰🇼", currency: "KWD" }, // Kuwaiti Dinar
+  { label: "🇧🇭", currency: "BHD" }, // Bahraini Dinar
+  { label: "🇴🇲", currency: "OMR" }, // Omani Rial
+  { label: "🇯🇴", currency: "JOD" }, // Jordanian Dinar
+  { label: "🇲🇦", currency: "MAD" }, // Moroccan Dirham
+  { label: "🇱🇰", currency: "LKR" }, // Sri Lankan Rupee
+  { label: "🇧🇩", currency: "BDT" }, // Bangladeshi Taka
+  { label: "🇺🇦", currency: "UAH" }, // Ukrainian Hryvnia
+  { label: "🇬🇭", currency: "GHS" }, // Ghanaian Cedi
+  { label: "🇰🇪", currency: "KES" }, // Kenyan Shilling
+  { label: "🇺🇬", currency: "UGX" }, // Ugandan Shilling
+  { label: "🇹🇿", currency: "TZS" }, // Tanzanian Shilling
+  { label: "🇨🇫", currency: "XAF" }, // Central African CFA Franc
+  { label: "🇧🇫", currency: "XOF" }, // West African CFA Franc
+  { label: "🇿🇲", currency: "ZMW" }, // Zambian Kwacha
+  { label: "🇪🇹", currency: "ETB" }, // Ethiopian Birr
+  { label: "🇧🇴", currency: "BOB" }, // Bolivian Boliviano
+  { label: "🇵🇪", currency: "PEN" }, // Peruvian Sol
+  { label: "🇮🇸", currency: "ISK" }, // Icelandic Krona
+  { label: "🇯🇲", currency: "JMD" }, // Jamaican Dollar
+  { label: "🇬🇾", currency: "GYD" }, // Guyanese Dollar
+  { label: "🇧🇸", currency: "BSD" }, // Bahamian Dollar
+  { label: "🇫🇯", currency: "FJD" }, // Fijian Dollar
+  { label: "🇽🇨", currency: "XCD" }, // East Caribbean Dollar
+  { label: "🇰🇾", currency: "KYD" }, // Cayman Islands Dollar
+  { label: "🇦🇳", currency: "ANG" }, // Netherlands Antillean Guilder
+  { label: "🇦🇼", currency: "AWG" }, // Aruban Florin
+  { label: "🇲🇻", currency: "MVR" }, // Maldivian Rufiyaa
+];
+export const languageData = [
+  { label: "🇺🇸", language: "English" }, // US English is the most common representation
+  { label: "🇪🇺", language: "Multiple Languages (Eurozone)" }, // Handle Eurozone languages as needed
+  { label: "🇯🇵", language: "Japanese" },
+  { label: "🇦🇺", language: "English" }, // Australian English
+  { label: "🇨🇦", language: "English" }, // Canadian English, but English is the primary language
+  { label: "🇨🇭", language: "German" }, //  Consider separate entries for French, Italian, Romansh if needed
+  { label: "🇨🇳", language: "Chinese" },
+  { label: "🇳🇿", language: "English" }, // New Zealand English
+  { label: "🇸🇪", language: "Swedish" },
+  { label: "🇰🇷", language: "Korean" },
+  { label: "🇸🇬", language: "English" }, // Singapore has multiple languages
+  { label: "🇳🇴", language: "Norwegian" },
+  { label: "🇲🇽", language: "Spanish" }, // Mexican Spanish
+  { label: "🇮🇳", language: "English" }, // Indian English, but consider other languages
+  { label: "🇷🇺", language: "Russian" },
+  { label: "🇿🇦", language: "English" }, // South African English, but consider other languages
+  { label: "🇹🇷", language: "Turkish" },
+  { label: "🇧🇷", language: "Portuguese" }, // Brazilian Portuguese
+  { label: "🇹🇼", language: "Chinese" },
+  { label: "🇩🇰", language: "Danish" },
+  { label: "🇵🇱", language: "Polish" },
+  { label: "🇹🇭", language: "Thai" },
+  { label: "🇮🇩", language: "Indonesian" },
+  { label: "🇭🇺", language: "Hungarian" },
+  { label: "🇨🇿", language: "Czech" },
+  { label: "🇮🇱", language: "Hebrew" },
+  { label: "🇵🇭", language: "Filipino" },  // Or "Tagalog" if you want to be more specific
+  { label: "🇦🇪", language: "Arabic" },
+  { label: "🇸🇦", language: "Arabic" },
+  { label: "🇲🇾", language: "Malay" },
+  { label: "🇧🇬", language: "Bulgarian" },
+  { label: "🇷🇴", language: "Romanian" },
+  { label: "🇦🇷", language: "Spanish" }, // Argentinian Spanish
+  { label: "🇨🇱", language: "Spanish" }, // Chilean Spanish
+  { label: "🇨🇴", language: "Spanish" }, // Colombian Spanish
+  { label: "🇻🇳", language: "Vietnamese" },
+  { label: "🇳🇬", language: "English" }, // Nigerian English, but consider other languages
+  { label: "🇵🇰", language: "Urdu" }, // And other regional languages
+  { label: "🇪🇬", language: "Arabic" },
+  { label: "🇶🇦", language: "Arabic" },
+  { label: "🇰🇼", language: "Arabic" },
+  { label: "🇧🇭", language: "Arabic" },
+  { label: "🇴🇲", language: "Arabic" },
+  { label: "🇯🇴", language: "Arabic" },
+  { label: "🇲🇦", language: "Arabic" },
+  { label: "🇱🇰", language: "Sinhala" }, // And Tamil
+  { label: "🇧🇩", language: "Bengali" },
+  { label: "🇺🇦", language: "Ukrainian" },
+  { label: "🇬🇭", language: "English" }, // Ghanaian English, but consider other languages
+  { label: "🇰🇪", language: "Swahili" }, // And English
+  { label: "🇺🇬", language: "English" }, // And other languages
+  { label: "🇹🇿", language: "Swahili" }, // And English
+  { label: "🇨🇫", language: "Sango" }, // And French
+  { label: "🇧🇫", language: "French" }, // And other languages
+  { label: "🇿🇲", language: "English" }, // And other languages
+  { label: "🇪🇹", language: "Amharic" },
+  { label: "🇧🇴", language: "Spanish" },
+  { label: "🇵🇪", language: "Spanish" },
+  { label: "🇮🇸", language: "Icelandic" },
+  { label: "🇯🇲", language: "English" },
+  { label: "🇬🇾", language: "English" },
+  { label: "🇧🇸", language: "English" },
+  { label: "🇫🇯", language: "Fijian" }, // And English
+  { label: "🇽🇨", language: "English" },
+  { label: "🇰🇾", language: "English" },
+  { label: "🇦🇳", language: "Dutch" },
+  { label: "🇦🇼", language: "Dutch" },
+  { label: "🇲🇻", language: "Dhivehi" },
+];

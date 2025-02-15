@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
-import { IAvailableRoomsProps, unTakeAvailableRooms } from "src/controllers/bookingController";
-import { IBooking, TBookingStringified } from "src/types/bookingTypes";
+import { IAvailableRoomsProps, unTakeAvailableRooms } from "../controllers/bookingController";
+import { IBooking, TBookingStringified } from "../types/bookingTypes";
 import cron from 'node-cron';
 
 const BookingSchema = new Schema<IBooking>(

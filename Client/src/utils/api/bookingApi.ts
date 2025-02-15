@@ -1,7 +1,7 @@
-import { loadStripe, Stripe } from "@stripe/stripe-js";
-import axios from "axios";
-import { getCookie } from "../cookies";
+// import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { TBookingDetails } from "@/types/bookingTypes";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const API_URL = isProduction
@@ -18,7 +18,7 @@ export async function makePayment(amount: number, currency: string) {
       },
       {
         headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       }
     );
@@ -46,7 +46,7 @@ export async function savePayment(
       },
       {
         headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       }
     );
@@ -83,7 +83,7 @@ export async function createBooking(bookingDetails: TBookingDetails) {
       bookingDetails,
       {
         headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       }
     );

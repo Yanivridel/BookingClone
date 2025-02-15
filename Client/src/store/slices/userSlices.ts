@@ -1,5 +1,5 @@
 import { ISavedList, ISearchEntry, UserState } from "@/types/userTypes";
-import { removeCookie } from "@/utils/cookies";
+import { logoutUser } from "@/utils/api/userApi";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"; 
 
 
@@ -42,7 +42,7 @@ const userSlice = createSlice({
         },
         unsetUser: (state) => {
             Object.assign(state, initialState);
-            removeCookie("token");
+            logoutUser();
         },
         addSearchEntry: (state, action: PayloadAction<ISearchEntry[]>) => {
             state.search = action.payload;

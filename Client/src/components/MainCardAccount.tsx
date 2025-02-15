@@ -1,5 +1,4 @@
-import React from 'react'
-import { ArrowRight, Coins } from './ui/Icons'
+import { ArrowRight } from './ui/Icons'
 import { Button } from './ui/button'
 import { useNavigate } from 'react-router-dom'
 

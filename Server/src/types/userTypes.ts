@@ -1,7 +1,7 @@
 import { Document, Types } from 'mongoose'
 
-import { ECoinType, ELanguage } from "./../utils/structures";
-import { ILocation } from "./../types/propertyTypes";
+import { ECoinType, ELanguage } from "../utils/structures";
+import { ILocation } from "../types/propertyTypes";
 
 export interface IUser extends Document {
     _id: Types.ObjectId;

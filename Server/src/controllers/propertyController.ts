@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
 // utils imports
-import { IProperty, TPartialProperty } from 'src/types/propertyTypes';
-import { propertyModel } from './../models/propertyModel';
-import { getCoordinatesByLocation } from 'src/utils/maps';
-import { roomModel } from 'src/models/roomModel';
-import { IRoom, TSelectedRoom } from 'src/types/roomTypes';
-import { getCache, setCache } from 'src/utils/redisClient';
-import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from 'src/types/userTypes'; 
+import { IProperty, TPartialProperty } from '../types/propertyTypes';
+import { propertyModel } from '../models/propertyModel';
+import { getCoordinatesByLocation } from '../utils/maps';
+import { roomModel } from '../models/roomModel';
+import { IRoom, TSelectedRoom } from '../types/roomTypes';
+import { getCache, setCache } from '../utils/redisClient';
+import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from '../types/userTypes'; 
 //* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {
@@ -195,8 +195,10 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         res.flushHeaders();
 
         // * Get Cache / Fetch New
-        // let filteredProperties: IProperty[] = await getCache(cacheKey);
         let filteredProperties;
+        if(process.env.USE_CACHE !== "false"){
+            filteredProperties = await getCache(cacheKey) as IProperty[];
+        }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
         if (!filteredProperties) {
             const coordinates = await getPropertyCoordinates(country,region,city,addressLine);
@@ -223,12 +225,14 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 { adults, children, rooms, isBaby, isAnimalAllowed }, // options
             );
 
-            // setTimeout(() => {
-            //     setCache(cacheKey, filteredProperties);
-            // }, 1000) // in 1 sec
+            setTimeout(() => {
+                if(process.env.USE_CACHE !== "false") {
+                    setCache(cacheKey, filteredProperties!);
+                }
+            }, 1000) // in 1 sec
         }
 
-        console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
+        //console.log("isCached:", isCached); //! Dev Mode - Remove Later !//
 
         let secondFiltered = filteredProperties;
         if(req.body?.secondary)

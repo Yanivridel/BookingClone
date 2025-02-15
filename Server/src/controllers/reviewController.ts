@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { reviewModel } from "../models/reviewModel";
 import mongoose from "mongoose";
-import { IReview } from "src/types/reviewTypes";
-import { AuthenticatedRequest } from "src/types/expressTypes";
+import { IReview } from "../types/reviewTypes";
+import { AuthenticatedRequest } from "../types/expressTypes";
 
 // Create a new review
 export const createReview = async (req: Request<{},{}, Partial<IReview>>, res: Response): Promise<void> => {

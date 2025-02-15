@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "./ui/button";
 import Stick from "../assets/images/GeniusAllBookingsStamp.png";
 import { useTranslation } from "react-i18next";

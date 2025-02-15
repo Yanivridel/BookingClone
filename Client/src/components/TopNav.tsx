@@ -13,14 +13,11 @@ import {
   BookingTripsIcon,
   GeniusLoyaltyIcon,
   IconGuest,
-  IconHamburger,
   MyAccountIcon,
-  Person,
   ReviewsIcon,
   RewardsWalletIcon,
   SavedIcon,
   SignoutIcon,
-  XIcon,
 } from "./ui/Icons";
 import { useNavigate } from "react-router-dom";
 import {
@@ -49,13 +46,6 @@ function TopNav() {
   const { i18n } = useTranslation();
 
   const navigate = useNavigate();
-  const changeLanguage = (lng: string) => {
-    if (i18n.changeLanguage) {
-      i18n.changeLanguage(lng);
-    } else {
-      console.error("i18n.changeLanguage is not available.");
-    }
-  };
 
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);

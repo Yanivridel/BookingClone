@@ -183,8 +183,10 @@ function isLight(color: string) {
   const r = (rgb >> 16) & 0xff;
   const g = (rgb >> 8) & 0xff;
   const b = (rgb >> 0) & 0xff;
+}
 
-  // Calculate luminance
-  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return luminance > 127; // Returns true for light colors, false for dark
+export async function getCurrentCountry() {
+  const response = await fetch("https://ipapi.co/json/");
+  const data = await response.json();
+  return data.country_name; // or data.country_code for ISO code
 }

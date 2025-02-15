@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
-import { IPayment } from "src/types/paymentTypes";
-import { ECoinType, EPaymentMethods } from "src/utils/structures";
+import { IPayment } from "../types/paymentTypes";
+import { ECoinType, EPaymentMethods } from "../utils/structures";
 
 const paymentSchema = new Schema<IPayment>(
     {

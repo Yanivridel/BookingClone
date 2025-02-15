@@ -12,9 +12,9 @@ async function getCoordinatesByLocation(location) {
         const response = await axios_1.default.get(url);
         const data = response.data;
         if (data.status === 'OK') {
-            const lat = data.results[0].geometry.location.lat;
-            const lng = data.results[0].geometry.location.lng;
-            return [lat, lng];
+            const lat = parseFloat(data.results[0].geometry.location.lat);
+            const lng = parseFloat(data.results[0].geometry.location.lng);
+            return [lng, lat];
         }
         else {
             console.error('Geocoding failed:', data.status);

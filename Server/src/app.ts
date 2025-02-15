@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 // Google Auth imports
 import session from 'express-session';
 import passport from 'passport';
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -16,11 +17,36 @@ const PORT = process.env.PORT || 3000;
 
 
 // Middleware Configuration
-app.use(express.json());
-app.use(cors( {
-    origin: "http://localhost:5173",
-    credentials: true
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'https://booking-clone-client-emw671yyq-yanivs-projects-d091535c.vercel.app',
+    'https://booking-clone-client.vercel.app'
+];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // If no origin (like server-to-server requests), allow
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        // Check if the origin is in the allowed list
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by Booking CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
+app.options('*', cors());
+
+app.use(express.json());
+app.use(cookieParser());
 
 // Database Connection
 if (process.env.DB_URI) {
@@ -31,7 +57,8 @@ if (process.env.DB_URI) {
     console.error("DB_URI environment variable is not defined");
 }
 
-// connectRedis();
+if(process.env.USE_CACHE !== "false")
+    connectRedis();
 
 // Server Check
 app.get('/test', (req: Request, res: Response): void => {
@@ -40,14 +67,15 @@ app.get('/test', (req: Request, res: Response): void => {
 
 app.use(session({ 
     secret: 'secret',
-    resave: false, 
+    resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // true in production
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
+
 
 // Passport middleware at app level
 app.use(passport.initialize());

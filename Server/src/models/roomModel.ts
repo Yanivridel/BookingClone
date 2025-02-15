@@ -1,8 +1,8 @@
 import mongoose, { Schema, model} from "mongoose";
 import cron from 'node-cron'; // Import the node-cron library
 
-import { IRoom } from "src/types/roomTypes";
-import { EFacility, EFeatures } from "src/utils/structures";
+import { IRoom } from "../types/roomTypes";
+import { EFacility, EFeatures } from "../utils/structures";
 
 const RoomSchema = new Schema<IRoom>({
         title: { type: String, required: true },

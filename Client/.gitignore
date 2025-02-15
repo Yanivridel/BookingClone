@@ -24,3 +24,10 @@ dist-ssr
 *.sw?
 
 .env
+
+venv
+.venv
+/allure-results
+config.py
+__pycache__
+.pytest_cache

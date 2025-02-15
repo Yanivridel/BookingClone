@@ -1,6 +1,4 @@
 import { Card, CardTitle } from "./ui/card";
-import DubaiImage from "../assets/images/Dubai.jpg";
-import dubaiLogo from "../assets/images/dubaiLogo.png";
 
 interface ImageCardProps {
   className?: string;

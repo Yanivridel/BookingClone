@@ -1,4 +1,3 @@
-import styles from "@/css/search.module.css";
 import ImageCard from "@/components/ImageCard";
 import MainCard from "@/components/MainCard";
 import OffersCard from "@/components/OffersCard";
@@ -6,8 +5,7 @@ import Search from "@/components/search";
 import HomeHeader from "../components/HomeHeader.tsx";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import DubaiImage from "../assets/images/Dubai.jpg";
-import { cf, convertMonthsToQueryString, makeUrlForSearch } from "@/utils/functions";
+import { cf, makeUrlForSearch } from "@/utils/functions";
 
 import { easyTripObj, HomeArr, inspirationArr, offersArr, propertyTypesArr, TrendingImages, uniqueArr } from "@/utils/staticData.ts";
 
@@ -19,20 +17,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "./../store/index.ts";
 import { IUser } from "@/types/userTypes.ts";
 import Slider from "react-slick";
-import { TFunctionNonStrict } from "i18next";
 import { SampleNextArrow, SamplePrevArrow } from "@/components/ui/carousel-slick.tsx";
 import MainCarousel from "@/components/MainCarousel.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import CardWithLocationHome from "@/components/CardWithLocationHome.tsx";
-import { IProperty, ISearchPropertiesReq } from "@/types/propertyTypes.ts";
-import { getPropertyByIdForCard } from "@/utils/api/propertyApi.ts";
+import { ISearchPropertiesReq } from "@/types/propertyTypes.ts";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { modifyUserArrays } from "@/utils/api/userApi.ts";
 import { addSearchEntry } from "@/store/slices/userSlices.ts";
-import kidsImg from './../assets/images/kids.jpeg'
-import { cn } from "@/lib/utils.ts";
-import LiveFooter from "@/components/LiveFooter.tsx";
 import { BeachIcon, CityIcon, OutdoorsIcon, SavedIcon } from "@/components/ui/Icons.tsx";
 
 // Tailwind - render
@@ -50,7 +43,6 @@ function Home() {
   const dispatch = useDispatch();
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "he";
-  const dateLanguage = isRtl ? "he-IL" : "en-US";
   const [easyTripCategory, setEasyTripCategory] = useState("outdoors");
   const easyTripCategories = Object.keys(easyTripObj);
 
@@ -72,7 +64,6 @@ function Home() {
       });
     };
 
-
     window.addEventListener("resize", checkMobile);
 
     return () => {
@@ -90,14 +81,6 @@ function Home() {
 
   const sunday = new Date(currentDate);
   sunday.setDate(currentDate.getDate() + daysToFriday + 2);
-  const monthOptions: Intl.DateTimeFormatOptions = { month: "long" };
-  const dayOptions: Intl.DateTimeFormatOptions = { day: "numeric" };
-
-  const fromMonth = friday.toLocaleDateString(dateLanguage, monthOptions);
-  const fromDay = friday.toLocaleDateString(dateLanguage, dayOptions);
-
-  const toMonth = sunday.toLocaleDateString(dateLanguage, monthOptions);
-  const toDay = sunday.toLocaleDateString(dateLanguage, dayOptions);
 
   const handleSearchClick = async (finalData: ISearchPropertiesReq) => {
       const url = makeUrlForSearch(finalData);
@@ -324,8 +307,10 @@ function Home() {
           </h3>
           {/* Category change */}
           <div className="flex p-2">
+            <MainCarousel>
             {easyTripCategories.map((key:string) =>
               <Button
+              key={key}
               variant="ghost"
               className={`font-normal rounded-full p-4 text-lg ${
                 easyTripCategory === key
@@ -341,6 +326,7 @@ function Home() {
               {cf(key)}
             </Button>
             )}
+            </MainCarousel>
           </div>
           {/* Carousels */}
           <div className="py-4">
@@ -427,13 +413,12 @@ function Home() {
                   ...settingsSearch,
                   slidesToShow: 2,
                   initialSlide: isRtl ? 5 - 2 : 0,
-                  // variableWidth: true,
                   nextArrow: <SampleNextArrow slidesToShow={2} />,
                 }}
               >
                 <CardWithDescription className="" />
                 { inspirationArr.map(el =>
-                  <div className="px-2">
+                  <div key={el.title} className="px-2">
                     <CardWithLocationHome title={el.title} description={el.desc} image={el.img} />
                   </div>
                 )}

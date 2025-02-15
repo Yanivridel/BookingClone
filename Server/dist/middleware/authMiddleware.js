@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authenticateToken = async (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.cookies?.token;
     if (!token) {
         res.status(401).json({
             status: "error",

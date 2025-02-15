@@ -31,7 +31,7 @@ function SavedLists() {
     const [isMobile, setIsMobile] = useState<boolean>(
         window.innerWidth < 1140
     );
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const isRtl = i18n.language === "he";
 
     const settingsCarousel = {
@@ -72,21 +72,11 @@ function SavedLists() {
         fetchProperties();
     }, [selectedList]);
 
-    // useEffect(() => {
-    //     if (properties) {
-    //         const newCoordinates = properties.map(prop => ({
-    //             lat: prop.location.coordinates?.coordinates[0],
-    //             lng: prop.location.coordinates?.coordinates[1],
-    //         })) as LatLng[];
-    //         setCoordinates(newCoordinates );
-    //     }
-    // }, [properties]);
-
     const coordinates = useMemo(() => {
         if (!properties) return [];
         return properties.map(prop => ({
-        lat: prop.location.coordinates?.coordinates[0],
-        lng: prop.location.coordinates?.coordinates[1],
+            lng: prop.location.coordinates?.coordinates[0],
+            lat: prop.location.coordinates?.coordinates[1],
         } as LatLng));
     }, [properties]);
     
@@ -184,7 +174,7 @@ function SavedLists() {
                             <li>3. You'll find everything you've saved here</li>
                         </ol>
                 </div>
-                <Button className="w-fit mx-auto mt-5 w-[220px] h-[50px] font-bold text-lg"
+                <Button className="mx-auto mt-5 w-[220px] h-[50px] font-bold text-lg"
                 onClick={() => navigate("/")}
                 >
                     Start Searching

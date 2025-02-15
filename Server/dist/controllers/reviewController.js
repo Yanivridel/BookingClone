@@ -3,25 +3,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllReviewsForTeacher = exports.createReview = void 0;
-const reviewModel_1 = __importDefault(require("../models/reviewModel"));
+exports.getAllReviewsForProperty = exports.createReview = void 0;
+const reviewModel_1 = require("../models/reviewModel");
 const mongoose_1 = __importDefault(require("mongoose"));
+// Create a new review
 const createReview = async (req, res) => {
     try {
-        const { teacherId, reviewer, rating, reviewText } = req.body;
-        if (!teacherId || !reviewer || !rating) {
+        const authenticatedReq = req;
+        const { userId } = authenticatedReq;
+        const { propertyId, rating } = req.body;
+        if (!propertyId || !userId || rating === undefined) {
             res.status(400).send({ status: "error", message: "Missing required parameters" });
             return;
         }
-        const newReview = new reviewModel_1.default({
-            user: new mongoose_1.default.Types.ObjectId(teacherId),
-            reviewer,
-            rating,
-            reviewText: reviewText ? reviewText : "",
-            createdAt: new Date()
+        const newReview = new reviewModel_1.reviewModel({
+            userId: new mongoose_1.default.Types.ObjectId(userId),
+            ...req.body
         });
         await newReview.save();
-        res.status(201).json({ status: "success", message: "Review created successfully", review: newReview });
+        res.status(201).json({ status: "success", message: "Review created successfully", data: newReview });
     }
     catch (error) {
         console.log(error); // dev mode
@@ -34,17 +34,22 @@ const createReview = async (req, res) => {
 };
 exports.createReview = createReview;
 // Get all reviews
-const getAllReviewsForTeacher = async (req, res) => {
+const getAllReviewsForProperty = async (req, res) => {
     try {
-        const { id: teacherId } = req.params;
-        if (!teacherId) {
+        const { id: propertyId } = req.params;
+        if (!propertyId) {
             res.status(400).send({ status: "error", message: "Missing required parameters" });
             return;
         }
-        const reviews = await reviewModel_1.default.find({ user: teacherId }).populate("user reviewer", "fName lName");
+        const reviews = await reviewModel_1.reviewModel.find({ propertyId })
+            .populate({
+            path: "userId",
+            select: "user_image fName location.country",
+            options: { virtuals: true },
+        });
         res.status(200).json({
             status: "success",
-            reviews
+            data: reviews
         });
     }
     catch (error) {
@@ -56,5 +61,5 @@ const getAllReviewsForTeacher = async (req, res) => {
         });
     }
 };
-exports.getAllReviewsForTeacher = getAllReviewsForTeacher;
+exports.getAllReviewsForProperty = getAllReviewsForProperty;
 //# sourceMappingURL=reviewController.js.map

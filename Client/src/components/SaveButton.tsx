@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import IconHeartRed, { CardXIcon, IconHeart, Spinner } from "./ui/Icons";
 import {
   Tooltip,
@@ -22,7 +22,6 @@ import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { icons } from "lucide-react";
 
 interface SavedButtonProps {
   id: string;
@@ -89,7 +88,8 @@ function SaveButton({
           rollback: () => setIsLiked((prev) => !prev),
         };
       },
-      onError: (err, variables, context) => {
+      onError: (err, _, context) => {
+        console.log("Error: ", err)
         if (context?.rollback) {
           context.rollback();
         }

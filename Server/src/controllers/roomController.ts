@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { roomModel } from "src/models/roomModel";
-import { TPartialRoom } from "src/types/roomTypes";
+import { roomModel } from "../models/roomModel";
+import { TPartialRoom } from "../types/roomTypes";
 
 
 // Create Property

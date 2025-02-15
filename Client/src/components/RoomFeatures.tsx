@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { PropertyFeaturesProps } from "./PropertyFeatures";
 import { SmallIconVi } from "./ui/Icons";
 
@@ -7,7 +8,7 @@ interface RoomFeaturesProps extends PropertyFeaturesProps {
 
 function RoomFeatures({ className, features }: RoomFeaturesProps) {
   return (
-    <div className="flex flex-wrap">
+    <div className={cn(className,"flex flex-wrap")}>
       {features?.map((feature) => (
         <div className="flex flex-wrap" key={feature.category}>
           {feature.sub?.map((sub, i) => (

@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardDescription, CardTitle } from "./ui/card";
 import { YellowCube } from "./ui/Icons";
 import { IProperty } from "@/types/propertyTypes";

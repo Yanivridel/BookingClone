@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userModel = void 0;
 const mongoose_1 = require("mongoose");
-const structures_1 = require("./../utils/structures");
+const structures_1 = require("../utils/structures");
 const locationSchema_1 = require("./locationSchema");
 const UserSchema = new mongoose_1.Schema({
     fName: { type: String },
@@ -12,7 +12,8 @@ const UserSchema = new mongoose_1.Schema({
     password: { type: String },
     phoneNumber: { type: String, unique: true, sparse: true }, // allow null none unique
     birthday: { type: Date },
-    gender: { type: String, enum: ["male", "female", "other"] },
+    gender: { type: String, enum: ["male", "female", "non-binary", "other"] },
+    user_image: { type: String },
     location: { type: locationSchema_1.LocationSchema },
     passport: {
         fName: { type: String },
@@ -29,13 +30,13 @@ const UserSchema = new mongoose_1.Schema({
     coinType: { type: String, enum: Object.values(structures_1.ECoinType), default: structures_1.ECoinType.USD,
         validate: {
             validator: (v) => Object.values(structures_1.ECoinType).includes(v),
-            message: props => `${props.value} is not a valid coin type!`
+            message: (props) => `${props.value} is not a valid coin type!`
         }
     },
     language: { type: String, enum: Object.values(structures_1.ELanguage), default: structures_1.ELanguage.EN,
         validate: {
             validator: (v) => Object.values(structures_1.ELanguage).includes(v),
-            message: props => `${props.value} is not a valid language!`
+            message: (props) => `${props.value} is not a valid language!`
         }
     },
     notifications: {
@@ -71,13 +72,24 @@ const UserSchema = new mongoose_1.Schema({
     search: {
         type: [{
                 location: { type: locationSchema_1.LocationSchema },
-                checkin: { type: Date },
-                checkout: { type: Date },
-                group_adults: { type: Number },
-                group_children: { type: Number },
-                ages: { type: [Number], default: [] },
-                rooms_num: { type: Number },
-                is_animal: { type: Boolean },
+                date: {
+                    startDate: { type: mongoose_1.Schema.Types.Mixed },
+                    endDate: mongoose_1.Schema.Types.Mixed,
+                    length: Number,
+                    isWeekend: Boolean,
+                    fromDay: Number,
+                    yearMonths: [{
+                            year: Number,
+                            month: Number
+                        }]
+                },
+                options: {
+                    adults: Number,
+                    childrenAges: [Number],
+                    rooms: Number,
+                    isAnimalAllowed: Boolean,
+                    isBaby: Boolean,
+                },
                 createdAt: { type: Date, default: Date.now }
             }],
         default: [],
@@ -105,6 +117,10 @@ UserSchema.virtual("fullName").get(function () {
 UserSchema.post('findOneAndUpdate', async function (user) {
     if (user.search && user.search.length > 10) {
         user.search.shift();
+        await user.save();
+    }
+    if (user.interested && user.interested.length > 10) {
+        user.interested.shift();
         await user.save();
     }
 });

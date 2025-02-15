@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { PiCarProfile } from "react-icons/pi";
+import { useState } from "react";
 import { IconGuest } from "./ui/Icons";
 import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";

@@ -1,8 +1,8 @@
 import mongoose, { Schema, Types } from 'mongoose'
 
-import { IProperty } from 'src/types/propertyTypes';
+import { IProperty } from '../types/propertyTypes';
 import { EAccommodationType, EFacility, EFeatures, EHotelAreaInfo,
-    EPaymentMethods, EPropertyHighlight } from './../utils/structures';
+    EPaymentMethods, EPropertyHighlight } from '../utils/structures';
 import { LocationSchema } from './locationSchema';
 
 const PropertySchema = new Schema<IProperty>({
