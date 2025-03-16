@@ -45,6 +45,7 @@ def test_hebrew_button(driver):
         EC.element_to_be_clickable((By.XPATH, "//body/div[@role='dialog']/div[2]/button[1]/span[1]/img[1]"))
     )
     hebrew_button.click()
+    print("yey")
     
     time.sleep(1)
 def test_language_button_new(driver):

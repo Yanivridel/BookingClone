@@ -189,7 +189,11 @@
       "לילות",
       "האפשרויות שלכם",
       "בחירת חדרים"
-    ]
+    ],
+    "booking": {
+      "room": "חדר אחד",
+      "rooms": "rooms"
+    }
   },
   "offersGroups": {
     "child": "ילד אחד",
@@ -204,6 +208,18 @@
     "BookingDiscountExplenation": "",
     "total": "סה׳׳כ",
     "off": "הנחה"
+  },
+  "order": {
+    "beforeSelectRooms": {
+      "button": "אני אזמין",
+      "firstText": "זה לוקח רק 2 דקות",
+      "secondText": "אישור מיידי"
+    },
+    "afterSelectRooms": {
+      "button": "הזמינו עם הנחת Genius",
+      "AdditionalText": "אתם תועברו לשלב הבא",
+      "taxes": "כולל מיסים וחיובים"
+    }
   },
   "booking": {
     "bookingSteps": {

@@ -1,18 +1,29 @@
-import { IRoom } from "@/types/roomTypes";
+// react
+import React, { useEffect, useState } from "react";
+
+// translation
 import { useTranslation } from "react-i18next";
 
+// lib
 import { cn } from "@/lib/utils.ts";
 
+// components
+import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import OffersGroups from "./OffersGroups.tsx";
 import OffersPayment from "./OffersPayment.tsx";
-import React, { useState } from "react";
-import RoomTypeDescription from "./RoomTypeDescription.tsx";
 import SelectOffer from "./SelectOffer.tsx";
-import { SmallIconVi } from "./ui/Icons.tsx";
 import MealsOffer from "./MealsOffer.tsx";
 import QuestionMarkInfo from "./QuestionMarkInfo.tsx";
-import { Button } from "./ui/button.tsx";
+import TableBookingDetails from "./TableBookingDetails.tsx";
+
+// icons
+import { SmallIconVi } from "./ui/Icons.tsx";
+
+// types
 import { IProperty } from "@/types/propertyTypes.ts";
+import { IRoom } from "@/types/roomTypes";
+
+// router dom
 import { useNavigate } from "react-router-dom";
 
 const headerRowsNumber = 6;
@@ -25,8 +36,9 @@ type PropertyRoomsTableProps = {
 
 function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
   const { t } = useTranslation();
+
   const navigate = useNavigate();
-  //@ts-ignore elchy fix
+
   const [offersRoomSelected, setOffersRoomSelected] = useState<
     {
       roomId: string;
@@ -38,14 +50,27 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
   const rooms: IRoom[] | string = propertyData.rooms;
   if (typeof rooms !== "object") return;
 
+  // states
+  const [bookingDetailsData, setBookingDetailsData] = useState<{
+    totalPrice?: number;
+    roomsNumber?: number;
+  }>({});
+
   const [availableRoomsCount, setAvailableRoomsCount] = useState({});
 
   const [pickFirstAlert, setPickFirstAlert] = useState(false);
 
-  // send to booking page
-  const bookingInfo = { offersRoomSelected, propertyData };
+  const roomsNumber =
+    offersRoomSelected?.reduce((acc, offer) => {
+      return acc + offer.number;
+    }, 0) || 0;
+  // console.log(`roomsNumber ${roomsNumber}`);
 
-  console.log(bookingInfo);
+  // will send to booking page
+  const bookingInfo = { offersRoomSelected, propertyData, bookingDetailsData };
+
+  // console.log(bookingInfo);
+
   const handleBooking = () => {
     if (bookingInfo.offersRoomSelected.length === 0) {
       // not selected offers
@@ -55,7 +80,17 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
       navigate("/account/booking", { state: bookingInfo });
     }
   };
+
+  useEffect(() => {
+    setBookingDetailsData((prev) => {
+      return { ...prev, roomsNumber };
+    });
+  }, [bookingInfo.offersRoomSelected]);
+
+  console.log(offersRoomSelected);
   console.log(availableRoomsCount);
+  // console.log(bookingDetailsData);
+  // console.log(offersRoomSelected);
 
   return (
     <div className="grid grid-col min-w-[750px] grid-cols-[repeat(20,_minmax(0,1fr))] relative">
@@ -88,25 +123,19 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
             ? ""
             : t(`propertyTable.THeader.${i}`)}
           {i === 5 && (
+            // booking details column
             <div
               key={i + "last"}
-              className="absolute top-[90px] gr:top-[70px] left-2 right-2 flex flex-col text-black"
+              className={cn(
+                "absolute top-[90px] gr:top-[70px] left-2 right-2 flex flex-col text-black"
+              )}
             >
-              <Button id="bookingButton" onClick={handleBooking}>
-                {t("order.beforeSelectRooms.button")}
-              </Button>
-              <div className="py-2 text-sm flex flex-col gap-2">
-                <div className="flex gap-3">
-                  <span>•</span>
-                  <span className="">
-                    {t("order.beforeSelectRooms.firstText")}
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <span>•</span>
-                  <span>{t("order.beforeSelectRooms.secondText")}</span>
-                </div>
-              </div>
+              {/* booking button */}
+
+              <TableBookingDetails
+                handleBooking={handleBooking}
+                bookingDetailsData={bookingDetailsData}
+              />
             </div>
           )}
         </h2>
@@ -184,10 +213,10 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
                             <SmallIconVi className="h-4 w-4 self-start shrink-0  stroke-deals stroke-5" />
                             <div>
                               <span className="font-bold">
-                                {t("offersChoices.guniesDiscountHeader")}
+                                {t("offersChoices.geniusDiscountHeader")}
                               </span>{" "}
                               <span>
-                                {t("offersChoices.guniesDiscountText")}
+                                {t("offersChoices.geniusDiscountText")}
                               </span>
                             </div>
                           </div>
@@ -228,6 +257,8 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
                             offer.price_per_night *
                               (offer.discount.percentage / 100)
                           }
+                          setBookingDetailsData={setBookingDetailsData}
+                          offerDiscount={Number(offer.discount.percentage)}
                         />
                       </div>
                     </div>
@@ -235,7 +266,14 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
                 );
               })}
             </div>
-            <div className="border grid col-span-4 border-none relative p-2"></div>
+            <div
+              className={cn(
+                "border grid col-span-4 border-none relative p-2",
+                bookingDetailsData.roomsNumber &&
+                  bookingDetailsData?.roomsNumber > 0 &&
+                  "bg-[#eaf3ff]"
+              )}
+            ></div>
           </React.Fragment>
         );
       })}

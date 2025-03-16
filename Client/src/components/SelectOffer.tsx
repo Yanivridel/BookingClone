@@ -1,4 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { assert } from "node:console";
+import { current } from "@reduxjs/toolkit";
 
 interface SelectOfferProps {
   setOffersRoomSelected: Dispatch<
@@ -19,6 +21,13 @@ interface SelectOfferProps {
     React.SetStateAction<Record<string, number>>
   >;
   offerPrice: number;
+  setBookingDetailsData: React.Dispatch<
+    React.SetStateAction<{
+      totalPrice?: number;
+      totalPriceWithDiscount?: number;
+    }>
+  >;
+  offerDiscount: number;
 }
 // Todo: add prices to the selects
 
@@ -31,53 +40,95 @@ function SelectOffer({
   setAvailableRoomsCount,
   availableRoomsCount,
   offerPrice,
+  offerDiscount,
+  setBookingDetailsData,
 }: SelectOfferProps) {
+  const offerDiscountDecimal = offerDiscount / 100;
+
   //  select offers checkups -
   //  a. delete if exist and number = 0 // * Done
 
   //  b. add / update // * Done
 
-  //  c. onchange - adjust the roomAvailableCount // * done
-  //  g. disable the unavailable Numbers in the select // todo
+  //  c. onChange - adjust the roomAvailableCount // * done
+  //  g. disable the unavailable Numbers in the select // * done
 
   // for available rooms calculations
-  const [prevSelect, setPrevSelect] = useState(0);
+  const [prevSelect, setPrevSelect] = useState({ roomNumber: 0, price: 0 });
   const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setPickFirstAlert((prev) => (prev = false));
+    const CURRENT_PRICE = Number(
+      e.currentTarget.options[e.currentTarget.selectedIndex].innerHTML.split(
+        " "
+      )[2]
+    );
+
+    setPickFirstAlert(false);
 
     // for available rooms calculations
-    const remainder =
-      prevSelect > Number(e.currentTarget?.value)
-        ? prevSelect - Number(e.currentTarget?.value)
-        : Number(e.currentTarget?.value) - prevSelect;
 
-    // console.log(`remainder ${remainder}`);
+    const remainderRoomNumber =
+      prevSelect.roomNumber > Number(e.currentTarget?.value)
+        ? prevSelect.roomNumber - Number(e.currentTarget?.value)
+        : Number(e.currentTarget?.value) - prevSelect.roomNumber;
+
+    //  for totalPrice calculations
+    function is_remainderRoomNumber_NaN() {
+      console.assert(
+        !Number.isNaN(remainderRoomNumber),
+        "remainderRoomNumber NaN"
+      );
+      return remainderRoomNumber;
+    }
+    console.log(Number.isNaN(remainderRoomNumber));
+    is_remainderRoomNumber_NaN();
+
+    const REMAINDER_PRICE = CURRENT_PRICE - prevSelect.price;
+    console.log(REMAINDER_PRICE);
+
+    console.log(`remainderRoomNumber ${remainderRoomNumber}`); // ! NaN in some cases
 
     setAvailableRoomsCount((prev) => {
       // if prev bigger than current - add the remainder, else - reduce
-      if (prevSelect > Number(e.currentTarget?.value)) {
+      if (prevSelect.roomNumber > Number(e.currentTarget?.value)) {
         return {
           ...prev,
-          [roomId]: (prev[roomId] || 0) + remainder,
+          [roomId]: (prev[roomId] || 0) + remainderRoomNumber,
         };
       } else
         return {
           ...prev,
-          [roomId]: (prev[roomId] || 0) - remainder,
+          [roomId]: (prev[roomId] || 0) - remainderRoomNumber,
         };
     });
 
-    setPrevSelect(Number(e.currentTarget?.value));
-    console.log(Number(e.currentTarget?.value));
-    console.log(Number(e.target?.value));
+    setBookingDetailsData((prev) => {
+      return {
+        ...prev,
+        totalPrice: prev.totalPrice
+          ? prev.totalPrice + REMAINDER_PRICE
+          : REMAINDER_PRICE,
+        totalPriceWithDiscount: prev.totalPriceWithDiscount
+          ? prev.totalPriceWithDiscount +
+            Math.floor(REMAINDER_PRICE * (1 - offerDiscountDecimal))
+          : Math.floor(REMAINDER_PRICE * (1 - offerDiscountDecimal)),
+      };
+    });
+
+    setPrevSelect((prev) => {
+      return {
+        ...prev,
+        roomNumber: Number(e.target?.value),
+        price: CURRENT_PRICE,
+      };
+    });
+    // console.log(Number(e.target?.value));
 
     setOffersRoomSelected((prev) => {
       const currentOfferIndex = prev.findIndex(
         (element) => element.offerId === offerId
       );
-
       // add new offer
       if (currentOfferIndex === -1) {
         return [
@@ -89,19 +140,20 @@ function SelectOffer({
           },
         ];
       } // delete if 0 and exist (current user !== undefined already)
-      else if (e.currentTarget?.value === "0") {
+      else if (e.target?.value === "0") {
         return prev.filter((_, i) => i !== currentOfferIndex);
       }
-      //  update existing offer
+      // update existing offer
       else {
         return prev.map((offer) =>
           offer.offerId === offerId
-            ? { ...offer, number: +e.currentTarget?.value }
+            ? { ...offer, number: Number(e.target?.value) }
             : offer
         );
       }
     });
   };
+  // console.log(availableRoomsCount);
 
   return (
     <select
@@ -115,7 +167,7 @@ function SelectOffer({
         <option
           disabled={
             // current select
-            i <= prevSelect + availableRoomsCount[roomId]
+            i <= prevSelect.roomNumber + availableRoomsCount[roomId]
               ? false
               : // other selects
               i > availableRoomsCount[roomId]
@@ -126,7 +178,7 @@ function SelectOffer({
           key={i}
           value={i}
         >
-          {isOpen ? i + " " + (offerPrice * i).toFixed() + "₪" : i}
+          {isOpen ? `${i} (₪ ${(offerPrice * i).toFixed()} )` : i}
         </option>
       ))}
     </select>

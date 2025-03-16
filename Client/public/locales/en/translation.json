@@ -197,7 +197,11 @@
       "nights",
       "Your choices",
       "Select Rooms"
-    ]
+    ],
+    "booking": {
+      "room": "1 room",
+      "rooms": "rooms"
+    }
   },
   "offersGroups": {
     "child": "1 child",
@@ -214,8 +218,8 @@
     "off": "off"
   },
   "offersChoices": {
-    "guniesDiscountHeader": "12% Genius discount",
-    "guniesDiscountText": "applied to the price before taxes and charges",
+    "geniusDiscountHeader": "12% Genius discount",
+    "geniusDiscountText": "applied to the price before taxes and charges",
     "only": "Only",
     "left": "left on our site"
   },
@@ -234,6 +238,11 @@
       "button": "I'll reserve",
       "firstText": "It only takes 2 minutes",
       "secondText": "Confirmation is immediate"
+    },
+    "afterSelectRooms": {
+      "button": "Reserve with Genius discount",
+      "AdditionalText": "Let's go to the next step",
+      "taxes": "Includes taxes and fees"
     }
   },
   "beds": {
