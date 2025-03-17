@@ -37,9 +37,14 @@ async function getCache(key: string) {
     }
 }
 
-async function clearUserCache(userId: string) {
-    await client.del(`search:${userId}`);
+async function clearAll() {
+    try {
+        await client.flushAll();
+        console.log('✅ Redis cache flushed');
+    } catch (error) {
+        console.error('❌ Redis Flush Error:', error);
+    }
 }
 
 // Exporting the functions and client
-export { connectRedis, setCache, getCache, clearUserCache, client };
+export { connectRedis, setCache, getCache, clearAll, client };
