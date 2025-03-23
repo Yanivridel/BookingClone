@@ -32,11 +32,14 @@ function BookingRooms({ bookingInfo }: BookingRoomsProps) {
         const currentRoom = allRooms.find(
           (room) => selectedRoom.roomId === room._id
         );
-        console.log(currentRoom);
+
         if (currentRoom) {
           return (
             <div key={currentRoom?._id}>
-              <BookingRoom roomDetails={currentRoom} />
+              <BookingRoom
+                selectedRoom={selectedRoom}
+                roomDetails={currentRoom}
+              />
             </div>
           );
         }
