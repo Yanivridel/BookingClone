@@ -99,6 +99,8 @@ function BookingDetails({
 
   const { i18n } = useTranslation();
 
+
+
   // * email
   const onEmailBlur = () => {
     if (emailRef.current?.value) {
@@ -156,7 +158,7 @@ function BookingDetails({
       return;
     } else setIsVATNumberSuccess(false);
   };
-
+ 
   return (
     <div className="border-[1px] border-softGrayBorder mt-4 px-4 rounded-[8px] py-4 grid gap-3">
       <h2 className="font-bold text-xl">Enter your details</h2>

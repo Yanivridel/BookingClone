@@ -9,6 +9,7 @@ import {
   SetStateAction,
   useState,
 } from "react";
+import { cn } from "@/lib/utils";
 
 interface BookingInputProps {
   isSuccess?: boolean;
@@ -27,6 +28,9 @@ interface BookingInputProps {
   state?: string;
   setState?: Dispatch<SetStateAction<string>>;
   maxLength?: number;
+  labelClassName?: string;
+  message?: string;
+  wrapperClassName?: string;
 }
 
 //  ! if state - no default value , if ref - no value
@@ -48,6 +52,9 @@ const BookingInput = forwardRef(function BookingInput(
     state,
     setState,
     maxLength,
+    labelClassName = "",
+    message,
+    wrapperClassName = "",
   }: BookingInputProps,
   ref?: ForwardedRef<HTMLInputElement>
 ) {
@@ -60,13 +67,13 @@ const BookingInput = forwardRef(function BookingInput(
   };
 
   return (
-    <div>
+    <div className={wrapperClassName}>
       <div className="grid gap-1 ">
         <div>
-          <Label className="text-sm" htmlFor={name}>
+          <Label className={cn("text-sm", labelClassName)} htmlFor={name}>
             {labelText}
             {optional && (
-              <span className="text-[#595959] font-normal">{optional}</span>
+              <span className="text-[#595959] font-normal">{` (${optional})`}</span>
             )}
           </Label>
           {areRequiredAsterisk && (
@@ -106,6 +113,9 @@ const BookingInput = forwardRef(function BookingInput(
           <div className="text-IconsGreen text-xs">{successMessage}</div>
         )}
         {error && <div className="text-redError text-sm">{error}</div>}
+        {message && (
+          <div className="text-searchGrayText text-xs">{message}</div>
+        )}
       </div>
     </div>
   );

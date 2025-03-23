@@ -648,7 +648,10 @@ export const IconCounterMinus = ({ className }: IconsProps) => {
 export const YellowVi = ({ className }: IconsProps) => {
   return (
     <svg
-      className={cn(className,"bk-icon -iconset-checkmark_selected bui-list__icon benefits_list__icon")}
+      className={cn(
+        className,
+        "bk-icon -iconset-checkmark_selected bui-list__icon benefits_list__icon"
+      )}
       fill="#FEBB02"
       height="16"
       role="presentation"
@@ -751,6 +754,22 @@ export const ArrowRight = ({ className }: IconsProps) => {
       data-rtl-flip="true"
     >
       <path d="M8.913 19.236a.9.9 0 0 0 .642-.266l6.057-6.057a1.3 1.3 0 0 0 .388-.945c.008-.35-.123-.69-.364-.945L9.58 4.966a.91.91 0 0 0-1.284 0 .896.896 0 0 0 0 1.284l5.694 5.718-5.718 5.718a.896.896 0 0 0 0 1.284.88.88 0 0 0 .642.266"></path>
+    </svg>
+  );
+};
+
+export const ArrowLeft = ({ className }: IconsProps) => {
+  return (
+    <svg
+      className={cn("bk-icon -streamline-arrow_nav_left", className)}
+      height="24"
+      role="presentation"
+      width="24"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M14.55 18a.74.74 0 0 1-.53-.22l-5-5A1.08 1.08 0 0 1 8.7 12a1.1 1.1 0 0 1 .3-.78l5-5a.75.75 0 0 1 1.06 0 .74.74 0 0 1 0 1.06L10.36 12l4.72 4.72a.74.74 0 0 1 0 1.06.73.73 0 0 1-.53.22zm-4.47-5.72zm0-.57z"></path>
     </svg>
   );
 };
@@ -887,6 +906,19 @@ export const Groups = ({ className }: IconsProps) => {
   );
 };
 
+export const IconTwoPersons = ({ className }: IconsProps) => {
+  return (
+    <svg
+      className={cn("w-4 h-4", className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
+      <path d="M8.25 3.75a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0m1.5 0a3.75 3.75 0 1 0-7.5 0 3.75 3.75 0 0 0 7.5 0M12 13.5a6 6 0 0 0-12 0v2.25c0 .414.336.75.75.75H3l-.746-.675.75 7.5A.75.75 0 0 0 3.75 24h4.5a.75.75 0 0 0 .746-.675l.75-7.5L9 16.5h2.25a.75.75 0 0 0 .75-.75zm-1.5 0v2.25l.75-.75H9a.75.75 0 0 0-.746.675l-.75 7.5.746-.675h-4.5l.746.675-.75-7.5A.75.75 0 0 0 3 15H.75l.75.75V13.5a4.5 4.5 0 1 1 9 0m9.75-9.75a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0m1.5 0a3.75 3.75 0 1 0-7.5 0 3.75 3.75 0 0 0 7.5 0M13.5 16.5H15l-.746-.675.75 7.5a.75.75 0 0 0 .746.675h4.5a.75.75 0 0 0 .746-.675l.75-7.5L21 16.5h2.25a.75.75 0 0 0 .75-.75V13.5a6 6 0 0 0-11.143-3.086.75.75 0 0 0 1.286.772 4.5 4.5 0 0 1 8.357 2.315v2.249l.75-.75H21a.75.75 0 0 0-.746.675l-.75 7.5.746-.675h-4.5l.746.675-.75-7.5A.75.75 0 0 0 15 15h-1.5a.75.75 0 0 0 0 1.5"></path>
+    </svg>
+  );
+};
+
 export const Payment = ({ className }: IconsProps) => {
   return (
     <svg
@@ -967,7 +999,12 @@ export const Tower = ({ className }: IconsProps) => {
 
 export const EditIcon = ({ className }: IconsProps) => {
   return (
-    <svg className={className}  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
       <path d="M22.72 1.279a4.39 4.39 0 0 0-6.208.013l-.028.029L1.99 15.815a.75.75 0 0 0-.197.344l-1.77 6.905a.75.75 0 0 0 .913.913l6.905-1.771a.75.75 0 0 0 .344-.197l14.5-14.5a4.385 4.385 0 0 0 .067-6.197l-.03-.031zm-1.061 1.06.02.02a2.887 2.887 0 0 1-.048 4.083L7.125 20.95l.344-.197-6.905 1.771.913.913 1.77-6.905-.197.344 14.5-14.5.025-.025a2.89 2.89 0 0 1 4.086-.009zm-5.583.451 5.134 5.134a.75.75 0 1 0 1.06-1.06L17.136 1.73a.75.75 0 1 0-1.06 1.06M1.99 16.875l5.14 5.13a.75.75 0 0 0 1.059-1.062l-5.14-5.13a.75.75 0 0 0-1.059 1.062"></path>
     </svg>
   );
@@ -975,7 +1012,12 @@ export const EditIcon = ({ className }: IconsProps) => {
 
 export const DeleteIcon = ({ className }: IconsProps) => {
   return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
       <path d="M7.5 12.75h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5m15-.75c0 5.799-4.701 10.5-10.5 10.5S1.5 17.799 1.5 12 6.201 1.5 12 1.5 22.5 6.201 22.5 12m1.5 0c0-6.627-5.373-12-12-12S0 5.373 0 12s5.373 12 12 12 12-5.373 12-12"></path>
     </svg>
   );
@@ -996,7 +1038,12 @@ export const FiltersIcon = ({ className }: IconsProps) => {
 
 export const MapIcon = ({ className }: IconsProps) => {
   return (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50px">
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
       <path d="M24 9V4.65c0-.92-.56-1.748-1.415-2.09l-6-2.4a2.25 2.25 0 0 0-1.67 0L8.527 2.717a.75.75 0 0 1-.557 0L2.058.35A1.5 1.5 0 0 0 0 1.75v14.369c0 .92.56 1.748 1.415 2.09l6 2.4a2.25 2.25 0 0 0 1.67 0l2.882-1.154a.75.75 0 0 0-.558-1.392l-2.88 1.153a.75.75 0 0 1-.558 0l-6-2.4a.75.75 0 0 1-.471-.697V1.742l5.914 2.366a2.25 2.25 0 0 0 1.671 0l6.387-2.555a.75.75 0 0 1 .557 0l6 2.4a.75.75 0 0 1 .471.697V9A.75.75 0 0 0 24 9M7.5 3.519v16.5a.75.75 0 0 0 1.5 0v-16.5a.75.75 0 0 0-1.5 0M15 .75v7.5a.75.75 0 0 0 1.5 0V.75a.75.75 0 0 0-1.5 0m3.75 15.449a.375.375 0 0 1-.375-.375.75.75 0 0 0 1.5 0c0-.621-.504-1.125-1.125-1.125a.75.75 0 0 0 0 1.5m.375-.375a.375.375 0 0 1-.375.375.75.75 0 0 0 0-1.5c-.621 0-1.125.504-1.125 1.125a.75.75 0 0 0 1.5 0m-.375-.374c.207 0 .375.168.375.375a.75.75 0 0 0-1.5 0c0 .621.504 1.125 1.125 1.125a.75.75 0 0 0 0-1.5m-.375.374c0-.207.168-.375.375-.375a.75.75 0 0 0 0 1.5c.621 0 1.125-.504 1.125-1.125a.75.75 0 0 0-1.5 0m.375-3.75a3.75 3.75 0 0 1 3.75 3.75c0 1.302-1.618 3.948-3.75 6.676-2.13-2.722-3.75-5.374-3.75-6.676a3.75 3.75 0 0 1 3.75-3.75m0-1.5a5.25 5.25 0 0 0-5.25 5.25c0 1.798 1.68 4.548 4.068 7.6a1.498 1.498 0 0 0 2.364 0c2.391-3.06 4.068-5.802 4.068-7.6 0-2.9-2.35-5.25-5.25-5.25"></path>
     </svg>
   );
@@ -1337,6 +1384,19 @@ export const IconSuccess = ({ className }: IconsProps) => {
       width="50px"
     >
       <path d="M56.62 93.54a4 4 0 0 1-2.83-1.18L28.4 67a4 4 0 1 1 5.65-5.65l22.13 22.1 33-44a4 4 0 1 1 6.4 4.8L59.82 91.94a4.06 4.06 0 0 1-2.92 1.59zM128 64c0-35.346-28.654-64-64-64S0 28.654 0 64s28.654 64 64 64c35.33-.039 63.961-28.67 64-64m-8 0c0 30.928-25.072 56-56 56S8 94.928 8 64 33.072 8 64 8c30.914.033 55.967 25.086 56 56"></path>
+    </svg>
+  );
+};
+
+export const IconViFull = ({ className }: IconsProps) => {
+  return (
+    <svg
+      className={cn("w-4 h-4", className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12C23.992 5.376 18.624.008 12 0m6.927 8.2-6.845 9.289a1.01 1.01 0 0 1-1.43.188l-4.888-3.908a1 1 0 0 1 1.25-1.562l4.076 3.261 6.227-8.451a1 1 0 1 1 1.61 1.183"></path>
     </svg>
   );
 };
