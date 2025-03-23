@@ -6,7 +6,7 @@ import { IUser } from "@/types/userTypes.ts";
 import BookingDetails from "@/components/booking/BookingDetails";
 import BookingRooms from "@/components/booking/BookingRooms";
 import { createBooking } from "@/utils/api/bookingApi";
-import { TBookingDetails } from "@/types/bookingTypes";
+import { BookingInfo, TBookingDetails } from "@/types/bookingTypes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -16,17 +16,13 @@ function Booking() {
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
 
+  //  use ref
   const fNameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const phoneNumberRef = useRef<HTMLInputElement | null>(null);
   const companyNameRef = useRef<HTMLInputElement | null>(null);
   const VATNumberRef = useRef<HTMLInputElement | null>(null);
-  console.log(currentUser);
-  const [lName, setLName] = useState<string>(
-    currentUser.lName ? currentUser.lName : ""
-  );
-
-  const [isForMe, setIsForMe] = useState(true);
+  // console.log(`currentUser: ${currentUser}`);
 
   const [selectedCountry, setSelectedCountry] = useState({
     code: "+972",
@@ -38,12 +34,21 @@ function Booking() {
     label: "🇮🇱 Israel",
   });
 
+  const [lName, setLName] = useState<string>(
+    currentUser.lName ? currentUser.lName : ""
+  );
+  const [isForMe, setIsForMe] = useState(true);
   const [isPaperless, setIsPaperless] = useState(false);
   const [shouldUpdateAccount, setShouldUpdateAccount] = useState(false);
-  const bookingInfo = useLocation();
-  console.log(bookingInfo.state);
+
+  const location = useLocation();
+  const bookingInfo = location.state as BookingInfo;
+
+  console.log(`booking info:`);
+  console.log(bookingInfo);
 
   const bookingSubmit = async () => {
+    // ! will send to the DB
     const bookingDetails: TBookingDetails = {
       // * from property page
       propertyId: "",
@@ -57,11 +62,10 @@ function Booking() {
         },
       ],
 
-      // * from current user
+      // * data from current user
       // ! Done
       userId: currentUser?._id || "",
 
-      //  * from booking page
       // ! Done
       reserver: {
         fName: fNameRef.current?.value || "",
@@ -72,6 +76,7 @@ function Booking() {
           ? selectedPhoneCountry.code + phoneNumberRef.current.value
           : "",
       },
+      //  *  data from property page
       // ! Done
       is_paperless: isPaperless,
       for_work: {
@@ -106,18 +111,18 @@ function Booking() {
         },
       ],
     };
-    console.log(bookingDetails);
+    console.log(`bookingDetails (from property page): ${bookingDetails}`);
 
     try {
       const res = await createBooking(bookingDetails);
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log("error from create booking: ");
       console.log(error);
     }
   };
-  console.log(window.history);
-  console.log(window.history.state.usr);
+  // console.log(window.history);
+  // console.log(window.history.state.usr);
   // update lName because "currentUser" updated after lName  initialized
   useEffect(() => {
     if (currentUser.lName) {
@@ -146,8 +151,11 @@ function Booking() {
         selectedPhoneCountry={selectedPhoneCountry}
         setSelectedPhoneCountry={setSelectedPhoneCountry}
       />
-      {/* <BookingRooms roomName="Standard Double Room" /> */}
-      <Button onClick={bookingSubmit}></Button>
+      <BookingRooms bookingInfo={bookingInfo} />
+
+      <Button className="text-[16px] py-6 px-9 " onClick={bookingSubmit}>
+        <span className="text-sm me-2">&#9001;</span> השלב הבא: פרטים אחרונים
+      </Button>
     </div>
   );
 }

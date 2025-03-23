@@ -22,6 +22,7 @@ import { SmallIconVi } from "./ui/Icons.tsx";
 // types
 import { IProperty } from "@/types/propertyTypes.ts";
 import { IRoom } from "@/types/roomTypes";
+import { BookingInfo } from "@/types/bookingTypes.ts";
 
 // router dom
 import { useNavigate } from "react-router-dom";
@@ -67,7 +68,11 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
   // console.log(`roomsNumber ${roomsNumber}`);
 
   // will send to booking page
-  const bookingInfo = { offersRoomSelected, propertyData, bookingDetailsData };
+  const bookingInfo: BookingInfo = {
+    offersRoomSelected,
+    propertyData,
+    bookingDetailsData,
+  };
 
   // console.log(bookingInfo);
 

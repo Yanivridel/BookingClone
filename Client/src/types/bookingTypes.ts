@@ -1,3 +1,5 @@
+import { IProperty } from "./propertyTypes";
+
 export type TBookingDetails = {
   propertyId: string;
   rooms: {
@@ -46,4 +48,18 @@ export type TBookingDetails = {
   checkIn: Date;
   checkOut: Date;
   guests: number;
+};
+
+// after order  (send to booking page from propertyTable)
+export type BookingInfo = {
+  offersRoomSelected: {
+    roomId: string;
+    offerId: string;
+    number: number;
+  }[];
+  propertyData: IProperty;
+  bookingDetailsData: {
+    totalPrice?: number;
+    roomsNumber?: number;
+  };
 };
