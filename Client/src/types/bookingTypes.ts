@@ -63,3 +63,12 @@ export type BookingInfo = {
     roomsNumber?: number;
   };
 };
+
+export type RoomsLeaders =
+  | []
+  | {
+      index: number;
+      offerId: string;
+      fullName?: string;
+      email?: string;
+    }[];

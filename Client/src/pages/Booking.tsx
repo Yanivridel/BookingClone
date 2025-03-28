@@ -6,7 +6,11 @@ import { IUser } from "@/types/userTypes.ts";
 import BookingDetails from "@/components/booking/BookingDetails";
 import BookingRooms from "@/components/booking/BookingRooms";
 import { createBooking } from "@/utils/api/bookingApi";
-import { BookingInfo, TBookingDetails } from "@/types/bookingTypes";
+import {
+  BookingInfo,
+  RoomsLeaders,
+  TBookingDetails,
+} from "@/types/bookingTypes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -37,6 +41,8 @@ function Booking() {
   const [lName, setLName] = useState<string>(
     currentUser.lName ? currentUser.lName : ""
   );
+  const [roomsLeaders, setRoomsLeaders] = useState<RoomsLeaders>([]);
+
   const [isForMe, setIsForMe] = useState(true);
   const [isPaperless, setIsPaperless] = useState(false);
   const [shouldUpdateAccount, setShouldUpdateAccount] = useState(false);
@@ -44,8 +50,8 @@ function Booking() {
   const location = useLocation();
   const bookingInfo = location.state as BookingInfo;
 
-  console.log(`booking info:`);
-  console.log(bookingInfo);
+  // console.log(`booking info:`);
+  // console.log(bookingInfo);
 
   const bookingSubmit = async () => {
     // ! will send to the DB
@@ -151,7 +157,11 @@ function Booking() {
         selectedPhoneCountry={selectedPhoneCountry}
         setSelectedPhoneCountry={setSelectedPhoneCountry}
       />
-      <BookingRooms bookingInfo={bookingInfo} />
+      <BookingRooms
+        bookingInfo={bookingInfo}
+        roomsLeaders={roomsLeaders}
+        setRoomsLeaders={setRoomsLeaders}
+      />
 
       <Button className="text-[16px] py-6 px-9 " onClick={bookingSubmit}>
         <span className="text-sm me-2">&#9001;</span> השלב הבא: פרטים אחרונים

@@ -11,7 +11,7 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 
-interface BookingInputProps {
+interface BookingInputProps<T> {
   isSuccess?: boolean;
   isIconSuccess?: boolean;
   successMessage?: string;
@@ -31,10 +31,15 @@ interface BookingInputProps {
   labelClassName?: string;
   message?: string;
   wrapperClassName?: string;
+  onInputChangeProps?: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    params: T extends void ? void : T
+  ) => void;
+  onInputChangeArguments?: T;
 }
 
 //  ! if state - no default value , if ref - no value
-const BookingInput = forwardRef(function BookingInput(
+const BookingInput = forwardRef(function BookingInput<T>(
   {
     error,
     areRequiredAsterisk = false,
@@ -55,12 +60,14 @@ const BookingInput = forwardRef(function BookingInput(
     labelClassName = "",
     message,
     wrapperClassName = "",
-  }: BookingInputProps,
+    onInputChangeProps,
+    onInputChangeArguments = undefined,
+  }: BookingInputProps<T>,
   ref?: ForwardedRef<HTMLInputElement>
 ) {
   const [isFocus, setIsFocus] = useState<boolean>();
 
-  const onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (state !== undefined && setState !== undefined) {
       setState((_) => e.target.value);
     }
@@ -92,7 +99,27 @@ const BookingInput = forwardRef(function BookingInput(
               setIsFocus(false);
               onBlurHandler && onBlurHandler();
             }}
-            onChange={(e) => onValueChange(e)}
+            onChange={(e) => {
+              if (onInputChangeProps) {
+                // Type assertion to handle the conditional type
+                if (onInputChangeArguments !== undefined) {
+                  (
+                    onInputChangeProps as (
+                      e: React.ChangeEvent<HTMLInputElement>,
+                      params: T
+                    ) => void
+                  )(e, onInputChangeArguments);
+                } else {
+                  (
+                    onInputChangeProps as (
+                      e: React.ChangeEvent<HTMLInputElement>
+                    ) => void
+                  )(e);
+                }
+              } else {
+                onInputChange(e);
+              }
+            }}
             ref={ref}
             type={type}
             name={name}
@@ -119,7 +146,9 @@ const BookingInput = forwardRef(function BookingInput(
       </div>
     </div>
   );
-});
+}) as <T>(
+  props: BookingInputProps<T> & { ref?: ForwardedRef<HTMLInputElement> }
+) => JSX.Element;
 
-BookingInput.displayName = "BookingInput";
+// BookingInput.displayName = "BookingInput";
 export default BookingInput;
