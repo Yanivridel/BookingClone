@@ -11,9 +11,13 @@ import {
   RoomsLeaders,
   TBookingDetails,
 } from "@/types/bookingTypes";
+
 import { Button } from "@/components/ui/button";
+
 import { useEffect, useRef, useState } from "react";
+
 import { useLocation } from "react-router-dom";
+import BookingAside from "@/components/booking/BookingAside";
 
 function Booking() {
   const currentUser = useSelector(
@@ -21,6 +25,7 @@ function Booking() {
   ) as unknown as IUser;
 
   //  use ref
+
   const fNameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const phoneNumberRef = useRef<HTMLInputElement | null>(null);
@@ -118,6 +123,7 @@ function Booking() {
       ],
     };
     console.log(`bookingDetails (from property page): ${bookingDetails}`);
+    console.log(bookingDetails);
 
     try {
       const res = await createBooking(bookingDetails);
@@ -127,6 +133,7 @@ function Booking() {
       console.log(error);
     }
   };
+
   // console.log(window.history);
   // console.log(window.history.state.usr);
   // update lName because "currentUser" updated after lName  initialized
@@ -139,6 +146,8 @@ function Booking() {
   return (
     <div className="px-4">
       <BookingSteps />
+      <BookingAside />
+
       {currentUser.email && <UserCard />}
       <BookingDetails
         lName={lName}
