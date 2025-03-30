@@ -1,5 +1,11 @@
 // react
-import { useEffect, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 // redux
 import { useSelector } from "react-redux";
@@ -24,9 +30,10 @@ import UserCard from "./UserCard";
 
 interface BookingStepTwoProps {
   bookingInfo: BookingInfo;
+  setStep: Dispatch<SetStateAction<2 | 3>>;
 }
 
-function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
+function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
@@ -140,6 +147,7 @@ function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
       console.log("error from create booking: ");
       console.log(error);
     }
+    setStep(3);
   };
 
   useEffect(() => {
