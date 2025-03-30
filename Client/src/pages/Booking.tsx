@@ -17,12 +17,12 @@ function Booking() {
   const [step, setStep] = useState<2 | 3>(2);
 
   return (
-    <div className="px-4">
-      <BookingSteps />
+    <div className="px-4 max-w-[1100px] mx-auto">
+      <BookingSteps step={step}/>
       <div className="flex flex-col tab:flex-row tab:gap-6 ">
         <BookingAside bookingInfo={bookingInfo} />
         {step === 2 && <BookingStepTwo bookingInfo={bookingInfo} />}
-        {step === 3 && <BookingStepThree />}
+        {step === 3 && <BookingStepThree bookingInfo={bookingInfo}/>}
       </div>
     </div>
   );
