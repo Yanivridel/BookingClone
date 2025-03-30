@@ -1,10 +1,5 @@
 import { Badge } from "./ui/badge";
-import {
-  Card,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from "./ui/card";
+import { Card, CardContent, CardTitle, CardDescription } from "./ui/card";
 import { Stars, Vi } from "./ui/Icons";
 import ThumbsUp from "../assets/images/thumps.png";
 import Genius from "../assets/images/Genius.png";
@@ -60,24 +55,6 @@ function PropertyCard({ propertyData, isGrid }: PropertyCardProp) {
       new Date().setDate(new Date().getDate() + DAYS_FOR_LIMITED)
   );
 
-  async function handleNavToProperty() {
-    try {
-      navigate(`/property/${propertyData._id}`, {
-        state: {
-          selectedRooms: propertyData.selectedRooms,
-          adults,
-          childrenAges,
-        },
-      });
-      const updatedUser = await modifyUserArrays("add", {
-        interested: propertyData._id,
-      });
-      dispatch(addInterest(updatedUser.interested));
-    } catch (err) {
-      console.log("React Client Error: ", err);
-    }
-  }
-
   let nights: number;
   const startDate = searchParams.get("startDate")
     ? new Date(searchParams.get("startDate") as string)
@@ -97,6 +74,25 @@ function PropertyCard({ propertyData, isGrid }: PropertyCardProp) {
   else if (isWeekend) nights = 2;
   else nights = length;
 
+  async function handleNavToProperty() {
+    try {
+      navigate(`/property/${propertyData._id}`, {
+        state: {
+          selectedRooms: propertyData.selectedRooms,
+          adults,
+          childrenAges,
+          startDate,
+          endDate,
+        },
+      });
+      const updatedUser = await modifyUserArrays("add", {
+        interested: propertyData._id,
+      });
+      dispatch(addInterest(updatedUser.interested));
+    } catch (err) {
+      console.log("React Client Error: ", err);
+    }
+  }
   return (
     <div>
       {isGrid ? (

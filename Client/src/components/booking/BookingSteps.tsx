@@ -4,7 +4,7 @@ import { ViIcon } from "../ui/Icons";
 function BookingSteps() {
   const { t } = useTranslation();
   return (
-    <div className="border-y-[1px] border-softGrayBorder mt-4 pt-2 signInLayoutTop:border-none">
+    <header className="border-y-[1px] border-softGrayBorder mt-4 pt-2 signInLayoutTop:border-none">
       <div className="flex flex-grow gap-2 text-xs font-bold   ">
         <div className="flex flex-grow gap-2 items-center">
           <div className="rounded-full bg-buttonBlue w-[22px] h-[22px] relative">
@@ -43,7 +43,7 @@ function BookingSteps() {
           {t("booking.bookingSteps.steps")}
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 

@@ -66,9 +66,9 @@ function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
 
   const bookingSubmit = async () => {
     // ! will send to the DB
-    const bookingDetails: TBookingDetails = {
+    const detailsOfCreateBooking: TBookingDetails = {
       // * from property page
-      propertyId: "",
+      propertyId: bookingInfo.propertyData._id,
       checkIn: new Date(),
       checkOut: new Date(),
       guests: 0,
@@ -128,11 +128,13 @@ function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
         },
       ],
     };
-    console.log(`bookingDetails (from property page): ${bookingDetails}`);
-    console.log(bookingDetails);
+    console.log(
+      `createBookingDetails (from property page): ${detailsOfCreateBooking}`
+    );
+    console.log(detailsOfCreateBooking);
 
     try {
-      const res = await createBooking(bookingDetails);
+      const res = await createBooking(detailsOfCreateBooking);
       // console.log(res);
     } catch (error) {
       console.log("error from create booking: ");
@@ -148,7 +150,7 @@ function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
   }, [currentUser]);
 
   return (
-    <div>
+    <main>
       {currentUser.email && <UserCard />}
       <BookingDetails
         lName={lName}
@@ -172,10 +174,10 @@ function BookingStepTwo({ bookingInfo }: BookingStepTwoProps) {
         roomsLeaders={roomsLeaders}
         setRoomsLeaders={setRoomsLeaders}
       />
-      <Button className="text-[16px] py-6 px-9 " onClick={bookingSubmit}>
+      <Button className="text-[16px] py-6 px-9 mt-4" onClick={bookingSubmit}>
         <span className="text-sm me-2">&#9001;</span> השלב הבא: פרטים אחרונים
       </Button>
-    </div>
+    </main>
   );
 }
 

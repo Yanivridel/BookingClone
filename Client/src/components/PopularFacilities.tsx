@@ -7,19 +7,30 @@ interface PopularFacilitiesProps {
   iconsClassName?: string;
   facilityTitleClassName?: string;
   facilityWrapperClassName?: string;
+  componentWrapperClassName?: string;
+  facilitiesLimitNumber?: number;
 }
 function PopularFacilities({
   popularFacilities,
   iconsClassName,
   facilityTitleClassName,
   facilityWrapperClassName,
+  facilitiesLimitNumber: facilitiesNumber,
+  componentWrapperClassName,
 }: PopularFacilitiesProps) {
   return (
-    <div>
-      <div className="flex gap-3 flex-wrap">
-        {popularFacilities && popularFacilities.length && 
-        popularFacilities?.map((facility) => {
+    <div className={cn("flex gap-3 flex-wrap", componentWrapperClassName)}>
+      {popularFacilities &&
+        popularFacilities.length &&
+        popularFacilities.map((facility, i) => {
           const path = popularFacilitiesIcons[facility];
+
+          // Checks if a facility count is provided, and if so,
+          //  stops rendering facilities after reaching the specified number
+          if (facilitiesNumber) {
+            if (i >= facilitiesNumber) return;
+          }
+
           return (
             <div
               className="flex justify-between gap-3 items-center"
@@ -40,7 +51,6 @@ function PopularFacilities({
             </div>
           );
         })}
-      </div>
     </div>
   );
 }

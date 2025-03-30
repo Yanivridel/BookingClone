@@ -1400,3 +1400,16 @@ export const IconViFull = ({ className }: IconsProps) => {
     </svg>
   );
 };
+
+export const IconRatingCircle = ({ className }: IconsProps) => {
+  return (
+    <svg
+      className={cn("w-4 h-4", className)}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="50px"
+    >
+      <path d="M24 12c0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0s12 5.373 12 12"></path>
+    </svg>
+  );
+};

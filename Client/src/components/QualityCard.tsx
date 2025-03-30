@@ -17,11 +17,12 @@ function QualityCard({ propertyData }: QualityCardProps) {
         <div className=" flex gap-2">
           <CardTitle>Quality rating</CardTitle>
           <div className="flex">
-            {Array(Math.floor(propertyData.rating.conform))
-              .fill(1)
-              .map((__, index) => (
-                <YellowCube key={index} className="w-4 h-4 fill-yellow-500" />
-              ))}
+            {propertyData.total_rating &&
+              Array(Math.round(propertyData.total_rating / 2))
+                .fill(1)
+                .map((__, index) => (
+                  <YellowCube key={index} className="w-4 h-4 fill-yellow-500" />
+                ))}
           </div>
         </div>
         <div className="">

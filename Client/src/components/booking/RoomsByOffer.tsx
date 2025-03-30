@@ -2,7 +2,7 @@ import { type IRoom } from "@/types/roomTypes";
 import { Groups, IconTwoPersons, IconViFull, SmallIconVi } from "../ui/Icons";
 import BookingInput from "./BookingInput";
 import { RoomsLeaders } from "@/types/bookingTypes";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface BookingRoomProps {
   roomDetails: IRoom;

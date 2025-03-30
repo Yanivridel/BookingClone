@@ -1,46 +1,63 @@
+// css
 import styles from "@/css/search.module.css";
+
+// react
+import { useEffect, useState } from "react";
+
+// components
 import AsksComponents from "@/components/AsksComponents";
 import GeniusCard from "@/components/GeniusCard";
 import GuestReviews from "@/components/GuestReviews";
 import ImagesProperty from "@/components/ImagesProperty";
 import NavProperty from "@/components/NavProperty";
 import PropertyDescription from "@/components/PropertyDescription";
-
 import PopularFacilities from "@/components/PopularFacilities";
 import PropertyFeatures from "@/components/PropertyFeatures";
 import PropertyHighlight from "@/components/PropertyHighlight";
 import PropertyNearBy from "@/components/PropertyNearBy";
 import PropertyTitle from "@/components/PropertyTitle";
 import QualityCard from "@/components/QualityCard";
-import { IProperty, RecommendedData } from "@/types/propertyTypes";
-import { getPropertyById } from "@/utils/api/propertyApi";
-import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-
 import ReviewsCard from "@/components/ReviewsCard";
 import PropertyTable from "@/components/PropertyTable";
-import { IReview } from "@/types/reviewTypes";
-import Search from "@/components/search";
-import { useTranslation } from "react-i18next";
-
-import HouseRules from "@/components/HouseRules";
-import { Button } from "@/components/ui/button";
-
 import LocationCard from "@/components/LocationCard";
 import PropertyTitles from "@/components/PropertyTitles";
 import FaqComponent from "@/components/FaqComponent";
 import MainCarousel from "@/components/MainCarousel";
+import RecommendedCard from "@/components/RecommendedCard";
+import PropertyFinePrint from "@/components/PropertyFinePrint";
+import Search from "@/components/search";
+import BreadcrumbCard from "@/components/Breadcrumb";
+import HouseRules from "@/components/HouseRules";
+
+// ui components
+import { Button } from "@/components/ui/button";
+
+// react-slick
+import Slider from "react-slick";
 import {
   SampleNextArrow,
   SamplePrevArrow,
 } from "@/components/ui/carousel-slick";
-import Slider from "react-slick";
+
+// icons
 import { Plus } from "@/components/ui/Icons";
-import BreadcrumbCard from "@/components/Breadcrumb";
+
+// types
+import { IProperty, RecommendedData } from "@/types/propertyTypes";
+import { IReview } from "@/types/reviewTypes";
+
+// api
+import { getPropertyById } from "@/utils/api/propertyApi";
+import { getReviewsByPropertyId } from "@/utils/api/reviewApi";
+
+// router dom
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
+// translation
+import { useTranslation } from "react-i18next";
+
+// functions
 import { cf } from "@/utils/functions";
-import RecommendedCard from "@/components/RecommendedCard";
-import PropertyFinePrint from "@/components/PropertyFinePrint";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 

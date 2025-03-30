@@ -60,6 +60,7 @@ export type BookingInfo = {
   propertyData: IProperty;
   bookingDetailsData: {
     totalPrice?: number;
+    totalPriceWithDiscount?: number;
     roomsNumber?: number;
   };
 };

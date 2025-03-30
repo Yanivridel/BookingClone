@@ -19,6 +19,7 @@ import { IProperty } from "@/types/propertyTypes";
 import SaveButton from "./SaveButton";
 import { Popover, PopoverContent } from "./ui/popover";
 import { PopoverTrigger } from "@radix-ui/react-popover";
+import { propertyRatingAvg } from "@/utils/utilsFunctions";
 
 interface propertyTitleProps {
   propertyData?: IProperty;
@@ -26,11 +27,10 @@ interface propertyTitleProps {
 }
 
 function PropertyTitle({ propertyData, segment }: propertyTitleProps) {
-  const rating = 4;
-
   if (!propertyData) {
     return <div></div>;
   }
+  const ratingAvg = propertyRatingAvg(propertyData);
   return (
     <div
       className=" p-3  grid  md:grid-cols-[2fr_1fr] gap-2 "
@@ -42,11 +42,12 @@ function PropertyTitle({ propertyData, segment }: propertyTitleProps) {
             <img src={Genius} alt="" className="w-13 h-5 rounded-md" />
           </div>
           <div className="flex">
-            {Array(rating)
-              .fill(0)
-              .map((_, index) => (
-                <Stars key={index} className="w-3 h-3 fill-[#ffb700]" />
-              ))}
+            {ratingAvg &&
+              Array(Math.round(ratingAvg / 2))
+                .fill(0)
+                .map((_, index) => (
+                  <Stars key={index} className="w-3 h-3 fill-[#ffb700]" />
+                ))}
           </div>
           <div>
             <TooltipProvider>

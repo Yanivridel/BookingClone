@@ -54,6 +54,7 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
   // states
   const [bookingDetailsData, setBookingDetailsData] = useState<{
     totalPrice?: number;
+    totalPriceAfterDiscount?: number;
     roomsNumber?: number;
   }>({});
 
