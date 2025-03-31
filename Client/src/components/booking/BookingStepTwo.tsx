@@ -76,9 +76,9 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
     const detailsOfCreateBooking: TBookingDetails = {
       // * from property page
       propertyId: bookingInfo.propertyData._id,
-      checkIn: new Date(),
-      checkOut: new Date(),
-      guests: 0,
+      checkIn: bookingInfo.bookingDetailsData.startDate,
+      checkOut: bookingInfo.bookingDetailsData.startDate,
+      guests: 1,
       rooms: [
         {
           roomId: "",

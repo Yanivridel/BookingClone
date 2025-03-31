@@ -25,6 +25,9 @@ interface SelectOfferProps {
     React.SetStateAction<{
       totalPrice?: number;
       totalPriceWithDiscount?: number;
+      roomsNumber?: number;
+      startDate: Date;
+      endDate: Date;
     }>
   >;
   offerDiscount: number;

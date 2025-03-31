@@ -336,8 +336,8 @@ function Search() {
     }
   };
 
-  // monthes and years
-  const handleClickMonthCard = (monthYear: MonthNameYear, index: number) => {
+  // months and years
+  const handleClickMonthCard = (monthYear: MonthNameYear) => {
     let newClickedButtons = [];
     if (
       clickedMonthsCards.some(
@@ -346,17 +346,15 @@ function Search() {
           clickedMonth.year === monthYear.year
       )
     ) {
-      // button clicked allredy - remove:
+      // button clicked already - remove:
       newClickedButtons = clickedMonthsCards.filter((element) => {
         return element.monthName !== monthYear.monthName;
       });
     } else {
       // button not clicked:
-      newClickedButtons = [
-        ...clickedMonthsCards,
-        { ...monthYear, month: index },
-      ];
+      newClickedButtons = [...clickedMonthsCards, { ...monthYear }];
     }
+    console.log(newClickedButtons);
 
     setClickedMonthsCards(newClickedButtons);
   };
@@ -702,7 +700,7 @@ function Search() {
                       styles.scrollContainer
                     )}
                   >
-                    {monthsAndYears().map((monthYear, index) => {
+                    {monthsAndYears().map((monthYear) => {
                       const isClicked = clickedMonthsCards.some(
                         (clickedMonth) =>
                           clickedMonth.monthName === monthYear.monthName &&
@@ -710,12 +708,15 @@ function Search() {
                       );
                       const isDisabled =
                         clickedMonthsCards.length >= 3 && !isClicked;
+                      let currentMonthAsNumber = new Date().getMonth();
+                      if (currentMonthAsNumber++ === 13) {
+                        currentMonthAsNumber = 0;
+                      }
 
                       return (
                         <Card
                           onClick={() =>
-                            !isDisabled &&
-                            handleClickMonthCard(monthYear, index)
+                            !isDisabled && handleClickMonthCard(monthYear)
                           }
                           key={monthYear.monthName}
                           className={cn(

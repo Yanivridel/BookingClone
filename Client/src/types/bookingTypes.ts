@@ -62,6 +62,8 @@ export type BookingInfo = {
     totalPrice?: number;
     totalPriceWithDiscount?: number;
     roomsNumber?: number;
+    startDate: Date;
+    endDate: Date;
   };
 };
 

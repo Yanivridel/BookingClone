@@ -69,6 +69,16 @@ function Property() {
   const location = useLocation();
   const recommendedData: RecommendedData = location.state;
 
+  // calculate startDate, endDate the difference between  and the nightsNumber
+  const today = new Date();
+  const twoDaysLater = new Date(today);
+  twoDaysLater.setDate(today.getDate() + 2);
+  const startDate = recommendedData?.startDate || today;
+  const endDate = recommendedData?.endDate || twoDaysLater;
+  const differenceInTime = endDate.getTime() - startDate.getTime();
+  const differenceInDays = differenceInTime / (1000 * 60 * 60 * 24);
+  const nightsNum = differenceInDays - 1;
+
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
@@ -200,7 +210,12 @@ function Property() {
           className={` tab:overflow-x-visible min-h-[500px] overflow-x-scroll , ${styles.scrollContainer}`}
         >
           {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
-            <PropertyTable propertyData={propertyData} nightsNum={4} />
+            <PropertyTable
+              startDate={startDate}
+              endDate={endDate}
+              propertyData={propertyData}
+              nightsNum={nightsNum}
+            />
           )}
         </div>
         {/* Reviews & Rating */}

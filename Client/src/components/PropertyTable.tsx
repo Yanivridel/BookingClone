@@ -31,11 +31,17 @@ const headerRowsNumber = 6;
 
 type PropertyRoomsTableProps = {
   propertyData: IProperty;
-
   nightsNum: number;
+  startDate: Date;
+  endDate: Date;
 };
 
-function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
+function PropertyTable({
+  startDate,
+  endDate,
+  nightsNum,
+  propertyData,
+}: PropertyRoomsTableProps) {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -56,7 +62,9 @@ function PropertyTable({ nightsNum, propertyData }: PropertyRoomsTableProps) {
     totalPrice?: number;
     totalPriceAfterDiscount?: number;
     roomsNumber?: number;
-  }>({});
+    startDate: Date;
+    endDate: Date;
+  }>({ startDate, endDate });
 
   const [availableRoomsCount, setAvailableRoomsCount] = useState({});
 

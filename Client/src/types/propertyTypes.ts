@@ -305,4 +305,6 @@ export interface RecommendedData {
       availableRooms: string;
     };
   }[];
+  startDate: Date | undefined;
+  endDate: Date | undefined;
 }
