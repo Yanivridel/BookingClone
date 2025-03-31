@@ -15,7 +15,7 @@ function Booking() {
   const location = useLocation();
   const bookingInfo = location.state as BookingInfo;
   const [step, setStep] = useState<2 | 3>(2);
-
+  console.log("bookingInfo", bookingInfo);
   return (
     <div className="px-4 max-w-[1100px] mx-auto">
       <BookingSteps step={step} />
