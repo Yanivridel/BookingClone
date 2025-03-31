@@ -20,7 +20,7 @@ function BookingPropertyDetails({ bookingInfo }: BookingPropertyDetailsProps) {
   const ratingAvg = propertyRatingAvg(propertyData);
 
   return (
-    <section className="border-[1px] border-softGrayBorder mt-4 px-4 rounded-[8px] py-4 grid gap-2 ">
+    <section className="border-[1px] border-softGrayBorder px-4 rounded-[8px] py-4 grid gap-2 ">
       {/* rating circles */}
       <div className="flex items-center ">
         <span className="text-xs me-2">{propertyData.type}</span>

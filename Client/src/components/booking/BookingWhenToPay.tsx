@@ -26,6 +26,8 @@ function BookingWhenToPay({
     } : BookingWhenToPayProps) {
 
     const [openDatePicker, setOpenDatePicker] = useState(false);
+    const cancellationDate = new Date();
+    cancellationDate.setDate(cancellationDate.getDate() + 7);
 
     return (
     <Card className="mb-6">
@@ -85,12 +87,12 @@ function BookingWhenToPay({
                 Pay now
                 </Label>
                 <p className="text-sm text-gray-600">
-                {/* You'll pay now to complete this booking. You can cancel before {format(cancellationDate, "MMMM d, yyyy")} for a full refund. */}
+                You'll pay now to complete this booking. You can cancel before {format(cancellationDate, "MMMM d, yyyy")} for a full refund.
                 </p>
                 <div className="flex gap-2 mt-1">
-                <img src="https://q-xx.bstatic.com/xdata/images/hotel/max500/289707488.jpg?k=ee7c124c175c9ecadcab3f952157f0a7f320eefe21510983ca577c95f30b8142&o=" alt="Credit card" className="h-6 w-auto" />
-                <img src="https://cdn.icon-icons.com/icons2/674/PNG/512/PayPal_icon-icons.com_60633.png" alt="PayPal" className="h-6 w-auto" />
-                <img src="https://www.mastercard.us/content/dam/public/mastercardcom/na/us/en/homepage/Home/mc-logo-52.svg" alt="MasterCard" className="h-6 w-auto" />
+                    <img src={MasterCardLogo} alt="Master Card" className="h-4 w-auto" />
+                    <img src={VisaLogo} alt="Visa" className="h-4 w-auto" />
+                    <img src={PayPalLogo} alt="PayPal" className="h-4 w-auto" />
                 </div>
             </div>
             </div>
