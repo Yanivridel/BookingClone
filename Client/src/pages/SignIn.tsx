@@ -4,11 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconApple, IconError, IconFacebook } from "@/components/ui/Icons";
 import { Card } from "@/components/ui/card";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { sendEmailCode } from "@/utils/api/userApi";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "@/utils/utilsFunctions";
 import { GoogleLogin } from "@react-oauth/google";
+import { scrollToTopInstant } from "@/utils/functions";
 
 function SignIn({
   className,
@@ -21,6 +22,11 @@ function SignIn({
   const [fetchingColor, setFetchingColor] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Booking.com | האתר הרשמי | התחברות';
+    scrollToTopInstant();
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setIsValid(() => validateEmail(e.target.value));

@@ -7,6 +7,7 @@ import OtherTravellers from './OtherTravellers'
 import CustomisationPreferences from '@/components/CustomisationPreferences'
 import PaymentMethods from '@/components/PaymentMethods'
 import PrivecyAndManagment from '@/components/PrivecyAndManagment'
+import { scrollToTopInstant } from '@/utils/functions'
 
 const SettingsMobileWidth = 900 
 
@@ -16,6 +17,11 @@ function MySettings() {
       window.innerWidth < SettingsMobileWidth
     );
     const [page, setPage] = useState(category || "Personal details")
+
+    useEffect(() => {
+      document.title = 'Booking.com | האתר הרשמי | הגדרות';
+      scrollToTopInstant();
+    }, []);
 
     useEffect(() => {
         const checkMobile = () => {

@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import useInfiniteProperties from "@/hooks/useInfiniteProperties";
 import { IFilters, IProperty, ISearchPropertiesReq } from "@/types/propertyTypes";
-import { parseMonthsFromQueryString } from "@/utils/functions";
+import { parseMonthsFromQueryString, scrollToTopInstant } from "@/utils/functions";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -92,8 +92,11 @@ function SearchResults() {
   } = useInfiniteProperties(searchBody, 5);
   
   // console.log("DATA", data);
+  // console.log("searchBody", searchBody);
 
   useEffect(() => {
+    document.title = 'Booking.com | האתר הרשמי | תוצאות חיפוש'
+    scrollToTopInstant();
     function checkScreenSize() {
       if(window.innerWidth <= 1024) {
         SetFilterDisplay(false)
@@ -103,6 +106,7 @@ function SearchResults() {
     }
   
     window.addEventListener('resize', checkScreenSize);
+    scrollToTopInstant();
 
     return () => {
       window.removeEventListener('resize', checkScreenSize);

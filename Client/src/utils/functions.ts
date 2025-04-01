@@ -1,5 +1,6 @@
 import { MonthNameYear } from "@/components/search";
 import { ISearchPropertiesReq } from "@/types/propertyTypes";
+import { easyTripObj } from "./staticData";
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -190,3 +191,23 @@ export async function getCurrentCountry() {
   const data = await response.json();
   return data.country_name; // or data.country_code for ISO code
 }
+
+export const getRandomImageOfEasyTrip = (input: string) => {
+  const hashCode = (str: string) => {
+    return str.split('').reduce((acc, char) => acc * 31 + char.charCodeAt(0), 7) % 100000;
+  };
+
+  const categories = Object.keys(easyTripObj);
+  const categoryIndex = hashCode(input) % categories.length;
+  const selectedCategory = categories[categoryIndex];
+
+  const places = easyTripObj[selectedCategory];
+  const placeIndex = hashCode(input + "seed") % places.length;
+  const selectedPlace = places[placeIndex];
+
+  return selectedPlace.img;
+};
+
+export const scrollToTopInstant = () => {
+  window.scrollTo(0, 0);
+};

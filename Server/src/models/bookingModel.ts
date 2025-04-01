@@ -28,8 +28,9 @@ const BookingSchema = new Schema<IBooking>(
 
         rooms_details: [{
             roomId: { type: Schema.Types.ObjectId, ref: "Room", required: true },
-            fullName: { type: String, required: true },
-            email: { type: String },
+            offerId: { type: String, required: true },
+            fullName: { type: String, required: false },
+            email: { type: String, required: false },
         }],
 
         add_to_stay: {

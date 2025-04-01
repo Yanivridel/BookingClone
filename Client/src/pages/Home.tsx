@@ -5,7 +5,7 @@ import Search from "@/components/search";
 import HomeHeader from "../components/HomeHeader.tsx";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { cf, makeUrlForSearch } from "@/utils/functions";
+import { cf, getRandomImageOfEasyTrip, makeUrlForSearch, scrollToTopInstant } from "@/utils/functions";
 
 import { easyTripObj, HomeArr, inspirationArr, offersArr, propertyTypesArr, TrendingImages, uniqueArr } from "@/utils/staticData.ts";
 
@@ -55,6 +55,8 @@ function Home() {
   // console.log("USER", currentUser);
 
   useEffect(() => {
+    document.title = 'Booking.com | האתר הרשמי | הטובים ביותר: מלונות, טיסות, רכבים להשכרה ומקומות אירוח'
+    scrollToTopInstant();
     const checkMobile = () => {
       setIsMobile((prevIsMobile) => {
         if (window.innerWidth < HomeMobileWidth && !prevIsMobile) return true;
@@ -100,7 +102,7 @@ function Home() {
       return SkeletonCard(6);
   
     const searchArr = user.search.slice().reverse();
-    return searchArr.map((details) => {
+    return searchArr.map((details, idx) => {
       let locationDetails = details.location;
     let specific, broader = "";
 
@@ -134,7 +136,7 @@ function Home() {
         >
         <img
           className=" rounded-lg h-16 w-16"
-          src="https://cf.bstatic.com/xdata/images/region/64x64/59876.jpg?k=711533b814bfa5152506e24d0d424891a41ebb90577413a61d858cbf0bd60d32&o="
+          src={getRandomImageOfEasyTrip(String(idx) + details.location.country + details.location.city)}
           alt={details.location.country}
         />
         <div>
@@ -247,7 +249,7 @@ function Home() {
         )}
 
         {/* Offers */}
-        <div className="py-4">
+        <div className="mt-8">
           <h2 className="text-2xl font-bold ">{t("home.OffersHeader")}</h2>
           <h3 className="text-searchGrayText mb-2">
             {t("home.OffersSecondaryHeader")}
@@ -272,18 +274,18 @@ function Home() {
               }}
             >
               {offersArr.map((el) => (
-                <OffersCard key={el.button} title={el.title} desc={el.desc} button={el.button} img={el.img}/>
+                <OffersCard className="max-w-[535px]" key={el.button} title={el.title} desc={el.desc} button={el.button} img={el.img}/>
               ))}
             </Slider>
           )}
         </div>
 
         {/* Trending destinations */}
-        <div className="py-4">
+        <div className="mt-2">
           <h2 className="text-2xl font-bold">
             {t("home.trandingDestinationsHeader")}
           </h2>
-          <h3>{t("home.trandingDestinationsSecondaryHeader")}</h3>
+          <h3 className="p-2 text-searchGrayText">{t("home.trandingDestinationsSecondaryHeader")}</h3>
 
           <div className="grid grid-cols-6 gap-4">
             {TrendingImages.map((details, idx) => (
@@ -298,7 +300,7 @@ function Home() {
         </div>
 
         {/* Easy Trip 4 Carousels */}
-        <div>
+        <div className="mt-10">
           <h2 className="text-2xl font-bold mt-5">
             {t("home.ClosePlacesHeader")}
           </h2>
@@ -329,7 +331,7 @@ function Home() {
             </MainCarousel>
           </div>
           {/* Carousels */}
-          <div className="py-4">
+          <div className="pt-4">
             {isMobile || easyTripObj[easyTripCategory].length <= 4 ? (
               <MainCarousel>
                 {easyTripObj[easyTripCategory].map((item: any, index: number) => (
@@ -371,23 +373,6 @@ function Home() {
           </div>
         </div>
 
-        {/* //! Travel more, spend less */}
-        {/* <div>
-          <div className="flex justify-between">
-            <div className="py-4">
-              <h2 className="text-2xl font-bold ">
-                {t("home.gunisesDealsHeader")}
-              </h2>
-              <Button variant={"simpleLink"}>{t("home.gunisesMoreInfo")}</Button>
-            </div>
-          </div>
-          <div>
-            <OffersCard className="justify-between"
-            key={"sign-in"} title="Sign in, save money" desc="Save 10% or more at participating properties – just look for the blue Genius label"
-              button="Sign in" img="https://t-cf.bstatic.com/design-assets/assets/v3.138.1/illustrations-traveller/GeniusGenericGiftBox.png" />
-          </div>
-        </div> */}
-
         {/* Inspiration Carousel */}
         <div>
           <div className="py-4 flex justify-between items-center">
@@ -428,10 +413,10 @@ function Home() {
 
         {/* Property Type Carousel */}
         { propertyTypesArr?.length &&
-        <div>
-        <div className="py-4">
-          <h2 className="text-2xl font-bold ">{t("home.propertyTypesHeader")}</h2>
-        </div>
+        <div className="mt-7">
+          <div className="py-4">
+            <h2 className="text-2xl font-bold ">{t("home.propertyTypesHeader")}</h2>
+          </div>
           {isMobile || propertyTypesArr.length <= 3 ? (
                 <MainCarousel>
                   { propertyTypesArr.map(prop =>
@@ -439,30 +424,30 @@ function Home() {
                     image={prop.img} className="min-w-[250px] max-h-[300px]" classNameImg="h-5/6"/>
                   )}
                 </MainCarousel>
-            ) : (
-              <Slider
-                key={isRtl ? "rtl" : "ltr"}
-                {...{
-                  ...settingsSearch,
-                  slidesToShow: 4,
-                  initialSlide: isRtl
-                    ? propertyTypesArr.length - 4
-                    : 0,
-                  nextArrow: <SampleNextArrow slidesToShow={4} />,
-                }}
-              >
-                { propertyTypesArr.map(prop =>
-                    <CardWithLocationHome key={prop.title} title={t(prop.title)} onClick={() => navigate(`/searchresults?country=Israel&type=${prop.title.split('.')[1].toLowerCase().replace(/s$/, '')}`)}
-                    image={prop.img} className="mx-1 max-h-[300px]" classNameImg="h-5/6"/>
-                  )}
-              </Slider>
-            )}
+          ) : (
+            <Slider
+              key={isRtl ? "rtl" : "ltr"}
+              {...{
+                ...settingsSearch,
+                slidesToShow: 4,
+                initialSlide: isRtl
+                  ? propertyTypesArr.length - 4
+                  : 0,
+                nextArrow: <SampleNextArrow slidesToShow={4} />,
+              }}
+            >
+              { propertyTypesArr.map(prop =>
+                  <CardWithLocationHome key={prop.title} title={t(prop.title)} onClick={() => navigate(`/searchresults?country=Israel&type=${prop.title.split('.')[1].toLowerCase().replace(/s$/, '')}`)}
+                  image={prop.img} className="mx-1 max-h-[300px]" classNameImg="h-5/6"/>
+                )}
+            </Slider>
+          )}
         </div>
         }
 
         {/* Top Unique Carousel */}
         { uniqueArr?.length &&
-        <div>
+        <div className="mt-7">
         <div className="py-4">
           <h2 className="text-2xl font-bold ">{t("home.uniqueHeader")}</h2>
           <h3 className="text-searchGrayText ">
@@ -497,7 +482,7 @@ function Home() {
       
         {/* Homes Carousel */}
         { HomeArr?.length &&
-        <div>
+        <div className="my-7">
         <div className="py-4 flex justify-between">
           <h2 className="text-2xl font-bold ">
             {t("home.lovedHomesDealsHeader")}

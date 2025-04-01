@@ -11,6 +11,7 @@ import { getPaymentMethod, makePayment, savePayment } from "@/utils/api/bookingA
 import MasterCardLogo from "@/assets/images/MasterCard.png";
 import AmericanExpressLogo from "@/assets/images/American Express Card.png";
 import VisaLogo from "@/assets/images/visa.png";
+import { scrollToTopInstant } from "@/utils/functions";
 
 interface BookingStepThreeProps {
   bookingInfo: BookingInfo;
@@ -35,6 +36,10 @@ function BookingStepThree( { bookingInfo }: BookingStepThreeProps) {
   const [marketingConsent1, setMarketingConsent1] = useState(false);
   const [marketingConsent2, setMarketingConsent2] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    scrollToTopInstant();
+  }, [])
 
   function handleCompleteBooking(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     handlePayment(clientSecret);
