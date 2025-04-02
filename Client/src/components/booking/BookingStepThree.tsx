@@ -1,11 +1,10 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import BookingWhenToPay from "./BookingWhenToPay";
 import { BookingInfo } from "@/types/bookingTypes";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Input } from "../ui/input";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { getPaymentMethod, makePayment, savePayment } from "@/utils/api/bookingApi";
 import MasterCardLogo from "@/assets/images/MasterCard.png";
@@ -28,20 +27,20 @@ function BookingStepThree( { bookingInfo }: BookingStepThreeProps) {
   const [clientSecret, setClientSecret] = useState<string>("");
   const [paymentStatus, setPaymentStatus] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [amount, setAmount] = useState<number>(1000);
-  const [currency, setCurrency] = useState<string>("USD");
+  const amount = useMemo(() => bookingInfo.bookingDetailsData.totalPriceWithDiscount || 0, [bookingInfo]);
+  const currency = useMemo(() => "USD", []);
   const stripe = useStripe();
   const elements = useElements();
   
   const [marketingConsent1, setMarketingConsent1] = useState(false);
   const [marketingConsent2, setMarketingConsent2] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, _] = useState(false);
 
   useEffect(() => {
     scrollToTopInstant();
   }, [])
 
-  function handleCompleteBooking(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
+  function handleCompleteBooking(_: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) {
     handlePayment(clientSecret);
   }
 
@@ -94,7 +93,8 @@ function BookingStepThree( { bookingInfo }: BookingStepThreeProps) {
 
   return (
     <div className="w-2/3">
-      <BookingWhenToPay 
+      <BookingWhenToPay
+      maxDate={bookingInfo.bookingDetailsData.startDate}
       paymentOption={paymentOption}
       setPaymentOption={setPaymentOption}
       paymentDate={paymentDate}

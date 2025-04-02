@@ -22,6 +22,7 @@ function Booking() {
     scrollToTopInstant();
   }, []);
   console.log("bookingInfo", bookingInfo);
+  
   return (
     <div className="px-4 max-w-[1100px] mx-auto">
       <BookingSteps step={step} />

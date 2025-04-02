@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unTakeAvailableRooms = exports.takeAvailableRooms = exports.takeUnTakeRooms = exports.createBooking = void 0;
+exports.unTakeAvailableRooms = exports.takeAvailableRooms = exports.takeUnTakeRooms = exports.getOrdersByUserId = exports.createBooking = void 0;
 const mongoose_1 = require("mongoose");
 const bookingModel_1 = require("../models/bookingModel");
 const roomModel_1 = require("../models/roomModel");
@@ -64,6 +64,25 @@ const createBooking = async (req, res) => {
     }
 };
 exports.createBooking = createBooking;
+const getOrdersByUserId = async (req, res) => {
+    try {
+        const authenticatedReq = req;
+        const { userId } = authenticatedReq;
+        const orders = await bookingModel_1.bookingModel.find({ userId }).sort({ createdAt: 1 });
+        const groupedOrders = orders.reduce((acc, order) => {
+            if (!acc[order.status]) {
+                acc[order.status] = [];
+            }
+            acc[order.status].push(order);
+            return acc;
+        }, {});
+        res.status(200).json(groupedOrders);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error fetching orders', error });
+    }
+};
+exports.getOrdersByUserId = getOrdersByUserId;
 // * Done
 const takeUnTakeRooms = async (req, res) => {
     const { checkIn, checkOut, rooms, action } = req.body;

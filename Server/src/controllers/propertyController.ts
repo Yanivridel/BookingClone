@@ -8,6 +8,12 @@ import { roomModel } from '../models/roomModel';
 import { IRoom, TSelectedRoom } from '../types/roomTypes';
 import { getCache, setCache } from '../utils/redisClient';
 import { IFilterPropertiesLocation, IFilterPropertiesDate, IFilterPropertiesOptions } from '../types/userTypes'; 
+declare module 'express-serve-static-core' {
+    interface Response {
+        flush: () => void;
+    }
+}
+
 //* Done - Create
 export const createProperty = async (req: Request<{},{},TPartialProperty> , res: Response): Promise<void> => {
     try {
@@ -240,13 +246,23 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         const paginatedProperties = secondFiltered.slice(skip, skip + limit);
         
+        console.log("Writing first chunk with properties...");
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+        res.flush && res.flush();
 
         process.nextTick(async () => {
-            const filterCount = await getFiltersFromProperties(secondFiltered);
-            console.log(" ")
-            res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
-            res.end();
+            try {
+                console.log("Inside process.nextTick: about to get filters");
+                const filterCount = await getFiltersFromProperties(secondFiltered);
+                console.log("Got filters:", filterCount);
+                console.log(" ") //! DO NOT REMOVE EVER
+                res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
+                res.end();
+                console.log("Response ended");
+            } catch (err) {
+                console.error("Error in nextTick callback:", err);
+                res.end();
+            }
         })
         
 

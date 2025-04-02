@@ -1,6 +1,4 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { assert } from "node:console";
-import { current } from "@reduxjs/toolkit";
 
 interface SelectOfferProps {
   setOffersRoomSelected: Dispatch<

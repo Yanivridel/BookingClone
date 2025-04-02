@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 import { EmptyCalendarImg } from "../ui/Icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
@@ -12,13 +12,15 @@ import AmericanExpressLogo from "@/assets/images/American Express Card.png";
 import VisaLogo from "@/assets/images/visa.png";
 
 interface BookingWhenToPayProps {
+    maxDate: Date,
     paymentOption: string;
     setPaymentOption: Dispatch<SetStateAction<string>>;
     paymentDate: Date;
     setPaymentDate: Dispatch<SetStateAction<Date>>;
 }
 
-function BookingWhenToPay({ 
+function BookingWhenToPay({
+    maxDate, 
     paymentOption, 
     setPaymentOption,
     paymentDate,
@@ -64,6 +66,7 @@ function BookingWhenToPay({
                                     d.setDate(d.getDate() + 1);
                                     return d;
                                 })()}
+                                toDate={maxDate}
                             />
                         </PopoverContent>
                         </Popover>

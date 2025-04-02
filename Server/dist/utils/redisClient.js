@@ -4,7 +4,7 @@ exports.client = void 0;
 exports.connectRedis = connectRedis;
 exports.setCache = setCache;
 exports.getCache = getCache;
-exports.clearUserCache = clearUserCache;
+exports.clearAll = clearAll;
 const redis_1 = require("redis");
 const client = (0, redis_1.createClient)({
     username: 'default',
@@ -41,7 +41,13 @@ async function getCache(key) {
         return null;
     }
 }
-async function clearUserCache(userId) {
-    await client.del(`search:${userId}`);
+async function clearAll() {
+    try {
+        await client.flushAll();
+        console.log('✅ Redis cache flushed');
+    }
+    catch (error) {
+        console.error('❌ Redis Flush Error:', error);
+    }
 }
 //# sourceMappingURL=redisClient.js.map

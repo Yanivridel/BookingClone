@@ -8,6 +8,7 @@ const bookingController_1 = require("../controllers/bookingController");
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post("/create", authMiddleware_1.authenticateToken, bookingController_1.createBooking);
+router.get("/", authMiddleware_1.authenticateToken, bookingController_1.getOrdersByUserId);
 router.patch("/take-rooms", bookingController_1.takeUnTakeRooms);
 exports.default = router;
 //# sourceMappingURL=bookingRoutes.js.map
