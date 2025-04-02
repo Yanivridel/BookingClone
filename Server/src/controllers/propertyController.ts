@@ -254,7 +254,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             try {
                 console.log("Inside process.nextTick: about to get filters");
                 const filterCount = await getFiltersFromProperties(secondFiltered);
-                console.log("Got filters:", filterCount);
+                console.log("Got filters:", filterCount.overall_count, filterCount.type);
                 console.log(" ") //! DO NOT REMOVE EVER
                 res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
                 res.end();
