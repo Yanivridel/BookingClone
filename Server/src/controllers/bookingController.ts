@@ -68,6 +68,28 @@ export const createBooking = async (req: Request<{},{},TBookingStringified>, res
     }
 }
 
+export const getOrdersByUserId = async (req: Request, res: Response) => {
+    try {
+        const authenticatedReq = req as AuthenticatedRequest;
+        const { userId } = authenticatedReq;
+        
+        const orders = await bookingModel.find({ userId }).sort({ createdAt: 1 });
+
+        const groupedOrders = orders.reduce((acc: any, order) => {
+            if (!acc[order.status]) {
+                acc[order.status] = [];
+            }
+            acc[order.status].push(order);
+            return acc;
+        }, {});
+
+        res.status(200).json(groupedOrders);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching orders', error });
+    }
+};
+
+
 // * Done
 export const takeUnTakeRooms = async (req: Request, res: Response): Promise<void> => {
     const { checkIn, checkOut, rooms, action } = req.body;
