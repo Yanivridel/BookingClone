@@ -17,6 +17,7 @@ import CheckpointMap, { LatLng } from "@/components/CheckpointMap";
 import { IProperty } from "@/types/propertyTypes";
 import { getPropertyByIdForCard } from "@/utils/api/propertyApi";
 import { IPage } from "./SearchResults";
+import { scrollToTopInstant } from "@/utils/functions";
 
 
 function SavedLists() {
@@ -39,6 +40,11 @@ function SavedLists() {
         slidesToScroll: 1,
         prevArrow: <SamplePrevArrow />,
     };
+
+    useEffect(() => {
+        document.title = 'Booking.com | האתר הרשמי | הרשימות שלי';
+        scrollToTopInstant();
+    }, []);
 
     useEffect(() => {
         const checkMobile = () => {

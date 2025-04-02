@@ -4,6 +4,8 @@ import CreditAccount from '@/components/CreditAccount'
 import GeniusRewardAccount from '@/components/GeniusRewardAccount'
 import MainCardAccount from '@/components/MainCardAccount'
 import { Coins, Payment, Person, Persons,Lock, Volume, Email, Bag, Heart, Command, Question, Safety, Hands, ViBorder, Note, HousePlus } from '@/components/ui/Icons'
+import { scrollToTopInstant } from '@/utils/functions'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 function MyAccountPage() {
@@ -129,6 +131,12 @@ function MyAccountPage() {
     },
     
   ]
+
+  useEffect(() => {
+    document.title = 'Booking.com | האתר הרשמי | החשבון שלי';
+    scrollToTopInstant();
+  }, []);
+
   return (<>
       <div className="absolute top-0 w-full -z-10 h-[700px]  bg-[#013b94] "></div>
       <div className="fixed top-0 left-0 w-full h-full -z-50  bg-[#f5f5f5] "></div>

@@ -57,7 +57,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // functions
-import { cf } from "@/utils/functions";
+import { cf, scrollToTopInstant } from "@/utils/functions";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -110,24 +110,26 @@ function Property() {
     prevArrow: <SamplePrevArrow />,
   };
 
-  useEffect(() => {
-    if (id) {
-      getPropertyById(id).then((data) => {
-        setPropertyData(data);
-        // console.log(data);
-      });
-      getReviewsByPropertyId(id).then((data) => {
-        setPropertyReviews(data);
-        // console.log(data);
-      });
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   if (id) {
+  //     getPropertyById(id).then((data) => {
+  //       setPropertyData(data);
+  //       // console.log(data);
+  //     });
+  //     getReviewsByPropertyId(id).then((data) => {
+  //       setPropertyReviews(data);
+  //       // console.log(data);
+  //     });
+  //   }
+  // }, [id]);
 
   useEffect(() => {
     if (id) {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
         // console.log(data);
+        document.title = `Booking.com | ${data?.title || ''} האתר הרשמי | מלון `
+        scrollToTopInstant();
       });
       getReviewsByPropertyId(id).then((data) => {
         setPropertyReviews(data);
@@ -144,6 +146,7 @@ function Property() {
         return prevIsMobile;
       });
     };
+    scrollToTopInstant();
     window.addEventListener("resize", checkMobile);
 
     return () => {

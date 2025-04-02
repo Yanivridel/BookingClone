@@ -12,7 +12,6 @@ interface OffersCardProps {
 
 function OffersCard({ title, desc, button, img, className}: OffersCardProps) {
   return (
-    <div>
       <Card className={cn('p-3 flex gap-2 w-full mx-auto',className)} >
         <div className=' w-full sm:w-[70%] grid'>
             <CardTitle className='text-xl font-bold	'>{title}</CardTitle>
@@ -23,7 +22,6 @@ function OffersCard({ title, desc, button, img, className}: OffersCardProps) {
             <img src={img} alt={button} className='rounded-lg h-[145px]	w-[145px]' />
         </div>
       </Card>
-    </div>
   )
 }
 

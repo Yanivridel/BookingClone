@@ -6,6 +6,7 @@ import { sendEmailCode, signinUser } from "@/utils/api/userApi";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/userSlices";
+import { scrollToTopInstant } from "@/utils/functions";
 
 function EmailCode({
   className,
@@ -34,6 +35,11 @@ function EmailCode({
     input1 && input2 && input3 && input4 && input5 && input6
       ? "default"
       : "disabled";
+
+  useEffect(() => {
+    document.title = 'Booking.com | האתר הרשמי | התחברות';
+    scrollToTopInstant();
+  }, []);
 
   //   for moving to the next input
   const inputRefs = [

@@ -1,10 +1,16 @@
 import Search from "@/components/search";
 import { Button } from "@/components/ui/button";
+import { scrollToTopInstant } from "@/utils/functions";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
     const navigate = useNavigate();
 
+    useEffect(() => {
+        document.title = 'Booking.com | האתר הרשמי | לא נמצא';
+        scrollToTopInstant();
+    }, []);
     return (
     <div className=" text-center max-w-[1100px] mx-auto">
     <h1 className="text-6xl font-bold">Page Not Found</h1>
