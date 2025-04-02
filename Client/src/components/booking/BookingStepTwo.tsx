@@ -123,13 +123,14 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
         close_rooms: false, // default: false
       },
 
-      children_beds: [
-        {
-          room_id: "",
-          baby: 0,
-          extra: 0,
-        },
-      ],
+      children_beds: undefined,
+      //  [
+      //   {
+      //     room_id: "",
+      //     baby: 0,
+      //     extra: 0,
+      //   },
+      // ],
     };
 
     console.log(detailsOfCreateBooking);

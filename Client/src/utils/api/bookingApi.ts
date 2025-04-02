@@ -82,9 +82,7 @@ export async function createBooking(bookingDetails: TBookingDetails) {
       `${API_URL}/api/booking/create`,
       bookingDetails,
       {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
+        withCredentials: true,
       }
     );
     return data;
