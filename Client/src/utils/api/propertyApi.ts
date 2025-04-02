@@ -28,6 +28,79 @@ export const getPropertyByIdForCard = async (id: string) => {
   }
 };
 
+export const searchPropertiesChunks = async (
+  searchBody: ISearchPropertiesReq,
+  page?: number,
+  limit?: number
+) => {
+  
+  page ??= 1;
+  limit ??= 15;
+  const response = await fetch(`${API_URL}/api/property/?page=${page}&limit=${limit}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(searchBody),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const reader = response.body!.getReader();
+  
+  // Read the entire response first
+  const { result: fullData } = await readFullStream(reader);
+  
+  // Then process the chunks separately
+  const chunks = fullData.split('\t').filter(chunk => chunk.trim().length > 0);
+  
+  // Create the promises to resolve
+  let filteredPropertiesResult = null;
+  let filtersResult = null;
+  
+  // Parse each chunk and extract the relevant data
+  for (const chunk of chunks) {
+    try {
+      const parsed = JSON.parse(chunk);
+      if (parsed.filteredProperties) {
+        filteredPropertiesResult = parsed.filteredProperties;
+      } else if (parsed.Filters) {
+        filtersResult = parsed.Filters;
+      }
+    } catch (e) {
+      console.error("Error parsing chunk:", e);
+      console.log("Problematic chunk:", chunk.substring(0, 50) + "...");
+    }
+  }
+  
+  // Create the promises
+  const firstChunkPromise = Promise.resolve(filteredPropertiesResult);
+  const secondChunkPromise = Promise.resolve(filtersResult);
+  
+  return { firstChunkPromise, secondChunkPromise };
+};
+
+// Helper function to read the entire stream before processing
+const readFullStream = async (reader: any) => {
+  const decoder = new TextDecoder();
+  let result = '';
+  let done = false;
+  
+  while (!done) {
+    const { value, done: doneReading } = await reader.read();
+    done = doneReading;
+    if (value) {
+      result += decoder.decode(value, { stream: !done });
+    }
+  }
+  
+  return { result, done };
+};
+
+
+/*
 // * Working
 export const searchPropertiesChunks = async (
   searchBody: ISearchPropertiesReq,
@@ -61,81 +134,83 @@ export const searchPropertiesChunks = async (
 
   return { firstChunkPromise, secondChunkPromise };
 };
+*/
 
-const createChunkReader = (
-  reader: ReadableStreamDefaultReader<Uint8Array>,
-  resultKey: "filteredProperties" | "Filters"
-) => {
-  let buffer = "";
-  const decoder = new TextDecoder();
+// Cloude
+// const createChunkReader = (
+//   reader: ReadableStreamDefaultReader<Uint8Array>,
+//   resultKey: "filteredProperties" | "Filters"
+// ) => {
+//   let buffer = "";
+//   const decoder = new TextDecoder();
 
-  return new Promise((resolve, reject) => {
-    const readChunk = async () => {
-      try {
-        const { value, done } = await reader.read();
-        if (done) {
-          // If we reach the end of the stream and have data in buffer, try to parse it
-          if (buffer.trim().length > 0) {
-            try {
-              const parsed = JSON.parse(buffer);
-              if (parsed[resultKey]) {
-                resolve(parsed[resultKey]);
-                return;
-              }
-            } catch (e) {
-              console.error("Final attempt to parse buffer failed:", e);
-            }
-          }
-          resolve(null);
-          return;
-        }
+//   return new Promise((resolve, reject) => {
+//     const readChunk = async () => {
+//       try {
+//         const { value, done } = await reader.read();
+//         if (done) {
+//           // If we reach the end of the stream and have data in buffer, try to parse it
+//           if (buffer.trim().length > 0) {
+//             try {
+//               const parsed = JSON.parse(buffer);
+//               if (parsed[resultKey]) {
+//                 resolve(parsed[resultKey]);
+//                 return;
+//               }
+//             } catch (e) {
+//               console.error("Final attempt to parse buffer failed:", e);
+//             }
+//           }
+//           resolve(null);
+//           return;
+//         }
 
-        // Append new data to existing buffer
-        buffer += decoder.decode(value, { stream: true });
+//         // Append new data to existing buffer
+//         buffer += decoder.decode(value, { stream: true });
         
-        // Split by tab character (our delimiter)
-        let tabIndex = buffer.indexOf('\t');
+//         // Split by tab character (our delimiter)
+//         let tabIndex = buffer.indexOf('\t');
         
-        // If we found a tab, we potentially have a complete chunk
-        if (tabIndex !== -1) {
-          // Get the potential JSON string (everything before the tab)
-          const potentialJson = buffer.substring(0, tabIndex);
+//         // If we found a tab, we potentially have a complete chunk
+//         if (tabIndex !== -1) {
+//           // Get the potential JSON string (everything before the tab)
+//           const potentialJson = buffer.substring(0, tabIndex);
           
-          // Log for debugging
-          console.log(`Potential JSON chunk for ${resultKey}:`, potentialJson.substring(0, 50) + "...");
+//           // Log for debugging
+//           console.log(`Potential JSON chunk for ${resultKey}:`, potentialJson.substring(0, 50) + "...");
           
-          try {
-            const parsed = JSON.parse(potentialJson);
-            if (parsed[resultKey]) {
-              // We found what we're looking for
-              resolve(parsed[resultKey]);
-              return;
-            } else {
-              // We found valid JSON but not the key we're looking for
-              // Remove this chunk from buffer and continue
-              buffer = buffer.substring(tabIndex + 1);
-              readChunk();
-            }
-          } catch (e) {
-            // If parsing failed, it could be an incomplete JSON object
-            // In this case, wait for more data by calling readChunk()
-            console.warn(`Parsing failed for ${resultKey}, waiting for more data...`);
-            // Keep our buffer intact and read more data
-            readChunk();
-          }
-        } else {
-          // No tab found yet, need more data
-          readChunk();
-        }
-      } catch (error) {
-        console.error(`Error in chunk reader for ${resultKey}:`, error);
-        reject(error);
-      }
-    };
+//           try {
+//             const parsed = JSON.parse(potentialJson);
+//             if (parsed[resultKey]) {
+//               // We found what we're looking for
+//               resolve(parsed[resultKey]);
+//               return;
+//             } else {
+//               // We found valid JSON but not the key we're looking for
+//               // Remove this chunk from buffer and continue
+//               buffer = buffer.substring(tabIndex + 1);
+//               readChunk();
+//             }
+//           } catch (e) {
+//             // If parsing failed, it could be an incomplete JSON object
+//             // In this case, wait for more data by calling readChunk()
+//             console.warn(`Parsing failed for ${resultKey}, waiting for more data...`);
+//             // Keep our buffer intact and read more data
+//             readChunk();
+//           }
+//         } else {
+//           // No tab found yet, need more data
+//           readChunk();
+//         }
+//       } catch (error) {
+//         console.error(`Error in chunk reader for ${resultKey}:`, error);
+//         reject(error);
+//       }
+//     };
 
-    readChunk();
-  });
-};
+//     readChunk();
+//   });
+// };
 
 /* 
 // Working BASE
