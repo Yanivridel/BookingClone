@@ -62,74 +62,75 @@ export const searchPropertiesChunks = async (
   return { firstChunkPromise, secondChunkPromise };
 };
 
-const createChunkReader = (
-  reader: ReadableStreamDefaultReader<Uint8Array>,
-  resultKey: "filteredProperties" | "Filters"
-) => {
-  let buffer = "";
-  const decoder = new TextDecoder();
+// const createChunkReader = (
+//   reader: ReadableStreamDefaultReader<Uint8Array>,
+//   resultKey: "filteredProperties" | "Filters"
+// ) => {
+//   let buffer = "";
+//   const decoder = new TextDecoder();
 
-  return new Promise((resolve, reject) => {
-    const readChunk = async () => {
-      try {
-        const { value, done } = await reader.read();
-        if (done) {
-          console.log("Done reading, final buffer:", buffer);
-          if (buffer) {
-            try {
-              const parsed = JSON.parse(buffer);
-              console.log("Parsed data:", parsed);
-              if (parsed[resultKey]) {
-                resolve(parsed[resultKey]);
-              } else {
-                reject(new Error("Missing resultKey in parsed JSON"));
-              }
-            } catch (error) {
-              reject(new Error("Invalid JSON at the end"));
-            }
-          }
-          return;
-        }
+//   return new Promise((resolve, reject) => {
+//     const readChunk = async () => {
+//       try {
+//         const { value, done } = await reader.read();
+//         if (done) {
+//           console.log("Done reading, final buffer:", buffer);
+//           if (buffer) {
+//             try {
+//               const parsed = JSON.parse(buffer);
+//               console.log("Parsed data:", parsed);
+//               if (parsed[resultKey]) {
+//                 resolve(parsed[resultKey]);
+//               } else {
+//                 reject(new Error("Missing resultKey in parsed JSON"));
+//               }
+//             } catch (error) {
+//               reject(new Error("Invalid JSON at the end"));
+//             }
+//           }
+//           return;
+//         }
 
-        // Append the chunk and log it
-        buffer += decoder.decode(value, { stream: true });
-        console.log("Current buffer after chunk:", buffer);
+//         // Append the chunk and log it
+//         buffer += decoder.decode(value, { stream: true });
+//         console.log("Current buffer after chunk:", buffer);
 
-        // Try to process the buffer
-        let chunk = buffer;
-        let validJSONFound = false;
+//         // Try to process the buffer
+//         let chunk = buffer;
+//         let validJSONFound = false;
 
-        while (chunk) {
-          try {
-            const parsed = JSON.parse(chunk);
-            console.log("Parsed chunk:", parsed);
-            if (parsed[resultKey]) {
-              resolve(parsed[resultKey]);
-              validJSONFound = true;
-              break;
-            }
-            chunk = chunk.substring(chunk.indexOf('}') + 1).trim();
-          } catch (error) {
-            break;
-          }
-        }
+//         while (chunk) {
+//           try {
+//             const parsed = JSON.parse(chunk);
+//             console.log("Parsed chunk:", parsed);
+//             if (parsed[resultKey]) {
+//               resolve(parsed[resultKey]);
+//               validJSONFound = true;
+//               break;
+//             }
+//             chunk = chunk.substring(chunk.indexOf('}') + 1).trim();
+//           } catch (error) {
+//             break;
+//           }
+//         }
 
-        if (!validJSONFound) {
-          readChunk(); // Keep reading more chunks
-        }
-      } catch (error) {
-        reject(error);
-      }
-    };
+//         if (!validJSONFound) {
+//           readChunk(); // Keep reading more chunks
+//         }
+//       } catch (error) {
+//         reject(error);
+//       }
+//     };
 
-    readChunk();
-  });
-};
+//     readChunk();
+//   });
+// };
 
 
 
 // Working Local
-/*
+
+
 const createChunkReader = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
   resultKey: "filteredProperties" | "Filters"
@@ -147,7 +148,7 @@ const createChunkReader = (
         }
 
         buffer += decoder.decode(value, { stream: true });
-        const chunks = buffer.split("\n");
+        const chunks = buffer.split("\t");
         buffer = chunks.pop() || ""; // Keep last incomplete chunk
 
         // ! DEBUG
@@ -183,7 +184,7 @@ const createChunkReader = (
     readChunk();
   });
 };
-*/
+
 
 // * Done
 export const getAutocompleteLocations = async (searchText: string) => {

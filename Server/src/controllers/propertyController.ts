@@ -247,7 +247,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
         const paginatedProperties = secondFiltered.slice(skip, skip + limit);
         
         console.log("Writing first chunk with properties...");
-        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\t");
         res.flush && res.flush();
 
         process.nextTick(async () => {
@@ -256,7 +256,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
                 const filterCount = await getFiltersFromProperties(secondFiltered);
                 console.log("Got filters:", filterCount.overall_count, filterCount.type);
                 console.log(" ") //! DO NOT REMOVE EVER
-                res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
+                res.write(JSON.stringify({ Filters: filterCount}) + "\t"); 
                 res.end();
                 console.log("Response ended");
             } catch (err) {
