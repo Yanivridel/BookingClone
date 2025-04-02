@@ -71,8 +71,9 @@ function Property() {
 
   // calculate startDate, endDate the difference between  and the nightsNumber
   const today = new Date();
+  today.setDate(today.getDate() + 1);
   const twoDaysLater = new Date(today);
-  twoDaysLater.setDate(today.getDate() + 2);
+  twoDaysLater.setDate(today.getDate() + 3);
   const startDate = recommendedData?.startDate || today;
   const endDate = recommendedData?.endDate || twoDaysLater;
   const differenceInTime = endDate.getTime() - startDate.getTime();
@@ -109,19 +110,6 @@ function Property() {
     slidesToScroll: 1,
     prevArrow: <SamplePrevArrow />,
   };
-
-  // useEffect(() => {
-  //   if (id) {
-  //     getPropertyById(id).then((data) => {
-  //       setPropertyData(data);
-  //       // console.log(data);
-  //     });
-  //     getReviewsByPropertyId(id).then((data) => {
-  //       setPropertyReviews(data);
-  //       // console.log(data);
-  //     });
-  //   }
-  // }, [id]);
 
   useEffect(() => {
     if (id) {

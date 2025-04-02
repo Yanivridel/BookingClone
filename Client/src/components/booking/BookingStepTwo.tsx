@@ -62,6 +62,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
 
   const [isForMe, setIsForMe] = useState(true);
   const [isPaperless, setIsPaperless] = useState(false);
+  //@ts-ignore
   const [shouldUpdateAccount, setShouldUpdateAccount] = useState(false);
 
   const [roomsLeaders, setRoomsLeaders] = useState<RoomsLeaders>([]);
@@ -136,6 +137,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
     console.log(detailsOfCreateBooking);
 
     try {
+      //@ts-ignore
       const res = await createBooking(detailsOfCreateBooking);
       console.log(res);
     } catch (error) {

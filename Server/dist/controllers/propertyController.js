@@ -181,12 +181,23 @@ const getSearchProperties = async (req, res) => {
         if (req.body?.secondary)
             secondFiltered = filterPropertiesSecondary(filteredProperties, req.body);
         const paginatedProperties = secondFiltered.slice(skip, skip + limit);
+        console.log("Writing first chunk with properties...");
         res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+        res.flush && res.flush();
         process.nextTick(async () => {
-            const filterCount = await getFiltersFromProperties(secondFiltered);
-            console.log(" ");
-            res.write(JSON.stringify({ Filters: filterCount }) + "\n");
-            res.end();
+            try {
+                console.log("Inside process.nextTick: about to get filters");
+                const filterCount = await getFiltersFromProperties(secondFiltered);
+                console.log("Got filters:", filterCount);
+                console.log(" "); //! DO NOT REMOVE EVER
+                res.write(JSON.stringify({ Filters: filterCount }) + "\n");
+                res.end();
+                console.log("Response ended");
+            }
+            catch (err) {
+                console.error("Error in nextTick callback:", err);
+                res.end();
+            }
         });
     }
     catch (error) {

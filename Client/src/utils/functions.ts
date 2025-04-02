@@ -178,14 +178,6 @@ export function getInitialsLowerCase(name: string) {
     .join(""); // Join the initials into a single string
 }
 
-function isLight(color: string) {
-  // Convert hex to RGB
-  const rgb = parseInt(color.slice(1), 16); // Remove the '#' and parse the color
-  const r = (rgb >> 16) & 0xff;
-  const g = (rgb >> 8) & 0xff;
-  const b = (rgb >> 0) & 0xff;
-}
-
 export async function getCurrentCountry() {
   const response = await fetch("https://ipapi.co/json/");
   const data = await response.json();

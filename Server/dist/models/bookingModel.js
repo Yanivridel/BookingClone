@@ -28,8 +28,9 @@ const BookingSchema = new mongoose_1.Schema({
     },
     rooms_details: [{
             roomId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Room", required: true },
-            fullName: { type: String, required: true },
-            email: { type: String },
+            offerId: { type: String, required: true },
+            fullName: { type: String, required: false },
+            email: { type: String, required: false },
         }],
     add_to_stay: {
         taxi: { type: Boolean, default: false },

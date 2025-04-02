@@ -22,6 +22,7 @@ function Booking() {
     scrollToTopInstant();
   }, []);
   console.log("bookingInfo", bookingInfo);
+  
   return (
     <div className="px-4 max-w-[1100px] mx-auto">
       <BookingSteps step={step} />
@@ -30,7 +31,7 @@ function Booking() {
         {step === 2 && (
           <BookingStepTwo setStep={setStep} bookingInfo={bookingInfo} />
         )}
-        {step === 3 && <BookingStepThree bookingInfo={bookingInfo} />}
+        {step === 3 && <BookingStepThree bookingInfo={bookingInfo} setStep={setStep} />}
       </div>
     </div>
   );
