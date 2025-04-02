@@ -1,9 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-<<<<<<< HEAD
-
 import { TBookingDetailsData } from "@/types/bookingTypes";
-=======
->>>>>>> 87e0b370c11710229790c47bd5c8474572e15dcf
+
 
 interface SelectOfferProps {
   setOffersRoomSelected: Dispatch<
