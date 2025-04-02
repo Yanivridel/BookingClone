@@ -91,7 +91,7 @@ function SearchResults() {
     isFetchingNextPage
   } = useInfiniteProperties(searchBody, 5);
   
-  console.log("DATA", data);
+  // console.log("DATA", data);
   // console.log("searchBody", searchBody);
 
   useEffect(() => {
