@@ -74,6 +74,71 @@ const createChunkReader = (
       try {
         const { value, done } = await reader.read();
         if (done) {
+          // If done and buffer contains a valid chunk, resolve it
+          if (buffer) {
+            try {
+              const parsed = JSON.parse(buffer);
+              if (parsed[resultKey]) {
+                resolve(parsed[resultKey]);
+                return;
+              }
+            } catch (error) {
+              reject(new Error("Invalid JSON at the end"));
+            }
+          }
+          return;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Try to process the buffer in the current state
+        let chunk = buffer;
+        let validJSONFound = false;
+
+        while (chunk) {
+          try {
+            const parsed = JSON.parse(chunk); // Try parsing a full JSON object
+            if (parsed[resultKey]) {
+              resolve(parsed[resultKey]);
+              validJSONFound = true;
+              break;
+            }
+            // If not valid, continue to the next chunk
+            chunk = chunk.substring(chunk.indexOf('}') + 1).trim(); // Trim off the processed part
+          } catch (error) {
+            // If parsing fails, break out and continue buffering
+            break;
+          }
+        }
+
+        // If no valid JSON found, keep reading
+        if (!validJSONFound) {
+          readChunk(); // Continue reading more chunks
+        }
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    readChunk();
+  });
+};
+
+
+// Working Local
+/*
+const createChunkReader = (
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  resultKey: "filteredProperties" | "Filters"
+) => {
+  let buffer = "";
+  const decoder = new TextDecoder();
+
+  return new Promise((resolve, reject) => {
+    const readChunk = async () => {
+      try {
+        const { value, done } = await reader.read();
+        if (done) {
           resolve(null);
           return;
         }
@@ -115,7 +180,7 @@ const createChunkReader = (
     readChunk();
   });
 };
-
+*/
 
 // * Done
 export const getAutocompleteLocations = async (searchText: string) => {
