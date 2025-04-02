@@ -62,75 +62,83 @@ export const searchPropertiesChunks = async (
   return { firstChunkPromise, secondChunkPromise };
 };
 
-// const createChunkReader = (
-//   reader: ReadableStreamDefaultReader<Uint8Array>,
-//   resultKey: "filteredProperties" | "Filters"
-// ) => {
-//   let buffer = "";
-//   const decoder = new TextDecoder();
+const createChunkReader = (
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  resultKey: "filteredProperties" | "Filters"
+) => {
+  let buffer = "";
+  const decoder = new TextDecoder();
 
-//   return new Promise((resolve, reject) => {
-//     const readChunk = async () => {
-//       try {
-//         const { value, done } = await reader.read();
-//         if (done) {
-//           console.log("Done reading, final buffer:", buffer);
-//           if (buffer) {
-//             try {
-//               const parsed = JSON.parse(buffer);
-//               console.log("Parsed data:", parsed);
-//               if (parsed[resultKey]) {
-//                 resolve(parsed[resultKey]);
-//               } else {
-//                 reject(new Error("Missing resultKey in parsed JSON"));
-//               }
-//             } catch (error) {
-//               reject(new Error("Invalid JSON at the end"));
-//             }
-//           }
-//           return;
-//         }
+  return new Promise((resolve, reject) => {
+    const readChunk = async () => {
+      try {
+        const { value, done } = await reader.read();
+        if (done) {
+          // If we reach the end of the stream and have data in buffer, try to parse it
+          if (buffer.trim().length > 0) {
+            try {
+              const parsed = JSON.parse(buffer);
+              if (parsed[resultKey]) {
+                resolve(parsed[resultKey]);
+                return;
+              }
+            } catch (e) {
+              console.error("Final attempt to parse buffer failed:", e);
+            }
+          }
+          resolve(null);
+          return;
+        }
 
-//         // Append the chunk and log it
-//         buffer += decoder.decode(value, { stream: true });
-//         console.log("Current buffer after chunk:", buffer);
+        // Append new data to existing buffer
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Split by tab character (our delimiter)
+        let tabIndex = buffer.indexOf('\t');
+        
+        // If we found a tab, we potentially have a complete chunk
+        if (tabIndex !== -1) {
+          // Get the potential JSON string (everything before the tab)
+          const potentialJson = buffer.substring(0, tabIndex);
+          
+          // Log for debugging
+          console.log(`Potential JSON chunk for ${resultKey}:`, potentialJson.substring(0, 50) + "...");
+          
+          try {
+            const parsed = JSON.parse(potentialJson);
+            if (parsed[resultKey]) {
+              // We found what we're looking for
+              resolve(parsed[resultKey]);
+              return;
+            } else {
+              // We found valid JSON but not the key we're looking for
+              // Remove this chunk from buffer and continue
+              buffer = buffer.substring(tabIndex + 1);
+              readChunk();
+            }
+          } catch (e) {
+            // If parsing failed, it could be an incomplete JSON object
+            // In this case, wait for more data by calling readChunk()
+            console.warn(`Parsing failed for ${resultKey}, waiting for more data...`);
+            // Keep our buffer intact and read more data
+            readChunk();
+          }
+        } else {
+          // No tab found yet, need more data
+          readChunk();
+        }
+      } catch (error) {
+        console.error(`Error in chunk reader for ${resultKey}:`, error);
+        reject(error);
+      }
+    };
 
-//         // Try to process the buffer
-//         let chunk = buffer;
-//         let validJSONFound = false;
+    readChunk();
+  });
+};
 
-//         while (chunk) {
-//           try {
-//             const parsed = JSON.parse(chunk);
-//             console.log("Parsed chunk:", parsed);
-//             if (parsed[resultKey]) {
-//               resolve(parsed[resultKey]);
-//               validJSONFound = true;
-//               break;
-//             }
-//             chunk = chunk.substring(chunk.indexOf('}') + 1).trim();
-//           } catch (error) {
-//             break;
-//           }
-//         }
-
-//         if (!validJSONFound) {
-//           readChunk(); // Keep reading more chunks
-//         }
-//       } catch (error) {
-//         reject(error);
-//       }
-//     };
-
-//     readChunk();
-//   });
-// };
-
-
-
-// Working Local
-
-
+/* 
+// Working BASE
 const createChunkReader = (
   reader: ReadableStreamDefaultReader<Uint8Array>,
   resultKey: "filteredProperties" | "Filters"
@@ -184,6 +192,7 @@ const createChunkReader = (
     readChunk();
   });
 };
+*/
 
 
 // * Done
