@@ -49,9 +49,6 @@ export const searchPropertiesChunks = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const contentEncoding = response.headers.get('Content-Encoding');
-  console.log('Content-Encoding:', contentEncoding);
-
   const reader = response.body!.getReader();
 
   // Create first chunk promise
@@ -85,6 +82,12 @@ const createChunkReader = (
         const chunks = buffer.split("\n");
         buffer = chunks.pop() || ""; // Keep last incomplete chunk
 
+        // ! DEBUG
+        chunks.forEach((chunk) => {
+          console.log("Raw Chunk:", chunk);  // Log raw chunk before parsing
+        });
+
+        
         // Process complete chunks
         const foundResult = chunks.some((chunk) => {
           if (!chunk) return false;
