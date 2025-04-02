@@ -31,7 +31,7 @@ function Booking() {
         {step === 2 && (
           <BookingStepTwo setStep={setStep} bookingInfo={bookingInfo} />
         )}
-        {step === 3 && <BookingStepThree bookingInfo={bookingInfo} />}
+        {step === 3 && <BookingStepThree bookingInfo={bookingInfo} setStep={setStep} />}
       </div>
     </div>
   );

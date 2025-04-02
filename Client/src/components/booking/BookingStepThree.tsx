@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { Dispatch, MouseEvent, SetStateAction, useEffect, useMemo, useState } from "react";
 import BookingWhenToPay from "./BookingWhenToPay";
 import { BookingInfo } from "@/types/bookingTypes";
 import { Checkbox } from "../ui/checkbox";
@@ -14,9 +14,10 @@ import { scrollToTopInstant } from "@/utils/functions";
 
 interface BookingStepThreeProps {
   bookingInfo: BookingInfo;
+  setStep: Dispatch<SetStateAction<2 | 3>>;
 }
 
-function BookingStepThree( { bookingInfo }: BookingStepThreeProps) {
+function BookingStepThree( { bookingInfo, setStep }: BookingStepThreeProps) {
   const [paymentOption, setPaymentOption] = useState("later");
   const [ paymentDate, setPaymentDate ] = useState((() => {
     const d = new Date();
@@ -225,7 +226,9 @@ function BookingStepThree( { bookingInfo }: BookingStepThreeProps) {
       
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row sm:justify-end gap-4">
-        <Button variant="outline" className="w-full sm:w-auto">
+        <Button variant="outline" className="w-full sm:w-auto"
+          onClick={() => setStep(2)}
+        >
           Check your booking
         </Button>
         <Button 
