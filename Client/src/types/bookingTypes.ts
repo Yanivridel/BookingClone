@@ -24,7 +24,8 @@ export type TBookingDetails = {
 
   rooms_details: {
     roomId: string;
-    fullName: string;
+    offerId: string;
+    fullName?: string;
     email?: string;
   }[];
 
@@ -55,23 +56,28 @@ export type BookingInfo = {
   offersRoomSelected: {
     roomId: string;
     offerId: string;
-    number: number;
+    count: number;
   }[];
   propertyData: IProperty;
-  bookingDetailsData: {
-    totalPrice?: number;
-    totalPriceWithDiscount?: number;
-    roomsNumber?: number;
-    startDate: Date;
-    endDate: Date;
-  };
+  bookingDetailsData: TBookingDetailsData;
 };
 
 export type RoomsLeaders =
   | []
   | {
+      roomId: string;
       index: number;
       offerId: string;
       fullName?: string;
       email?: string;
     }[];
+
+export type TBookingDetailsData = {
+  totalPrice?: number;
+  totalPriceWithDiscount?: number;
+  roomsNumber?: number;
+  startDate: Date;
+  endDate: Date;
+  children?: number;
+  adults: number;
+};

@@ -9,7 +9,7 @@ interface BookingRoomProps {
   selectedRoomByOffer: {
     roomId: string;
     offerId: string;
-    number: number;
+    count: number;
   };
   roomsLeaders: RoomsLeaders;
   setRoomsLeaders: Dispatch<SetStateAction<RoomsLeaders>>;
@@ -58,19 +58,20 @@ function RoomsByOffer({
   useEffect(() => {
     // Initialize the roomsLeaders
     console.log(roomsLeaders);
-    if (selectedRoomByOffer?.number && selectedRoomByOffer?.offerId) {
+    if (selectedRoomByOffer?.count && selectedRoomByOffer?.offerId) {
       setRoomsLeaders((prev) => [
         ...prev,
-        ...Array.from({ length: selectedRoomByOffer.number }, (_, index) => ({
+        ...Array.from({ length: selectedRoomByOffer.count }, (_, index) => ({
           index,
           offerId: selectedRoomByOffer.offerId,
+          roomId: selectedRoomByOffer.roomId,
         })),
       ]);
     }
   }, []);
   return (
     <div>
-      {Array.from({ length: selectedRoomByOffer.number }).map((_, index) => (
+      {Array.from({ length: selectedRoomByOffer.count }).map((_, index) => (
         <section
           key={index}
           className="text-[13px] mt-3 border-[1px] border-softGrayBorder gap-3 p-4 rounded-[8px]  "
