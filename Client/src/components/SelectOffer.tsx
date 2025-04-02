@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { assert } from "node:console";
-import { current } from "@reduxjs/toolkit";
+
+import { TBookingDetailsData } from "@/types/bookingTypes";
 
 interface SelectOfferProps {
   setOffersRoomSelected: Dispatch<
@@ -8,7 +8,7 @@ interface SelectOfferProps {
       {
         roomId: string;
         offerId: string;
-        number: number;
+        count: number;
       }[]
     >
   >;
@@ -22,13 +22,7 @@ interface SelectOfferProps {
   >;
   offerPrice: number;
   setBookingDetailsData: React.Dispatch<
-    React.SetStateAction<{
-      totalPrice?: number;
-      totalPriceWithDiscount?: number;
-      roomsNumber?: number;
-      startDate: Date;
-      endDate: Date;
-    }>
+    React.SetStateAction<TBookingDetailsData>
   >;
   offerDiscount: number;
 }
@@ -138,7 +132,7 @@ function SelectOffer({
           ...prev,
           {
             roomId,
-            number: Number(e.target?.value),
+            count: Number(e.target?.value),
             offerId: e.target.id,
           },
         ];
@@ -150,7 +144,7 @@ function SelectOffer({
       else {
         return prev.map((offer) =>
           offer.offerId === offerId
-            ? { ...offer, number: Number(e.target?.value) }
+            ? { ...offer, count: Number(e.target?.value) }
             : offer
         );
       }

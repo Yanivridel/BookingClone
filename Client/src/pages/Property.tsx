@@ -79,6 +79,17 @@ function Property() {
   const differenceInDays = differenceInTime / (1000 * 60 * 60 * 24);
   const nightsNum = differenceInDays - 1;
 
+  const adults = recommendedData?.adults || 1;
+  const childrenAges = recommendedData?.childrenAges?.split(", ") || [];
+  let children = 0;
+  // if childrenAges[0] is empty string children is 0
+  if (childrenAges.length === 1) {
+    if (Number(childrenAges[0])) {
+      children = 1;
+    }
+  } else {
+    children = childrenAges?.length;
+  }
   const [propertyReviews, setPropertyReviews] = useState<
     IReview[] | undefined
   >();
@@ -211,6 +222,8 @@ function Property() {
         >
           {typeof propertyData?.rooms !== "string" && propertyData?.rooms && (
             <PropertyTable
+              children={children}
+              adults={adults}
               startDate={startDate}
               endDate={endDate}
               propertyData={propertyData}

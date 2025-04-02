@@ -22,7 +22,7 @@ import { SmallIconVi } from "./ui/Icons.tsx";
 // types
 import { IProperty } from "@/types/propertyTypes.ts";
 import { IRoom } from "@/types/roomTypes";
-import { BookingInfo } from "@/types/bookingTypes.ts";
+import { BookingInfo, TBookingDetailsData } from "@/types/bookingTypes.ts";
 
 // router dom
 import { useNavigate } from "react-router-dom";
@@ -34,6 +34,8 @@ type PropertyRoomsTableProps = {
   nightsNum: number;
   startDate: Date;
   endDate: Date;
+  children: number | undefined;
+  adults: number;
 };
 
 function PropertyTable({
@@ -41,6 +43,8 @@ function PropertyTable({
   endDate,
   nightsNum,
   propertyData,
+  children,
+  adults,
 }: PropertyRoomsTableProps) {
   const { t } = useTranslation();
 
@@ -50,7 +54,7 @@ function PropertyTable({
     {
       roomId: string;
       offerId: string;
-      number: number;
+      count: number;
     }[]
   >([]);
 
@@ -58,13 +62,9 @@ function PropertyTable({
   if (typeof rooms !== "object") return;
 
   // states
-  const [bookingDetailsData, setBookingDetailsData] = useState<{
-    totalPrice?: number;
-    totalPriceAfterDiscount?: number;
-    roomsNumber?: number;
-    startDate: Date;
-    endDate: Date;
-  }>({ startDate, endDate });
+  const [bookingDetailsData, setBookingDetailsData] =
+    useState<TBookingDetailsData>({ startDate, endDate, children, adults });
+  console.log(bookingDetailsData);
 
   const [availableRoomsCount, setAvailableRoomsCount] = useState({});
 
@@ -72,7 +72,7 @@ function PropertyTable({
 
   const roomsNumber =
     offersRoomSelected?.reduce((acc, offer) => {
-      return acc + offer.number;
+      return acc + offer.count;
     }, 0) || 0;
   // console.log(`roomsNumber ${roomsNumber}`);
 
@@ -294,5 +294,4 @@ function PropertyTable({
     </div>
   );
 }
-
 export default PropertyTable;

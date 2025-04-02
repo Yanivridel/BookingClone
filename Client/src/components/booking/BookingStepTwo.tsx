@@ -71,20 +71,22 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
 
   // console.log(window.history.state.usr);
 
+  const { startDate, endDate, adults, children } =
+    bookingInfo.bookingDetailsData;
+
+  // get tomorrow for default value
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const bookingSubmit = async () => {
     // ! will send to the DB
     const detailsOfCreateBooking: TBookingDetails = {
       // * from property page
       propertyId: bookingInfo.propertyData._id,
-      checkIn: bookingInfo.bookingDetailsData.startDate,
-      checkOut: bookingInfo.bookingDetailsData.startDate,
-      guests: 1,
-      rooms: [
-        {
-          roomId: "",
-          count: 0,
-        },
-      ],
+      checkIn: startDate || new Date(),
+      checkOut: endDate || tomorrow,
+      guests: children ? adults + children : adults || 1,
+      rooms: bookingInfo.offersRoomSelected,
 
       // * data from current user
       // ! Done
@@ -108,13 +110,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
         vat_number: Number(VATNumberRef.current?.value) || 0,
       },
 
-      rooms_details: [
-        {
-          roomId: "",
-          fullName: "",
-          email: "",
-        },
-      ],
+      rooms_details: roomsLeaders,
 
       add_to_stay: {
         taxi: false, // default: false
@@ -135,14 +131,12 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
         },
       ],
     };
-    console.log(
-      `createBookingDetails (from property page): ${detailsOfCreateBooking}`
-    );
+
     console.log(detailsOfCreateBooking);
 
     try {
       const res = await createBooking(detailsOfCreateBooking);
-      // console.log(res);
+      console.log(res);
     } catch (error) {
       console.log("error from create booking: ");
       console.log(error);
