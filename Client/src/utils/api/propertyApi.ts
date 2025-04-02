@@ -74,13 +74,15 @@ const createChunkReader = (
       try {
         const { value, done } = await reader.read();
         if (done) {
-          // If done and buffer contains a valid chunk, resolve it
+          console.log("Done reading, final buffer:", buffer);
           if (buffer) {
             try {
               const parsed = JSON.parse(buffer);
+              console.log("Parsed data:", parsed);
               if (parsed[resultKey]) {
                 resolve(parsed[resultKey]);
-                return;
+              } else {
+                reject(new Error("Missing resultKey in parsed JSON"));
               }
             } catch (error) {
               reject(new Error("Invalid JSON at the end"));
@@ -89,31 +91,31 @@ const createChunkReader = (
           return;
         }
 
+        // Append the chunk and log it
         buffer += decoder.decode(value, { stream: true });
+        console.log("Current buffer after chunk:", buffer);
 
-        // Try to process the buffer in the current state
+        // Try to process the buffer
         let chunk = buffer;
         let validJSONFound = false;
 
         while (chunk) {
           try {
-            const parsed = JSON.parse(chunk); // Try parsing a full JSON object
+            const parsed = JSON.parse(chunk);
+            console.log("Parsed chunk:", parsed);
             if (parsed[resultKey]) {
               resolve(parsed[resultKey]);
               validJSONFound = true;
               break;
             }
-            // If not valid, continue to the next chunk
-            chunk = chunk.substring(chunk.indexOf('}') + 1).trim(); // Trim off the processed part
+            chunk = chunk.substring(chunk.indexOf('}') + 1).trim();
           } catch (error) {
-            // If parsing fails, break out and continue buffering
             break;
           }
         }
 
-        // If no valid JSON found, keep reading
         if (!validJSONFound) {
-          readChunk(); // Continue reading more chunks
+          readChunk(); // Keep reading more chunks
         }
       } catch (error) {
         reject(error);
@@ -123,6 +125,7 @@ const createChunkReader = (
     readChunk();
   });
 };
+
 
 
 // Working Local
