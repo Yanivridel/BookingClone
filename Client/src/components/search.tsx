@@ -24,6 +24,7 @@ import { modifyUserArrays } from "@/utils/api/userApi";
 import { useDispatch } from "react-redux";
 import { addSearchEntry } from "@/store/slices/userSlices";
 import { ISearchPropertiesReq } from "@/types/propertyTypes";
+import MainCarousel from "./MainCarousel";
 
 // location initial data data
 const items: LocationRes[] = [
@@ -428,12 +429,12 @@ function Search() {
       >
         {/* input + modal */}
         <div className="border-search bg-white rounded-[4px] p-[11.5px] flex hover:border-[#f56700] search:basis-1/3">
-          <div className="relative">
+          <div className="relative ">
             {/* open modal */}
             <Card
               className={`border-0 absolute top-10 start-[-12px] shadow-searchPopupsShadow z-[60] ${
                 openLocationDropDown ? "" : "hidden"
-              } min-w-[430px] rounded-[8px] `}
+              } w-[430px] rounded-[8px] max-w-[90vw] overflow-x-auto`}
             >
               <div className="p-3 font-bold">
                 {/* only when initialized */}
@@ -475,7 +476,7 @@ function Search() {
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
-                            className="w-6 h-6 "
+                            className="w-6 h-6"
                           >
                             <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
                           </svg>
@@ -517,7 +518,7 @@ function Search() {
         <Popover open={openDatesPopHover} onOpenChange={setOpenDatesPopHover}>
           <div className=" border-search  bg-white rounded-[4px] p-[11.5px]  flex hover:border-[#f56700]  cursor-pointer  search:basis-1/3 ">
             <PopoverContent
-              className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none "
+              className=" w-auto p-0 shadow-searchPopupsShadow PopoverContent rounded-none max-w-[90vw] overflow-x-auto"
               sideOffset={11.5}
               side="bottom"
               align={"start"}
@@ -553,6 +554,7 @@ function Search() {
               {/* calender */}
               {activeNavButton === "calendar" && (
                 <Calendar
+                  className="overflow-auto"
                   initialFocus
                   mode="range"
                   classNames={{
@@ -569,6 +571,7 @@ function Search() {
               )}
               {activeNavButton === "calendar" && (
                 <div className="flex justify-end gap-2 py-4 mx-6  border-t-[1px] border-[#e7e7e7]">
+                  <MainCarousel >
                   {searchCalendarButtonsData.map((element) => (
                     <Button
                       key={element.text}
@@ -590,6 +593,7 @@ function Search() {
                       )}
                     </Button>
                   ))}
+                  </MainCarousel>
                 </div>
               )}
               {/* flexible*/}
@@ -838,7 +842,7 @@ function Search() {
             onOpenChange={setOpenPeoplePopHover}
           >
             <PopoverContent
-              className="w-[475px] p-10  shadow-searchPopupsShadow PopoverContent rounded-xl "
+              className="w-[475px] p-10  shadow-searchPopupsShadow PopoverContent rounded-xl max-w-[90vw] overflow-x-auto"
               sideOffset={11.5}
               side="bottom"
               align={windowWidth > 900 ? "end" : "start"}

@@ -143,7 +143,7 @@ function EmailCode({
       </div>
       <div
         className={cn(
-          "flex flex-col items-center gap-6 flex-grow signInLayoutTop:pt-14 max-w-[369px]",
+          "flex flex-col items-center gap-6 p-3 flex-grow signInLayoutTop:pt-14 max-w-[369px]",
           className
         )}
         {...props}
@@ -165,11 +165,11 @@ function EmailCode({
                 <b> {email}</b>. Enter this code to continue.
               </div>
             </div>
-            <div className="flex gap-4 text-sm font-normal">
+            <div className="flex gap-4 text-sm font-normal w-full">
               <input
                 ref={inputRefs[0]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}
@@ -181,7 +181,7 @@ function EmailCode({
               <input
                 ref={inputRefs[1]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}
@@ -192,7 +192,7 @@ function EmailCode({
               <input
                 ref={inputRefs[2]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}
@@ -203,7 +203,7 @@ function EmailCode({
               <input
                 ref={inputRefs[3]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}
@@ -214,7 +214,7 @@ function EmailCode({
               <input
                 ref={inputRefs[4]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}
@@ -225,7 +225,7 @@ function EmailCode({
               <input
                 ref={inputRefs[5]}
                 className={cn(
-                  "border border-gray-400 rounded-md px-2 py-1 text-center  h-[60px] w-[50px]",
+                  "border border-gray-400 rounded-md px-2 py-1 text-center h-[40px] w-[20%]",
                   isSuccess && "border-green-600",
                   isError && "border-red-600"
                 )}

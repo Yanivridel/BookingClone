@@ -66,17 +66,16 @@ const MainCard = ({
     return SkeletonCard();
 
   return (
-      <Card className="flex flex-col min-w-[274px] 
-      min-h-[333px] w-[274px] h-[333px]
-      1024:min-w-none 1024-min-h-none rounded-lg cursor-pointer
-      shadow-[5px_5px_5px_rgba(0,0,0,0.05)]"
-      onClick={handleCardClick}
+      <Card
+        className="flex flex-col w-full sm:w-[274px] h-auto min-h-[300px]
+        rounded-lg cursor-pointer shadow-[5px_5px_5px_rgba(0,0,0,0.05)]"
+        onClick={handleCardClick}
       >
-      <div className="h-[65%] max-h-none rounded-t-lg relative">
-        <img
+        <div className="h-[65%] max-h-none rounded-t-lg relative">
+          <img
           src={propertyData.images[0]}
           alt={propertyData.title}
-          className="w-full h-[220px] object-cover object-center rounded-t-lg "
+          className="w-full h-[160px] gr:h-[220px] object-cover object-center rounded-t-lg"
         />
         {(is_heart || is_X) && (
           <div className="absolute top-2 end-1">
@@ -85,7 +84,8 @@ const MainCard = ({
         )}
       </div>
       <div className="flex flex-col justify-between flex-grow p-1">
-        <div className=" p-2 grid gap-2">
+      <div className="p-2 sm:p-3 grid gap-1 sm:gap-2">
+
           <div className="flex w-[40%] gap-1">
             {genius && (
               <img src={GeniusImage} alt="" className="h-4 rounded-md" />

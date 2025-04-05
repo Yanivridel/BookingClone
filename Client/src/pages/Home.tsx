@@ -210,9 +210,9 @@ function Home() {
   return (
     <div>
       <HomeHeader />
-      <div className="p-1 pt-[346px] max-w-[1100px] mx-auto">
+      <div className="p-3 pt-[346px] max-w-[1100px] mx-auto">
         {/* Search Nav */}
-        <Search></Search>
+        <Search />
 
         {/* Last 10 Searches */}
         {currentUser.search.length > 0 && (
@@ -286,7 +286,7 @@ function Home() {
             <MainCarousel>
               {offersArr.map((el) => (
                 <OffersCard
-                  className="min-w-[500px]"
+                  className="min-w-[90vw] sm:min-w-[500px]"
                   key={el.button}
                   title={el.title}
                   desc={el.desc}

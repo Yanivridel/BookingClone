@@ -12,16 +12,26 @@ interface OffersCardProps {
 
 function OffersCard({ title, desc, button, img, className}: OffersCardProps) {
   return (
-      <Card className={cn('p-3 flex gap-2 w-full mx-auto',className)} >
-        <div className=' w-full sm:w-[70%] grid'>
-            <CardTitle className='text-xl font-bold	'>{title}</CardTitle>
-            <CardDescription>{desc}</CardDescription>
-            <Badge className='w-[60%] text-sm flex items-center'>{button}</Badge>
-        </div>
-        <div className='w-fit sm:w-[30%]'>
-            <img src={img} alt={button} className='rounded-lg h-[145px]	w-[145px]' />
-        </div>
-      </Card>
+    <Card className={cn('p-2 sm:p-3 flex gap-2 w-full mx-auto', className)}>
+    <div className='w-[65%] sm:w-[70%] grid gap-3'>
+      <CardTitle className='text-base sm:text-xl font-semibold'>
+        {title}
+      </CardTitle>
+      <CardDescription className='text-xs sm:text-sm'>
+        {desc}
+      </CardDescription>
+      <Badge className='w-fit py-1 px-3 text-[12px] sm:text-sm flex items-center'>
+        {button}
+      </Badge>
+    </div>
+    <div className='w-[35%] sm:w-[30%] flex justify-end items-center'>
+      <img
+        src={img}
+        alt={button}
+        className='rounded-lg h-[100px] w-[100px] sm:h-[145px] sm:w-[145px]'
+      />
+    </div>
+  </Card>
   )
 }
 
