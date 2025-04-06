@@ -87,7 +87,15 @@ export async function createBooking(bookingDetails: TBookingDetails) {
     );
     return data;
   } catch (error) {
-    console.error("Payment error:", error);
-    return error;
+    if (axios.isAxiosError(error)) {
+      // console.error(
+      //   "Axios error in createBooking:",
+      //   error.response?.data || error.message
+      // );
+      throw error;
+    } else {
+      // console.error("Unexpected error in createBooking:");
+      throw error;
+    }
   }
 }

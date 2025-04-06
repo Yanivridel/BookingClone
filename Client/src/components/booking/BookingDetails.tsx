@@ -56,6 +56,16 @@ interface BookingDetailsProps {
   setIsForMe: Dispatch<SetStateAction<boolean>>;
   setIsPaperless: Dispatch<SetStateAction<boolean>>;
   setShouldUpdateAccount: Dispatch<SetStateAction<boolean>>;
+  // errors
+  setEmailError: Dispatch<SetStateAction<string>>;
+  setFNameError: Dispatch<SetStateAction<string>>;
+  setLNameError: Dispatch<SetStateAction<string>>;
+  setPhoneNumberError: Dispatch<SetStateAction<string>>;
+
+  emailError: string;
+  fNameError: string;
+  lNameError: string;
+  phoneNumberError: string;
 }
 
 function BookingDetails({
@@ -74,6 +84,15 @@ function BookingDetails({
   setShouldUpdateAccount,
   selectedPhoneCountry,
   setSelectedPhoneCountry,
+  // errors
+  setEmailError,
+  setFNameError,
+  setLNameError,
+  setPhoneNumberError,
+  emailError,
+  fNameError,
+  lNameError,
+  phoneNumberError,
 }: BookingDetailsProps) {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
@@ -87,18 +106,11 @@ function BookingDetails({
   const [isVATNumberSuccess, setIsVATNumberSuccess] = useState(false);
   const [isPhoneNumberSuccess, setIsPhoneNumberSuccess] = useState(false);
 
-  const [emailError, setEmailError] = useState("");
-  const [fNameError, setFNameError] = useState("");
-  const [lNameError, setLNameError] = useState("");
-  const [phoneNumberError, setPhoneNumberError] = useState("");
-
   const [isPhoneNumberFocus, setIsPhoneNumberFocus] = useState(false);
 
   const [isForWork, setIsForWork] = useState(false);
 
   const { i18n } = useTranslation();
-
-
 
   // * email
   const onEmailBlur = () => {
@@ -157,7 +169,7 @@ function BookingDetails({
       return;
     } else setIsVATNumberSuccess(false);
   };
- 
+
   return (
     <div className="border-[1px] border-softGrayBorder mt-4 px-4 rounded-[8px] py-4 grid gap-3">
       <h2 className="font-bold text-xl">Enter your details</h2>
@@ -187,7 +199,7 @@ function BookingDetails({
             onBlurHandler={onFNameBlur}
             ref={fNameRef}
             name="fName"
-            defaultValue={currentUser.fName ? currentUser.fName : ""}
+            defaultValue={currentUser?.fName ? currentUser.fName : ""}
             type="text"
             isRequired={true}
             error={fNameError}

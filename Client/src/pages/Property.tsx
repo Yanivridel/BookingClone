@@ -58,6 +58,7 @@ import { useTranslation } from "react-i18next";
 
 // functions
 import { cf, scrollToTopInstant } from "@/utils/functions";
+import { resetDateHours } from "@/utils/utilsFunctions";
 
 // ! Route for testing : http://localhost:5173/property/677ebec78be19680bdc0aa7f
 
@@ -76,9 +77,16 @@ function Property() {
   twoDaysLater.setDate(today.getDate() + 3);
   const startDate = recommendedData?.startDate || today;
   const endDate = recommendedData?.endDate || twoDaysLater;
-  const differenceInTime = endDate.getTime() - startDate.getTime();
+
+  //  delete the hours difference
+  const resetStartDate = resetDateHours(startDate);
+  const resetEndDate = resetDateHours(endDate);
+
+  const differenceInTime = resetEndDate.getTime() - resetStartDate.getTime();
   const differenceInDays = differenceInTime / (1000 * 60 * 60 * 24);
-  const nightsNum = differenceInDays - 1;
+  console.log(differenceInDays);
+
+  const nightsNum = differenceInDays;
 
   const adults = recommendedData?.adults || 1;
   const childrenAges = recommendedData?.childrenAges?.split(", ") || [];
@@ -116,7 +124,9 @@ function Property() {
       getPropertyById(id).then((data) => {
         setPropertyData(data);
         // console.log(data);
-        document.title = `Booking.com | ${data?.title || ''} האתר הרשמי | מלון `
+        document.title = `Booking.com | ${
+          data?.title || ""
+        } האתר הרשמי | מלון `;
         scrollToTopInstant();
       });
       getReviewsByPropertyId(id).then((data) => {

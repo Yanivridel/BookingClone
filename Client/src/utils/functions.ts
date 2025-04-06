@@ -1,6 +1,7 @@
 import { MonthNameYear } from "@/components/search";
 import { ISearchPropertiesReq } from "@/types/propertyTypes";
 import { easyTripObj } from "./staticData";
+import { CreateBookingErrorResponse } from "@/types/errorsTypes";
 
 const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
@@ -186,7 +187,10 @@ export async function getCurrentCountry() {
 
 export const getRandomImageOfEasyTrip = (input: string) => {
   const hashCode = (str: string) => {
-    return str.split('').reduce((acc, char) => acc * 31 + char.charCodeAt(0), 7) % 100000;
+    return (
+      str.split("").reduce((acc, char) => acc * 31 + char.charCodeAt(0), 7) %
+      100000
+    );
   };
 
   const categories = Object.keys(easyTripObj);
@@ -202,4 +206,15 @@ export const getRandomImageOfEasyTrip = (input: string) => {
 
 export const scrollToTopInstant = () => {
   window.scrollTo(0, 0);
+};
+
+export const isCreateBookingErrorResponse = (
+  data: any
+): data is CreateBookingErrorResponse => {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "status" in data &&
+    "message" in data
+  );
 };

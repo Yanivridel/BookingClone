@@ -27,6 +27,9 @@ import { Button } from "../ui/button";
 import BookingDetails from "./BookingDetails";
 import BookingRooms from "./BookingRooms";
 import UserCard from "./UserCard";
+import { IconError, Spinner } from "../ui/Icons";
+import axios from "axios";
+import { isCreateBookingErrorResponse } from "@/utils/functions";
 
 interface BookingStepTwoProps {
   bookingInfo: BookingInfo;
@@ -66,7 +69,18 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
   const [shouldUpdateAccount, setShouldUpdateAccount] = useState(false);
 
   const [roomsLeaders, setRoomsLeaders] = useState<RoomsLeaders>([]);
+  const [bookingSubmitErrorMessage, setBookingSubmitErrorMessage] = useState<
+    null | string
+  >(null);
 
+  // errors
+
+  const [emailError, setEmailError] = useState("");
+  const [fNameError, setFNameError] = useState("");
+  const [lNameError, setLNameError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+
+  const [createBookingLoading, setCreateBookingLoading] = useState(false);
   // console.log(`booking info:`);
   // console.log(bookingInfo);
 
@@ -80,6 +94,46 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   const bookingSubmit = async () => {
+    //  ! errors - missing or not valid data
+    const errors: string[] = [];
+
+    if (!bookingInfo?.propertyData?._id) {
+      errors.push("Something went wrong in your order, try to order again!");
+    }
+    if (!currentUser?._id) {
+      errors.push("You're not connected! Connect and then try again.");
+    }
+    if (fNameError) {
+      errors.push(fNameError);
+    }
+    if (lNameError) {
+      errors.push(lName);
+    }
+    if (emailError) {
+      errors.push(emailError);
+    }
+    if (phoneNumberError) {
+      errors.push(phoneNumberError);
+    }
+
+    if (!fNameError && !fNameRef?.current?.value) {
+      errors.push("First name is required!");
+    }
+    if (!lNameError && !lName) {
+      errors.push("Last name is required!");
+    }
+    if (!emailError && !emailRef?.current?.value) {
+      errors.push("email is required!");
+    }
+    if (!phoneNumberError && !phoneNumberRef?.current?.value) {
+      errors.push("Phone number is required!");
+    }
+
+    if (errors.length > 0) {
+      setBookingSubmitErrorMessage(errors.join(", \n"));
+      return;
+    }
+
     // ! will send to the DB
     const detailsOfCreateBooking: TBookingDetails = {
       // * from property page
@@ -90,19 +144,19 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
       rooms: bookingInfo.offersRoomSelected,
 
       // * data from current user
-      // ! Done
       userId: currentUser?._id || "",
 
-      // ! Done
+      //  * data from states and refs
       reserver: {
         fName: fNameRef.current?.value || "",
         lName: lName,
         email: emailRef.current?.value || "",
-        country: selectedCountry.label.split(" ")[1],
-        phoneNumber: phoneNumberRef.current?.value
-          ? selectedPhoneCountry.code + phoneNumberRef.current.value
+        country: selectedCountry?.label?.split(" ")[1] || "",
+        phoneNumber: phoneNumberRef?.current?.value
+          ? selectedPhoneCountry?.code + phoneNumberRef.current.value
           : "",
       },
+
       //  *  data from property page
       // ! Done
       is_paperless: isPaperless,
@@ -138,13 +192,58 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
 
     try {
       //@ts-ignore
+      setCreateBookingLoading(true);
       const res = await createBooking(detailsOfCreateBooking);
+      setCreateBookingLoading(false);
+      console.log("createBooking response: ");
       console.log(res);
+
+      setStep(3);
     } catch (error) {
-      console.log("error from create booking: ");
-      console.log(error);
+      if (!axios.isAxiosError(error)) {
+        setBookingSubmitErrorMessage("unexpected error - try again latter!");
+        return;
+      }
+
+      if (isCreateBookingErrorResponse(error.response?.data)) {
+        const { message, roomId, notAvailableDate } = error.response.data;
+        // * find the trouble room
+        if (bookingInfo.propertyData.rooms instanceof Array) {
+          const troubleRoom = bookingInfo.propertyData.rooms.find(
+            (room) => room._id === roomId
+          );
+
+          // * if room missing
+          if (message.includes("Room with ID")) {
+            // set error message
+            setBookingSubmitErrorMessage(
+              troubleRoom
+                ? `room ${troubleRoom.title} not found, try again latter or choose another room`
+                : `one of the rooms not found!, try again latter `
+            );
+          }
+
+          // *  if not enough available for some room
+          if (message.includes("Not enough availability for room")) {
+            if (notAvailableDate) {
+              setBookingSubmitErrorMessage(
+                troubleRoom
+                  ? `room ${troubleRoom.title} not available any more in ${notAvailableDate}! try another date or room`
+                  : `one of the rooms not available any more in ${notAvailableDate}!  try another date or change rooms`
+              );
+            } else {
+              setBookingSubmitErrorMessage(
+                troubleRoom
+                  ? `room ${troubleRoom.title} not available any more! try another date or room`
+                  : `one of the rooms not available any more!  try another date or change rooms`
+              );
+            }
+          }
+        }
+      }
+      setBookingSubmitErrorMessage("unexpected error - try again latter!");
+      return;
     }
-    setStep(3);
   };
 
   useEffect(() => {
@@ -173,15 +272,29 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
         setShouldUpdateAccount={setShouldUpdateAccount}
         selectedPhoneCountry={selectedPhoneCountry}
         setSelectedPhoneCountry={setSelectedPhoneCountry}
+        setEmailError={setEmailError}
+        setFNameError={setFNameError}
+        setLNameError={setLNameError}
+        setPhoneNumberError={setPhoneNumberError}
+        emailError={emailError}
+        fNameError={fNameError}
+        lNameError={lNameError}
+        phoneNumberError={phoneNumberError}
       />
       <BookingRooms
         bookingInfo={bookingInfo}
         roomsLeaders={roomsLeaders}
         setRoomsLeaders={setRoomsLeaders}
       />
+
       <Button className="text-[16px] py-6 px-9 mt-4" onClick={bookingSubmit}>
         <span className="text-sm me-2">&#9001;</span> השלב הבא: פרטים אחרונים
       </Button>
+      {bookingSubmitErrorMessage && (
+        <div className="text-redError text-sm">{bookingSubmitErrorMessage}</div>
+      )}
+
+      {createBookingLoading && <Spinner className="mt-2" />}
     </main>
   );
 }
