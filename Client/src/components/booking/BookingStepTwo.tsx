@@ -201,7 +201,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
       setStep(3);
     } catch (error) {
       if (!axios.isAxiosError(error)) {
-        setBookingSubmitErrorMessage("unexpected error - try again latter!");
+        setBookingSubmitErrorMessage("unexpected error - try again later!");
         return;
       }
 
@@ -218,8 +218,8 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
             // set error message
             setBookingSubmitErrorMessage(
               troubleRoom
-                ? `room ${troubleRoom.title} not found, try again latter or choose another room`
-                : `one of the rooms not found!, try again latter `
+                ? `room ${troubleRoom.title} not found, try again later or choose another room`
+                : `one of the rooms not found!, try again later `
             );
           }
 
@@ -241,7 +241,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
           }
         }
       }
-      setBookingSubmitErrorMessage("unexpected error - try again latter!");
+      setBookingSubmitErrorMessage("unexpected error - try again later!");
       return;
     }
   };
