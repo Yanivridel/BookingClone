@@ -148,7 +148,7 @@ const getSearchProperties = async (req, res) => {
         res.flushHeaders();
         // * Get Cache / Fetch New
         let filteredProperties;
-        if (process.env.USE_CACHE !== "false") {
+        if (process.env.USE_CACHE === "true") {
             filteredProperties = await (0, redisClient_1.getCache)(cacheKey);
         }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
@@ -171,7 +171,7 @@ const getSearchProperties = async (req, res) => {
             filteredProperties = await filterPropertiesPrimary(properties, { startDate, endDate, length, isWeekend, fromDay, yearMonths }, // date
             { adults, children, rooms, isBaby, isAnimalAllowed });
             setTimeout(() => {
-                if (process.env.USE_CACHE !== "false") {
+                if (process.env.USE_CACHE === "true") {
                     (0, redisClient_1.setCache)(cacheKey, filteredProperties);
                 }
             }, 1000); // in 1 sec
@@ -181,18 +181,14 @@ const getSearchProperties = async (req, res) => {
         if (req.body?.secondary)
             secondFiltered = filterPropertiesSecondary(filteredProperties, req.body);
         const paginatedProperties = secondFiltered.slice(skip, skip + limit);
-        console.log("Writing first chunk with properties...");
-        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\t");
         res.flush && res.flush();
         process.nextTick(async () => {
             try {
-                console.log("Inside process.nextTick: about to get filters");
                 const filterCount = await getFiltersFromProperties(secondFiltered);
-                console.log("Got filters:", filterCount);
                 console.log(" "); //! DO NOT REMOVE EVER
-                res.write(JSON.stringify({ Filters: filterCount }) + "\n");
+                res.write(JSON.stringify({ Filters: filterCount }) + "\t");
                 res.end();
-                console.log("Response ended");
             }
             catch (err) {
                 console.error("Error in nextTick callback:", err);

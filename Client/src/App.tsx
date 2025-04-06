@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
 import Layout from "./pages/Layout.tsx";
 import SearchResults from "./pages/SearchResults.tsx";
 import Home from "./pages/Home.tsx";
@@ -15,7 +14,7 @@ import { setUser } from "./store/slices/userSlices.ts";
 import { getSelf } from "./utils/api/userApi.ts";
 import Property from "./pages/Property.tsx";
 import MyAccountPage from "./pages/MyAccountPage.tsx";
-
+import TripsAndOrders from "./pages/TripsAndOrders.tsx"
 import SavedLists from "./pages/SavedLists.tsx";
 import MySettings from "./pages/MySettings.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -63,6 +62,10 @@ function App() {
         {
           element: <EmailCode />,
           path: "email-code/:email",
+        },
+        {
+          element: <TripsAndOrders />,
+          path: "TripsAndOrders",
         },
         {
           element: <MyAccountPage />,

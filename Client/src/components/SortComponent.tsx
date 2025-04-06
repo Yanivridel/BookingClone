@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Button } from "./ui/button"
 import { Information, SmallUpDown, UpDown } from "./ui/Icons"
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "./ui/skeleton";
@@ -23,6 +23,23 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
     function HandleClick() {
         setIsVisible(false);
     }
+
+    useEffect(() => {
+        function checkScreenSize() {
+        if (window.innerWidth <= 640) {
+            setIsGrid(true); // Always Grid on small screens
+        }
+        // SetFilterDisplay(window.innerWidth > 1024);
+        }
+    
+        checkScreenSize(); // Call once initially
+    
+        window.addEventListener("resize", checkScreenSize);
+    
+        return () => {
+        window.removeEventListener("resize", checkScreenSize);
+        };
+    }, []);
 
     return (
         <div className=" p-2 flex flex-col gap-4">
@@ -58,7 +75,7 @@ function SortComponent({isGrid, setIsGrid, filters} : SortComponentProps ) {
                     </div>
                 </div>
                 {/* Change Grid-List Toggle */}
-                <div className=" w-[20%] pr-7 flex items-center justify-end">
+                <div className="hidden sm:flex w-[20%] pr-7 items-center justify-end">
                     <label className="relative inline-block w-16 h-8">
                     <input
                         type="checkbox"

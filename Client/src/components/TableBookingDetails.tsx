@@ -19,7 +19,7 @@ function TableBookingDetails({
   const { t } = useTranslation();
 
   return (
-    <div className="font-normal">
+    <div className="font-normal bg-white">
       {bookingDetailsData?.roomsNumber && bookingDetailsData.roomsNumber > 0 ? (
         <div>
           <div>

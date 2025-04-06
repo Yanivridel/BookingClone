@@ -6,7 +6,7 @@ function HomeHeader() {
 
   return (
     <div className="relative -z-10">
-        <div className="absolute left-1/2 -translate-x-1/2 w-full z-10 px-1 pt-[66px] max-w-[1100px]">
+        <div className="absolute left-1/2 -translate-x-1/2 w-full z-10 px-3 pt-[33px] search:pt-[66px] max-w-[1100px]">
           <h1 className="text-[32px] search:text-5xl text-white font-black tracking-wider pb-3">
             {t("home.Travel has never")}
           </h1>

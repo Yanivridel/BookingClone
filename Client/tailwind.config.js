@@ -125,6 +125,7 @@ module.exports = {
       },
       screens: {
         xs: "300px",
+        sm2: '550px',
         grid1: "550px",
         grid2: "800px",
         filtersPopup: "1024",

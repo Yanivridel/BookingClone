@@ -13,7 +13,7 @@ function QualityCard({ propertyData }: QualityCardProps) {
 
   return (
     <div>
-      <Card className=" h-[85px] p-2 flex flex-col gap-3 justify-center">
+      <Card className="p-5 flex flex-col gap-3 justify-center">
         <div className=" flex gap-2">
           <CardTitle>Quality rating</CardTitle>
           <div className="flex">

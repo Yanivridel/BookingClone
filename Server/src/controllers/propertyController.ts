@@ -202,7 +202,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         // * Get Cache / Fetch New
         let filteredProperties;
-        if(process.env.USE_CACHE !== "false"){
+        if(process.env.USE_CACHE === "true"){
             filteredProperties = await getCache(cacheKey) as IProperty[];
         }
         let isCached = !!filteredProperties; //! Dev Mode - Remove Later !//
@@ -232,7 +232,7 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
             );
 
             setTimeout(() => {
-                if(process.env.USE_CACHE !== "false") {
+                if(process.env.USE_CACHE === "true") {
                     setCache(cacheKey, filteredProperties!);
                 }
             }, 1000) // in 1 sec
@@ -246,19 +246,15 @@ export const getSearchProperties = async (req: Request<{},{},IGetPropertiesBody,
 
         const paginatedProperties = secondFiltered.slice(skip, skip + limit);
         
-        console.log("Writing first chunk with properties...");
-        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\n");
+        res.write(JSON.stringify({ filteredProperties: paginatedProperties }) + "\t");
         res.flush && res.flush();
 
         process.nextTick(async () => {
             try {
-                console.log("Inside process.nextTick: about to get filters");
                 const filterCount = await getFiltersFromProperties(secondFiltered);
-                console.log("Got filters:", filterCount);
                 console.log(" ") //! DO NOT REMOVE EVER
-                res.write(JSON.stringify({ Filters: filterCount}) + "\n"); 
+                res.write(JSON.stringify({ Filters: filterCount}) + "\t"); 
                 res.end();
-                console.log("Response ended");
             } catch (err) {
                 console.error("Error in nextTick callback:", err);
                 res.end();

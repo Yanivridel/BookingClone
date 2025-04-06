@@ -71,15 +71,18 @@ function TopNav() {
   return (
     <div className="flex-col  bg-[#013b94] px-4 py-2">
       <div className="max-w-[1100px] m-auto">
-        <div className="flex justify-between items-center p-2 ">
-          <div className="cursor-pointer" onClick={() => navigate("/")}>
+        <div className="flex flex-wrap justify-between items-center p-2 ">
+          <div className="flex flex-row justify-between items-center flex-1 sm:w-none cursor-pointer" onClick={() => navigate("/")}>
             <BookingLogo className=" h-5 w-[98px]" />
+            <div className="p-[13px] cursor-pointer">
+              <Languages />
+            </div>
           </div>
 
-          <div className="flex gap-4 items-center">
-            <div className="p-[13px] cursor-pointer">
+          <div className="flex gap-4 items-center mx-auto sm:mx-0">
+            {/* <div className="p-[13px] cursor-pointer">
               <Languages></Languages>
-            </div>
+            </div> */}
             {currentUser._id ? (
               <Popover>
                 <PopoverTrigger asChild>

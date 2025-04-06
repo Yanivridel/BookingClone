@@ -144,7 +144,6 @@ function Property() {
         return prevIsMobile;
       });
     };
-    scrollToTopInstant();
     window.addEventListener("resize", checkMobile);
 
     return () => {
@@ -235,17 +234,11 @@ function Property() {
         {/* Reviews & Rating */}
         {propertyReviews && propertyReviews?.length > 0 && (
           <div id={`Guest reviews (${propertyReviews?.length})`}>
-            <div className="flex justify-between">
-              <div>
-                <p className="text-2xl font-bold py-4">Guest Reviews</p>
-              </div>
-              <div>
-                <div className="py-3">
-                  <Button className="text-sm" asChild>
-                    <a href={"#Info & prices"}>See availability</a>
-                  </Button>
-                </div>
-              </div>
+            <div className="flex justify-between items-center">
+              <p className="text-2xl font-bold py-4">Guest Reviews</p>
+              <Button className="text-xs sm:text-sm p-2 sm:p-4" asChild>
+                <a href={"#Info & prices"}>See availability</a>
+              </Button>
             </div>
             <GuestReviews
               propertyData={propertyData}
@@ -306,7 +299,7 @@ function Property() {
                 {propertyReviews.map((rev) => (
                   <ReviewsCard
                     size={2}
-                    className="min-w-[325px]"
+                    className="min-w-[170px] sm:min-w-[325px]"
                     key={rev._id}
                     review={rev}
                   />
@@ -325,7 +318,7 @@ function Property() {
                 {propertyReviews.map((rev) => (
                   <ReviewsCard
                     size={2}
-                    className="mx-2 "
+                    className="mx-2 h-[220px]"
                     key={rev._id}
                     review={rev}
                   />
@@ -334,7 +327,7 @@ function Property() {
             )}
             <div>
               <Button
-                className="text-[13px] border-[1px]"
+                className="text-[13px] border-[1px] m-3"
                 variant={"negativeDefault"}
               >
                 Read all reviews
@@ -359,7 +352,7 @@ function Property() {
             See other Questions <span>{propertyReviews?.length}</span>
           </Button>
         </div>
-        <h2 className="py-4 text-2xl font-bold"> {t("nearBy.header")}</h2>
+        <h2 className="pt-4 text-2xl font-bold"> {t("nearBy.header")}</h2>
         <PropertyTitles />
         <LocationCard propertyData={propertyData} />
 
@@ -387,7 +380,7 @@ function Property() {
             )}
           </div>
           <div className="py-3">
-            <Button className="text-sm" asChild>
+            <Button className="text-xs sm:text-sm p-2 sm:p-4" asChild>
               <a href={"#Info & prices"}>See availability</a>
             </Button>
           </div>
@@ -407,12 +400,12 @@ function Property() {
             <div className="py-3">
               <h2 className=" text-2xl font-bold mb-2">House Rules</h2>
               <p className="text-searchGrayText text-md">
-                Aparthotel Stare Miasto takes special requests - add in the next
+                {propertyData.title} takes special requests - add in the next
                 step!
               </p>
             </div>
             <div className="py-3">
-              <Button className="text-sm" asChild>
+              <Button className="text-xs sm:text-sm p-2 sm:p-4" asChild>
                 <a href={"#Info & prices"}>See availability</a>
               </Button>
             </div>
@@ -431,7 +424,7 @@ function Property() {
               </p>
             </div>
             <div className="py-3">
-              <Button className="text-sm" asChild>
+              <Button className="text-xs sm:text-sm p-2 sm:p-4" asChild>
                 <a href={"#Info & prices"}>See availability</a>
               </Button>
             </div>

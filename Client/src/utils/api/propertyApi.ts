@@ -28,7 +28,6 @@ export const getPropertyByIdForCard = async (id: string) => {
   }
 };
 
-// * Working
 export const searchPropertiesChunks = async (
   searchBody: ISearchPropertiesReq,
   page?: number,
@@ -49,70 +48,56 @@ export const searchPropertiesChunks = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const contentEncoding = response.headers.get('Content-Encoding');
-  console.log('Content-Encoding:', contentEncoding);
-
   const reader = response.body!.getReader();
-
-  // Create first chunk promise
-  const firstChunkPromise = createChunkReader(reader, "filteredProperties");
-
-  // Create second chunk promise that starts after first chunk is received
-  const secondChunkPromise = firstChunkPromise.then(() =>
-    createChunkReader(reader, "Filters")
-  );
-
+  
+  // Read the entire response first
+  const { result: fullData } = await readFullStream(reader);
+  
+  // Then process the chunks separately
+  const chunks = fullData.split('\t').filter(chunk => chunk.trim().length > 0);
+  
+  // Create the promises to resolve
+  let filteredPropertiesResult = null;
+  let filtersResult = null;
+  
+  // Parse each chunk and extract the relevant data
+  for (const chunk of chunks) {
+    try {
+      const parsed = JSON.parse(chunk);
+      if (parsed.filteredProperties) {
+        filteredPropertiesResult = parsed.filteredProperties;
+      } else if (parsed.Filters) {
+        filtersResult = parsed.Filters;
+      }
+    } catch (e) {
+      console.error("Error parsing chunk:", e);
+      console.log("Problematic chunk:", chunk.substring(0, 50) + "...");
+    }
+  }
+  
+  // Create the promises
+  const firstChunkPromise = Promise.resolve(filteredPropertiesResult);
+  const secondChunkPromise = Promise.resolve(filtersResult);
+  
   return { firstChunkPromise, secondChunkPromise };
 };
 
-const createChunkReader = (
-  reader: ReadableStreamDefaultReader<Uint8Array>,
-  resultKey: "filteredProperties" | "Filters"
-) => {
-  let buffer = "";
+// Helper function to read the entire stream before processing
+const readFullStream = async (reader: any) => {
   const decoder = new TextDecoder();
-
-  return new Promise((resolve, reject) => {
-    const readChunk = async () => {
-      try {
-        const { value, done } = await reader.read();
-        if (done) {
-          resolve(null);
-          return;
-        }
-
-        buffer += decoder.decode(value, { stream: true });
-        const chunks = buffer.split("\n");
-        buffer = chunks.pop() || ""; // Keep last incomplete chunk
-
-        // Process complete chunks
-        const foundResult = chunks.some((chunk) => {
-          if (!chunk) return false;
-
-          try {
-            const parsed = JSON.parse(chunk);
-            if (parsed[resultKey]) {
-              resolve(parsed[resultKey]);
-              return true;
-            }
-          } catch (e) {
-            console.error("Error parsing chunk:", e);
-          }
-          return false;
-        });
-
-        if (!foundResult) {
-          readChunk(); // Continue reading if result not found
-        }
-      } catch (error) {
-        reject(error);
-      }
-    };
-
-    readChunk();
-  });
+  let result = '';
+  let done = false;
+  
+  while (!done) {
+    const { value, done: doneReading } = await reader.read();
+    done = doneReading;
+    if (value) {
+      result += decoder.decode(value, { stream: !done });
+    }
+  }
+  
+  return { result, done };
 };
-
 
 // * Done
 export const getAutocompleteLocations = async (searchText: string) => {

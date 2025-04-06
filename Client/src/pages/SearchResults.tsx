@@ -91,7 +91,7 @@ function SearchResults() {
     isFetchingNextPage
   } = useInfiniteProperties(searchBody, 5);
   
-  console.log("DATA", data);
+  // console.log("DATA", data);
   // console.log("searchBody", searchBody);
 
   useEffect(() => {
@@ -115,7 +115,7 @@ function SearchResults() {
   
   // Infinite scroll listener
   const handleScroll = () => {
-    const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1100;
+    const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1750;
     if (bottom && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
