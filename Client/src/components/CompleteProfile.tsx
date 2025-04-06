@@ -26,9 +26,11 @@ function CompleteProfile() {
 
         </div>
       </div>
-      <div className=" w-[30%] flex justify-end">
-        <div className=" p-9 bg-sky-100"><IconGuest className=" fill-blue-500 w-8 h-8" /></div>
-      </div>
+      <div className="w-[30%] justify-end hidden sm:flex">
+        <div className="p-9 bg-sky-100">
+          <IconGuest className="fill-blue-500 w-8 h-8" />
+        </div>
+    </div>
     </div>
     )
     

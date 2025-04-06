@@ -80,9 +80,6 @@ function TopNav() {
           </div>
 
           <div className="flex gap-4 items-center mx-auto sm:mx-0">
-            {/* <div className="p-[13px] cursor-pointer">
-              <Languages></Languages>
-            </div> */}
             {currentUser._id ? (
               <Popover>
                 <PopoverTrigger asChild>
@@ -122,7 +119,9 @@ function TopNav() {
                       <MyAccountIcon className="h-5 w-5" />
                       My account
                     </li>
-                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer">
+                    <li className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                      onClick={() => navigate("/account/TripsAndOrders")}
+                    >
                       <BookingTripsIcon className="h-5 w-5" />
                       Bookings & Trips
                     </li>

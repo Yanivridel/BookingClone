@@ -9,43 +9,27 @@ import PaymentMethods from '@/components/PaymentMethods'
 import PrivecyAndManagment from '@/components/PrivecyAndManagment'
 import { scrollToTopInstant } from '@/utils/functions'
 
-const SettingsMobileWidth = 900 
+const possibleCategories = [
+  'Personal details', 'Security settings', 'Other travellers', 'Customisation preferences', 
+  'Payment methods', 'Privacy and data management'
+] 
 
 function MySettings() {
     const{ category } = useParams()
-    const [isMobile, setIsMobile] = useState<boolean>(
-      window.innerWidth < SettingsMobileWidth
-    );
-    const [page, setPage] = useState(category || "Personal details")
+    const [page, setPage] = useState(() => {
+      return category && possibleCategories.includes(category) ? category : "Personal details";
+    })
 
     useEffect(() => {
       document.title = 'Booking.com | האתר הרשמי | הגדרות';
       scrollToTopInstant();
     }, []);
 
-    useEffect(() => {
-        const checkMobile = () => {
-          setIsMobile((prevIsMobile) => {
-            if (window.innerWidth < SettingsMobileWidth && !prevIsMobile) return true;
-            else if (window.innerWidth >= SettingsMobileWidth && prevIsMobile)
-              return false;
-            return prevIsMobile;
-          });
-        };
-    
-    
-        window.addEventListener("resize", checkMobile);
-    
-        return () => {
-          window.removeEventListener("resize", checkMobile);
-        };
-      }, []);
-
   return (
-    <div className='flex gap-16 max-w-[1100px] mx-auto p-5'>
-        { !isMobile && <div>
-            <SettingsNavigate setPage = {setPage} category = {category} />
-        </div> }
+    <div className={`flex gap-16 max-w-[1100px] mx-auto p-5 flex-col md:flex-row`}>
+        <div>
+            <SettingsNavigate setPage = {setPage} category = {page} />
+        </div>
         <div className='w-full'>
             {page === "Personal details" &&<PersonalDetails />}
             {page === "Security settings" &&<SecuritySettings />}

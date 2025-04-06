@@ -138,14 +138,16 @@ function MyAccountPage() {
   }, []);
 
   return (<>
-      <div className="absolute top-0 w-full -z-10 h-[700px]  bg-[#013b94] "></div>
+      <div className="absolute top-0 w-full -z-10 h-[700px] bg-[#013b94] "></div>
       <div className="fixed top-0 left-0 w-full h-full -z-50  bg-[#f5f5f5] "></div>
-      <div className='max-w-[1100px] mx-auto flex flex-col gap-3'>
-        <div className='flex flex-col flex-wrap md:grid md:grid-cols-[70%_30%] gap-2'>
+      <div className='max-w-[1100px] mx-auto p-3 flex flex-col gap-3'>
+        <div className='flex flex-col md:flex-row gap-2'>
+          <div className='md:w-[70%]'>
           <GeniusRewardAccount />
+          </div>
           <div className='flex flex-col justify-between gap-2'>
-          <BookingAwayCardAccount />
-          <CreditAccount />
+            <BookingAwayCardAccount />
+            <CreditAccount />
           </div>
         </div>
         <div className='flex flex-col gap-2 '>

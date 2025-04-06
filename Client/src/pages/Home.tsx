@@ -623,49 +623,6 @@ function Home() {
             )}
           </div>
         )}
-
-        {/* Homes Carousel */}
-        {HomeArr?.length && (
-          <div>
-            <div className="py-4 flex justify-between">
-              <h2 className="text-2xl font-bold ">
-                {t("home.lovedHomesDealsHeader")}
-              </h2>
-              <Button variant={"simpleLink"}>
-                {t("home.lovedHomesButton")}
-              </Button>
-            </div>
-            {isMobile || HomeArr.length <= 3 ? (
-              <MainCarousel>
-                {HomeArr.map((propertyId) => (
-                  <MainCard
-                    key={propertyId}
-                    propertyId={propertyId}
-                    is_heart={true}
-                  />
-                ))}
-              </MainCarousel>
-            ) : (
-              <Slider
-                key={isRtl ? "rtl" : "ltr"}
-                {...{
-                  ...settingsSearch,
-                  slidesToShow: 3.8,
-                  initialSlide: isRtl ? HomeArr.length - 3.8 : 0,
-                  nextArrow: <SampleNextArrow slidesToShow={3.8} />,
-                }}
-              >
-                {HomeArr.map((propertyId) => (
-                  <MainCard
-                    key={propertyId}
-                    propertyId={propertyId}
-                    is_heart={true}
-                  />
-                ))}
-              </Slider>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

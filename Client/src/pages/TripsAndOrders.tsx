@@ -1,33 +1,17 @@
 import BookingAndTrips from '@/components/BookingAndTrips'
 import Cancelled from '@/components/Cancelled'
 import RevisitYourFavorite from '@/components/RevisitYourFavorite'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const TripsAndOrders = () => {
-
-  // const [isDisplayOne,setIsDisplayOne] = useState(false)
-  // const [isDisplayOneTwo,setIsDisplayTwo] = useState(false)
-
-  // const handleClickOne = () => {
-  //   setIsDisplayOne(prev => !prev)
-  //   setIsDisplayTwo(prev => !prev)
-  // }
-  // const handleClickTwo = () => {
-  //   setIsDisplayTwo(prev => !prev)
-  //   setIsDisplayOne(prev => !prev)
-
-  // }
-
-
-  const [activeComponent, setActiveComponent] = useState(null);
-
+  const [activeComponent, setActiveComponent] = useState("past");
 
   const handleClickOne = () => {
-    setActiveComponent("revisit"); // הצג את RevisitYourFavorite
+    setActiveComponent("past");
   }
 
   const handleClickTwo = () => {
-    setActiveComponent("cancelled"); // הצג את Cancelled
+    setActiveComponent("cancelled");
   }
 
   return (
@@ -36,7 +20,7 @@ const TripsAndOrders = () => {
         <BookingAndTrips handleClickOne={handleClickOne} handleClickTwo={handleClickTwo}/>
       </div>
       <div className=''>
-        {activeComponent === "revisit" && <RevisitYourFavorite />}
+        {activeComponent === "past" && <RevisitYourFavorite />}
         {activeComponent === "cancelled" && <Cancelled />} 
       </div>
     </div>

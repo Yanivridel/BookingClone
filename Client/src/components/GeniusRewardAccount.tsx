@@ -7,15 +7,15 @@ function GeniusRewardAccount() {
   const { t } = useTranslation();
 
   return (
-    <div className="border rounded-lg p-2 flex flex-col bg-white">
+    <div className="border rounded-lg p-2 flex flex-col bg-white w-full">
       <div className="p-2">
         <h1 className="font-bold">{t("MyAccount.GeniusRewards")}</h1>
         <span className="text-sm text-gray-500">
           {t("MyAccount.DiscountsTitle")}
         </span>
       </div>
-      <div className="p-2 w-full bg-blue-500">
-        <MainCarousel className="bg-black">
+      <div className="p-2 w-full">
+        <MainCarousel>
           <RewardCard />
         </MainCarousel>
       </div>

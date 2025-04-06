@@ -33,11 +33,11 @@ function SettingsNavigate({ setPage, category }: SettingsNavigateProps) {
   ];
 
   return (
-    <div className="grid max-w-[305px]">
+    <div className=" ">
       {arr.map((item) => (
         <div
           key={item.title}
-          className="border rounded-lg flex justify-center items-center gap-2 p-2 pr-40 cursor-pointer"
+          className="border rounded-lg flex  items-center gap-2 p-2 pr-40 cursor-pointer"
           onClick={() => handleClick(item.title)}
         >
           <div className="rounded-full p-3.5 flex items-center bg-accent">

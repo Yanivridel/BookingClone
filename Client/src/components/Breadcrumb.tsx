@@ -14,7 +14,7 @@ function BreadcrumbCard({ items }: BreadcrumbProps) {
   items = items.filter(item => item.label);
   return (
     <div>
-      <Breadcrumb className="pb-2">
+      <Breadcrumb className="pb-2 ms-3">
         <BreadcrumbList>
           {items.map((item, index) => (
             <React.Fragment key={index}>
