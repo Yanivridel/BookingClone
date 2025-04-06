@@ -29,7 +29,7 @@ function AsksComponents({ propertyData }: AsksComponentsProps) {
   }
 
   return (
-    <div className="flex flex-wrap gap-4 ">
+    <div className="flex flex-wrap gap-4 justify-center">
       <Card className="basis-[300px]  p-2 flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           {propertyData.fqa

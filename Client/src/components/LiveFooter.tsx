@@ -32,17 +32,17 @@ const LiveFooter = () => {
       <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500 rounded-full"></div>
 
       {/* Content */}
-      <div className="relative z-10 flex items-center ">
-        <div className="text-left absolute top-1/2 left-[50%] -translate-x-1/2 -translate-y-1/2">
-          <h2 className="text-2xl font-bold text-white flex gap-5 items-center">
+      <div className="relative z-10 flex items-center">
+        <div className="text-left absolute top-1/2 left-[95%] sm2:left-[50%] -translate-x-1/2 -translate-y-1/2">
+          <h2 className="text-lg sm2:text-2xl font-bold text-white flex gap-5 items-center">
             Find{" "}
             <span className="font-normal">
-              <Slider {...settings} className="my-4">
+              <Slider {...settings} className="sm2:my-4">
                 {findArr.map((item) => (
                   <div key={item}>
                     <h3
-                      className="text-white text-2xl font-semibold underline underline-offset-4
-                            decoration-[#f8b830]"
+                      className="text-white text-lg sm2:text-2xl font-semibold underline 
+                        underline-offset-4 decoration-[#f8b830] w-fit"
                     >
                       {item}
                     </h3>
@@ -51,18 +51,18 @@ const LiveFooter = () => {
               </Slider>
             </span>
           </h2>
-          <p className="text-white mb-4 text-2xl font-bold">
+          <p className="text-white mb-4 text-lg sm2:text-2xl font-bold">
             for your next trip
           </p>
           <button
             onClick={() => navigate("/searchresults?country=Israel")}
-            className="px-4 py-2 w-[200px] bg-white text-blue-500 font-semibold rounded-lg"
+            className="w-fit px-2 py-1 sm2:px-4 sm2:py-2 sm2:w-[200px] bg-white text-blue-500 font-semibold rounded-lg text-xs sm2:text-xl"
           >
             Discover homes
           </button>
         </div>
         <img
-          className="max-w-[400px] w-[35vw] ms-auto mb-auto"
+          className="max-w-[400px] w-[100px] sm2:w-[35vw] ms-auto mb-auto"
           src="https://cf.bstatic.com/psb/capla/static/media/bh_aw_cpg_main_image.b4347622.png"
           alt="Chair illustration"
         />
