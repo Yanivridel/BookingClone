@@ -13,7 +13,7 @@ export interface PropertyFeaturesProps {
 
 function PropertyFeatures({ features }: PropertyFeaturesProps) {
   return (
-    <div className="grid  signInLayoutTop:grid-cols-2 search:grid-cols-3  gap-4 ">
+    <div className="grid signInLayoutTop:grid-cols-2 search:grid-cols-3  gap-4 ">
       {features?.map((feature) => {
         const title = feature.category;
         const path = featuresIcons[title];

@@ -80,7 +80,7 @@ function Home() {
   useEffect(() => {
     document.title =
       "Booking.com | האתר הרשמי | הטובים ביותר: מלונות, טיסות, רכבים להשכרה ומקומות אירוח";
-    scrollToTopInstant();
+    // scrollToTopInstant();
     const checkMobile = () => {
       setIsMobile((prevIsMobile) => {
         if (window.innerWidth < HomeMobileWidth && !prevIsMobile) return true;
@@ -360,7 +360,7 @@ function Home() {
                 <Button
                   key={key}
                   variant="ghost"
-                  className={`font-normal rounded-full p-4 text-lg ${
+                  className={`font-normal rounded-full p-2 sm:p-4 sm:text-lg ${
                     easyTripCategory === key
                       ? "border-2 border-sky-600 text-sky-600 bg-accent"
                       : ""
@@ -387,7 +387,7 @@ function Home() {
                       title={item.title}
                       image={item.img}
                       description={item.distance}
-                      className="mx-2 max-h-[300px] min-w-[180px]"
+                      className="mx-2 max-h-[200px] sm:max-h-[300px] min-w-[150px] sm:min-w-[180px]"
                       classNameImg="max-h-[185px]"
                       onClick={() =>
                         navigate(
@@ -452,7 +452,7 @@ function Home() {
                   title={el.title}
                   description={el.desc}
                   image={el.img}
-                  className="min-w-[350px]"
+                  className="min-w-[250px] sm:min-w-[350px] max-h-[220px] sm:max-h-none"
                 />
               ))}
             </MainCarousel>
@@ -503,8 +503,8 @@ function Home() {
                       )
                     }
                     image={prop.img}
-                    className="min-w-[250px] max-h-[300px]"
-                    classNameImg="h-5/6"
+                    className="min-w-[150px] sm:min-w-[250px] max-h-[200px] sm:max-h-[300px]"
+                    classNameImg="h-5/6 min-h-[150px]"
                   />
                 ))}
               </MainCarousel>

@@ -24,14 +24,14 @@ const getColorByRating = (rating: number) => {
 function GuestReviews({ propertyData }: GuestReviewsProps) {
   return (
     <div className="grid gap-5 p-2">
-      <div className="flex gap-2 p-1">
-        <div>
-          <Badge variant="rating" className="cursor-pointer h-full">
+      <div className="flex justify-between gap-2 p-1">
+        <div className="flex gap-2 items-center">
+          <Badge variant="rating" className="cursor-pointer p-1 m-auto">
             {Math.round(propertyData?.total_rating ?? 0)}
           </Badge>
+          <CardTitle>{propertyData?.title}</CardTitle>
         </div>
         <div className="flex items-center gap-3">
-          <CardTitle>{propertyData?.title}</CardTitle>
           <CardDescription className="text-sm text-gray-500 font-bold">
             {propertyData?.reviews_num} reviews
           </CardDescription>

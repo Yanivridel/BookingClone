@@ -19,11 +19,11 @@ function ReviewsCard({ review, className, size }: propertyReviewsProps) {
     <Card
       key={review._id}
       className={cn(
-        `h-[210px] flex ${size === 1 ? "py-1 px-4" : "p-5"}`,
+        `flex ${size === 1 ? "py-1 px-4" : "p-5"}`,
         className
       )}
     >
-      <div className="h-[50%] grid gap-3">
+      <div className="h-full grid gap-3">
         <div className="flex gap-2 items-center">
           <div>
             <Avatar className={size === 1 ? "w-6 h-6" : "w-8 h-8"}>
@@ -63,7 +63,7 @@ function ReviewsCard({ review, className, size }: propertyReviewsProps) {
             </div>
           </div>
         </div>
-        <div className="flex justify-center flex-col gap-3">
+        <div className="flex justify-between  flex-1 flex-col gap-3">
           <p className={size === 1 ? "text-xs" : "text-sm"}>
             {size === 1 && review.reviewText && review.reviewText.length > 60
               ? review.reviewText.slice(0, 60) + " ..."
