@@ -4,7 +4,7 @@ exports.unTakeAvailableRooms = exports.takeAvailableRooms = exports.takeUnTakeRo
 const mongoose_1 = require("mongoose");
 const bookingModel_1 = require("../models/bookingModel");
 const roomModel_1 = require("../models/roomModel");
-const redisClient_1 = require("utils/redisClient");
+const redisClient_1 = require("../utils/redisClient");
 const createBooking = async (req, res) => {
     try {
         const { propertyId, rooms, reserver, is_paperless, for_work, rooms_details, add_to_stay, special_req, children_beds, guests, checkIn, checkOut, } = req.body;

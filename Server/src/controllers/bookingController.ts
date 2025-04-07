@@ -4,7 +4,7 @@ import { bookingModel } from "../models/bookingModel";
 import { roomModel } from "../models/roomModel";
 import { TBookingStringified } from "../types/bookingTypes";
 import { AuthenticatedRequest } from "../types/expressTypes";
-import { clearAll } from "utils/redisClient";
+import { clearAll } from "../utils/redisClient";
 
 export const createBooking = async (
   req: Request<{}, {}, TBookingStringified>,
