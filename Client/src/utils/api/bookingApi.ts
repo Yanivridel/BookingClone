@@ -1,7 +1,6 @@
 // import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { TBookingDetails } from "@/types/bookingTypes";
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const API_URL = isProduction
@@ -17,9 +16,7 @@ export async function makePayment(amount: number, currency: string) {
         currency,
       },
       {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
+        withCredentials: true
       }
     );
     return data;
@@ -33,7 +30,8 @@ export async function savePayment(
   amount: number,
   currency: string,
   transactionId: string,
-  paymentMethod: string
+  paymentMethod: string,
+  bookingId: string,
 ) {
   try {
     const { data } = await axios.post(
@@ -43,11 +41,10 @@ export async function savePayment(
         currency,
         transactionId,
         paymentMethod,
+        bookingId
       },
       {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
+        withCredentials: true
       }
     );
     return data;
@@ -85,7 +82,7 @@ export async function createBooking(bookingDetails: TBookingDetails) {
         withCredentials: true,
       }
     );
-    return data;
+    return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // console.error(

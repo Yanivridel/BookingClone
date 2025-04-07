@@ -1,7 +1,7 @@
-import { IProperty } from "./propertyTypes";
+import { IProperty, TPartialProperty } from "./propertyTypes";
 
 export type TBookingDetails = {
-  propertyId: string;
+  propertyId: string | TPartialProperty;
   rooms: {
     roomId: string;
     count: number;
@@ -81,3 +81,10 @@ export type TBookingDetailsData = {
   children?: number;
   adults: number;
 };
+
+export type TBookingOrders = {
+  confirmed?: TBookingDetails[],
+  cancelled?: TBookingDetails[],
+  "checked-in"?: TBookingDetails[],
+  completed?: TBookingDetails[],
+} 

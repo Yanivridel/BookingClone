@@ -72,8 +72,10 @@ function TopNav() {
     <div className="flex-col  bg-[#013b94] px-4 py-2">
       <div className="max-w-[1100px] m-auto">
         <div className="flex flex-wrap justify-between items-center p-2 ">
-          <div className="flex flex-row justify-between items-center flex-1 sm:w-none cursor-pointer" onClick={() => navigate("/")}>
-            <BookingLogo className=" h-5 w-[98px]" />
+          <div className="flex flex-row justify-between items-center flex-1 sm:w-none">
+            <div className="p-2 cursor-pointer" onClick={() => navigate("/")}>
+              <BookingLogo className=" h-5 w-[98px]" />
+            </div>
             <div className="p-[13px] cursor-pointer">
               <Languages />
             </div>

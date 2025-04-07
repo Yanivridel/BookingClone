@@ -77,6 +77,7 @@ cron.schedule('* * * * *', async () => {
         for (const booking of expiringBookings) {
             const { rooms, checkIn, checkOut } = booking;
             await unTakeAvailableRooms({ rooms, checkIn, checkOut } as IAvailableRoomsProps);
+            await bookingModel.findByIdAndDelete(booking._id);
             console.log(`Handled expiration for booking: ${booking._id}`);
         }
     } catch (error) {

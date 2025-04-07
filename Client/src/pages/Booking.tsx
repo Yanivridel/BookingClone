@@ -16,6 +16,7 @@ function Booking() {
   const location = useLocation();
   const bookingInfo = location.state as BookingInfo;
   const [step, setStep] = useState<2 | 3>(2);
+  const [ bookingId, setBookingId] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = 'Booking.com | האתר הרשמי | הזמנה';
@@ -28,10 +29,8 @@ function Booking() {
       <BookingSteps step={step} />
       <div className="flex flex-col tab:flex-row tab:gap-6 ">
         <BookingAside bookingInfo={bookingInfo} />
-        {step === 2 && (
-          <BookingStepTwo setStep={setStep} bookingInfo={bookingInfo} />
-        )}
-        {step === 3 && <BookingStepThree bookingInfo={bookingInfo} setStep={setStep} />}
+        {step === 2 && <BookingStepTwo setStep={setStep} bookingInfo={bookingInfo} setBookingId={setBookingId}/>}
+        {step === 3 && bookingId && <BookingStepThree setStep={setStep} bookingInfo={bookingInfo} bookingId={bookingId}/>}
       </div>
     </div>
   );

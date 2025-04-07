@@ -7,7 +7,7 @@ const paymentSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     bookingId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Booking", required: true },
     amount: { type: Number, required: true },
-    paymentMethod: { type: String, required: true, enum: structures_1.EPaymentMethods },
+    paymentMethod: { type: String },
     status: {
         type: String,
         enum: ["pending", "completed", "failed", "refunded"],

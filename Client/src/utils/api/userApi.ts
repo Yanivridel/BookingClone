@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { TPartialUser } from '@/types/userTypes';
+import { TBookingOrders } from '@/types/bookingTypes';
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const API_URL = isProduction ? import.meta.env.VITE_API_URL_CLOUD: import.meta.env.VITE_API_URL_LOCAL;
@@ -120,6 +121,18 @@ export const getSavedLists = async () => {
             withCredentials: true,
         });
         return data.data;
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
+    }
+};
+// * Done
+export const getBooksAndTrips = async () => {
+    try {
+        const { data } = await axios.get(`${API_URL}/api/booking/`, {
+            withCredentials: true,
+        });
+        return data as TBookingOrders;
     } catch (error) {
         console.error('Auth check error:', error);
         throw error;

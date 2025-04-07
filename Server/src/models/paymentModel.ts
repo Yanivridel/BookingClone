@@ -7,7 +7,7 @@ const paymentSchema = new Schema<IPayment>(
         userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         bookingId: { type: Schema.Types.ObjectId, ref: "Booking", required: true },
         amount: { type: Number, required: true },
-        paymentMethod: { type: String, required: true, enum: EPaymentMethods },
+        paymentMethod: { type: String },
         status: {
             type: String,
             enum: ["pending", "completed", "failed", "refunded"],

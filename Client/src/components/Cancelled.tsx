@@ -1,9 +1,23 @@
-import React from 'react'
+import { TBookingOrders } from '@/types/bookingTypes';
+import BookingCard from './booking/BookingCard';
+import MainCarousel from './MainCarousel';
 
-const Cancelled = () => {
+interface CancelledProps {
+  cancelled: TBookingOrders["cancelled"];
+}
+
+const Cancelled = ({ cancelled }: CancelledProps) => {
   return (
     <div>
-      Cancelled
+      {!cancelled ?
+      <div>
+        No cancelled orders exists
+      </div>
+      :
+      <MainCarousel>
+            {cancelled?.map((data) => <BookingCard order={data} status={"cancelled"}/>)}
+      </MainCarousel>
+      }
     </div>
   )
 }

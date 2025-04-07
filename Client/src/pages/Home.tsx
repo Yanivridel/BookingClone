@@ -9,7 +9,6 @@ import {
   cf,
   getRandomImageOfEasyTrip,
   makeUrlForSearch,
-  scrollToTopInstant,
 } from "@/utils/functions";
 
 import {

@@ -69,6 +69,7 @@ node_cron_1.default.schedule('* * * * *', async () => {
         for (const booking of expiringBookings) {
             const { rooms, checkIn, checkOut } = booking;
             await (0, bookingController_1.unTakeAvailableRooms)({ rooms, checkIn, checkOut });
+            await exports.bookingModel.findByIdAndDelete(booking._id);
             console.log(`Handled expiration for booking: ${booking._id}`);
         }
     }

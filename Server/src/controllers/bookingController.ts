@@ -4,6 +4,7 @@ import { bookingModel } from "../models/bookingModel";
 import { roomModel } from "../models/roomModel";
 import { TBookingStringified } from "../types/bookingTypes";
 import { AuthenticatedRequest } from "../types/expressTypes";
+import { clearAll } from "utils/redisClient";
 
 export const createBooking = async (
   req: Request<{}, {}, TBookingStringified>,
@@ -88,6 +89,9 @@ export const createBooking = async (
 
     await newBooking.save();
 
+    if (process.env.USE_CACHE !== "false")
+      clearAll();
+
     res.status(201).send({
       status: "success",
       message: "Booking created successfully",
@@ -97,6 +101,7 @@ export const createBooking = async (
     console.error(error);
     if (error && typeof error === "object" && "status" in error) {
       res.status(Number(error.status)).json(error);
+      return;
     }
     res.status(500).json({
       status: "Error",
@@ -111,7 +116,12 @@ export const getOrdersByUserId = async (req: Request, res: Response) => {
     const authenticatedReq = req as AuthenticatedRequest;
     const { userId } = authenticatedReq;
 
-    const orders = await bookingModel.find({ userId }).sort({ createdAt: 1 });
+    const orders = await bookingModel.find({ userId })
+    .sort({ createdAt: 1 })
+    .populate({
+      path: 'propertyId',
+      select: 'title images'
+    });
 
     const groupedOrders = orders.reduce((acc: any, order) => {
       if (!acc[order.status]) {
@@ -163,6 +173,10 @@ export const takeUnTakeRooms = async (
         checkIn,
         checkOut,
       } as IAvailableRoomsProps);
+
+    if (process.env.USE_CACHE !== "false")
+      clearAll();
+
     res.status(200).send("Success");
   } catch (err) {
     console.log(err);
@@ -237,7 +251,9 @@ export const takeAvailableRooms = async ({
   }
 
   // Save all updated rooms to the database
-  await Promise.all([...updatedRooms.values()].map((room) => room.save()));
+  for (const room of updatedRooms.values()) {
+    await room.save();
+  }
 };
 export const unTakeAvailableRooms = async ({
   rooms,
@@ -282,7 +298,9 @@ export const unTakeAvailableRooms = async ({
   }
 
   // Save all updated rooms to the database
-  await Promise.all([...updatedRooms.values()].map((room) => room.save()));
+  for (const room of updatedRooms.values()) {
+    await room.save();
+  }
 };
 const getDatesToBook = (checkIn: Date, checkOut: Date) => {
   const daysToBook: Date[] = [];

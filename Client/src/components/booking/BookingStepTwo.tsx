@@ -27,16 +27,17 @@ import { Button } from "../ui/button";
 import BookingDetails from "./BookingDetails";
 import BookingRooms from "./BookingRooms";
 import UserCard from "./UserCard";
-import { IconError, Spinner } from "../ui/Icons";
+import { Spinner } from "../ui/Icons";
 import axios from "axios";
 import { isCreateBookingErrorResponse } from "@/utils/functions";
 
 interface BookingStepTwoProps {
   bookingInfo: BookingInfo;
   setStep: Dispatch<SetStateAction<2 | 3>>;
+  setBookingId: Dispatch<SetStateAction<string | null>>
 }
 
-function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
+function BookingStepTwo({ setStep, bookingInfo, setBookingId }: BookingStepTwoProps) {
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
@@ -195,8 +196,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
       setCreateBookingLoading(true);
       const res = await createBooking(detailsOfCreateBooking);
       setCreateBookingLoading(false);
-      console.log("createBooking response: ");
-      console.log(res);
+      setBookingId(res._id);
 
       setStep(3);
     } catch (error) {

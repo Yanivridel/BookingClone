@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"; 
-import { getPaymentMethod, makePayment, savePayment } from "@/utils/api/bookingApi";
+import { makePayment } from "@/utils/api/bookingApi";
 
 const Testing = () => {
     const [clientSecret, setClientSecret] = useState<string>("");
@@ -40,7 +40,7 @@ const Testing = () => {
             } else if (paymentIntent) {
                 setPaymentStatus("succeeded");
                 setErrorMessage("");
-                savePayment(paymentIntent.amount, paymentIntent.currency, paymentIntent.id, await getPaymentMethod(String(paymentIntent?.payment_method)));
+                // savePayment(paymentIntent.amount, paymentIntent.currency, paymentIntent.id, await getPaymentMethod(String(paymentIntent?.payment_method)));
             }
         } catch (error) {
             setErrorMessage("An unexpected error occurred. Please try again.");

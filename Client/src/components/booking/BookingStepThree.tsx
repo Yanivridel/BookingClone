@@ -11,13 +11,16 @@ import MasterCardLogo from "@/assets/images/MasterCard.png";
 import AmericanExpressLogo from "@/assets/images/American Express Card.png";
 import VisaLogo from "@/assets/images/visa.png";
 import { scrollToTopInstant } from "@/utils/functions";
+import PaymentSuccessModal from "./PaymentSuccessModal";
+import { useNavigate } from "react-router-dom";
 
 interface BookingStepThreeProps {
   bookingInfo: BookingInfo;
   setStep: Dispatch<SetStateAction<2 | 3>>;
+  bookingId: string
 }
 
-function BookingStepThree( { bookingInfo, setStep }: BookingStepThreeProps) {
+function BookingStepThree( { bookingInfo, setStep, bookingId }: BookingStepThreeProps) {
   const [paymentOption, setPaymentOption] = useState("later");
   const [ paymentDate, setPaymentDate ] = useState((() => {
     const d = new Date();
@@ -32,10 +35,12 @@ function BookingStepThree( { bookingInfo, setStep }: BookingStepThreeProps) {
   const currency = useMemo(() => "USD", []);
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
   
   const [marketingConsent1, setMarketingConsent1] = useState(false);
   const [marketingConsent2, setMarketingConsent2] = useState(false);
   const [isSubmitting, _] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     scrollToTopInstant();
@@ -67,12 +72,19 @@ function BookingStepThree( { bookingInfo, setStep }: BookingStepThreeProps) {
         });
 
         if (error) {
-            setErrorMessage(error.message || "Payment failed!");
-            setPaymentStatus("failed");
+          setErrorMessage(error.message || "Payment failed!");
+          setPaymentStatus("failed");
         } else if (paymentIntent) {
-            setPaymentStatus("succeeded");
-            setErrorMessage("");
-            savePayment(paymentIntent.amount, paymentIntent.currency, paymentIntent.id, await getPaymentMethod(String(paymentIntent?.payment_method)));
+          setPaymentStatus("succeeded");
+          setErrorMessage("");
+          savePayment(
+            paymentIntent.amount,
+            paymentIntent.currency.toUpperCase(),
+            paymentIntent.id,
+            await getPaymentMethod(String(paymentIntent?.payment_method)), 
+            bookingId
+          );
+          setModalOpen(true);
         }
     } catch (error) {
         setErrorMessage("An unexpected error occurred. Please try again.");
@@ -94,6 +106,11 @@ function BookingStepThree( { bookingInfo, setStep }: BookingStepThreeProps) {
 
   return (
     <div className="w-2/3">
+      <PaymentSuccessModal open={modalOpen} onClose={() => {
+        setModalOpen(false);
+        navigate("/account/TripsAndOrders")
+        }} />
+
       <BookingWhenToPay
       maxDate={bookingInfo.bookingDetailsData.startDate}
       paymentOption={paymentOption}
