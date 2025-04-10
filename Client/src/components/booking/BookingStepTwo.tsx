@@ -27,7 +27,7 @@ import { Button } from "../ui/button";
 import BookingDetails from "./BookingDetails";
 import BookingRooms from "./BookingRooms";
 import UserCard from "./UserCard";
-import { IconError, Spinner } from "../ui/Icons";
+import { Spinner } from "../ui/Icons";
 import axios from "axios";
 import { isCreateBookingErrorResponse } from "@/utils/functions";
 
@@ -37,9 +37,19 @@ interface BookingStepTwoProps {
 }
 
 function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
+  if (!bookingInfo)
+    return (
+      <div className="text-redError text-sm">
+        "It seems like there are no current bookings available. If you recently
+        made a reservation and it doesn’t show up here, try refreshing or
+        checking back later. If the issue persists, please contact support."
+      </div>
+    );
+
   const currentUser = useSelector(
     (state: RootState) => state.currentUser
   ) as unknown as IUser;
+
   //  use ref
 
   const fNameRef = useRef<HTMLInputElement | null>(null);
@@ -200,7 +210,9 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
 
       setStep(3);
     } catch (error) {
+      // ! errors form DB
       if (!axios.isAxiosError(error)) {
+        console.error("not axiosError!");
         setBookingSubmitErrorMessage("unexpected error - try again later!");
         return;
       }
@@ -241,6 +253,7 @@ function BookingStepTwo({ setStep, bookingInfo }: BookingStepTwoProps) {
           }
         }
       }
+      console.error("unexpected error");
       setBookingSubmitErrorMessage("unexpected error - try again later!");
       return;
     }
