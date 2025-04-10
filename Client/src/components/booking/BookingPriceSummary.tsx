@@ -6,7 +6,12 @@ type BookingPriceSummaryProps = {
 };
 
 function BookingPriceSummary({ bookingInfo }: BookingPriceSummaryProps) {
-  if (!bookingInfo.bookingDetailsData.totalPrice) return;
+  if (
+    !bookingInfo ||
+    !bookingInfo.bookingDetailsData ||
+    !bookingInfo.bookingDetailsData?.totalPrice
+  )
+    return;
   const totalPrice = bookingInfo.bookingDetailsData.totalPrice;
   const totalPriceWithDiscount =
     bookingInfo.bookingDetailsData.totalPriceWithDiscount;

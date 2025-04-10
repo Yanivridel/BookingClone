@@ -551,7 +551,7 @@ function Search() {
                   {t("search.flexible")}
                 </Button>
               </div>
-              {/* calender */}
+              {/* calendar */}
               {activeNavButton === "calendar" && (
                 <Calendar
                   className="overflow-auto"
