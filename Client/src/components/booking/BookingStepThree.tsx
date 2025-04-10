@@ -105,7 +105,7 @@ function BookingStepThree( { bookingInfo, setStep, bookingId }: BookingStepThree
   }, [amount, currency]);
 
   return (
-    <div className="w-2/3">
+    <div className="tab:w-2/3">
       <PaymentSuccessModal open={modalOpen} onClose={() => {
         setModalOpen(false);
         navigate("/account/TripsAndOrders")
