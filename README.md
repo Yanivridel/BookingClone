@@ -68,7 +68,8 @@ Explore the various features and UI of the Booking.com Clone through the images 
 ## Contributors
 
 - [Yaniv Ridel](https://github.com/Yanivridel)
-- [Amit Kubani](https://github.com/AgitAgit)
+- [Elchanan Chen](https://github.com/elchananChen)
+- [Tal Calderon](https://github.com/talkal123)
 
 ## Acknowledgments
 
